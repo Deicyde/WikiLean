@@ -18,5 +18,6 @@ Categorize WikiProject Mathematics pages by whether (and where) they have been f
 - **2026-05-18:** First full catalog snapshot ([catalog/data/articles.jsonl](catalog/data/articles.jsonl)) — 29,135 articles, 99.9% with a Wikidata QID, 94.8% with a class rating, 71.9% with importance.
   - Class breakdown: 31 FA · 226 GA · 1,412 B · 4,358 C · 13,655 Start · 7,521 Stub · 408 List · …
   - Importance breakdown: 212 Top · 952 High · 4,361 Mid · 15,367 Low · 8,199 unrated
+- **2026-05-19:** Added Wikidata P31 (`instance of`) lookup — 26.4% of catalog articles are biographies (`Q5`). High-value pilot subset materialized: [catalog/data/pilot.jsonl](catalog/data/pilot.jsonl) (FA/GA/B × Top/High), **429 articles = 354 concepts + 75 biographies**.
 
-Next: cross-reference catalog entries against Mathlib (and other formal libraries) to mark which articles have formalizations.
+Next: build the Mathlib side — map declarations to Wikidata QIDs (where possible) and to article titles (fuzzy fallback), then join against the pilot concepts.

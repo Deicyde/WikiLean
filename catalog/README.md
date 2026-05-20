@@ -27,6 +27,8 @@ Output: `data/articles.jsonl`, one JSON object per article. Fields:
 | `pageid` | Article pageid; `null` if missing/deleted |
 | `talk_pageid` | Talk-page pageid |
 | `wikidata_qid` | Wikidata item id (e.g. `"Q11518"`) |
+| `p31` | List of Wikidata `instance of` (P31) values for the article's QID |
+| `is_human` | `true` if `Q5` (human) is in `p31` — flags biographies |
 | `class` | Quality rating: `FA`, `GA`, `B`, `C`, `Start`, `Stub`, `List`, etc. |
 | `importance` | Importance: `Top`, `High`, `Mid`, `Low` |
 | `field` | Subject field if set by the banner (`algebra`, `analysis`, …) |
@@ -39,8 +41,21 @@ Output: `data/articles.jsonl`, one JSON object per article. Fields:
 
 ## How it works
 
-Three sequential API passes:
+Four sequential API passes:
 
 1. **Enumerate** — `list=embeddedin&eititle=Template:WikiProject_Mathematics&einamespace=1` paginates all talk pages transcluding the banner.
 2. **Banner content** — `prop=revisions&rvprop=content` on talk pages in batches of 50, extracts the banner snippet with brace-balanced matching, parses top-level params (`class`, `importance`, `field`, `historical`).
 3. **Article metadata** — `prop=pageprops|info&ppprop=wikibase_item` on the mainspace article titles in batches of 50, follows redirects, captures the Wikidata QID.
+4. **Wikidata P31** — `action=wbgetentities&props=claims` against `wikidata.org` for each QID, in batches of 50, extracts the `P31` (instance of) claim values. Used to distinguish biographies (`Q5`) from mathematical concepts.
+
+Each phase writes an incremental JSONL cache under `data/.cache/`, so an interrupted run resumes by skipping already-fetched ids.
+
+## Pilot subset
+
+`build_pilot.py` writes `data/pilot.jsonl`, the high-value slice we use for matcher validation:
+
+```sh
+python build_pilot.py
+```
+
+Criteria: `class ∈ {FA, GA, B}` and `importance ∈ {Top, High}`. Current snapshot: **429 articles** (354 concepts + 75 biographies).
