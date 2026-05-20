@@ -310,9 +310,25 @@ async def run(
                     )
 
         await asyncio.gather(*(worker(a) for a in articles))
+
+    # Dedupe by title (last-wins). Resumed runs can leave both an old error row
+    # and a new success row for the same title; collapse to one record per title.
+    by_title: dict[str, dict] = {}
+    for line in out_path.open():
+        try:
+            rec = json.loads(line)
+        except json.JSONDecodeError:
+            continue
+        if "title" in rec:
+            by_title[rec["title"]] = rec
+    with out_path.open("w", encoding="utf-8") as f:
+        for rec in by_title.values():
+            f.write(json.dumps(rec, ensure_ascii=False) + "\n")
+    n_final_err = sum(1 for r in by_title.values() if r.get("error"))
     print(
-        f"\ndone — {n_done} tagged ({n_err} errors) in {time.time()-t0:.1f}s, "
-        f"cost ~${cost:.2f}"
+        f"\ndone — {n_done} processed ({n_err} errors this run) in "
+        f"{time.time()-t0:.1f}s, cost ~${cost:.2f}.  "
+        f"file: {len(by_title)} unique titles, {n_final_err} still in error."
     )
     return 0
 
@@ -345,13 +361,23 @@ def main() -> int:
 
     out_path = Path(args.out)
     out_path.parent.mkdir(parents=True, exist_ok=True)
+    # Resume: only count rows without `error` as done. Errored rows (e.g. from
+    # a prior run that hit a Max-plan rate ceiling) are retried.
     done_titles: set[str] = set()
+    n_existing = n_errored = 0
     if out_path.exists():
         for line in out_path.open():
             try:
-                done_titles.add(json.loads(line)["title"])
-            except (json.JSONDecodeError, KeyError):
+                rec = json.loads(line)
+            except json.JSONDecodeError:
                 continue
+            n_existing += 1
+            if rec.get("error"):
+                n_errored += 1
+            elif "title" in rec:
+                done_titles.add(rec["title"])
+    if n_errored:
+        print(f"  {n_errored} prior rows had errors; will retry those titles")
     pending = [a for a in articles if a["title"] not in done_titles]
     if args.limit:
         pending = pending[: args.limit]

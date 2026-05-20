@@ -71,8 +71,14 @@ python tag_with_mathlib.py --concurrency 10
 
 Output: `data/pilot_tagged.jsonl`. Resumable — re-running skips titles already in the output.
 
-**Current snapshot (Opus 4.7, 354 concepts):**
+**Pilot (Opus 4.7, 354 concepts, FA/GA/B × Top/High):**
 - **70.9%** (251/354) of concept articles have at least one matched Mathlib declaration.
-- 60 articles flagged "not formalized", 22 "not amenable to formalization", 16 "unclear scope", 5 "too elementary".
-- Avg 7.2 grep/read turns per agent, 26.4s per agent, ~$0.14 equivalent cost per article.
-- Full pilot: 15.6 min wall-clock at concurrency 10, ~$48 equivalent cost (charged against Max-plan budget, not API).
+- 60 "not formalized", 22 "not amenable", 16 "unclear scope", 5 "too elementary".
+- Avg 7.2 turns/agent, 26.4s/agent, ~$0.14 equivalent/article. Full pilot: 15.6 min @ concurrency 10, ~$48 equivalent.
+
+**Tier 2 (Opus 4.7, 1,023 concepts: B × Mid, C × Top, C × High):**
+- **57.6%** (589/1,023) matched. 320 "not formalized" dominates the no-match bucket.
+- Took two runs: the first hit the Max-plan Opus 5-hour rolling window after ~300 articles and the remaining 694 errored out with `Claude Code returned an error result: success`. The retry (~5h later, with the resume logic now skipping only successful rows) finished the remaining 694 in 28.7 min, 0 errors.
+- Combined cost: ~$133 equivalent. The script now dedupes the output JSONL on completion so resumed runs leave a clean file.
+
+The output file `data/tier2_tagged.jsonl` is keyed by title; each row is the per-article record described above.
