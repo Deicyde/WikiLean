@@ -22,6 +22,7 @@ from pathlib import Path
 import requests
 
 API = "https://en.wikipedia.org/w/api.php"
+WIKIDATA_API = "https://www.wikidata.org/w/api.php"
 UA = (
     "WikiLean/0.1 (https://github.com/Deicyde/WikiLean; "
     "jack.mccarthy.1@stonybrook.edu)"
@@ -29,6 +30,8 @@ UA = (
 TEMPLATE = "Template:WikiProject_Mathematics"
 PROP_BATCH = 50   # max titles/pageids per prop= call (non-bot)
 EI_LIMIT = 500    # max per list=embeddedin call (non-bot)
+WD_BATCH = 50     # max ids per wbgetentities call (non-bot)
+HUMAN_QID = "Q5"  # Wikidata `human` — for is_human classification
 HERE = Path(__file__).resolve().parent
 DEFAULT_OUT = HERE / "data" / "articles.jsonl"
 CACHE_DIR = HERE / "data" / ".cache"
@@ -44,13 +47,18 @@ def make_session() -> requests.Session:
     return s
 
 
-def api_get(s: requests.Session, params: dict, max_retries: int = 8) -> dict:
+def api_get(
+    s: requests.Session,
+    params: dict,
+    base_url: str = API,
+    max_retries: int = 8,
+) -> dict:
     params = {**params, "maxlag": "5"}
     delay = 1.0
     last_status = None
     for attempt in range(max_retries):
         try:
-            r = s.get(API, params=params, timeout=60)
+            r = s.get(base_url, params=params, timeout=60)
         except requests.RequestException as e:
             print(f"  [network err: {e}; retry in {delay:.0f}s]", flush=True)
             time.sleep(delay)
@@ -420,6 +428,67 @@ def fetch_article_meta(
 
 
 # ---------------------------------------------------------------------------
+# Phase 4: for each Wikidata QID, fetch P31 (instance of) to distinguish
+# biographies (Q5) from mathematical concepts. Hits wikidata.org, not enwiki.
+# ---------------------------------------------------------------------------
+
+def fetch_wikidata_p31(
+    s: requests.Session, qids: list[str], cache: Path
+) -> dict[str, dict]:
+    cached = _load_jsonl_dict(cache, "qid")
+    if cached:
+        print(f"  wikidata P31: resumed from {len(cached)} cached entries")
+    pending = [q for q in qids if q and q not in cached]
+    if not pending:
+        print(f"  wikidata P31: all {sum(1 for q in qids if q)} qids cached")
+        return cached
+
+    cache.parent.mkdir(parents=True, exist_ok=True)
+    n_done = len(cached)
+    t0 = time.time()
+    with cache.open("a", encoding="utf-8") as f:
+        for chunk in chunks(pending, WD_BATCH):
+            params = {
+                "action": "wbgetentities",
+                "ids": "|".join(chunk),
+                "props": "claims",
+                "format": "json",
+                "formatversion": "2",
+            }
+            data = api_get(s, params, base_url=WIKIDATA_API)
+            entities = data.get("entities", {})
+            for qid in chunk:
+                ent = entities.get(qid, {})
+                if ent.get("missing") is not None and "claims" not in ent:
+                    rec = {"qid": qid, "p31": [], "missing": True}
+                else:
+                    p31_claims = (ent.get("claims") or {}).get("P31", [])
+                    p31: list[str] = []
+                    for claim in p31_claims:
+                        val = (
+                            (claim.get("mainsnak") or {})
+                            .get("datavalue", {})
+                            .get("value", {})
+                        )
+                        qv = val.get("id") if isinstance(val, dict) else None
+                        if qv:
+                            p31.append(qv)
+                    rec = {"qid": qid, "p31": p31, "missing": False}
+                cached[qid] = rec
+                f.write(json.dumps(rec, ensure_ascii=False) + "\n")
+            f.flush()
+            n_done += len(chunk)
+            if n_done % 1000 < WD_BATCH:
+                print(
+                    f"  wikidata P31: {n_done}/{len(qids)}  "
+                    f"({time.time() - t0:.1f}s)",
+                    flush=True,
+                )
+    print(f"  wikidata P31: done — {len(cached)} qids in {time.time() - t0:.1f}s")
+    return cached
+
+
+# ---------------------------------------------------------------------------
 # Helpers
 # ---------------------------------------------------------------------------
 
@@ -462,14 +531,15 @@ def main() -> int:
     cache_pages = CACHE_DIR / "talk_pages.jsonl"
     cache_banner = CACHE_DIR / "banner_extract.jsonl"
     cache_meta = CACHE_DIR / "article_meta.jsonl"
+    cache_p31 = CACHE_DIR / "wikidata_p31.jsonl"
     if args.refresh:
-        for p in (cache_pages, cache_banner, cache_meta):
+        for p in (cache_pages, cache_banner, cache_meta, cache_p31):
             p.unlink(missing_ok=True)
         print("  --refresh: removed cache files")
 
     s = make_session()
 
-    print("[1/3] enumerating talk pages transcluding the banner")
+    print("[1/4] enumerating talk pages transcluding the banner")
     talk_pages = enumerate_talk_pages(s, cache_pages)
     if args.limit:
         talk_pages = talk_pages[: args.limit]
@@ -480,15 +550,24 @@ def main() -> int:
     banner_re = build_banner_re(aliases)
     print(f"  using {len(aliases)} banner alias(es): {', '.join(aliases[:6])}{', ...' if len(aliases) > 6 else ''}")
 
-    print("[2/3] fetching talk-page wikitext and extracting banner / shell")
+    print("[2/4] fetching talk-page wikitext and extracting banner / shell")
     extracts = fetch_banner_extracts(s, talk_pages, cache_banner, banner_re)
 
     article_titles = [tp["talk_title"].removeprefix("Talk:") for tp in talk_pages]
-    print("[3/3] fetching article metadata (pageid, Wikidata QID)")
+    print("[3/4] fetching article metadata (pageid, Wikidata QID)")
     article_meta = fetch_article_meta(s, article_titles, cache_meta)
 
+    in_scope = set(article_titles)
+    qids = sorted({
+        m["wikidata_qid"]
+        for t, m in article_meta.items()
+        if t in in_scope and m.get("wikidata_qid")
+    })
+    print(f"[4/4] fetching Wikidata P31 (instance of) for {len(qids)} unique QIDs")
+    p31_records = fetch_wikidata_p31(s, qids, cache_p31)
+
     fetched_at = time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime())
-    n_with_class = n_with_imp = n_with_qid = 0
+    n_with_class = n_with_imp = n_with_qid = n_human = 0
     n_missing = n_no_banner = 0
 
     print(f"\nwriting {out_path}")
@@ -518,12 +597,18 @@ def main() -> int:
                 else None
             )
 
+            qid = meta.get("wikidata_qid")
+            p31 = (p31_records.get(qid) or {}).get("p31") if qid else None
+            is_human = (HUMAN_QID in p31) if p31 else False
+
             if cls:
                 n_with_class += 1
             if imp:
                 n_with_imp += 1
-            if meta.get("wikidata_qid"):
+            if qid:
                 n_with_qid += 1
+            if is_human:
+                n_human += 1
             if meta.get("missing"):
                 n_missing += 1
             if not banner:
@@ -534,7 +619,9 @@ def main() -> int:
                 "talk_title": talk_title,
                 "pageid": meta.get("pageid"),
                 "talk_pageid": tp["talk_pageid"],
-                "wikidata_qid": meta.get("wikidata_qid"),
+                "wikidata_qid": qid,
+                "p31": p31,
+                "is_human": is_human,
                 "class": cls,
                 "importance": imp,
                 "field": banner_params.get("field") or None,
@@ -554,6 +641,7 @@ def main() -> int:
     print(f"  with class:          {n_with_class}  ({n_with_class / total * 100:.1f}%)")
     print(f"  with importance:     {n_with_imp}  ({n_with_imp / total * 100:.1f}%)")
     print(f"  with Wikidata QID:   {n_with_qid}  ({n_with_qid / total * 100:.1f}%)")
+    print(f"  is_human (Q5 in P31):{n_human}  ({n_human / total * 100:.1f}%)")
     print(f"  no banner extracted: {n_no_banner}")
     print(f"  article missing:     {n_missing}  (talk exists, mainspace doesn't)")
     size = out_path.stat().st_size
