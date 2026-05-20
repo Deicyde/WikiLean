@@ -59,3 +59,20 @@ python build_pilot.py
 ```
 
 Criteria: `class ∈ {FA, GA, B}` and `importance ∈ {Top, High}`. Current snapshot: **429 articles** (354 concepts + 75 biographies).
+
+## Mathlib tagging
+
+`tag_with_mathlib.py` spawns Claude agents (via `claude-agent-sdk`, authenticated against your local `claude login` — Max-plan session, no API key) to identify Mathlib4 declarations that formalize each pilot concept. Each agent has read-only access to `~/Desktop/LEAN/mathlib4` via `Read` / `Grep` / `Glob`, and emits a structured JSON record (`mathlib_decls`, `primary_decl`, `notes`, `no_match_reason`).
+
+```sh
+unset ANTHROPIC_API_KEY   # critical — see comments at top of the script
+python tag_with_mathlib.py --concurrency 10
+```
+
+Output: `data/pilot_tagged.jsonl`. Resumable — re-running skips titles already in the output.
+
+**Current snapshot (Opus 4.7, 354 concepts):**
+- **70.9%** (251/354) of concept articles have at least one matched Mathlib declaration.
+- 60 articles flagged "not formalized", 22 "not amenable to formalization", 16 "unclear scope", 5 "too elementary".
+- Avg 7.2 grep/read turns per agent, 26.4s per agent, ~$0.14 equivalent cost per article.
+- Full pilot: 15.6 min wall-clock at concurrency 10, ~$48 equivalent cost (charged against Max-plan budget, not API).
