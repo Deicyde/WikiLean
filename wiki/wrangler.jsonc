@@ -12,6 +12,11 @@
   "observability": {
     "enabled": true
   },
+  // Daily Wikipedia drift-detection sweep (src/drift.ts scheduled handler):
+  // prop=info lastrevid checks, 50 titles/request, rotating KV cursor.
+  "triggers": {
+    "crons": ["17 6 * * *"]
+  },
   "routes": [
     { "pattern": "wikilean.jackmccarthy.org", "custom_domain": true }
   ],
