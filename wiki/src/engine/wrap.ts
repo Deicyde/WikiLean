@@ -625,6 +625,18 @@ export function wrapAnnotations(bodyHtml: string, annotations: Annotation[]): Wr
 
   for (let i = 0; i < annotations.length; i++) {
     const a = annotations[i];
+    // Human-deletion tombstone: status="rejected" is a human veto, so no wrap
+    // is ever emitted for it. matched[i] is reported as `true` (meaning
+    // "excluded, not an anchor failure") because every consumer of matched[]
+    // treats `false` as anchor rot — the save response's "X/Y anchored"
+    // warning (index.ts) and render.py's unmatched warning would otherwise
+    // flag every veto forever. page.ts independently excludes rejected
+    // annotations from the badge / display-math counts and from the anonymous
+    // client data. Mirrored in render.py wrap_annotations (golden parity).
+    if (a.status === "rejected") {
+      matched[i] = true;
+      continue;
+    }
     const anchors: Anchor[] = a.anchors && a.anchors.length ? a.anchors : [a.anchor ?? {}];
     for (const anchor of anchors) {
       const t = anchor.type;

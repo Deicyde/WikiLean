@@ -762,6 +762,14 @@ def wrap_annotations(body_html: str, annotations: list[dict]) -> tuple[str, list
     groups: dict[tuple[int, int], list[tuple[int, str]]] = {}
 
     for i, a in enumerate(annotations):
+        # Human-deletion tombstone: status="rejected" is a human veto — never
+        # wrapped. matched[i] is reported True (meaning "excluded, not an
+        # anchor failure") so vetoes don't show up as anchor rot in the
+        # matched-counters / unmatched warnings. Mirrors wrap.ts
+        # wrapAnnotations (golden parity).
+        if a.get("status") == "rejected":
+            matched[i] = True
+            continue
         # Support both `anchor` (single) and `anchors` (list) — a single
         # annotation can have multiple anchor targets that all share its
         # label, decl, note, etc.
@@ -918,17 +926,25 @@ def main() -> int:
     n_annotated = sum(matched_flags)
     # Only math_alttext annotations consume display-math elements; theorem_box
     # (and any future block-level anchor types) target their own elements.
+    # Tombstones (status="rejected") report matched=True from the wrap engine
+    # but emit no wrap, so any math element they once covered counts as
+    # unannotated again (mirrors page.ts).
     n_display_annotated = sum(
         1
         for a, ok in zip(annot["annotations"], matched_flags)
-        if ok and a.get("anchor", {}).get("type") == "math_alttext"
+        if ok
+        and a.get("status") != "rejected"
+        and a.get("anchor", {}).get("type") == "math_alttext"
     )
     n_untouched = max(0, n_total_displays - n_display_annotated)
     n_unmatched = len(matched_flags) - n_annotated
 
+    # "rejected" is deliberately absent from `counts`, so tombstones never
+    # reach the header badges or the meta description (mirrors page.ts).
     counts = {"formalized": 0, "partial": 0, "not_formalized": 0}
     for a in annot["annotations"]:
-        counts[a["status"]] = counts.get(a["status"], 0) + 1
+        if a["status"] in counts:
+            counts[a["status"]] += 1
 
     if n_unmatched:
         print(f"warning: {n_unmatched} annotation(s) had no matching anchor in HTML:")
@@ -946,6 +962,14 @@ def main() -> int:
     # (status/label/kind/mathlib.decl/mathlib.module/match_kind/proof_note).
     client_data = []
     for a in annot["annotations"]:
+        # Human-deletion tombstones must not ship to readers; a None
+        # placeholder (not a filter) keeps the array index-aligned with
+        # data-anno-indices in the wrapped HTML. Tombstones are never
+        # wrapped, so no index references the null (mirrors page.ts
+        # buildClientData).
+        if a.get("status") == "rejected":
+            client_data.append(None)
+            continue
         m = a.get("mathlib") or {}
         decl = m.get("decl") or a.get("decl")
         module = m.get("module") or a.get("module")

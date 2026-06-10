@@ -17,6 +17,11 @@
 
   let editingIndex = null;
   let pendingSel = null;
+  // Annotations created in this session that the server has never seen (their
+  // save failed or 409'd before succeeding). Deleting one of these just drops
+  // it — a tombstone is only meaningful for annotations that were persisted.
+  // Cleared on every successful persist.
+  const unsavedNew = new Set();
 
   // ---- top bar ----
   const bar = document.createElement("div");
@@ -55,6 +60,7 @@
       <option value="formalized">formalized</option>
       <option value="partial">partial</option>
       <option value="not_formalized">not_formalized</option>
+      <option value="rejected">rejected (hide)</option>
     </select>
     <label>Kind</label>
     <small class="wlr-help">definition · theorem · proposition · example · corollary · lemma</small>
@@ -231,6 +237,7 @@
     formalized: "#2da44e",
     partial: "#d29922",
     not_formalized: "#cf222e",
+    rejected: "#8c959f",
   };
   function showPicker(annoEl, idxs) {
     dismissPicker();
@@ -264,7 +271,9 @@
       const label = a.label || a.kind || "annotation #" + i;
       const metaBits = [];
       if (a.kind) metaBits.push(a.kind);
-      if (a.status) metaBits.push(a.status.replace("_", " "));
+      if (a.status) {
+        metaBits.push(a.status === "rejected" ? "rejected (hidden from readers)" : a.status.replace("_", " "));
+      }
       const meta = metaBits.length
         ? ' <span style="color:#8c959f;font-size:.85em;margin-left:6px">' +
           escapeHtml(metaBits.join(" · ")) +
@@ -345,7 +354,10 @@
     $("wlr-del").style.display = "";
     // Show the one-click endorsement only when there's something to flip.
     $("wlr-mark-reviewed").style.display = a.provenance !== "human" ? "" : "none";
-    $("wlr-status-msg").textContent = "";
+    $("wlr-status-msg").textContent =
+      a.status === "rejected"
+        ? "This annotation is rejected (hidden from readers). Pick another status and save to restore it."
+        : "";
     panel.classList.add("open");
   }
 
@@ -407,7 +419,18 @@
   $("wlr-del").addEventListener("click", () => {
     if (editingIndex == null) return;
     if (!confirm("Delete this annotation?")) return;
-    annos.splice(editingIndex, 1);
+    const a = annos[editingIndex];
+    if (unsavedNew.has(a)) {
+      // Never persisted — nothing to veto, so just drop it client-side.
+      unsavedNew.delete(a);
+      annos.splice(editingIndex, 1);
+    } else {
+      // Tombstone, not splice: keep id/anchor/all other fields, flip status to
+      // "rejected" with provenance "human". The wrap engines skip it (readers
+      // never see it) and the AI moderation pass reads it as a human veto
+      // instead of an uncovered statement it would happily re-annotate.
+      annos[editingIndex] = { ...a, status: "rejected", provenance: "human" };
+    }
     persist("deleted");
   });
   $("wlr-mark-reviewed").addEventListener("click", () => {
@@ -438,6 +461,7 @@
 
     if (editingIndex == null) {
       built.anchor = { section: panel.dataset.newSection, snippet: panel.dataset.newSnippet };
+      unsavedNew.add(built);
       annos.push(built);
     } else {
       // Spread the original first so fields the form doesn't expose (proof_note,
@@ -445,7 +469,10 @@
       // form-derived fields in `built` win, so explicitly cleared fields (e.g. an
       // emptied note) are still written through.
       built.anchor = annos[editingIndex].anchor;
-      annos[editingIndex] = { ...annos[editingIndex], ...built };
+      const prev = annos[editingIndex];
+      annos[editingIndex] = { ...prev, ...built };
+      // The merge creates a new object — carry over never-persisted tracking.
+      if (unsavedNew.delete(prev)) unsavedNew.add(annos[editingIndex]);
     }
     persist("saved");
   }
@@ -478,6 +505,9 @@
         // Keep the in-page version in sync so a second save in the same session
         // doesn't spuriously 409.
         if (typeof res.version === "number") window.__WL_VERSION__ = res.version;
+        // Everything in `annos` has now been persisted — deleting any of them
+        // from here on must tombstone, not splice.
+        unsavedNew.clear();
         const m = (res.matched || "").match(/(\d+)\/(\d+)/);
         if (m && m[1] !== m[2]) {
           $("wlr-status-msg").innerHTML =
