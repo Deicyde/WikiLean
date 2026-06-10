@@ -1,7 +1,7 @@
 import { Hono, type Context } from "hono";
 import { drizzle, type DrizzleD1Database } from "drizzle-orm/d1";
 import { eq, and, desc } from "drizzle-orm";
-import { articles, revisions, users } from "./db/schema.js";
+import { articles, revisions, users, type ArticleRow } from "./db/schema.js";
 import { absolutizeWikipediaUrls, wrapAnnotations } from "./engine/wrap.js";
 import { renderArticlePage } from "./engine/page.js";
 import { getWikipediaHtml } from "./wikipedia.js";
@@ -37,11 +37,12 @@ registerAuthRoutes(app);
 
 type DB = DrizzleD1Database;
 
-// Renders (and KV-caches) the anonymous base page for an article. Returns the
-// HTML, or null if the slug is unknown.
-async function renderArticleBase(db: DB, env: Env, slug: string): Promise<string | null> {
-  const row = (await db.select().from(articles).where(eq(articles.slug, slug)).limit(1))[0];
-  if (!row) return null;
+// Renders (and KV-caches) the anonymous base page for an article. Takes the
+// already-SELECTed row so the cached base and the caller's injected editor
+// model come from one consistent read (no double-read race with concurrent
+// saves); db is still needed for the revid patch-back write below.
+async function renderArticleBase(db: DB, env: Env, row: ArticleRow): Promise<string> {
+  const slug = row.slug;
 
   // Bump the prefix when the engine's wrap behavior changes — old keys would
   // serve pre-change HTML. v6: wraps now carry data-provenance="ai|human" so
@@ -359,8 +360,7 @@ async function serveArticle(c: Context<{ Bindings: Env }>, slug: string) {
   const db = drizzle(c.env.DB);
   const row = (await db.select().from(articles).where(eq(articles.slug, slug)).limit(1))[0];
   if (!row) return c.notFound();
-  const base = await renderArticleBase(db, c.env, slug);
-  if (base === null) return c.notFound();
+  const base = await renderArticleBase(db, c.env, row);
   const user = await getUser(c);
   const annotations = JSON.parse(row.annotations) as Annotation[];
   const page = injectAuthAndEditor(base, { slug, user, annotations, version: row.version });

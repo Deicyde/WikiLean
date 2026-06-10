@@ -43,6 +43,8 @@ export async function getWikipediaHtml(
   if (!text) throw new Error("MediaWiki returned no parse block");
   const resolvedRevid = data.parse?.revid ?? revid;
 
-  await kv.put(kvKey(slug, resolvedRevid), text);
+  // 90d TTL: entries are immutable per revid but re-fetchable by oldid, so a
+  // TTL caps unbounded (slug × revid) growth; re-renders re-warm the cache.
+  await kv.put(kvKey(slug, resolvedRevid), text, { expirationTtl: 60 * 60 * 24 * 90 });
   return { html: text, revid: resolvedRevid };
 }
