@@ -144,10 +144,10 @@ into `wiki/public/assets/`. Edit sources, then run build-public, never edit
 
 ## P1 — Close the loop (the core re-architecture)
 
-- [ ] **One-time rescue pull** (`wiki/scripts/pull-annotations.ts`): materialize D1 →
-  disk once. Unfreezes the 7 user-edited slugs, creates the 47 missing sidecars
-  (709 D1 rows vs 662 disk slugs), commits human edits to git. Then demotes to
-  backup tool. Run BEFORE any further --moderate run.
+- [x] **One-time rescue pull** — DONE 2026-06-10. `wiki/scripts/pull-annotations.ts`
+  (`npm run pull`); 709 rows pulled: 47 sidecars created, 8 real content updates
+  (the 7 user-edited slugs' human edits rescued + Tangent_bundle stale-sidecar fix),
+  manifest at site/annotations/.d1_pull_manifest.json. Human edits now in git.
 - [ ] **Stable annotation IDs** (12-hex): one-shot D1+disk backfill, Worker lazy-heal
   on save, pipeline stamps new annotations, editor preserves via spread fix, agent
   echo-validation post-pass (unknown id → NEW; dropped id → _preserve_human
