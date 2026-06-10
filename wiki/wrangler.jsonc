@@ -1,0 +1,53 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "wikilean",
+  "account_id": "02e868c47ebe2b175a0609df94e857e6",
+  "main": "src/index.ts",
+  "compatibility_date": "2026-05-01",
+  "compatibility_flags": ["nodejs_compat"],
+  "assets": {
+    "directory": "./public",
+    "binding": "ASSETS"
+  },
+  "observability": {
+    "enabled": true
+  },
+  "routes": [
+    { "pattern": "wikilean.jackmccarthy.org", "custom_domain": true }
+  ],
+  "unsafe": {
+    "bindings": [
+      // Per-user edit rate limiter: max 30 writes per minute. Worker-local
+      // counter (no account config); key is the user id for save/revert.
+      {
+        "name": "EDIT_LIMITER",
+        "type": "ratelimit",
+        "namespace_id": "1001",
+        "simple": { "limit": 30, "period": 60 }
+      }
+    ]
+  },
+  "vars": {
+    // Deployed Worker uses real OAuth. Local `wrangler dev` reads .dev.vars,
+    // which can override this to "dev" for the cookie stub.
+    "AUTH_MODE": "oauth",
+    "BETTER_AUTH_URL": "https://wikilean.jackmccarthy.org"
+  },
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "wikilean",
+      "database_id": "fc1b0190-77dd-4f41-a5b9-7f30d53df140"
+    }
+  ],
+  "kv_namespaces": [
+    {
+      "binding": "RENDER_CACHE",
+      "id": "44e96a7fa10d410189e066432b9140c7"
+    },
+    {
+      "binding": "WP_HTML",
+      "id": "53b1cbbfe7fc43ae844192201f6926bf"
+    }
+  ]
+}
