@@ -1,0 +1,648 @@
+{
+  "slug": "Tangent_bundle",
+  "wikipedia_title": "Tangent bundle",
+  "display_title": "Tangent bundle",
+  "schema_version": 3,
+  "annotations": [
+    {
+      "kind": "definition",
+      "label": "Definition of the tangent bundle (disjoint union of tangent spaces)",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "the tangent bundle of a differentiable manifold"
+      },
+      "provenance": "ai-agent1",
+      "status": "formalized",
+      "mathlib": {
+        "decl": "TangentBundle",
+        "module": "Mathlib.Geometry.Manifold.IsManifold.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`TangentBundle I M` is defined as `Bundle.TotalSpace E (TangentSpace I : M → Type _)`, i.e. the sigma-type / disjoint union of the tangent spaces `TangentSpace I x` (each a type synonym for the model space `E`)."
+    },
+    {
+      "kind": "definition",
+      "label": "Elements of the tangent bundle as point-vector pairs",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "denotes the tangent space to"
+      },
+      "provenance": "ai-agent1",
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Bundle.TotalSpace.mk",
+        "module": "Mathlib.Topology.FiberBundle.Basic",
+        "match_kind": "exact"
+      },
+      "note": "Elements of `TangentBundle I M` are `Bundle.TotalSpace` points `⟨x, v⟩` with `x : M` and `v : TangentSpace I x`, accessed via `.proj`/`.1` (base point) and `.2` (tangent vector)."
+    },
+    {
+      "kind": "definition",
+      "label": "Natural projection of the tangent bundle",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "There is a natural projection"
+      },
+      "provenance": "ai-agent1",
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Bundle.TotalSpace.proj",
+        "module": "Mathlib.Topology.FiberBundle.Basic",
+        "match_kind": "exact"
+      },
+      "note": "The bundle projection `π E (TangentSpace I)` / `TotalSpace.proj` maps `⟨x, v⟩ ↦ x`; its continuity/smoothness is `FiberBundle.continuous_proj` and `contMDiff_proj` (Mathlib.Geometry.Manifold.VectorBundle.Basic)."
+    },
+    {
+      "kind": "definition",
+      "label": "A section of the tangent bundle is a vector field; cotangent bundle is the dual",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "is a vector field on"
+      },
+      "provenance": "ai-agent1",
+      "status": "partial",
+      "mathlib": {
+        "decl": "ContMDiffSection",
+        "module": "Mathlib.Geometry.Manifold.VectorBundle.ContMDiffSection",
+        "match_kind": "generalization"
+      },
+      "note": "A vector field is a (smooth) section of the tangent bundle: `ContMDiffSection I E n (TangentSpace I)`, or unbundled `Π x : M, TangentSpace I x`. The cotangent bundle exists only implicitly as `Π x : M, TangentSpace I x →L[𝕜] 𝕜` (see `extDerivFun`); there is no named `CotangentBundle`/dual-bundle declaration."
+    },
+    {
+      "kind": "definition",
+      "label": "A manifold is parallelizable iff its tangent bundle is trivial",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "is parallelizable if and only if the tangent bundle is trivial"
+      },
+      "provenance": "ai-agent1",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has no `Parallelizable` predicate and no theorem relating it to triviality of the tangent bundle. The closest infrastructure is local frames (`IsLocalFrameOn`, Mathlib.Geometry.Manifold.VectorBundle.LocalFrame) and the trivial bundle `Bundle.Trivial`, but no global-frame / parallelizability notion."
+    },
+    {
+      "kind": "definition",
+      "label": "A manifold is framed iff its tangent bundle is stably trivial",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "is framed if and only if the tangent bundle"
+      },
+      "provenance": "ai-agent1",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No notion of framed manifold or stable triviality of a bundle in Mathlib. `Mathlib.Geometry.Manifold.Bordism` exists but does not define framings or stably-trivial tangent bundles."
+    },
+    {
+      "kind": "example",
+      "label": "The n-sphere is framed for all n but parallelizable only for n = 1, 3, 7",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "sphere S n is framed for all n , but parallelizable only for"
+      },
+      "provenance": "ai-agent1",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Not formalized. Mathlib defines spheres as manifolds (`Mathlib.Geometry.Manifold.Instances.Sphere`) but neither parallelizability of S^1/S^3/S^7 nor framings of S^n are present; the underlying parallelizability/framing notions do not exist."
+    },
+    {
+      "kind": "proposition",
+      "label": "Derivative of a smooth map is a smooth map between tangent bundles",
+      "anchor": {
+        "section": "Role",
+        "snippet": "its derivative is a smooth function"
+      },
+      "provenance": "ai-agent1",
+      "status": "formalized",
+      "mathlib": {
+        "decl": "ContMDiff.contMDiff_tangentMap",
+        "module": "Mathlib.Geometry.Manifold.ContMDiffMFDeriv",
+        "match_kind": "exact"
+      },
+      "note": "`tangentMap I I' f : TangentBundle I M → TangentBundle I' M'` is the bundled derivative; `ContMDiff.contMDiff_tangentMap` shows that if `f` is `C^n` then `tangentMap f` is `C^m` for `m + 1 ≤ n` (and `ContMDiff.continuous_tangentMap` for continuity)."
+    },
+    {
+      "kind": "proposition",
+      "label": "The dimension of the tangent bundle is twice the dimension of the manifold",
+      "anchor": {
+        "section": "Topology and smooth structure",
+        "snippet": "is twice the dimension of"
+      },
+      "provenance": "ai-agent1",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The tangent bundle is charted on `ModelProd H E` (so locally `H × E`, dimension `2 dim M` in the finite-dimensional case), but there is no `finrank`/dimension theorem stating `dim (TangentBundle I M) = 2 * dim M`."
+    },
+    {
+      "kind": "proposition",
+      "label": "Over an open contractible subset the tangent bundle is diffeomorphic to a product",
+      "anchor": {
+        "section": "Topology and smooth structure",
+        "snippet": "is an open contractible subset of"
+      },
+      "provenance": "ai-agent1",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Not formalized. The tangent bundle is locally trivial over chart domains (`trivializationAt`), but there is no result that over a contractible open set it is diffeomorphic to a product (which would require triviality of bundles over contractible bases)."
+    },
+    {
+      "kind": "definition",
+      "label": "Definition of a trivial tangent bundle",
+      "anchor": {
+        "section": "Topology and smooth structure",
+        "snippet": "then the tangent bundle is said to be trivial"
+      },
+      "provenance": "ai-agent1",
+      "status": "partial",
+      "mathlib": {
+        "decl": "Bundle.Trivial",
+        "module": "Mathlib.Topology.FiberBundle.Constructions",
+        "match_kind": "generalization"
+      },
+      "note": "`Bundle.Trivial B F` is the trivial bundle (with `Bundle.Trivial.fiberBundle`/`vectorBundle` instances), but Mathlib has no predicate asserting that a *given* bundle (e.g. a particular `TangentBundle I M`) is isomorphic to a trivial one, so 'the tangent bundle is trivial' is not directly expressible."
+    },
+    {
+      "kind": "definition",
+      "label": "Definition of parallelizable manifold (trivial tangent bundle)",
+      "anchor": {
+        "section": "Topology and smooth structure",
+        "snippet": "which have a trivial tangent bundle are called parallelizable"
+      },
+      "provenance": "ai-agent1",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No `Parallelizable` definition in Mathlib (duplicate of the lead annotation on parallelizability)."
+    },
+    {
+      "kind": "example",
+      "label": "The tangent bundle of the unit circle is trivial (it is a Lie group)",
+      "anchor": {
+        "section": "Topology and smooth structure",
+        "snippet": "The tangent bundle of the unit circle is trivial because it is a Lie group"
+      },
+      "provenance": "ai-agent1",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has `instance : LieGroup (𝓡 1) ω Circle` (Mathlib.Geometry.Manifold.Instances.Sphere), and a general fact that Lie groups have trivial tangent bundles would follow from the Lie-algebra trivialization, but neither the trivialization of `TM` for a Lie group nor triviality of the circle's tangent bundle is stated."
+    },
+    {
+      "kind": "definition",
+      "label": "Topology and smooth structure on the tangent bundle via coordinate charts",
+      "anchor": {
+        "section": "Topology and smooth structure",
+        "snippet": "We use these maps to define the topology and smooth structure on"
+      },
+      "provenance": "ai-agent1",
+      "status": "formalized",
+      "mathlib": {
+        "decl": "tangentBundleCore",
+        "module": "Mathlib.Geometry.Manifold.VectorBundle.Tangent",
+        "match_kind": "exact"
+      },
+      "note": "`tangentBundleCore I M : VectorBundleCore 𝕜 M E (atlas H M)` builds the topology and (for `C^{n+1}` `M`) the `C^n` vector-bundle/manifold structure on `TangentBundle I M` via the chart-indexed coordinate changes (Jacobians `fderivWithin` of `extend`-coordinate changes); the topology instance and `TangentBundle.chartAt` come from this."
+    },
+    {
+      "kind": "definition",
+      "label": "The tangent bundle as a rank-n vector bundle with Jacobian transition functions",
+      "anchor": {
+        "section": "Topology and smooth structure",
+        "snippet": "may be defined as a rank"
+      },
+      "provenance": "ai-agent1",
+      "status": "formalized",
+      "mathlib": {
+        "decl": "TangentSpace.vectorBundle",
+        "module": "Mathlib.Geometry.Manifold.VectorBundle.Tangent",
+        "match_kind": "exact"
+      },
+      "note": "`TangentSpace.vectorBundle` gives `VectorBundle 𝕜 E (TangentSpace I)`, with fiber the model space `E` and transition functions the Jacobian derivatives of coordinate changes (`tangentBundleCore.coordChange = fderivWithin ...`), matching the rank-n (= dim E) vector bundle with Jacobian transitions."
+    },
+    {
+      "kind": "example",
+      "label": "Tangent bundle of R^n is trivial",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "In this case the tangent bundle is trivial"
+      },
+      "provenance": "ai-agent1",
+      "status": "partial",
+      "mathlib": {
+        "decl": "tangentBundleModelSpaceHomeomorph",
+        "module": "Mathlib.Geometry.Manifold.VectorBundle.Tangent",
+        "match_kind": "special_case"
+      },
+      "note": "For the model space `H` (e.g. `E = R^n` with `I = 𝓘(𝕜, E)`), `tangentBundleModelSpaceHomeomorph : TangentBundle I H ≃ₜ ModelProd H E` exhibits the tangent bundle as homeomorphic to the product, and the trivialization is the identity (`trivializationAt_model_space_apply`). This is the model-space triviality rather than a general 'TM of R^n is trivial' statement."
+    },
+    {
+      "kind": "example",
+      "label": "Tangent bundle of the unit circle is trivial (an infinite cylinder)",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "The tangent bundle of the circle is also trivial"
+      },
+      "provenance": "ai-agent1",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Not formalized; same gap as the earlier circle annotation. Mathlib has the circle as a manifold/Lie group but no statement that its tangent bundle is trivial (a cylinder)."
+    },
+    {
+      "kind": "example",
+      "label": "Only the tangent bundles of the line and circle are readily visualized",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "The only tangent bundles that can be readily visualized"
+      },
+      "provenance": "ai-agent1",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Informal expository remark with no mathematical content to formalize."
+    },
+    {
+      "kind": "example",
+      "label": "Tangent bundle of the unit sphere is nontrivial (hairy ball theorem)",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "this tangent bundle is nontrivial as a consequence of the hairy ball theorem"
+      },
+      "provenance": "ai-agent1",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Not formalized: there is no hairy ball theorem in Mathlib and no statement that the tangent bundle of S^2 (or S^{2n}) is nontrivial / admits no nonvanishing vector field."
+    },
+    {
+      "kind": "definition",
+      "label": "Definition of a vector field as a smooth map into the tangent bundle",
+      "anchor": {
+        "section": "Vector fields",
+        "snippet": "a vector field on a manifold"
+      },
+      "provenance": "ai-agent1",
+      "status": "formalized",
+      "mathlib": {
+        "decl": "ContMDiffSection",
+        "module": "Mathlib.Geometry.Manifold.VectorBundle.ContMDiffSection",
+        "match_kind": "exact"
+      },
+      "note": "A smooth vector field is `Cₛ^n⟮I; E, TangentSpace I⟯` = `ContMDiffSection I E n (TangentSpace I)`, a `C^n` section assigning `x ↦ v x ∈ TangentSpace I x`; unbundled vector fields appear as `Π x, TangentSpace I x` throughout `Mathlib.Geometry.Manifold.VectorField`."
+    },
+    {
+      "kind": "definition",
+      "label": "A vector field is a section of the tangent bundle",
+      "anchor": {
+        "section": "Vector fields",
+        "snippet": "such a map is called a section"
+      },
+      "provenance": "ai-agent1",
+      "status": "formalized",
+      "mathlib": {
+        "decl": "ContMDiffSection",
+        "module": "Mathlib.Geometry.Manifold.VectorBundle.ContMDiffSection",
+        "match_kind": "exact"
+      },
+      "note": "`ContMDiffSection` is exactly a section `s : Π x, V x` (with `s.toFun` satisfying `proj ∘ s = id`) that is `C^n`; applied to `V = TangentSpace I` it is a vector field. Continuity of the projection makes the section condition `π ∘ s = id`."
+    },
+    {
+      "kind": "definition",
+      "label": "The set of vector fields is a module over the algebra of smooth functions",
+      "anchor": {
+        "section": "Vector fields",
+        "snippet": "takes on the structure of a module over the commutative algebra"
+      },
+      "provenance": "ai-agent1",
+      "status": "partial",
+      "mathlib": {
+        "decl": "ContMDiffSection.instModule",
+        "module": "Mathlib.Geometry.Manifold.VectorBundle.ContMDiffSection",
+        "match_kind": "special_case"
+      },
+      "note": "`ContMDiffSection.instModule` gives the module structure of sections over the scalar field `𝕜` (with scalar multiplication by `C^n` functions `ψ • s` also defined). The module structure over the full algebra `C^∞(M, 𝕜)` of smooth functions is not registered as an instance, so only the field-module structure is formalized."
+    },
+    {
+      "kind": "definition",
+      "label": "Definition of a local vector field (local section) and the sheaf they form",
+      "anchor": {
+        "section": "Vector fields",
+        "snippet": "A local vector field on"
+      },
+      "provenance": "ai-agent1",
+      "status": "partial",
+      "mathlib": {
+        "decl": "VectorField.mlieBracketWithin",
+        "module": "Mathlib.Geometry.Manifold.VectorField.LieBracket",
+        "match_kind": "generalization"
+      },
+      "note": "Local/within-a-set vector field notions appear (e.g. `mlieBracketWithin` for vector fields on a set), and local frames (`IsLocalFrameOn`) exist, but there is no `StructureSheaf`/sheaf-of-vector-fields object assembling local sections into a sheaf."
+    },
+    {
+      "kind": "definition",
+      "label": "Differential 1-forms as sections of the cotangent bundle",
+      "anchor": {
+        "section": "Vector fields",
+        "snippet": "are precisely the sections of the cotangent bundle"
+      },
+      "provenance": "ai-agent1",
+      "status": "partial",
+      "mathlib": {
+        "decl": "extDerivFun",
+        "module": "Mathlib.Geometry.Manifold.MFDeriv.NormedSpace",
+        "match_kind": "special_case"
+      },
+      "note": "A 1-form is represented as a section `Π x, TangentSpace I x →L[𝕜] 𝕜` of the (implicit) cotangent bundle; `extDerivFun g` produces the exterior derivative of a scalar function as such a section. There is no named `CotangentBundle` nor a general space of differential 1-forms / differential forms."
+    },
+    {
+      "kind": "definition",
+      "label": "Definition of the second-order tangent bundle",
+      "anchor": {
+        "section": "Higher-order tangent bundles",
+        "snippet": "the second-order tangent bundle can be defined via repeated application"
+      },
+      "provenance": "ai-agent1",
+      "status": "partial",
+      "mathlib": {
+        "decl": "TangentBundle",
+        "module": "Mathlib.Geometry.Manifold.IsManifold.Basic",
+        "match_kind": "generalization"
+      },
+      "note": "Since `TangentBundle I M` is itself a `C^n` manifold (via `IsManifold (IB.prod 𝓘(𝕜,F)) n (TotalSpace ...)` and model `I.tangent`), the double tangent bundle `TangentBundle I.tangent (TangentBundle I M)` is expressible, but there is no dedicated `SecondOrderTangentBundle` definition."
+    },
+    {
+      "kind": "definition",
+      "label": "Recursive definition of the k-th order tangent bundle",
+      "anchor": {
+        "section": "Higher-order tangent bundles",
+        "snippet": "th order tangent bundle"
+      },
+      "provenance": "ai-agent1",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No recursive/iterated k-th order tangent bundle definition in Mathlib; while iterating `TangentBundle` is in principle possible (each is again a manifold), the general indexed construction is not formalized."
+    },
+    {
+      "kind": "proposition",
+      "label": "Higher-order tangent bundles are domain and range for higher-order derivatives",
+      "anchor": {
+        "section": "Higher-order tangent bundles",
+        "snippet": "higher-order tangent bundles provide the domain and range for higher-order derivatives"
+      },
+      "provenance": "ai-agent1",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Not formalized as such. Higher-order derivatives of maps between manifolds are handled via iterated `mfderiv`/`mfderivWithin` and `ContMDiff`, not via maps between higher-order tangent bundles."
+    },
+    {
+      "kind": "definition",
+      "label": "Jet bundles as bundles of jets on a manifold",
+      "anchor": {
+        "section": "Higher-order tangent bundles",
+        "snippet": "are the jet bundles on a manifold"
+      },
+      "provenance": "ai-agent1",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No jet bundle definition in Mathlib; '1-jet' is mentioned only informally in docstrings (Mathlib.Geometry.Manifold.ContMDiffMFDeriv, .VectorBundle.CovariantDerivative.Basic), with no `JetBundle`/`Jet` object."
+    },
+    {
+      "kind": "definition",
+      "label": "Definition of the canonical vector field on the tangent bundle (diagonal map)",
+      "anchor": {
+        "section": "Canonical vector field on tangent bundle",
+        "snippet": "one can define a canonical vector field"
+      },
+      "provenance": "ai-agent1",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No canonical / Liouville / Euler vector field on the tangent bundle is defined. The only 'canonical' mention near tangent spaces refers to `NormedSpace.fromTangentSpace`, an unrelated identification."
+    },
+    {
+      "kind": "proposition",
+      "label": "The double tangent bundle is locally a product of a curved and a flat factor",
+      "anchor": {
+        "section": "Canonical vector field on tangent bundle",
+        "snippet": "Thus the tangent bundle of the tangent bundle is locally"
+      },
+      "provenance": "ai-agent1",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Not formalized. The double tangent bundle is expressible (TM is a manifold) but there is no result describing its local product structure (curved horizontal factor times flat vertical factor)."
+    },
+    {
+      "kind": "definition",
+      "label": "Local coordinate expression of the canonical vector field",
+      "anchor": {
+        "section": "Canonical vector field on tangent bundle",
+        "snippet": "the vector field has the expression"
+      },
+      "provenance": "ai-agent1",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Not formalized; depends on the canonical vector field, which is not defined in Mathlib."
+    },
+    {
+      "kind": "proposition",
+      "label": "Canonical vector field as derivative of scalar multiplication at t = 0",
+      "anchor": {
+        "section": "Canonical vector field on tangent bundle",
+        "snippet": "which is an alternative description of the canonical vector field"
+      },
+      "provenance": "ai-agent1",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Not formalized; the canonical vector field and its derivative-of-scaling description are absent from Mathlib."
+    },
+    {
+      "kind": "proposition",
+      "label": "Axiomatic characterization of the tangent bundle via the canonical vector field",
+      "anchor": {
+        "section": "Canonical vector field on tangent bundle",
+        "snippet": "can be characterized using 4 axioms"
+      },
+      "provenance": "ai-agent1",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Not formalized; no axiomatic characterization of the tangent bundle (via the canonical vector field or otherwise) exists in Mathlib."
+    },
+    {
+      "kind": "definition",
+      "label": "Tangent lift of a curve into the double tangent bundle",
+      "anchor": {
+        "section": "Lifts",
+        "snippet": "is a curve in"
+      },
+      "provenance": "ai-agent1",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No tangent-lift-of-a-curve construction. Mathlib has integral curves of vector fields (`Mathlib.Geometry.Manifold.IntegralCurve`) but not the lift of a curve into the double tangent bundle."
+    },
+    {
+      "kind": "definition",
+      "label": "Vertical lift of a function",
+      "anchor": {
+        "section": "Lifts",
+        "snippet": "The vertical lift of a function"
+      },
+      "provenance": "ai-agent1",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No vertical lift (of a function or vector field) defined in Mathlib."
+    },
+    {
+      "kind": "definition",
+      "label": "SMOKE2_HUMAN — preservation check",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "tangent bundle"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "TangentBundle",
+        "module": "Mathlib.Geometry.Manifold.IsManifold.Basic",
+        "match_kind": "exact"
+      },
+      "note": "Smoke2 human annotation — should survive verbatim.",
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "proposition",
+      "label": "SMOKE2_AI_MODERATED — carry-through check",
+      "anchor": {
+        "section": "Vector fields",
+        "snippet": "vector field"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "TangentSpace",
+        "module": "Mathlib.Geometry.Manifold.IsManifold.Basic",
+        "match_kind": "generalization"
+      },
+      "note": "Smoke2 ai-moderated annotation — provenance should NOT be downgraded by Agent 2.",
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "definition",
+      "label": "The tangent space at a point",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "where [MATH] denotes the tangent space to"
+      },
+      "provenance": "ai-agent1",
+      "status": "formalized",
+      "mathlib": {
+        "decl": "TangentSpace",
+        "module": "Mathlib.Geometry.Manifold.IsManifold.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`TangentSpace I x` is the fiber of the tangent bundle at `x : M`, defined as a type synonym for the model space `E` carrying the normed-space structure pulled back via the chart at `x`."
+    },
+    {
+      "kind": "definition",
+      "label": "Pointwise addition of vector fields",
+      "anchor": {
+        "section": "Vector fields",
+        "snippet": "Vector fields can be added together pointwise"
+      },
+      "provenance": "ai-agent1",
+      "status": "formalized",
+      "mathlib": {
+        "decl": "ContMDiffSection.instAdd",
+        "module": "Mathlib.Geometry.Manifold.VectorBundle.ContMDiffSection",
+        "match_kind": "exact"
+      },
+      "note": "Pointwise addition of `C^n` sections (including vector fields) is the `Add` instance on `ContMDiffSection`, with `(s + t) x = s x + t x` in the fiber `TangentSpace I x`."
+    },
+    {
+      "kind": "definition",
+      "label": "Scalar multiplication of a vector field by a smooth function",
+      "anchor": {
+        "section": "Vector fields",
+        "snippet": "and multiplied by smooth functions on M"
+      },
+      "provenance": "ai-agent1",
+      "status": "partial",
+      "mathlib": {
+        "decl": "ContMDiffSection.instSMul",
+        "module": "Mathlib.Geometry.Manifold.VectorBundle.ContMDiffSection",
+        "match_kind": "generalization"
+      },
+      "note": "Multiplication of a section by a smooth scalar function is available via the `SMul` action of `C^n` functions on `ContMDiffSection`, giving another `C^n` section/vector field; the full `C^∞(M,𝕜)`-module instance is not registered."
+    }
+  ]
+}

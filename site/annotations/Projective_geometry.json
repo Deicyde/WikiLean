@@ -1,0 +1,457 @@
+{
+  "slug": "Projective_geometry",
+  "wikipedia_title": "Projective geometry",
+  "display_title": "Projective geometry",
+  "schema_version": 3,
+  "annotation_style": "theorem_article",
+  "annotations": [
+    {
+      "kind": "definition",
+      "label": "Projective geometry (non-metrical)",
+      "anchor": {
+        "section": "Overview",
+        "snippet": "Projective geometry is an elementary non- metrical form of geometry"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Projectivization",
+        "module": "Mathlib.LinearAlgebra.Projectivization.Basic",
+        "match_kind": "generalization"
+      },
+      "note": "Mathlib formalizes the projectivization of a vector space, which provides a model of projective geometry, but does not articulate the broad non-metrical informal notion.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Duality in the projective plane",
+      "anchor": {
+        "section": "Overview",
+        "snippet": "The simplest illustration of duality is in the projective plane"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Configuration.ProjectivePlane.instProjectivePlaneDualDual",
+        "module": "Mathlib.Combinatorics.Configuration",
+        "match_kind": "exact"
+      },
+      "note": "The `ProjectivePlane (Dual L) (Dual P)` instance in Combinatorics/Configuration.lean witnesses point–line duality for projective planes.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Projective range",
+      "anchor": {
+        "section": "Description",
+        "snippet": "A projective range is the one-dimensional foundation"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Projectivization",
+        "module": "Mathlib.LinearAlgebra.Projectivization.Basic",
+        "match_kind": "generalization"
+      },
+      "note": "Mathlib has the projectivization of an arbitrary vector space (including 2-dim, giving a projective line) but no dedicated `ProjectiveRange` notion.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Desargues' Theorem and Pappus's hexagon theorem",
+      "anchor": {
+        "section": "Description",
+        "snippet": "Additional properties of fundamental importance include Desargues' Theorem"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No occurrence of `Desargues` or `Pappus` in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Line-field correspondence with point at infinity",
+      "anchor": {
+        "section": "Description",
+        "snippet": "the points of each line are in one-to-one correspondence with a given field"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has no statement giving an explicit bijection between a projective line and `K ∪ {∞}` (only the abstract `ℙ K (Fin 2 → K)` construction).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Fano plane PG(2,2)",
+      "anchor": {
+        "section": "Classification",
+        "snippet": "The smallest 2-dimensional projective geometry (that with the fewest points) is the Fano plane"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Grep for `Fano` returns no hits in Mathlib; only the generic `ProjectivePlane (ℙ K (Fin 3 → K))` instance over a field exists.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "PG(a,b) notation for finite projective geometry",
+      "anchor": {
+        "section": "Classification",
+        "snippet": "In standard notation, a finite projective geometry is written PG"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Projectivization",
+        "module": "Mathlib.LinearAlgebra.Projectivization.Basic",
+        "match_kind": "generalization"
+      },
+      "note": "Mathlib's `ℙ K V` covers the construction underlying PG(n,q) (taking `K = GF(q)` and `V = K^{n+1}`), but no dedicated PG(a,b) name/notation.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Elliptic incidence property",
+      "anchor": {
+        "section": "Classification",
+        "snippet": "The fundamental property that singles out all projective geometries is the elliptic incidence property"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Configuration.HasPoints.mkPoint",
+        "module": "Mathlib.Combinatorics.Configuration",
+        "match_kind": "exact"
+      },
+      "note": "The `HasPoints` typeclass (extended by `ProjectivePlane`) directly axiomatizes that every two distinct lines meet in a point.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Parallel postulates of elliptic, Euclidean, hyperbolic geometry",
+      "anchor": {
+        "section": "Classification",
+        "snippet": "The parallel properties of elliptic, Euclidean and hyperbolic geometries contrast as follows"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib does not formalize the trichotomy of parallel postulates across elliptic/Euclidean/hyperbolic geometries.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Principle of duality (Gergonne)",
+      "anchor": {
+        "section": "Duality",
+        "snippet": "Joseph Gergonne noted the principle of duality characterizing projective plane geometry"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Configuration.ProjectivePlane.instProjectivePlaneDualDual",
+        "module": "Mathlib.Combinatorics.Configuration",
+        "match_kind": "exact"
+      },
+      "note": "The duality instance shows that `Dual L`, `Dual P` is again a projective plane, formalizing Gergonne's duality principle.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Duality in 3 dimensions (points and planes)",
+      "anchor": {
+        "section": "Duality",
+        "snippet": "Similarly in 3 dimensions, the duality relation holds between points and planes"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib's duality results are for projective planes (Combinatorics/Configuration), not 3-dimensional point–plane duality.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Pascal's theorem",
+      "anchor": {
+        "section": "Duality",
+        "snippet": "If all six vertices of a hexagon lie on a conic"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Grep for `Pascal` finds only combinatorial identities (Vandermonde, choose sums); no projective Pascal's theorem in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Brianchon's theorem",
+      "anchor": {
+        "section": "Duality",
+        "snippet": "If all six sides of a hexagon are tangent to a conic"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No `Brianchon` occurrences in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Elliptic parallel axiom",
+      "anchor": {
+        "section": "Axioms of projective geometry",
+        "snippet": "Projective geometries are characterised by the"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Configuration.HasPoints",
+        "module": "Mathlib.Combinatorics.Configuration",
+        "match_kind": "exact"
+      },
+      "note": "Same content as the elliptic incidence property: `HasPoints` requires every two lines to share a point.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Whitehead's axioms G1, G2, G3",
+      "anchor": {
+        "section": "Whitehead's axioms",
+        "snippet": "These axioms are based on Whitehead"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Configuration.ProjectivePlane",
+        "module": "Mathlib.Combinatorics.Configuration",
+        "match_kind": "generalization"
+      },
+      "note": "Mathlib's `ProjectivePlane` class captures the spirit of Whitehead's axioms but is not labeled or split into G1/G2/G3.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Ternary collinearity axioms C0–C3",
+      "anchor": {
+        "section": "Axioms using a ternary relation",
+        "snippet": "One can pursue axiomatization by postulating a ternary relation"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No ternary-collinearity axiomatization of projective space exists in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Line via ternary relation",
+      "anchor": {
+        "section": "Axioms using a ternary relation",
+        "snippet": "For two distinct points, A and B, the line AB is defined as consisting of all points C"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Lines are not defined via a ternary collinearity relation anywhere in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Subspace defined recursively",
+      "anchor": {
+        "section": "Axioms using a ternary relation",
+        "snippet": "may thus be recursively defined in terms of the subspace"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Projectivization.Subspace",
+        "module": "Mathlib.LinearAlgebra.Projectivization.Subspace",
+        "match_kind": "generalization"
+      },
+      "note": "Mathlib defines projective `Subspace` via closure under projective addition (not by Wikipedia's recursive line-extension scheme).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Independence of a point set",
+      "anchor": {
+        "section": "Axioms using a ternary relation",
+        "snippet": "is a minimal generating subset for the subspace"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Projectivization.Independent",
+        "module": "Mathlib.LinearAlgebra.Projectivization.Independence",
+        "match_kind": "exact"
+      },
+      "note": "`Projectivization.Independent` formalizes independence of a family of projective points via linear independence of representatives.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Minimum dimension axioms L1–L4",
+      "anchor": {
+        "section": "Axioms using a ternary relation",
+        "snippet": "The minimum dimension is determined by the existence of an independent set of the required size"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No L1–L4 minimum-dimension axiom list in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Maximum dimension axioms M1–M3",
+      "anchor": {
+        "section": "Axioms using a ternary relation",
+        "snippet": "The maximum dimension may also be determined in a similar fashion"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No M1–M3 maximum-dimension axiom list in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "All coplanar lines intersect",
+      "anchor": {
+        "section": "Axioms using a ternary relation",
+        "snippet": "all coplanar lines intersect"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Configuration.HasPoints",
+        "module": "Mathlib.Combinatorics.Configuration",
+        "match_kind": "generalization"
+      },
+      "note": "`HasPoints` gives that any two lines (in the projective plane) intersect, capturing the coplanar case but not phrased relative to a coplanarity hypothesis.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Axioms P1, P2, P3 for projective planes",
+      "anchor": {
+        "section": "Axioms for projective planes",
+        "snippet": "An axiom system that achieves this is as follows"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Configuration.ProjectivePlane",
+        "module": "Mathlib.Combinatorics.Configuration",
+        "match_kind": "exact"
+      },
+      "note": "`ProjectivePlane` bundles the line-through-two-points, point-of-two-lines, and three-points-in-general-position axioms — matching P1/P2/P3.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Harmonic quadruple of points",
+      "anchor": {
+        "section": "Perspectivity and projectivity",
+        "snippet": "An harmonic quadruple of points on a line occurs when there is a complete quadrangle"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has no notion of a harmonic conjugate / harmonic quadruple in projective geometry.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Harmonic quadruples preserved by perspectivity",
+      "anchor": {
+        "section": "Perspectivity and projectivity",
+        "snippet": "Thus harmonic quadruples are preserved by perspectivity"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Neither harmonic quadruples nor perspectivities are defined in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Projectivity as composition of perspectivities",
+      "anchor": {
+        "section": "Perspectivity and projectivity",
+        "snippet": "The composition of two perspectivities is no longer a perspectivity, but a projectivity"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Grep for `perspectivity`/`projectivity` returns no projective-geometry definitions in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Steiner conic (projective conic)",
+      "anchor": {
+        "section": "Perspectivity and projectivity",
+        "snippet": "The set of such intersections is called a projective conic"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has no `Steiner` definition and no synthetic projective conic; `Conic`-named files in Mathlib refer to category-theoretic conical limits, not conics.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Pole and polar of a point with respect to a conic",
+      "anchor": {
+        "section": "Perspectivity and projectivity",
+        "snippet": "The line through the other two diagonal points is called the polar of P"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No pole/polar construction with respect to a conic is present in Mathlib.",
+      "provenance": "ai"
+    }
+  ]
+}

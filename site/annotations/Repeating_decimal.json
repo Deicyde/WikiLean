@@ -1,0 +1,1193 @@
+{
+  "slug": "Repeating_decimal",
+  "wikipedia_title": "Repeating decimal",
+  "display_title": "Repeating decimal",
+  "schema_version": 3,
+  "annotation_style": "theorem_article",
+  "annotations": [
+    {
+      "kind": "definition",
+      "label": "Repeating decimal",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "A repeating decimal or recurring decimal is a decimal representation of a number whose digits are eventually periodic"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has `Real.ofDigits`/`Real.digits` in `Mathlib/Analysis/Real/OfDigits.lean` for positional representations but no definition of an eventually-periodic decimal expansion.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Rational iff repeating or terminating",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "It can be shown that a number is rational if and only if its decimal representation is repeating or terminating"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No characterization of rationals via eventual periodicity of decimal digits appears in Mathlib's `Real.digits` development.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "1/3 = 0.333...",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "becomes periodic just after the decimal point"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No statement evaluating the decimal expansion of 1/3 to a constant digit sequence is present.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "3227/555 = 5.8144144...",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "A more complicated example is"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Specific worked numerical example not in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "593/53 repeats 13-digit pattern",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "Another example of this is"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Specific worked numerical example not in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Repetend / reptend",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "The finite digit sequence that is repeated infinitely is called the repetend or reptend"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Grepping for `reptend`/`repetend` returns no hits in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Terminating decimal as decimal fraction",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "Every terminating decimal representation can be written as a decimal fraction"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No notion of terminating decimal representation or its rewriting as a fraction over a power of 10 is formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Alternative repeating-9 representation",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "every number with a terminating decimal representation also trivially has a second, alternative representation as a repeating decimal whose repetend is the digit"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Real.ofDigits_const_last_eq_one",
+        "module": "Mathlib.Analysis.Real.OfDigits",
+        "match_kind": "special_case"
+      },
+      "note": "`Real.ofDigits_const_last_eq_one` formalizes the prototype `0.(b-1)... = 1` but not the general dual representation of arbitrary terminating decimals.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Irrational number",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "Any number that cannot be expressed as a ratio of two integers is said to be irrational"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Irrational",
+        "module": "Mathlib.NumberTheory.Real.Irrational",
+        "match_kind": "exact"
+      },
+      "note": "`Irrational x` is defined as `x ∉ Set.range ((↑) : ℚ → ℝ)` with companion `irrational_iff_ne_rational`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "5/74 long division",
+      "anchor": {
+        "section": "Decimal expansion and recurrence sequence",
+        "snippet": "In order to convert a rational number represented as a fraction into decimal form, one may use long division"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Long-division derivation of a specific decimal expansion is not present.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Remainder at step k formula",
+      "anchor": {
+        "section": "Decimal expansion and recurrence sequence",
+        "snippet": "For any integer fraction"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No recurrence formula `r_k = 10^k a mod b` for the long-division remainders is formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Finitely many remainders forces termination or repetition",
+      "anchor": {
+        "section": "Every rational number is either a terminating or repeating decimal",
+        "snippet": "For any given divisor, only finitely many different remainders can occur"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Pigeonhole-style argument for remainders of long division is not stated.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Division eventually repeats remainder",
+      "anchor": {
+        "section": "Every rational number is either a terminating or repeating decimal",
+        "snippet": "If 0 never occurs as a remainder, then the division process continues forever"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Base-10 repeating iff denominator has prime factor other than 2 or 5",
+      "anchor": {
+        "section": "Every rational number is either a terminating or repeating decimal",
+        "snippet": "a fraction has a repeating decimal if and only if in lowest terms"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No characterization of repeating vs terminating decimals via prime factors of the denominator.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Repeating decimal satisfies linear equation",
+      "anchor": {
+        "section": "Every repeating or terminating decimal is a rational number",
+        "snippet": "Each repeating decimal number satisfies a linear equation with integer coefficients, and its unique solution is a rational number"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Solve for 5.8144144...",
+      "anchor": {
+        "section": "Every repeating or terminating decimal is a rational number",
+        "snippet": "satisfies the equation"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Numerical worked example not in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Formal proof of rationality",
+      "anchor": {
+        "section": "Formal proof",
+        "snippet": "Multiplying by"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Repetend length equals order of 10 mod p",
+      "anchor": {
+        "section": "Fractions with prime denominators",
+        "snippet": "A fraction in lowest terms with a prime denominator other than 2 or 5"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "orderOf",
+        "module": "Mathlib.GroupTheory.OrderOfElement",
+        "match_kind": "invocation"
+      },
+      "note": "`orderOf` (e.g. for `(10 : ZMod p)`) exists, but no theorem ties it to a repetend length.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Digital root of repetend is 9",
+      "anchor": {
+        "section": "Fractions with prime denominators",
+        "snippet": "The base-10 digital root of the repetend of the reciprocal of any prime number greater than 5 is 9"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Cyclic number",
+      "anchor": {
+        "section": "Fractions with prime denominators",
+        "snippet": "If the repetend length of"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No `cyclicNumber` definition in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Cyclic fractions 1/7, 1/17, ...",
+      "anchor": {
+        "section": "Cyclic numbers",
+        "snippet": "Examples of fractions belonging to this group are"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Proper multiples are rotations",
+      "anchor": {
+        "section": "Cyclic numbers",
+        "snippet": "Every proper multiple of a cyclic number (that is, a multiple having the same number of digits) is a rotation"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Cyclic remainders in long division of 1/7",
+      "anchor": {
+        "section": "Cyclic numbers",
+        "snippet": "The reason for the cyclic behavior is apparent from an arithmetic exercise of long division"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Cyclic repetend splits into nines' complement halves",
+      "anchor": {
+        "section": "Cyclic numbers",
+        "snippet": "A fraction which is cyclic thus has a recurring decimal of even length that divides into two sequences in nines' complement form"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Rotated repetends increase",
+      "anchor": {
+        "section": "Cyclic numbers",
+        "snippet": "The rotation of the repetend of a cyclic number always happens in such a way that each successive repetend is a bigger number than the previous one"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Proper prime",
+      "anchor": {
+        "section": "Cyclic numbers",
+        "snippet": "A proper prime is a prime"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No `ProperPrime` definition in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Proper prime characterization",
+      "anchor": {
+        "section": "Cyclic numbers",
+        "snippet": "A prime is a proper prime if and only if it is a full reptend prime and congruent to 1 mod 10"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Full reptend safe prime gives pseudo-random digits",
+      "anchor": {
+        "section": "Cyclic numbers",
+        "snippet": "If a prime p is both full reptend prime and safe prime"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Non-cyclic reciprocals of primes",
+      "anchor": {
+        "section": "Other reciprocals of primes",
+        "snippet": "Some reciprocals of primes that do not generate cyclic numbers are"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Period from 10^(p-1) - 1 divisibility",
+      "anchor": {
+        "section": "Other reciprocals of primes",
+        "snippet": "The reason is that 3 is a divisor of 9, 11 is a divisor of 99"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Multiples of 1/13 form two repetend sets",
+      "anchor": {
+        "section": "Other reciprocals of primes",
+        "snippet": "Those reciprocals of primes can be associated with several sequences of repeating decimals"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Proper multiples of 1/p form n subsets",
+      "anchor": {
+        "section": "Other reciprocals of primes",
+        "snippet": "In general, the set of proper multiples of reciprocals of a prime"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Totient rule for repetend length",
+      "anchor": {
+        "section": "Totient rule",
+        "snippet": "For an arbitrary integer"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "ZMod.pow_totient",
+        "module": "Mathlib.FieldTheory.Finite.Basic",
+        "match_kind": "invocation"
+      },
+      "note": "Fermat-Euler `ZMod.pow_totient`/`Nat.ModEq.pow_totient` gives the divisibility underlying the totient rule, but the explicit application to repetend length is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Full repetend prime",
+      "anchor": {
+        "section": "Totient rule",
+        "snippet": "In particular, it follows that"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No `FullReptendPrime` definition exists; grep returns no hits.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "1/49 repeating decimal",
+      "anchor": {
+        "section": "Reciprocals of composite integers coprime to 10",
+        "snippet": "If p is a prime other than 2 or 5, the decimal representation of the fraction"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Carmichael's theorem on period of 1/p^2",
+      "anchor": {
+        "section": "Reciprocals of composite integers coprime to 10",
+        "snippet": "must be a factor of"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "ArithmeticFunction.carmichael",
+        "module": "Mathlib.NumberTheory.ArithmeticFunction.Carmichael",
+        "match_kind": "invocation"
+      },
+      "note": "The Carmichael (reduced totient) function is formalized in `ArithmeticFunction.carmichael`, but its specific use bounding the period of `1/p^k` is not.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Period of 1/p^2 is usually pT_p",
+      "anchor": {
+        "section": "Reciprocals of composite integers coprime to 10",
+        "snippet": "The period of"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Period of 1/p^k usually p^(k-1) T_p",
+      "anchor": {
+        "section": "Reciprocals of composite integers coprime to 10",
+        "snippet": "Similarly, the period of"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "1/119 period",
+      "anchor": {
+        "section": "Reciprocals of composite integers coprime to 10",
+        "snippet": "An example is"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Period of 1/pq is LCM of periods",
+      "anchor": {
+        "section": "Reciprocals of composite integers coprime to 10",
+        "snippet": "is LCM"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "General period formula for product of prime powers",
+      "anchor": {
+        "section": "Reciprocals of composite integers coprime to 10",
+        "snippet": "are positive integers, then"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Reciprocals not coprime to 10 are eventually periodic",
+      "anchor": {
+        "section": "Reciprocals of integers not coprime to 10",
+        "snippet": "An integer that is not coprime to 10 but has a prime factor other than 2 or 5 has a reciprocal that is eventually periodic"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Transient and repetend structure",
+      "anchor": {
+        "section": "Reciprocals of integers not coprime to 10",
+        "snippet": "An initial transient of max"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "1/28 = 0.03 571428",
+      "anchor": {
+        "section": "Reciprocals of integers not coprime to 10",
+        "snippet": "there are 2 initial non-repeating digits"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Converting repeating decimal to fraction",
+      "anchor": {
+        "section": "Converting repeating decimals to fractions",
+        "snippet": "Given a repeating decimal, it is possible to calculate the fraction that produces it"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Shortcut: repetend of n nines fraction",
+      "anchor": {
+        "section": "A shortcut",
+        "snippet": "So this particular repeating decimal corresponds to the fraction"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "General formula for n-digit period after decimal point",
+      "anchor": {
+        "section": "A shortcut",
+        "snippet": "It is possible to get a general formula expressing a repeating decimal with an"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Fraction with n-digit repeating block immediately after decimal",
+      "anchor": {
+        "section": "A shortcut",
+        "snippet": "If the repeating decimal is between 0 and 1, and the repeating block is"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "0.444... = 4/9 etc.",
+      "anchor": {
+        "section": "A shortcut",
+        "snippet": "since the repeating block is 4 (a 1-digit block)"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Add k zeros to denominator for k leading zeros",
+      "anchor": {
+        "section": "A shortcut",
+        "snippet": "If the repeating decimal is as above, except that there are"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "0.000444... = 4/9000",
+      "anchor": {
+        "section": "A shortcut",
+        "snippet": "since the repeating block is 4 and this block is preceded by 3 zeros"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Decompose any repeating decimal as sum",
+      "anchor": {
+        "section": "A shortcut",
+        "snippet": "Any repeating decimal not of the form described above can be written as a sum of a terminating decimal and a repeating decimal"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "1.23444... = 1111/900",
+      "anchor": {
+        "section": "A shortcut",
+        "snippet": "An even faster method is to ignore the decimal point completely"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Denominator is (10^n - 1) 10^k",
+      "anchor": {
+        "section": "A shortcut",
+        "snippet": "It follows that any repeating decimal with period"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Period is smallest n with d | 10^n - 1",
+      "anchor": {
+        "section": "A shortcut",
+        "snippet": "Conversely the period of the repeating decimal of a fraction"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Not formalized; this is morally `orderOf (10 : ZMod d)` but no statement links it to a repetend period.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Period of 2/7 is 6",
+      "anchor": {
+        "section": "A shortcut",
+        "snippet": "For example, the fraction"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Compressed form of generating fraction",
+      "anchor": {
+        "section": "In compressed form",
+        "snippet": "The following picture suggests kind of compression of the above shortcut"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Repeating decimal as geometric series",
+      "anchor": {
+        "section": "Repeating decimals as infinite series",
+        "snippet": "A repeating decimal can also be expressed as an infinite series"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "tsum_geometric_of_lt_one",
+        "module": "Mathlib.Analysis.SpecificLimits.Basic",
+        "match_kind": "invocation"
+      },
+      "note": "Geometric series sums (`tsum_geometric_of_lt_one`, etc.) are formalized but not specialised to summing a repeating digit block to a fraction.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Cyclically permuted integer 102564 × 4",
+      "anchor": {
+        "section": "Multiplication and cyclic permutation",
+        "snippet": "The cyclic behavior of repeating decimals in multiplication also leads to the construction of integers which are cyclically permuted when multiplied by certain numbers"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Period of 1/k is at most k - 1",
+      "anchor": {
+        "section": "Other properties of repetend lengths",
+        "snippet": "The period of"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Period of 1/p divides p - 1",
+      "anchor": {
+        "section": "Other properties of repetend lengths",
+        "snippet": "If p is prime, the period of"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "ZMod.pow_card_sub_one_eq_one",
+        "module": "Mathlib.FieldTheory.Finite.Basic",
+        "match_kind": "invocation"
+      },
+      "note": "Fermat's little theorem (e.g. `ZMod.pow_card_sub_one_eq_one`) implies `orderOf (10 : ZMod p) ∣ p-1`, but no statement frames this as a period of a decimal expansion.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Period of composite 1/k strictly less than k - 1",
+      "anchor": {
+        "section": "Other properties of repetend lengths",
+        "snippet": "If k is composite, the period of"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Period of c/k equals period of 1/k",
+      "anchor": {
+        "section": "Other properties of repetend lengths",
+        "snippet": "The period of"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Transient length and period for k = 2^a 5^b n",
+      "anchor": {
+        "section": "Other properties of repetend lengths",
+        "snippet": "then the length of the transient of"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Period of product of distinct primes",
+      "anchor": {
+        "section": "Other properties of repetend lengths",
+        "snippet": "are distinct primes, then the period of"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Period of 1/(k k') is LCM",
+      "anchor": {
+        "section": "Other properties of repetend lengths",
+        "snippet": "have no common prime factors other than 2 or 5"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Each digit appears h times in proper prime repetend",
+      "anchor": {
+        "section": "Other properties of repetend lengths",
+        "snippet": "If p is a proper prime ending in a 1"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Terminating sequence iff prime factors of denominator are factors of base",
+      "anchor": {
+        "section": "Extension to other bases",
+        "snippet": "A rational number has a terminating sequence if all the prime factors of the denominator of the fully reduced fractional form are also factors of the base"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Order homomorphism from strings to reals",
+      "anchor": {
+        "section": "Extension to other bases",
+        "snippet": "If the base is positive, then there exists an order homomorphism"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Real.ofDigits",
+        "module": "Mathlib.Analysis.Real.OfDigits",
+        "match_kind": "generalization"
+      },
+      "note": "`Real.ofDigits` maps digit sequences to reals and `Real.ofDigits_SurjOn` covers surjectivity onto `[0,1]`, but order-homomorphism properties on digit strings are not packaged.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Repetend length in arbitrary base",
+      "anchor": {
+        "section": "Extension to other bases",
+        "snippet": "A rational number has an indefinitely repeating sequence of finite length"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Irrational in arbitrary base",
+      "anchor": {
+        "section": "Extension to other bases",
+        "snippet": "An irrational number has a representation of infinite length that is not, from any point, an indefinitely repeating sequence of finite length"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib's `Irrational` is defined arithmetically (not in ℚ), not via non-eventually-periodic base-b digits.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Duodecimal expansions",
+      "anchor": {
+        "section": "Extension to other bases",
+        "snippet": "For example, in duodecimal"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Base shift identity",
+      "anchor": {
+        "section": "Extension to other bases",
+        "snippet": "If b is an integer base and k is an integer"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Algorithm for positive bases",
+      "anchor": {
+        "section": "Algorithm for positive bases",
+        "snippet": "there is the following algorithm producing the repetend together with its length"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Not formalized.",
+      "provenance": "ai"
+    }
+  ]
+}

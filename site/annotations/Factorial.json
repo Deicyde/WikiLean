@@ -1,0 +1,1263 @@
+{
+  "slug": "Factorial",
+  "wikipedia_title": "Factorial",
+  "display_title": "Factorial",
+  "schema_version": 3,
+  "annotation_style": "theorem_article",
+  "annotations": [
+    {
+      "kind": "definition",
+      "label": "Factorial (informal)",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "the factorial of a non-negative integer"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Nat.factorial",
+        "module": "Mathlib.Data.Nat.Factorial.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`Nat.factorial : ℕ → ℕ` is the standard factorial function on non-negative integers.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "(Lead)",
+          "snippet": "the factorial of a non-negative integer"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle {\\begin{aligned}n!&amp;=n\\times (n-1)\\times (n-2)\\times (n-3)\\times \\cdots \\times 3\\times 2\\times 1\\\\&amp;={\\begin{cases}1,&amp;{\\text{if }}n=0\\\\n\\times (n-1)!,&amp;{\\text{if }}n\\geq 1.\\end{cases}}\\\\\\end{aligned}}}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle 5!=5\\times 4!=5\\times 4\\times 3\\times 2\\times 1=120.}"
+        }
+      ]
+    },
+    {
+      "kind": "definition",
+      "label": "Zero factorial convention",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "The value of 0! is 1"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Nat.factorial_zero",
+        "module": "Mathlib.Data.Nat.Factorial.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`Nat.factorial_zero : 0! = 1` records the convention.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "(Lead)",
+          "snippet": "The value of 0! is 1"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle {\\begin{aligned}n!&amp;=n\\times (n-1)\\times (n-2)\\times (n-3)\\times \\cdots \\times 3\\times 2\\times 1\\\\&amp;={\\begin{cases}1,&amp;{\\text{if }}n=0\\\\n\\times (n-1)!,&amp;{\\text{if }}n\\geq 1.\\end{cases}}\\\\\\end{aligned}}}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle 5!=5\\times 4!=5\\times 4\\times 3\\times 2\\times 1=120.}"
+        }
+      ]
+    },
+    {
+      "kind": "definition",
+      "label": "Factorial function",
+      "anchor": {
+        "section": "Definition",
+        "snippet": "The factorial function of a positive integer"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Nat.factorial",
+        "module": "Mathlib.Data.Nat.Factorial.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`Nat.factorial` is defined recursively as `(n+1)! = (n+1) * n!`.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Definition",
+          "snippet": "The factorial function of a positive integer"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle n!=1\\cdot 2\\cdot 3\\cdots (n-2)\\cdot (n-1)\\cdot n.}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle n!=\\prod _{i=1}^{n}i.}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Factorial recurrence relation",
+      "anchor": {
+        "section": "Definition",
+        "snippet": "This leads to a recurrence relation"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Nat.factorial_succ",
+        "module": "Mathlib.Data.Nat.Factorial.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`Nat.factorial_succ : (n+1)! = (n+1) * n!` is the recurrence.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Definition",
+          "snippet": "This leads to a recurrence relation"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle n!=n\\cdot (n-1)!.}"
+        }
+      ]
+    },
+    {
+      "kind": "definition",
+      "label": "Factorial of zero",
+      "anchor": {
+        "section": "Factorial of zero",
+        "snippet": "There are several motivations for this definition"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Nat.factorial_zero",
+        "module": "Mathlib.Data.Nat.Factorial.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`Nat.factorial_zero : 0! = 1` is the formalized convention.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Counting permutations",
+      "anchor": {
+        "section": "Applications",
+        "snippet": "different ways of arranging"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Fintype.card_perm",
+        "module": "Mathlib.Data.Fintype.Perm",
+        "match_kind": "exact"
+      },
+      "note": "`Fintype.card_perm : Fintype.card (Perm α) = (Fintype.card α)!` counts permutations of an n-element set.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Applications",
+          "snippet": "different ways of arranging"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle {\\binom {n}{k}}={\\frac {n!}{k!(n-k)!}}.}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Binomial coefficients via factorials",
+      "anchor": {
+        "section": "Applications",
+        "snippet": "For instance the binomial coefficients"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Nat.choose_mul_factorial_mul_factorial",
+        "module": "Mathlib.Data.Nat.Choose.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`Nat.choose_mul_factorial_mul_factorial` and `Nat.choose_eq_factorial_div_factorial` express binomial coefficients in terms of factorials.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Applications",
+          "snippet": "For instance the binomial coefficients"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle {\\binom {n}{k}}={\\frac {n!}{k!(n-k)!}}.}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Stirling numbers of the first kind sum to factorials",
+      "anchor": {
+        "section": "Applications",
+        "snippet": "The Stirling numbers of the first kind sum to the factorials"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Nat.stirlingFirst",
+        "module": "Mathlib.Combinatorics.Enumerative.Stirling",
+        "match_kind": null
+      },
+      "note": "Stirling numbers of the first kind are defined as `Nat.stirlingFirst`, but the identity `∑ k, stirlingFirst n k = n!` is not stated in the file.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Applications",
+          "snippet": "The Stirling numbers of the first kind sum to the factorials"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle {\\binom {n}{k}}={\\frac {n!}{k!(n-k)!}}.}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Counting derangements",
+      "anchor": {
+        "section": "Applications",
+        "snippet": "Another combinatorial application is in counting derangements"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "numDerangements",
+        "module": "Mathlib.Combinatorics.Derangements.Finite",
+        "match_kind": "exact"
+      },
+      "note": "`numDerangements` counts derangements with `card_derangements_eq_numDerangements` linking it to `Fintype.card (derangements (Fin n))`.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Applications",
+          "snippet": "Another combinatorial application is in counting derangements"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle {\\binom {n}{k}}={\\frac {n!}{k!(n-k)!}}.}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Factorials are orders of symmetric groups",
+      "anchor": {
+        "section": "Applications",
+        "snippet": "the factorials are the orders of finite symmetric groups"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Fintype.card_perm",
+        "module": "Mathlib.Data.Fintype.Perm",
+        "match_kind": "exact"
+      },
+      "note": "`Fintype.card_perm` gives `|Perm α| = (card α)!`, the order of the symmetric group.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Applications",
+          "snippet": "the factorials are the orders of finite symmetric groups"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle e^{x}=1+{\\frac {x}{1}}+{\\frac {x^{2}}{2}}+{\\frac {x^{3}}{6}}+\\cdots =\\sum _{k=0}^{\\infty }{\\frac {x^{k}}{k!}},}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\sum _{k=0}^{\\infty }{\\frac {x^{k}n_{k}}{k!}}.}"
+        }
+      ]
+    },
+    {
+      "kind": "definition",
+      "label": "Exponential generating function",
+      "anchor": {
+        "section": "Applications",
+        "snippet": "the exponential generating function"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has `NormedSpace.exp_eq_tsum` and power-series infrastructure but no general definition of an exponential generating function as such.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Applications",
+          "snippet": "the exponential generating function"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle e^{x}=1+{\\frac {x}{1}}+{\\frac {x^{2}}{2}}+{\\frac {x^{3}}{6}}+\\cdots =\\sum _{k=0}^{\\infty }{\\frac {x^{k}}{k!}},}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\sum _{k=0}^{\\infty }{\\frac {x^{k}n_{k}}{k!}}.}"
+        }
+      ]
+    },
+    {
+      "kind": "theorem",
+      "label": "Euclid's theorem (infinitude of primes)",
+      "anchor": {
+        "section": "Applications",
+        "snippet": "leading to a proof of Euclid's theorem"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Nat.exists_infinite_primes",
+        "module": "Mathlib.Data.Nat.Prime.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`Nat.exists_infinite_primes` gives a prime above any bound, expressing the infinitude of primes.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Factorial prime",
+      "anchor": {
+        "section": "Applications",
+        "snippet": "it is called a factorial prime"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No grep hits for any definition of factorial prime in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Brocard's problem",
+      "anchor": {
+        "section": "Applications",
+        "snippet": "Brocard's problem"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No mention of Brocard's problem found in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Arbitrarily large prime gaps",
+      "anchor": {
+        "section": "Applications",
+        "snippet": "proving the existence of arbitrarily large prime gaps"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No grep hits for `prime_gap` or related results on arbitrarily large prime gaps.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Bertrand's postulate",
+      "anchor": {
+        "section": "Applications",
+        "snippet": "An elementary proof of Bertrand's postulate"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Nat.exists_prime_lt_and_le_two_mul",
+        "module": "Mathlib.NumberTheory.Bertrand",
+        "match_kind": "exact"
+      },
+      "note": "Bertrand's postulate is proved as `Nat.exists_prime_lt_and_le_two_mul` (aliased `bertrand`).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Factorial number system",
+      "anchor": {
+        "section": "Applications",
+        "snippet": "The factorial number system is a mixed radix notation"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No `factorialNumber` or factorial-base numeral system found in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Growth rate of factorial",
+      "anchor": {
+        "section": "Growth and approximation",
+        "snippet": "the factorial has faster than exponential growth"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Nat.eventually_pow_lt_factorial_sub",
+        "module": "Mathlib.Order.Filter.AtTopBot.Finite",
+        "match_kind": "exact"
+      },
+      "note": "`Nat.eventually_pow_lt_factorial_sub` (and `FloorSemiring.tendsto_pow_div_factorial_atTop`) express that `c^n` is eventually dominated by `n!`.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Growth and approximation",
+          "snippet": "the factorial has faster than exponential growth"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\ln n!=\\sum _{x=1}^{n}\\ln x\\approx \\int _{1}^{n}\\ln x\\,dx=n\\ln n-n+1.}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle n!\\sim {\\sqrt {2\\pi n}}\\left({\\frac {n}{e}}\\right)^{n}\\,.}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle n!\\sim {\\sqrt {2\\pi n}}\\left({\\frac {n}{e}}\\right)^{n}\\left(1+{\\frac {1}{12n}}+{\\frac {1}{288n^{2}}}-{\\frac {139}{51840n^{3}}}-{\\frac {571}{2488320n^{4}}}+\\cdots \\right).}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle n!\\sim {\\sqrt {2\\pi n}}\\left({\\frac {n}{e}}\\right)^{n}\\exp \\left({\\frac {1}{12n}}-{\\frac {1}{360n^{3}}}+{\\frac {1}{1260n^{5}}}-{\\frac {1}{1680n^{7}}}+\\cdots \\right).}"
+        }
+      ]
+    },
+    {
+      "kind": "theorem",
+      "label": "Stirling's approximation",
+      "anchor": {
+        "section": "Growth and approximation",
+        "snippet": "The result of these corrections is Stirling's approximation"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Stirling.tendsto_stirlingSeq_sqrt_pi",
+        "module": "Mathlib.Analysis.SpecialFunctions.Stirling",
+        "match_kind": "exact"
+      },
+      "note": "Stirling's formula `n! ~ √(2πn)(n/e)^n` is proved in `Mathlib.Analysis.SpecialFunctions.Stirling`.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Growth and approximation",
+          "snippet": "The result of these corrections is Stirling's approximation"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\ln n!=\\sum _{x=1}^{n}\\ln x\\approx \\int _{1}^{n}\\ln x\\,dx=n\\ln n-n+1.}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle n!\\sim {\\sqrt {2\\pi n}}\\left({\\frac {n}{e}}\\right)^{n}\\,.}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle n!\\sim {\\sqrt {2\\pi n}}\\left({\\frac {n}{e}}\\right)^{n}\\left(1+{\\frac {1}{12n}}+{\\frac {1}{288n^{2}}}-{\\frac {139}{51840n^{3}}}-{\\frac {571}{2488320n^{4}}}+\\cdots \\right).}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle n!\\sim {\\sqrt {2\\pi n}}\\left({\\frac {n}{e}}\\right)^{n}\\exp \\left({\\frac {1}{12n}}-{\\frac {1}{360n^{3}}}+{\\frac {1}{1260n^{5}}}-{\\frac {1}{1680n^{7}}}+\\cdots \\right).}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Binary logarithm of the factorial",
+      "anchor": {
+        "section": "Growth and approximation",
+        "snippet": "The binary logarithm of the factorial"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No specific results about `Nat.log 2 n!` or the binary logarithm of factorials were found.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Growth and approximation",
+          "snippet": "The binary logarithm of the factorial"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\log _{2}n!=n\\log _{2}n-n\\log _{2}e+{\\frac {1}{2}}\\log _{2}n+O(1).}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Divisibility of n! by primes up to n",
+      "anchor": {
+        "section": "Divisibility and digits",
+        "snippet": "is divisible by all prime numbers that are at most"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Nat.dvd_factorial",
+        "module": "Mathlib.Data.Nat.Factorial.Basic",
+        "match_kind": "generalization"
+      },
+      "note": "`Nat.dvd_factorial : 0 < m → m ≤ n → m ∣ n!` gives the divisibility for any m ≤ n, including primes.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Divisibility and digits",
+          "snippet": "is divisible by all prime numbers that are at most"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\sum _{i=1}^{\\infty }\\left\\lfloor {\\frac {n}{p^{i}}}\\right\\rfloor ={\\frac {n-s_{p}(n)}{p-1}}.}"
+        }
+      ]
+    },
+    {
+      "kind": "theorem",
+      "label": "Legendre's formula",
+      "anchor": {
+        "section": "Divisibility and digits",
+        "snippet": "More precise information about its divisibility is given by Legendre's formula"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Nat.Prime.emultiplicity_factorial",
+        "module": "Mathlib.Data.Nat.Multiplicity",
+        "match_kind": "exact"
+      },
+      "note": "Legendre's theorem is formalized as `Nat.Prime.emultiplicity_factorial`, with a `padicValNat` version `padicValNat_factorial`.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Divisibility and digits",
+          "snippet": "More precise information about its divisibility is given by Legendre's formula"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\sum _{i=1}^{\\infty }\\left\\lfloor {\\frac {n}{p^{i}}}\\right\\rfloor ={\\frac {n-s_{p}(n)}{p-1}}.}"
+        }
+      ]
+    },
+    {
+      "kind": "theorem",
+      "label": "Kummer's theorem",
+      "anchor": {
+        "section": "Divisibility and digits",
+        "snippet": "produces Kummer's theorem"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Nat.Prime.emultiplicity_choose",
+        "module": "Mathlib.Data.Nat.Multiplicity",
+        "match_kind": "exact"
+      },
+      "note": "Kummer's theorem on the p-adic valuation of `n.choose k` is in `Mathlib.Data.Nat.Multiplicity` as `Nat.Prime.emultiplicity_choose`.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Divisibility and digits",
+          "snippet": "produces Kummer's theorem"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\sum _{i=1}^{\\infty }\\left\\lfloor {\\frac {n}{p^{i}}}\\right\\rfloor ={\\frac {n-s_{p}(n)}{p-1}}.}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Trailing zeros of factorials",
+      "anchor": {
+        "section": "Divisibility and digits",
+        "snippet": "the number of trailing zeros in the decimal representation"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Nat.Prime.emultiplicity_factorial",
+        "module": "Mathlib.Data.Nat.Multiplicity",
+        "match_kind": null
+      },
+      "note": "Legendre's formula computes the 5-adic valuation of n!, but no specific lemma about decimal trailing zeros of factorials was found.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Leading digits follow Benford's law",
+      "anchor": {
+        "section": "Divisibility and digits",
+        "snippet": "The leading digits of the factorials are distributed according to Benford's law"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Benford's law is not formalized in Mathlib (no `Benford` hits).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Wilson's theorem",
+      "anchor": {
+        "section": "Divisibility and digits",
+        "snippet": "Another result on divisibility of factorials, Wilson's theorem"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Nat.prime_iff_fac_equiv_neg_one",
+        "module": "Mathlib.NumberTheory.Wilson",
+        "match_kind": "exact"
+      },
+      "note": "Wilson's theorem `(n-1)! ≡ -1 [MOD n] ↔ n prime` is proved in `Mathlib.NumberTheory.Wilson`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Kempner function",
+      "anchor": {
+        "section": "Divisibility and digits",
+        "snippet": "the Kempner function of"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No grep hits for Kempner function in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Product of factorials divides factorial of sum",
+      "anchor": {
+        "section": "Divisibility and digits",
+        "snippet": "The product of two factorials"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Nat.factorial_mul_factorial_dvd_factorial_add",
+        "module": "Mathlib.Data.Nat.Choose.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`Nat.factorial_mul_factorial_dvd_factorial_add : i! * j! ∣ (i+j)!` directly states this, generalized by `Nat.prod_factorial_dvd_factorial_sum`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Factorials as products of other factorials",
+      "anchor": {
+        "section": "Divisibility and digits",
+        "snippet": "There are infinitely many factorials that equal the product of other factorials"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No formalization found of the statement that there are infinitely many factorials equal to products of other factorials.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "GCD of primitive polynomial values divides n!",
+      "anchor": {
+        "section": "Divisibility and digits",
+        "snippet": "The greatest common divisor of the values of a primitive polynomial"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No grep hits for this Bhargava-style result on GCDs of primitive polynomial values dividing n!.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Gamma function (integral definition)",
+      "anchor": {
+        "section": "Continuous interpolation and non-integer generalization",
+        "snippet": "which can be defined for positive real numbers as the integral"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Real.Gamma_eq_integral",
+        "module": "Mathlib.Analysis.SpecialFunctions.Gamma.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`Real.Gamma_eq_integral` (and `Complex.Gamma_eq_integral`) state Γ(s) equals Euler's integral for positive real s.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Continuous interpolation and non-integer generalization",
+          "snippet": "which can be defined for positive real numbers as the integral"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\Gamma (z)=\\int _{0}^{\\infty }x^{z-1}e^{-x}\\,dx.}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle n!=\\Gamma (n+1),}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\Gamma (n)=(n-1)\\Gamma (n-1),}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Gamma function functional equation",
+      "anchor": {
+        "section": "Continuous interpolation and non-integer generalization",
+        "snippet": "the gamma function obeys the functional equation"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Complex.Gamma_add_one",
+        "module": "Mathlib.Analysis.SpecialFunctions.Gamma.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`Complex.Gamma_add_one : Γ(s+1) = s·Γ(s)` and its real version are formalized.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Continuous interpolation and non-integer generalization",
+          "snippet": "the gamma function obeys the functional equation"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\Gamma (z)=\\int _{0}^{\\infty }x^{z-1}e^{-x}\\,dx.}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle n!=\\Gamma (n+1),}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\Gamma (n)=(n-1)\\Gamma (n-1),}"
+        }
+      ]
+    },
+    {
+      "kind": "theorem",
+      "label": "Euler's reflection formula",
+      "anchor": {
+        "section": "Continuous interpolation and non-integer generalization",
+        "snippet": "Euler's reflection formula"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Complex.Gamma_mul_Gamma_one_sub",
+        "module": "Mathlib.Analysis.SpecialFunctions.Gamma.Beta",
+        "match_kind": "exact"
+      },
+      "note": "`Complex.Gamma_mul_Gamma_one_sub : Γ(z)·Γ(1-z) = π/sin(πz)` is Euler's reflection formula.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Continuous interpolation and non-integer generalization",
+          "snippet": "Euler's reflection formula"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\Gamma (z)\\Gamma (1-z)={\\frac {\\pi }{\\sin \\pi z}}.}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Meromorphic continuation of gamma function",
+      "anchor": {
+        "section": "Continuous interpolation and non-integer generalization",
+        "snippet": "The result of this extension process is an analytic function"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Complex.differentiableAt_Gamma",
+        "module": "Mathlib.Analysis.SpecialFunctions.Gamma.Deriv",
+        "match_kind": "exact"
+      },
+      "note": "`Complex.differentiableAt_Gamma` shows Γ is complex-differentiable away from non-positive integers; combined with `Complex.Gamma_add_one` this gives the meromorphic continuation.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Continuous interpolation and non-integer generalization",
+          "snippet": "The result of this extension process is an analytic function"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\Gamma (z)\\Gamma (1-z)={\\frac {\\pi }{\\sin \\pi z}}.}"
+        }
+      ]
+    },
+    {
+      "kind": "theorem",
+      "label": "Bohr–Mollerup theorem",
+      "anchor": {
+        "section": "Continuous interpolation and non-integer generalization",
+        "snippet": "Bohr–Mollerup theorem"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Real.eq_Gamma_of_log_convex",
+        "module": "Mathlib.Analysis.SpecialFunctions.Gamma.BohrMollerup",
+        "match_kind": "exact"
+      },
+      "note": "The Bohr–Mollerup characterization of Γ via log-convexity is formalized as `Real.eq_Gamma_of_log_convex`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Wielandt's uniqueness theorem",
+      "anchor": {
+        "section": "Continuous interpolation and non-integer generalization",
+        "snippet": "A related uniqueness theorem of Helmut Wielandt"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Wielandt's uniqueness theorem for the Gamma function is not formalized in Mathlib (no matching decl).",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Continuous interpolation and non-integer generalization",
+          "snippet": "A related uniqueness theorem of Helmut Wielandt"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\Gamma (z)\\Gamma (1-z)={\\frac {\\pi }{\\sin \\pi z}}.}"
+        }
+      ]
+    },
+    {
+      "kind": "definition",
+      "label": "Hadamard's gamma function",
+      "anchor": {
+        "section": "Continuous interpolation and non-integer generalization",
+        "snippet": "Hadamard's gamma function"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No grep hits for Hadamard's gamma function in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "p-adic gamma function",
+      "anchor": {
+        "section": "Continuous interpolation and non-integer generalization",
+        "snippet": "the p -adic gamma function provides a continuous interpolation"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No padic gamma function found in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Digamma function",
+      "anchor": {
+        "section": "Continuous interpolation and non-integer generalization",
+        "snippet": "The digamma function is the logarithmic derivative of the gamma function"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Complex.digamma",
+        "module": "Mathlib.Analysis.SpecialFunctions.Gamma.Digamma",
+        "match_kind": "exact"
+      },
+      "note": "`Complex.digamma := logDeriv Gamma` is the logarithmic derivative of the Gamma function.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Alternating factorial",
+      "anchor": {
+        "section": "Related sequences and functions",
+        "snippet": "The alternating factorial is the absolute value of the alternating sum"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No alternating factorial defined in Mathlib.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Related sequences and functions",
+          "snippet": "The alternating factorial is the absolute value of the alternating sum"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle (2k-1)!!=\\prod _{i=1}^{k}(2i-1)={\\frac {(2k)!}{2^{k}k!}}.}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle 4^{3^{2^{1}}}=262144.}"
+        }
+      ]
+    },
+    {
+      "kind": "definition",
+      "label": "Bhargava factorials",
+      "anchor": {
+        "section": "Related sequences and functions",
+        "snippet": "The Bhargava factorials are a family of integer sequences"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No Bhargava factorials in Mathlib.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Related sequences and functions",
+          "snippet": "The Bhargava factorials are a family of integer sequences"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle (2k-1)!!=\\prod _{i=1}^{k}(2i-1)={\\frac {(2k)!}{2^{k}k!}}.}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle 4^{3^{2^{1}}}=262144.}"
+        }
+      ]
+    },
+    {
+      "kind": "definition",
+      "label": "Double factorial",
+      "anchor": {
+        "section": "Related sequences and functions",
+        "snippet": "is called the double factorial of"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Nat.doubleFactorial",
+        "module": "Mathlib.Data.Nat.Factorial.DoubleFactorial",
+        "match_kind": "exact"
+      },
+      "note": "`Nat.doubleFactorial` is the double factorial with notation `n‼`.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Related sequences and functions",
+          "snippet": "is called the double factorial of"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle (2k-1)!!=\\prod _{i=1}^{k}(2i-1)={\\frac {(2k)!}{2^{k}k!}}.}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle 4^{3^{2^{1}}}=262144.}"
+        }
+      ]
+    },
+    {
+      "kind": "example",
+      "label": "Double factorial of 9",
+      "anchor": {
+        "section": "Related sequences and functions",
+        "snippet": "For example, 9!! = 1 × 3 × 5 × 7 × 9 = 945"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Nat.doubleFactorial",
+        "module": "Mathlib.Data.Nat.Factorial.DoubleFactorial",
+        "match_kind": null
+      },
+      "note": "`Nat.doubleFactorial` is defined and `9‼ = 945` is decidable, but no specific lemma stating this value is present.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Related sequences and functions",
+          "snippet": "For example, 9!! = 1 × 3 × 5 × 7 × 9 = 945"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle (2k-1)!!=\\prod _{i=1}^{k}(2i-1)={\\frac {(2k)!}{2^{k}k!}}.}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle 4^{3^{2^{1}}}=262144.}"
+        }
+      ]
+    },
+    {
+      "kind": "definition",
+      "label": "Exponential factorial",
+      "anchor": {
+        "section": "Related sequences and functions",
+        "snippet": "The exponential factorial is defined recursively"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No exponential factorial defined in Mathlib.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Related sequences and functions",
+          "snippet": "The exponential factorial is defined recursively"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle (2k-1)!!=\\prod _{i=1}^{k}(2i-1)={\\frac {(2k)!}{2^{k}k!}}.}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle 4^{3^{2^{1}}}=262144.}"
+        }
+      ]
+    },
+    {
+      "kind": "definition",
+      "label": "Falling factorial",
+      "anchor": {
+        "section": "Related sequences and functions",
+        "snippet": "This is also known as a falling factorial"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Nat.descFactorial",
+        "module": "Mathlib.Data.Nat.Factorial.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`Nat.descFactorial` is the falling factorial (and `Nat.ascFactorial` is the ascending version).",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Related sequences and functions",
+          "snippet": "This is also known as a falling factorial"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle (2k-1)!!=\\prod _{i=1}^{k}(2i-1)={\\frac {(2k)!}{2^{k}k!}}.}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle 4^{3^{2^{1}}}=262144.}"
+        }
+      ]
+    },
+    {
+      "kind": "definition",
+      "label": "Hyperfactorial",
+      "anchor": {
+        "section": "Related sequences and functions",
+        "snippet": "The hyperfactorial of"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has `Nat.superFactorial` (product of factorials), but the hyperfactorial `∏ k^k` is not defined.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Related sequences and functions",
+          "snippet": "The hyperfactorial of"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle (2k-1)!!=\\prod _{i=1}^{k}(2i-1)={\\frac {(2k)!}{2^{k}k!}}.}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle 4^{3^{2^{1}}}=262144.}"
+        }
+      ]
+    },
+    {
+      "kind": "definition",
+      "label": "Jordan–Pólya numbers",
+      "anchor": {
+        "section": "Related sequences and functions",
+        "snippet": "The Jordan–Pólya numbers are the products of factorials"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No Jordan–Pólya numbers defined in Mathlib.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Related sequences and functions",
+          "snippet": "The Jordan–Pólya numbers are the products of factorials"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle (2k-1)!!=\\prod _{i=1}^{k}(2i-1)={\\frac {(2k)!}{2^{k}k!}}.}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle 4^{3^{2^{1}}}=262144.}"
+        }
+      ]
+    },
+    {
+      "kind": "definition",
+      "label": "Primorial",
+      "anchor": {
+        "section": "Related sequences and functions",
+        "snippet": "is the product of prime numbers less than or equal to"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "primorial",
+        "module": "Mathlib.NumberTheory.Primorial",
+        "match_kind": "exact"
+      },
+      "note": "`primorial n := ∏ p ∈ range (n+1) with p.Prime, p` with notation `n#` is in `Mathlib.NumberTheory.Primorial`.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Related sequences and functions",
+          "snippet": "is the product of prime numbers less than or equal to"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle (2k-1)!!=\\prod _{i=1}^{k}(2i-1)={\\frac {(2k)!}{2^{k}k!}}.}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle 4^{3^{2^{1}}}=262144.}"
+        }
+      ]
+    },
+    {
+      "kind": "definition",
+      "label": "Subfactorial",
+      "anchor": {
+        "section": "Related sequences and functions",
+        "snippet": "The subfactorial yields the number of derangements"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "numDerangements",
+        "module": "Mathlib.Combinatorics.Derangements.Finite",
+        "match_kind": "exact"
+      },
+      "note": "The subfactorial !n is formalized as `numDerangements n`, counting derangements of an n-element set.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Related sequences and functions",
+          "snippet": "The subfactorial yields the number of derangements"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle (2k-1)!!=\\prod _{i=1}^{k}(2i-1)={\\frac {(2k)!}{2^{k}k!}}.}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle 4^{3^{2^{1}}}=262144.}"
+        }
+      ]
+    },
+    {
+      "kind": "definition",
+      "label": "Superfactorial",
+      "anchor": {
+        "section": "Related sequences and functions",
+        "snippet": "The superfactorial of"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Nat.superFactorial",
+        "module": "Mathlib.Data.Nat.Factorial.SuperFactorial",
+        "match_kind": "exact"
+      },
+      "note": "`Nat.superFactorial n = ∏ k≤n, k!` with notation `sf n`.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Related sequences and functions",
+          "snippet": "The superfactorial of"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle (2k-1)!!=\\prod _{i=1}^{k}(2i-1)={\\frac {(2k)!}{2^{k}k!}}.}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle 4^{3^{2^{1}}}=262144.}"
+        }
+      ]
+    },
+    {
+      "kind": "definition",
+      "label": "Termial (triangular number)",
+      "anchor": {
+        "section": "Related sequences and functions",
+        "snippet": "Donald Knuth has proposed the name termial"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No `termial` defined in Mathlib (though triangular numbers can be expressed as `Finset.sum_range_id`).",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Related sequences and functions",
+          "snippet": "Donald Knuth has proposed the name termial"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle (2k-1)!!=\\prod _{i=1}^{k}(2i-1)={\\frac {(2k)!}{2^{k}k!}}.}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle 4^{3^{2^{1}}}=262144.}"
+        }
+      ]
+    }
+  ]
+}

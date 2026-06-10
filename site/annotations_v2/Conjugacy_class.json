@@ -1,0 +1,90 @@
+{
+  "slug": "Conjugacy_class",
+  "wikipedia_title": "Conjugacy class",
+  "display_title": "Conjugacy class",
+  "schema_version": 1,
+  "source": "claude-agent-sdk/annotate_articles.py",
+  "annotations": [
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\operatorname {Cl} (a)=\\left\\{gag^{-1}:g\\in G\\right\\}}"
+      },
+      "status": "formalized",
+      "decl": "conjugatesOf",
+      "module": "Mathlib.Algebra.Group.Conj",
+      "note": "`conjugatesOf a` is exactly the set of conjugates of `a`."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle {\\frac {n!}{\\left(k_{1}!\\,m_{1}^{k_{1}}\\right)\\left(k_{2}!\\,m_{2}^{k_{2}}\\right)\\cdots \\left(k_{s}!\\,m_{s}^{k_{s}}\\right)}}.}"
+      },
+      "status": "formalized",
+      "decl": "Equiv.Perm.card_isConj_eq",
+      "module": "Mathlib.GroupTheory.Perm.Centralizer",
+      "note": "Gives the cardinality of a conjugacy class in `Sₙ` from its cycle type."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle g\\cdot x:=gxg^{-1}.}"
+      },
+      "section": "Conjugation as a group action, centralizers, and the class equation",
+      "status": "formalized",
+      "decl": "ConjAct",
+      "module": "Mathlib.GroupTheory.GroupAction.ConjAct",
+      "note": "`ConjAct G` is the type alias making `G` act on itself by conjugation."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle bab^{-1}=cac^{-1}\\Longleftrightarrow \\left(c^{-1}b\\right)a=a\\left(c^{-1}b\\right)\\Longleftrightarrow z=c^{-1}b\\in \\operatorname {C} _{G}(a).}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Proof intermediate inside the orbit–stabilizer argument; not a standalone Mathlib lemma."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle |G|=\\sum _{i}\\left[G:\\operatorname {C} _{G}(x_{i})\\right].}"
+      },
+      "status": "formalized",
+      "decl": "sum_conjClasses_card_eq_card",
+      "module": "Mathlib.GroupTheory.ClassEquation",
+      "note": "Sum of conjugacy-class cardinalities equals |G|; class sizes are indices of centralizers."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle |G|=|{\\operatorname {Z} (G)}|+\\sum _{i}\\left[G:\\operatorname {C} _{G}(x_{i})\\right],}"
+      },
+      "status": "formalized",
+      "decl": "Group.nat_card_center_add_sum_card_noncenter_eq_card",
+      "module": "Mathlib.GroupTheory.ClassEquation",
+      "note": "This is exactly the class equation as stated in Mathlib."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle g\\cdot S:=gSg^{-1}.}"
+      },
+      "status": "partial",
+      "decl": "ConjAct",
+      "module": "Mathlib.GroupTheory.GroupAction.ConjAct",
+      "note": "Conjugation on subsets/subgroups arises from `ConjAct G`'s pointwise action; no separately named definition."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle |{\\operatorname {Cl} (S)}|=[G:N(S)].}"
+      },
+      "status": "partial",
+      "decl": "MulAction.index_stabilizer",
+      "module": "Mathlib.GroupTheory.Index",
+      "note": "Follows from generic orbit–stabilizer (`index_stabilizer`) since the stabilizer of `S` under conjugation is its normalizer."
+    }
+  ]
+}

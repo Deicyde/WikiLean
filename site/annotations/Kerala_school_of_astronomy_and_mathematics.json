@@ -1,0 +1,153 @@
+{
+  "slug": "Kerala_school_of_astronomy_and_mathematics",
+  "wikipedia_title": "Kerala school of astronomy and mathematics",
+  "display_title": "Kerala school of astronomy and mathematics",
+  "schema_version": 3,
+  "annotation_style": "theorem_article",
+  "annotations": [
+    {
+      "kind": "proposition",
+      "label": "Infinite geometric series",
+      "anchor": {
+        "section": "Infinite series",
+        "snippet": "These include the following infinite geometric series"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "tsum_geometric_of_lt_one",
+        "module": "Mathlib.Analysis.SpecificLimits.Basic",
+        "match_kind": "exact"
+      },
+      "note": "Mathlib proves the geometric series sum ∑ rⁿ = (1-r)⁻¹ for 0 ≤ r < 1 (and the normed generalization tsum_geometric_of_norm_lt_one).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Sum of integral powers for large n",
+      "anchor": {
+        "section": "Infinite series",
+        "snippet": "They used this to discover a semi-rigorous proof of the result"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "sum_range_pow",
+        "module": "Mathlib.NumberTheory.Bernoulli",
+        "match_kind": null
+      },
+      "note": "Faulhaber's theorem (sum_range_pow) gives the exact closed form for ∑ iᵖ whose leading term is nᵖ⁺¹/(p+1), but the asymptotic limit statement itself is not separately formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Taylor–Maclaurin series for sine, cosine, and arctangent",
+      "anchor": {
+        "section": "Infinite series",
+        "snippet": "The Tantrasangraha-vakhya gives the series in verse"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Real.hasSum_sin",
+        "module": "Mathlib.Analysis.SpecialFunctions.Trigonometric.Series",
+        "match_kind": "exact"
+      },
+      "note": "Real.hasSum_sin, Real.hasSum_cos, and Real.hasSum_arctan give the Maclaurin series for sine, cosine, and arctangent respectively.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Standard power series for trigonometric functions",
+      "anchor": {
+        "section": "Infinite series",
+        "snippet": "the series reduce to the standard power series for these trigonometric functions, for example"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Real.hasSum_cos",
+        "module": "Mathlib.Analysis.SpecialFunctions.Trigonometric.Series",
+        "match_kind": "exact"
+      },
+      "note": "The standard power series for sin and cos are formalized as Real.hasSum_sin/Real.hasSum_cos (and the complex versions Complex.hasSum_sin/cos).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Gregory series for π",
+      "anchor": {
+        "section": "Infinite series",
+        "snippet": "an infinite series expression (later known as Gregory series)"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Real.tendsto_sum_pi_div_four",
+        "module": "Mathlib.Analysis.Real.Pi.Leibniz",
+        "match_kind": "exact"
+      },
+      "note": "Real.tendsto_sum_pi_div_four proves the Gregory–Leibniz series 1 - 1/3 + 1/5 - ... = π/4.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Error estimate for finite partial sums",
+      "anchor": {
+        "section": "Infinite series",
+        "snippet": "Their rational approximation of the error for the finite sum of their series are of particular interest"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "alternating_series_error_bound",
+        "module": "Mathlib.Analysis.SpecificLimits.Normed",
+        "match_kind": null
+      },
+      "note": "Mathlib's alternating_series_error_bound gives the standard |tail| ≤ next-term estimate, but the Kerala-style refined rational correction terms for the error are not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Accelerated series for π via partial fractions",
+      "anchor": {
+        "section": "Infinite series",
+        "snippet": "to obtain a more rapidly converging series for"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No Mathlib declaration formalizes the partial-fraction-accelerated convergent series for π.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Rational approximation of π to nine decimal places",
+      "anchor": {
+        "section": "Infinite series",
+        "snippet": "They used the improved series to derive a rational expression"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No Mathlib declaration provides this specific rational approximation of π accurate to nine decimal places.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Differentiation of trigonometric functions",
+      "anchor": {
+        "section": "Infinite series",
+        "snippet": "also gave a semi-rigorous method of differentiation of some trigonometric functions"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Real.deriv_sin",
+        "module": "Mathlib.Analysis.SpecialFunctions.Trigonometric.Deriv",
+        "match_kind": "exact"
+      },
+      "note": "Derivatives of trig functions are formalized, e.g. Real.deriv_sin (= cos) and Real.deriv_cos (= -sin), with HasDerivAt forms hasDerivAt_sin/hasDerivAt_cos.",
+      "provenance": "ai"
+    }
+  ]
+}

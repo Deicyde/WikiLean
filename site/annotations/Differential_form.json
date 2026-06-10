@@ -1,0 +1,985 @@
+{
+  "slug": "Differential_form",
+  "wikipedia_title": "Differential form",
+  "display_title": "Differential form",
+  "schema_version": 3,
+  "annotation_style": "theorem_article",
+  "annotations": [
+    {
+      "kind": "definition",
+      "label": "Differential form",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "differential forms provide a unified approach to define integrands over curves"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "ContinuousAlternatingMap",
+        "module": "Mathlib.Topology.Algebra.Module.Alternating.Basic",
+        "match_kind": "generalization"
+      },
+      "note": "Mathlib has no dedicated 'differential form' type; the library represents an n-form as a function `E → E [⋀^Fin n]→L[𝕜] F` using `ContinuousAlternatingMap`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Volume form",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "is called a volume form"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Orientation.volumeForm",
+        "module": "Mathlib.Analysis.InnerProductSpace.Orientation",
+        "match_kind": "exact"
+      },
+      "note": "`Orientation.volumeForm` is the nonvanishing top-degree alternating form on an oriented inner-product space.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Differential forms form an alternating algebra",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "The differential forms form an alternating algebra"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "ExteriorAlgebra",
+        "module": "Mathlib.LinearAlgebra.ExteriorAlgebra.Basic",
+        "match_kind": "generalization"
+      },
+      "note": "The algebraic exterior algebra and its graded structure are formalized, but no graded-algebra structure on the space of differential forms themselves is.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Exterior derivative (informal)",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "The exterior derivative is an operation on differential forms"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "extDeriv",
+        "module": "Mathlib.Analysis.Calculus.DifferentialForm.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`extDeriv` defines the exterior derivative of a differential n-form on a normed space.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Generalized Stokes theorem (informal)",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "the generalized Stokes theorem"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "MeasureTheory.integral_divergence_of_hasFDerivWithinAt_off_countable",
+        "module": "Mathlib.MeasureTheory.Integral.DivergenceTheorem",
+        "match_kind": "special_case"
+      },
+      "note": "Only the divergence theorem on rectangles is formalized; no general Stokes theorem for differential forms on manifolds exists.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Integration of a k-form over an oriented k-manifold",
+      "anchor": {
+        "section": "Integration and orientation",
+        "snippet": "A differential k -form can be integrated over an oriented manifold"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has no definition of the integral of a differential k-form over an oriented k-manifold.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Sign reversal under orientation reversal",
+      "anchor": {
+        "section": "Integration and orientation",
+        "snippet": "which is the negative of the integral of the same differential form over the same interval"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "intervalIntegral.integral_symm",
+        "module": "Mathlib.MeasureTheory.Integral.IntervalIntegral.Basic",
+        "match_kind": "special_case"
+      },
+      "note": "Only the 1D version (swap of integration limits) is formalized; no general orientation-reversal lemma for k-form integrals exists.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Basis of differential 1-forms",
+      "anchor": {
+        "section": "Integration and orientation",
+        "snippet": "can be used as a basis for all 1 -forms"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has no definition of `dx^i` as a basis of 1-forms on a coordinate chart.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Basis of differential 2-forms",
+      "anchor": {
+        "section": "Integration and orientation",
+        "snippet": "can be used as a basis at every point on the manifold for all 2 -forms"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No `dx^i ∧ dx^j` basis of 2-forms is defined.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Exterior product (wedge product)",
+      "anchor": {
+        "section": "Integration and orientation",
+        "snippet": "This is similar to the cross product from vector calculus, in that it is an alternating product"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "AlternatingMap.domCoprod",
+        "module": "Mathlib.LinearAlgebra.Alternating.DomCoprod",
+        "match_kind": "generalization"
+      },
+      "note": "The wedge product of (algebraic) alternating maps is `AlternatingMap.domCoprod`, but no wedge of differential forms is defined.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Alternating property of the wedge",
+      "anchor": {
+        "section": "Integration and orientation",
+        "snippet": "Alternating also implies that"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "AlternatingMap.map_swap",
+        "module": "Mathlib.LinearAlgebra.Alternating.Basic",
+        "match_kind": "generalization"
+      },
+      "note": "Alternating maps satisfy `map_swap` (negation under swap of two inputs); a corresponding skew-symmetry of the wedge of differential forms is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Multi-index notation for wedge products",
+      "anchor": {
+        "section": "Multi-index notation",
+        "snippet": "A common notation for the wedge product of elementary"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No multi-index `dx^I` notation for wedge products is defined.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Dimension of the module of k-forms",
+      "anchor": {
+        "section": "Multi-index notation",
+        "snippet": "By calculating the size of"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "exteriorPower.alternatingMapLinearEquiv",
+        "module": "Mathlib.LinearAlgebra.ExteriorPower.Basic",
+        "match_kind": "generalization"
+      },
+      "note": "The algebraic identification of k-fold alternating maps with linear maps from the k-th exterior power exists, but the explicit C(n,k) dimension count for differential k-forms is not stated.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Exterior derivative of a differential form",
+      "anchor": {
+        "section": "The exterior derivative",
+        "snippet": "The exterior derivative of a differential form is a generalization of the differential of a function"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "extDeriv",
+        "module": "Mathlib.Analysis.Calculus.DifferentialForm.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`extDeriv` defines the exterior derivative of a differential form on a normed space.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Exterior derivative as grad/curl/div via Hodge star",
+      "anchor": {
+        "section": "The exterior derivative",
+        "snippet": "the exterior derivative corresponds to gradient"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No Hodge star is defined, and consequently no correspondence between `d` and grad/curl/div is formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Differential 0-form",
+      "anchor": {
+        "section": "Differential calculus",
+        "snippet": "is defined to be a smooth function"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "ContinuousAlternatingMap.constOfIsEmpty",
+        "module": "Mathlib.Topology.Algebra.Module.Alternating.Basic",
+        "match_kind": "invocation"
+      },
+      "note": "0-forms are encoded via `ContinuousAlternatingMap.constOfIsEmpty` over `Fin 0`, as used in `extDeriv_constOfIsEmpty`, but there is no top-level type for 0-forms.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Directional derivative",
+      "anchor": {
+        "section": "Differential calculus",
+        "snippet": "has a directional derivative"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "lineDeriv",
+        "module": "Mathlib.Analysis.Calculus.LineDeriv.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`lineDeriv` is the directional derivative of `f` at `x` in direction `v`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Directional derivative is linear in v",
+      "anchor": {
+        "section": "Differential calculus",
+        "snippet": "is a linear function of"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "fderiv",
+        "module": "Mathlib.Analysis.Calculus.FDeriv.Basic",
+        "match_kind": "generalization"
+      },
+      "note": "When `f` is Fréchet differentiable, `lineDeriv` equals `fderiv 𝕜 f x v`, which is linear in `v` by construction; no direct `lineDeriv`-is-linear lemma is stated as such.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Differential df_p of a function",
+      "anchor": {
+        "section": "Differential calculus",
+        "snippet": "is denoted df p and called the derivative or differential"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "fderiv",
+        "module": "Mathlib.Analysis.Calculus.FDeriv.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`fderiv 𝕜 f x` is the Fréchet derivative/differential at the point `x`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "General differential 1-form",
+      "anchor": {
+        "section": "Differential calculus",
+        "snippet": "we define the differential 1 -form"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "ContinuousAlternatingMap",
+        "module": "Mathlib.Topology.Algebra.Module.Alternating.Basic",
+        "match_kind": "generalization"
+      },
+      "note": "A 1-form is encoded as `E → E [⋀^Fin 1]→L[𝕜] F`; no dedicated type for 1-forms is defined.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Necessary condition dα = 0 for exactness",
+      "anchor": {
+        "section": "Differential calculus",
+        "snippet": "is a necessary condition for the existence of a function"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "extDeriv_extDeriv",
+        "module": "Mathlib.Analysis.Calculus.DifferentialForm.Basic",
+        "match_kind": "invocation"
+      },
+      "note": "The fact `d² = 0` is `extDeriv_extDeriv`, which implies the necessary condition, but the statement that exactness implies closedness is not separately stated.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Exterior derivative dα of a 1-form",
+      "anchor": {
+        "section": "Differential calculus",
+        "snippet": "This 2 -form is called the exterior derivative"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "extDeriv_apply",
+        "module": "Mathlib.Analysis.Calculus.DifferentialForm.Basic",
+        "match_kind": "special_case"
+      },
+      "note": "`extDeriv_apply` gives an explicit formula for the exterior derivative, specializing to 1-forms by taking `n = 1`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Space of differential k-forms (in coordinates)",
+      "anchor": {
+        "section": "Differential calculus",
+        "snippet": "there is a space of differential k -forms"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "ContinuousAlternatingMap",
+        "module": "Mathlib.Topology.Algebra.Module.Alternating.Basic",
+        "match_kind": "generalization"
+      },
+      "note": "The space of k-forms is implicit as `E → E [⋀^Fin k]→L[𝕜] F`; it is not given a bundled name in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Smooth differential form of degree k",
+      "anchor": {
+        "section": "Intrinsic definitions",
+        "snippet": "A smooth differential form of degree"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "ContDiff",
+        "module": "Mathlib.Analysis.Calculus.ContDiff.Basic",
+        "match_kind": "generalization"
+      },
+      "note": "A smooth k-form is encoded as a `ContDiff 𝕜 ⊤ ω` function `E → E [⋀^Fin k]→L[𝕜] F`; no bundled smooth-form type is defined.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Differential form as alternating multilinear map",
+      "anchor": {
+        "section": "Intrinsic definitions",
+        "snippet": "this is equivalently an alternating multilinear map"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "AlternatingMap",
+        "module": "Mathlib.LinearAlgebra.Alternating.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`AlternatingMap R M N ι` is the type of alternating multilinear maps.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Alternation map",
+      "anchor": {
+        "section": "Intrinsic definitions",
+        "snippet": "The alternation map is defined as a mapping"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "MultilinearMap.alternatization",
+        "module": "Mathlib.LinearAlgebra.Alternating.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`MultilinearMap.alternatization` is the antisymmetrization sending a multilinear map to its alternating part.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Forms as totally antisymmetric covariant tensor fields",
+      "anchor": {
+        "section": "Intrinsic definitions",
+        "snippet": "as a totally antisymmetric covariant tensor field"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has no equivalence between differential forms and totally antisymmetric covariant tensor fields.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Exterior product of differential forms",
+      "anchor": {
+        "section": "Exterior product",
+        "snippet": "The exterior product of a"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "AlternatingMap.domCoprod",
+        "module": "Mathlib.LinearAlgebra.Alternating.DomCoprod",
+        "match_kind": "generalization"
+      },
+      "note": "Wedge product of algebraic alternating maps is formalized as `AlternatingMap.domCoprod`; no pointwise wedge product of differential forms is defined.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Bilinearity of the exterior product",
+      "anchor": {
+        "section": "Exterior product",
+        "snippet": "The exterior product is bilinear"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "AlternatingMap.domCoprod",
+        "module": "Mathlib.LinearAlgebra.Alternating.DomCoprod",
+        "match_kind": "generalization"
+      },
+      "note": "`domCoprod` is bilinear by construction, but no bilinearity lemma is stated for the wedge of differential forms specifically.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Skew (graded) commutativity of the exterior product",
+      "anchor": {
+        "section": "Exterior product",
+        "snippet": "It is skew commutative"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No graded commutativity lemma for the wedge of forms is stated.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Graded Leibniz rule",
+      "anchor": {
+        "section": "Exterior product",
+        "snippet": "One also has the graded Leibniz rule"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No graded Leibniz rule `d(α ∧ β) = dα ∧ β + (-1)^p α ∧ dβ` is formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Hodge star operator and codifferential",
+      "anchor": {
+        "section": "Riemannian manifold",
+        "snippet": "the Hodge star operator"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Neither the Hodge star nor the codifferential is defined in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Clifford algebra of (co)tangent space",
+      "anchor": {
+        "section": "Vector field structures",
+        "snippet": "each (co)tangent space generates a Clifford algebra"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "CliffordAlgebra",
+        "module": "Mathlib.LinearAlgebra.CliffordAlgebra.Basic",
+        "match_kind": "generalization"
+      },
+      "note": "`CliffordAlgebra` of an arbitrary quadratic-form module is defined, but no specialization to (co)tangent spaces of a Riemannian manifold exists.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Weyl algebra of vector field derivations",
+      "anchor": {
+        "section": "Vector field structures",
+        "snippet": "The (noncommutative) algebra of differential operators they generate is the Weyl algebra"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Weyl algebra is not defined in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "d² = 0",
+      "anchor": {
+        "section": "Exterior differential complex",
+        "snippet": "One important property of the exterior derivative"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "extDeriv_extDeriv",
+        "module": "Mathlib.Analysis.Calculus.DifferentialForm.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`extDeriv_extDeriv` states that the second exterior derivative of a sufficiently smooth differential form is zero.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "de Rham complex",
+      "anchor": {
+        "section": "Exterior differential complex",
+        "snippet": "This complex is called the de Rham complex"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has no de Rham complex of a smooth manifold (the `BDeRham` file is in p-adic Hodge theory, unrelated).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Poincaré lemma",
+      "anchor": {
+        "section": "Exterior differential complex",
+        "snippet": "By the Poincaré lemma"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Poincaré lemma (closed forms on contractible domains are exact) is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "de Rham's theorem",
+      "anchor": {
+        "section": "Exterior differential complex",
+        "snippet": "de Rham cohomology computes the sheaf cohomology"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "De Rham's theorem comparing de Rham cohomology with sheaf cohomology is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Pushforward of a tangent vector",
+      "anchor": {
+        "section": "Pullback",
+        "snippet": "This map is also denoted f ∗ and called the pushforward"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "mfderiv",
+        "module": "Mathlib.Geometry.Manifold.MFDeriv.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`mfderiv` is the manifold (Fréchet) derivative, i.e., the pushforward of tangent vectors.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Pullback of a differential form",
+      "anchor": {
+        "section": "Pullback",
+        "snippet": "called the pullback of"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "ContinuousAlternatingMap.compContinuousLinearMap",
+        "module": "Mathlib.Topology.Algebra.Module.Alternating.Basic",
+        "match_kind": "invocation"
+      },
+      "note": "The pullback operation appears implicitly via `compContinuousLinearMap` in `extDeriv_pullback`, but no bundled pullback of forms is defined.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Pullback respects basic operations on forms",
+      "anchor": {
+        "section": "Pullback",
+        "snippet": "Pullback respects all of the basic operations on forms"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "extDeriv_pullback",
+        "module": "Mathlib.Analysis.Calculus.DifferentialForm.Basic",
+        "match_kind": "special_case"
+      },
+      "note": "`extDeriv_pullback` proves the pullback commutes with `d`; compatibility with the wedge product is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Integral of an n-form on Euclidean space",
+      "anchor": {
+        "section": "Integration on Euclidean space",
+        "snippet": "This allows us to define the integral of"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No definition of the integral of an n-form on Euclidean space is given.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Integral of a form over a parametrized manifold",
+      "anchor": {
+        "section": "Integration over chains",
+        "snippet": "defines the integral of"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has no integral of a form over a parametrized submanifold.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "k-chain",
+      "anchor": {
+        "section": "Integration over chains",
+        "snippet": "is a formal sum of smooth embeddings"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Smooth k-chains are not defined in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Integral over a manifold via triangulation",
+      "anchor": {
+        "section": "Integration over chains",
+        "snippet": "every smooth manifold may be smoothly triangulated"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Smooth triangulation of manifolds is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Integration via partitions of unity",
+      "anchor": {
+        "section": "Integration using partitions of unity",
+        "snippet": "use a partition of unity"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "SmoothPartitionOfUnity",
+        "module": "Mathlib.Geometry.Manifold.PartitionOfUnity",
+        "match_kind": "invocation"
+      },
+      "note": "Smooth partitions of unity exist (`SmoothPartitionOfUnity`), but no integration of forms via partitions of unity is defined.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Fibral part ω_x / η_y of a form",
+      "anchor": {
+        "section": "Integration along fibers",
+        "snippet": "which may be thought of as the fibral part"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Fibral decomposition of forms is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Generalized Fubini formula",
+      "anchor": {
+        "section": "Integration along fibers",
+        "snippet": "the generalized Fubini formula"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Fubini formula for fiber integration of forms is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Integration along fibers (higher degree)",
+      "anchor": {
+        "section": "Integration along fibers",
+        "snippet": "It is also possible to integrate forms of other degrees along the fibers"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Fiber integration of higher-degree forms is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Projection formula for fiber integration",
+      "anchor": {
+        "section": "Integration along fibers",
+        "snippet": "Integration along fibers satisfies the projection formula"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The projection formula for fiber integration is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Stokes' theorem",
+      "anchor": {
+        "section": "Stokes's theorem",
+        "snippet": "is given by the Stokes' theorem"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "MeasureTheory.integral_divergence_of_hasFDerivWithinAt_off_countable",
+        "module": "Mathlib.MeasureTheory.Integral.DivergenceTheorem",
+        "match_kind": "special_case"
+      },
+      "note": "Only the divergence theorem on rectangles is formalized; the general Stokes theorem `∫_∂Ω ω = ∫_Ω dω` for differential forms is not.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Integral of a closed form over homologous chains is equal",
+      "anchor": {
+        "section": "Stokes's theorem",
+        "snippet": "the integral of a closed form over homologous chains is equal"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Equality of integrals of a closed form over homologous chains is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Gradient theorem",
+      "anchor": {
+        "section": "Stokes's theorem",
+        "snippet": "This case is called the gradient theorem"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "intervalIntegral.integral_eq_sub_of_hasDerivAt",
+        "module": "Mathlib.MeasureTheory.Integral.IntervalIntegral.FundThmCalculus",
+        "match_kind": "special_case"
+      },
+      "note": "The 1D fundamental theorem of calculus is formalized, but the multivariable gradient theorem on line integrals is not.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Identification of n-forms with densities given an orientation",
+      "anchor": {
+        "section": "Relation with measures",
+        "snippet": "one may identify n -forms with densities on a manifold"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No identification of top-degree forms with densities/measures is formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Current",
+      "anchor": {
+        "section": "Currents",
+        "snippet": "is called a current"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Currents (distributional differential forms) are not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Faraday 2-form (electromagnetic field strength)",
+      "anchor": {
+        "section": "Applications in physics",
+        "snippet": "the Faraday 2-form"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Faraday 2-form is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Current 3-form",
+      "anchor": {
+        "section": "Applications in physics",
+        "snippet": "The current 3 -form is"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The electromagnetic current 3-form is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Maxwell's equations in form notation",
+      "anchor": {
+        "section": "Applications in physics",
+        "snippet": "Maxwell's equations can be written very compactly"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Maxwell's equations in differential-form notation are not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Yang–Mills field",
+      "anchor": {
+        "section": "Applications in physics",
+        "snippet": "The Yang–Mills field"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Yang–Mills fields are not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Wirtinger inequality for 2-forms",
+      "anchor": {
+        "section": "Applications in geometric measure theory",
+        "snippet": "the Wirtinger inequality for 2-forms"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Wirtinger inequality for 2-forms is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Gromov's inequality for complex projective space",
+      "anchor": {
+        "section": "Applications in geometric measure theory",
+        "snippet": "Gromov's inequality for complex projective space"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Gromov's systolic inequality for complex projective space is not formalized.",
+      "provenance": "ai"
+    }
+  ]
+}

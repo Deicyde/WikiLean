@@ -1,0 +1,761 @@
+{
+  "slug": "General_linear_group",
+  "wikipedia_title": "General linear group",
+  "display_title": "General linear group",
+  "schema_version": 3,
+  "annotation_style": "theorem_article",
+  "annotations": [
+    {
+      "kind": "definition",
+      "label": "General linear group (degree n)",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "the general linear group of degree"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Matrix.GeneralLinearGroup",
+        "module": "Mathlib.LinearAlgebra.Matrix.GeneralLinearGroup.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`Matrix.GeneralLinearGroup n R := (Matrix n n R)ˣ` with notation `GL` directly captures GL of degree n.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "General linear group over a field/ring",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "More generally, the general linear group of degree"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Matrix.GeneralLinearGroup",
+        "module": "Mathlib.LinearAlgebra.Matrix.GeneralLinearGroup.Defs",
+        "match_kind": "exact"
+      },
+      "note": "Defined for any `Semiring R`, so covers GL(n, F) for fields and GL(n, R) for rings.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "General linear group of a vector space",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "More generally still, the general linear group of a vector space"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "LinearMap.GeneralLinearGroup",
+        "module": "Mathlib.LinearAlgebra.GeneralLinearGroup.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`LinearMap.GeneralLinearGroup R M := (M →ₗ[R] M)ˣ` defines GL(V) for a module/vector space.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Special linear group",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "The special linear group , written"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Matrix.SpecialLinearGroup",
+        "module": "Mathlib.LinearAlgebra.Matrix.SpecialLinearGroup",
+        "match_kind": "exact"
+      },
+      "note": "`Matrix.SpecialLinearGroup n R := { A : Matrix n n R // A.det = 1 }` with notation `SL(n, R)`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "GL(n,F) is non-abelian",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "then the group"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No explicit lemma stating non-commutativity of GL(n,F) for n ≥ 2 was found in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "GL(V) as automorphism group",
+      "anchor": {
+        "section": "General linear group of a vector space",
+        "snippet": "the group of all automorphisms of"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "LinearMap.GeneralLinearGroup.generalLinearEquiv",
+        "module": "Mathlib.LinearAlgebra.GeneralLinearGroup.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`generalLinearEquiv R M : GeneralLinearGroup R M ≃* M ≃ₗ[R] M` identifies GL(V) with the group of linear automorphisms.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "GL(V) ≅ GL(n,F) via basis choice",
+      "anchor": {
+        "section": "General linear group of a vector space",
+        "snippet": "are isomorphic . The isomorphism is not canonical"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Matrix.GeneralLinearGroup.toLin'",
+        "module": "Mathlib.LinearAlgebra.Matrix.GeneralLinearGroup.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`Matrix.GeneralLinearGroup.toLin' b : GL n R ≃* LinearMap.GeneralLinearGroup R V` gives the basis-dependent (non-canonical) isomorphism.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "GL of a free module",
+      "anchor": {
+        "section": "General linear group of a vector space",
+        "snippet": "In a similar way, for a commutative ring"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "LinearMap.GeneralLinearGroup",
+        "module": "Mathlib.LinearAlgebra.GeneralLinearGroup.Basic",
+        "match_kind": "generalization"
+      },
+      "note": "`LinearMap.GeneralLinearGroup R M` is defined for any semiring R and module M, generalizing the free-module case.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Invertibility over a field via determinant",
+      "anchor": {
+        "section": "In terms of determinants",
+        "snippet": "a matrix is invertible if and only if its determinant is nonzero"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Matrix.GeneralLinearGroup.mkOfDetNeZero",
+        "module": "Mathlib.LinearAlgebra.Matrix.GeneralLinearGroup.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`mkOfDetNeZero` builds a GL element from any matrix over a field with nonzero determinant; combined with `det_ne_zero` this gives the iff.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Invertibility over a commutative ring",
+      "anchor": {
+        "section": "In terms of determinants",
+        "snippet": "a matrix over"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Matrix.isUnit_iff_isUnit_det",
+        "module": "Mathlib.LinearAlgebra.Matrix.NonsingularInverse",
+        "match_kind": "exact"
+      },
+      "note": "`Matrix.isUnit_iff_isUnit_det : IsUnit A ↔ IsUnit A.det` over a commutative ring.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "GL over non-commutative ring",
+      "anchor": {
+        "section": "In terms of determinants",
+        "snippet": "Over a non-commutative ring"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Matrix.GeneralLinearGroup",
+        "module": "Mathlib.LinearAlgebra.Matrix.GeneralLinearGroup.Defs",
+        "match_kind": "generalization"
+      },
+      "note": "`Matrix.GeneralLinearGroup n R := (Matrix n n R)ˣ` is defined for any `Semiring R`, so it works over non-commutative rings.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "GL(n,R) is a real Lie group of dimension n²",
+      "anchor": {
+        "section": "Real case",
+        "snippet": "over the field of real numbers is a real Lie group of dimension"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No `LieGroup`/`ChartedSpace`/smooth manifold instance for `GL n ℝ` was found in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Lie algebra of GL(n,R)",
+      "anchor": {
+        "section": "Real case",
+        "snippet": "The Lie algebra of"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No Mathlib declaration identifies `Matrix n n ℝ` (with bracket) as the Lie algebra of `GL n ℝ`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "GL(n,R) has two connected components",
+      "anchor": {
+        "section": "Real case",
+        "snippet": "is not connected but rather has two connected components"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib defines `Matrix.GLPos` (positive-determinant subgroup) but has no theorem about the number of connected components of `GL n ℝ`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Polar decomposition homeomorphism",
+      "anchor": {
+        "section": "Real case",
+        "snippet": "The polar decomposition , which is unique for invertible matrices"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No polar-decomposition homeomorphism of GL(n,ℝ) was found in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Maximal compact subgroup of GL(n,R)",
+      "anchor": {
+        "section": "Real case",
+        "snippet": "maximal compact subgroup of"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has `Matrix.orthogonalGroup` but no statement that O(n) is a maximal compact subgroup of GL(n,ℝ).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Fundamental group of GL(n,R)",
+      "anchor": {
+        "section": "Real case",
+        "snippet": "is not simply connected"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No computation of π₁(GL(n,ℝ)) was found in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "GL(n,C) is a complex Lie group of dimension n²",
+      "anchor": {
+        "section": "Complex case",
+        "snippet": "is a complex Lie group of complex dimension"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No complex Lie group / complex manifold instance on `GL n ℂ` was found.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Complex matrices as real matrices preserving a complex structure",
+      "anchor": {
+        "section": "Complex case",
+        "snippet": "can be characterized as real"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No statement characterizing GL(n,ℂ) as a subgroup of GL(2n,ℝ) preserving a complex structure was found.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Lie algebra of GL(n,C)",
+      "anchor": {
+        "section": "Complex case",
+        "snippet": "The Lie algebra corresponding to"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No declaration identifies gl(n,ℂ) as the Lie algebra of GL(n,ℂ).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "GL(n,C) is connected with maximal compact U(n)",
+      "anchor": {
+        "section": "Complex case",
+        "snippet": "Unlike the real case,"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has `Matrix.unitaryGroup` but no connectedness or maximal-compact statement for GL(n,ℂ).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Order of GL(n,q)",
+      "anchor": {
+        "section": "Over finite fields",
+        "snippet": "The order of"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Matrix.card_GL_field",
+        "module": "Mathlib.LinearAlgebra.Matrix.GeneralLinearGroup.Card",
+        "match_kind": "exact"
+      },
+      "note": "`Matrix.card_GL_field : Nat.card (GL (Fin n) 𝔽) = ∏ i, (q^n - q^i)` is the standard order formula.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "GL(3,2) has order 168",
+      "anchor": {
+        "section": "Over finite fields",
+        "snippet": "For example, GL(3, 2) has order"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No specific numerical instance for `Nat.card (GL (Fin 3) (ZMod 2)) = 168` was found, but it would follow from `Matrix.card_GL_field`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Counting points of Grassmannian over F_q",
+      "anchor": {
+        "section": "Over finite fields",
+        "snippet": "More generally, one can count points of Grassmannian over"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No Grassmannian point-counting formula (Gaussian binomial) was found in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Symmetric group as GL over field with one element",
+      "anchor": {
+        "section": "Over finite fields",
+        "snippet": "In the philosophy of the field with one element"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib does not formalize 'field with one element' nor the heuristic identifying Sₙ as GL(n, F₁).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Special linear group SL(n,F)",
+      "anchor": {
+        "section": "Special linear group",
+        "snippet": "The special linear group ,"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Matrix.SpecialLinearGroup",
+        "module": "Mathlib.LinearAlgebra.Matrix.SpecialLinearGroup",
+        "match_kind": "exact"
+      },
+      "note": "`Matrix.SpecialLinearGroup n R := { A // A.det = 1 }`, with notation `SL(n, R)`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Determinant homomorphism with kernel SL",
+      "anchor": {
+        "section": "Special linear group",
+        "snippet": "then the determinant is a group homomorphism"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Matrix.GeneralLinearGroup.det",
+        "module": "Mathlib.LinearAlgebra.Matrix.GeneralLinearGroup.Defs",
+        "match_kind": "invocation"
+      },
+      "note": "The determinant is formalized as the monoid hom `Matrix.GeneralLinearGroup.det : GL n R →* Rˣ`, but no explicit lemma identifies its kernel with `SpecialLinearGroup`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "GL as semidirect product of SL and F*",
+      "anchor": {
+        "section": "Special linear group",
+        "snippet": "can be written as a semidirect product"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No semidirect-product decomposition `GL n F ≃ SL n F ⋊ Fˣ` is stated in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "SL is the derived group of GL",
+      "anchor": {
+        "section": "Special linear group",
+        "snippet": "The special linear group is also the derived group"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No theorem identifying `SpecialLinearGroup` with the commutator subgroup of `GeneralLinearGroup` was found.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "SL is a Lie subgroup of dimension n²-1",
+      "anchor": {
+        "section": "Special linear group",
+        "snippet": "is a Lie subgroup of"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No Lie-subgroup structure or dimension statement for SL is registered in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "SL as volume- and orientation-preserving transformations",
+      "anchor": {
+        "section": "Special linear group",
+        "snippet": "can be characterized as the group of volume and orientation-preserving linear transformations"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No characterization of SL(n,ℝ) as volume- and orientation-preserving linear maps was found in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Simple connectedness of SL(n,C)",
+      "anchor": {
+        "section": "Special linear group",
+        "snippet": "is simply connected, while"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No fundamental-group computation for SL(n,ℂ) or SL(n,ℝ) is in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Invertible diagonal matrices subgroup",
+      "anchor": {
+        "section": "Diagonal subgroups",
+        "snippet": "The set of all invertible diagonal matrices forms a subgroup"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib defines `Matrix.diagonal` but no explicit subgroup of invertible diagonal matrices inside `GL n R`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Scalar matrix",
+      "anchor": {
+        "section": "Diagonal subgroups",
+        "snippet": "A scalar matrix is a diagonal matrix which is a constant times the identity matrix"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Matrix.scalar",
+        "module": "Mathlib.Data.Matrix.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`Matrix.scalar n : α →+* Matrix n n α` sends `a` to the diagonal matrix `a · I`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Center of SL(n,F)",
+      "anchor": {
+        "section": "Diagonal subgroups",
+        "snippet": "The center of"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Matrix.SpecialLinearGroup.center_equiv_rootsOfUnity",
+        "module": "Mathlib.LinearAlgebra.Matrix.SpecialLinearGroup",
+        "match_kind": "exact"
+      },
+      "note": "`center_equiv_rootsOfUnity` exhibits Z(SL(n,R)) as the n-th roots of unity (scalar matrices `ζ·I` with `ζⁿ = 1`).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Classical groups",
+      "anchor": {
+        "section": "Classical groups",
+        "snippet": "The so-called classical groups are subgroups of"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Individual classical groups (`orthogonalGroup`, `unitaryGroup`, `symplecticGroup`, `SpecialLinearGroup`) are defined, but Mathlib has no umbrella notion 'classical group'.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Orthogonal group",
+      "anchor": {
+        "section": "Classical groups",
+        "snippet": "which preserves a non-degenerate quadratic form on"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Matrix.orthogonalGroup",
+        "module": "Mathlib.LinearAlgebra.UnitaryGroup",
+        "match_kind": "exact"
+      },
+      "note": "`Matrix.orthogonalGroup n R` is the submonoid of matrices with `A * Aᵀ = 1`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Symplectic group",
+      "anchor": {
+        "section": "Classical groups",
+        "snippet": "which preserves a symplectic form on"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "symplecticGroup",
+        "module": "Mathlib.LinearAlgebra.SymplecticGroup",
+        "match_kind": "exact"
+      },
+      "note": "`symplecticGroup l R` is the submonoid of matrices preserving the standard symplectic form `J`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Unitary group",
+      "anchor": {
+        "section": "Classical groups",
+        "snippet": "preserves a non-degenerate hermitian form on"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Matrix.unitaryGroup",
+        "module": "Mathlib.LinearAlgebra.UnitaryGroup",
+        "match_kind": "exact"
+      },
+      "note": "`Matrix.unitaryGroup n α := unitary (Matrix n n α)` — matrices with `A * star A = 1`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Projective linear group",
+      "anchor": {
+        "section": "Projective linear group",
+        "snippet": "are the quotients of"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Matrix.ProjGenLinGroup",
+        "module": "Mathlib.LinearAlgebra.Matrix.GeneralLinearGroup.Projective",
+        "match_kind": "exact"
+      },
+      "note": "`Matrix.ProjGenLinGroup n R := GL n R ⧸ Subgroup.center (GL n R)` with notation `PGL(n, R)`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Affine group",
+      "anchor": {
+        "section": "Affine group",
+        "snippet": "is an extension of"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "AffineEquiv.equivUnitsAffineMap",
+        "module": "Mathlib.LinearAlgebra.AffineSpace.AffineEquiv",
+        "match_kind": "invocation"
+      },
+      "note": "`AffineEquiv P₁ P₁` has a group structure (the affine group), but Mathlib has no dedicated `AffineGroup` name nor the SES `1 → V → Aff(V) → GL(V) → 1`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Special affine group and Poincaré group",
+      "anchor": {
+        "section": "Affine group",
+        "snippet": "for instance, the special affine group is the subgroup defined by the semidirect product"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Neither the special affine group nor the Poincaré group is defined in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "General semilinear group",
+      "anchor": {
+        "section": "General semilinear group",
+        "snippet": "is the group of all invertible semilinear transformations"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No `GeneralSemilinearGroup` / ΓL is defined in Mathlib, although semilinear maps exist.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Semilinear transformation",
+      "anchor": {
+        "section": "General semilinear group",
+        "snippet": "A semilinear transformation is a transformation which is linear"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "LinearMap",
+        "module": "Mathlib.Algebra.Module.LinearMap.Defs",
+        "match_kind": "exact"
+      },
+      "note": "Mathlib's `LinearMap` is parameterized by a ring hom `σ : R →+* S` (notation `→ₛₗ[σ]`), encoding semilinear maps; the equivalence version is `LinearEquiv` (`≃ₛₗ`).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Projective semilinear group as collineation group",
+      "anchor": {
+        "section": "General semilinear group",
+        "snippet": "is the collineation group of projective space"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib does not define PΓL or characterize it as the collineation group of projective space.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Full linear monoid",
+      "anchor": {
+        "section": "Full linear monoid",
+        "snippet": "the resulting algebraic structure is a monoid , usually called the full linear monoid"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Module.End",
+        "module": "Mathlib.Algebra.Module.LinearMap.End",
+        "match_kind": "invocation"
+      },
+      "note": "`Module.End R M := M →ₗ[R] M` (and `Matrix n n R`) carry a monoid/ring structure, but there is no dedicated `FullLinearMonoid` named declaration.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Infinite general linear group",
+      "anchor": {
+        "section": "Infinite general linear group",
+        "snippet": "The infinite general linear group or stable general linear group is the direct limit"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No stable / infinite general linear group (direct limit `GL = colim GL(n)`) is defined in Mathlib.",
+      "provenance": "ai"
+    }
+  ]
+}

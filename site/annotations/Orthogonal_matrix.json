@@ -1,0 +1,1279 @@
+{
+  "slug": "Orthogonal_matrix",
+  "wikipedia_title": "Orthogonal matrix",
+  "display_title": "Orthogonal matrix",
+  "schema_version": 3,
+  "annotation_style": "theorem_article",
+  "annotations": [
+    {
+      "kind": "definition",
+      "label": "Orthogonal matrix",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "real -valued square matrix whose columns and rows are orthonormal vectors"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Matrix.orthogonalGroup",
+        "module": "Mathlib.LinearAlgebra.UnitaryGroup",
+        "match_kind": "exact"
+      },
+      "note": "Matrix.orthogonalGroup is the submonoid of square matrices whose transpose is their inverse, equivalent to having orthonormal rows/columns.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Transpose equals inverse characterization",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "a matrix Q is orthogonal if its transpose is equal to its inverse"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Matrix.mem_orthogonalGroup_iff",
+        "module": "Mathlib.LinearAlgebra.UnitaryGroup",
+        "match_kind": "exact"
+      },
+      "note": "mem_orthogonalGroup_iff states A is orthogonal iff A * Aᵀ = 1, i.e. the transpose is the inverse.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "(Lead)",
+          "snippet": "a matrix Q is orthogonal if its transpose is equal to its inverse"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle Q^{\\mathrm {T} }=Q^{-1},}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Basic properties (invertible, unitary, normal, isometry)",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "An orthogonal matrix Q is necessarily invertible"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Matrix.UnitaryGroup.det_isUnit",
+        "module": "Mathlib.LinearAlgebra.UnitaryGroup",
+        "match_kind": null
+      },
+      "note": "Invertibility (det a unit, group structure) and unitarity (orthogonalGroup is defined as unitaryGroup) hold, but the normal/isometry characterizations are not bundled as a single statement.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Orthogonal group O(n)",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "The set of n × n orthogonal matrices, under multiplication , forms the group O( n )"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Matrix.orthogonalGroup",
+        "module": "Mathlib.LinearAlgebra.UnitaryGroup",
+        "match_kind": "exact"
+      },
+      "note": "Matrix.orthogonalGroup is the group of n×n orthogonal matrices under multiplication.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Special orthogonal group SO(n)",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "The subgroup SO( n ) consisting of orthogonal matrices with determinant +1 is called the special orthogonal group"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Matrix.specialOrthogonalGroup",
+        "module": "Mathlib.LinearAlgebra.UnitaryGroup",
+        "match_kind": "exact"
+      },
+      "note": "Matrix.specialOrthogonalGroup is the orthogonal matrices with determinant 1, as confirmed by mem_specialOrthogonalGroup_iff.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Real specialization of unitary, always normal",
+      "anchor": {
+        "section": "Overview",
+        "snippet": "An orthogonal matrix is the real specialization of a unitary matrix , and thus always a normal matrix"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Matrix.orthogonalGroup",
+        "module": "Mathlib.LinearAlgebra.UnitaryGroup",
+        "match_kind": "exact"
+      },
+      "note": "orthogonalGroup is literally an abbrev for unitaryGroup over a commutative ring with starRingOfComm, making it the real specialization of the unitary group.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Overview",
+          "snippet": "An orthogonal matrix is the real specialization of a unitary matrix , and thus always a normal matrix"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle {\\mathbf {u} }\\cdot {\\mathbf {v} }=\\left(Q{\\mathbf {u} }\\right)\\cdot \\left(Q{\\mathbf {v} }\\right)}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle {\\mathbf {v} }^{\\mathrm {T} }{\\mathbf {v} }=(Q{\\mathbf {v} })^{\\mathrm {T} }(Q{\\mathbf {v} })={\\mathbf {v} }^{\\mathrm {T} }Q^{\\mathrm {T} }Q{\\mathbf {v} }.}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Orthogonal matrices preserve the dot product",
+      "anchor": {
+        "section": "Overview",
+        "snippet": "Orthogonal matrices preserve the dot product"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "LinearIsometryEquiv.toMatrix_mem_unitaryGroup",
+        "module": "Mathlib.Analysis.InnerProductSpace.Adjoint",
+        "match_kind": null
+      },
+      "note": "The correspondence between inner-product-preserving isometries and unitary/orthogonal matrices is formalized, but there is no direct lemma stating an orthogonal matrix preserves the dot product.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Overview",
+          "snippet": "Orthogonal matrices preserve the dot product"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle {\\mathbf {u} }\\cdot {\\mathbf {v} }=\\left(Q{\\mathbf {u} }\\right)\\cdot \\left(Q{\\mathbf {v} }\\right)}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle {\\mathbf {v} }^{\\mathrm {T} }{\\mathbf {v} }=(Q{\\mathbf {v} })^{\\mathrm {T} }(Q{\\mathbf {v} })={\\mathbf {v} }^{\\mathrm {T} }Q^{\\mathrm {T} }Q{\\mathbf {v} }.}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Converse: orthogonal matrices imply orthogonal transformations",
+      "anchor": {
+        "section": "Overview",
+        "snippet": "orthogonal matrices imply orthogonal transformations"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Matrix.UnitaryGroup.toLinearEquiv",
+        "module": "Mathlib.LinearAlgebra.UnitaryGroup",
+        "match_kind": null
+      },
+      "note": "A unitary/orthogonal matrix yields a linear equivalence, but it is not packaged as a norm/inner-product-preserving (isometric) transformation.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Identity transformation",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "identity transformation"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Matrix.orthogonalGroup",
+        "module": "Mathlib.LinearAlgebra.UnitaryGroup",
+        "match_kind": null
+      },
+      "note": "The identity matrix is the unit element of orthogonalGroup, but there is no dedicated example lemma for it.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Rotation about the origin",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "rotation about the origin"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Matrix.of_mem_specialOrthogonalGroup_fin_two_iff",
+        "module": "Mathlib.LinearAlgebra.UnitaryGroup",
+        "match_kind": null
+      },
+      "note": "The 2×2 special orthogonal characterization (a=d, b=-c, a²+b²=1) captures planar rotations, but a general rotation-matrix definition is not present.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Reflection across x-axis",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "reflection across x -axis"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Submodule.reflection",
+        "module": "Mathlib.Analysis.InnerProductSpace.Projection.Reflection",
+        "match_kind": null
+      },
+      "note": "Reflections in subspaces are formalized as isometry equivalences, but the specific x-axis reflection matrix is not given.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Permutation of coordinate axes",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "permutation of coordinate axes"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Equiv.Perm.permMatrix",
+        "module": "Mathlib.LinearAlgebra.Matrix.Permutation",
+        "match_kind": null
+      },
+      "note": "Permutation matrices are defined and have transpose equal to their inverse (transpose_permMatrix), so they are orthogonal, though this is not stated as membership in orthogonalGroup.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "1×1 orthogonal matrices",
+      "anchor": {
+        "section": "Lower dimensions",
+        "snippet": "The simplest orthogonal matrices are the 1 × 1 matrices"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No lemma specifically classifies the 1×1 orthogonal matrices as [±1].",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "2×2 orthogonality equations",
+      "anchor": {
+        "section": "Lower dimensions",
+        "snippet": "The 2 × 2 matrices have the form"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Matrix.of_mem_specialOrthogonalGroup_fin_two_iff",
+        "module": "Mathlib.LinearAlgebra.UnitaryGroup",
+        "match_kind": null
+      },
+      "note": "The 2×2 orthonormality equations are derived for the determinant-1 (SO(2)) case; the full O(2) entrywise equations are not stated separately.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Lower dimensions",
+          "snippet": "The 2 × 2 matrices have the form"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle {\\begin{bmatrix}p&amp;t\\\\q&amp;u\\end{bmatrix}},}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle {\\begin{aligned}1&amp;=p^{2}+t^{2},\\\\1&amp;=q^{2}+u^{2},\\\\0&amp;=pq+tu.\\end{aligned}}}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Rotation and reflection cases of 2×2",
+      "anchor": {
+        "section": "Lower dimensions",
+        "snippet": "We can interpret the first case as a rotation by θ"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Matrix.of_mem_specialOrthogonalGroup_fin_two_iff",
+        "module": "Mathlib.LinearAlgebra.UnitaryGroup",
+        "match_kind": null
+      },
+      "note": "The rotation case of 2×2 orthogonal matrices is captured by the SO(2) characterization; the reflection case and the rotation/reflection dichotomy are not.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "90° reflection is a permutation matrix",
+      "anchor": {
+        "section": "Lower dimensions",
+        "snippet": "The special case of the reflection matrix with θ = 90°"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No lemma identifies the θ=90° reflection with a specific permutation matrix.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Lower dimensions",
+          "snippet": "The special case of the reflection matrix with θ = 90°"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle {\\begin{bmatrix}0&amp;1\\\\1&amp;0\\end{bmatrix}}.}"
+        }
+      ]
+    },
+    {
+      "kind": "example",
+      "label": "Identity is a permutation matrix",
+      "anchor": {
+        "section": "Lower dimensions",
+        "snippet": "The identity is also a permutation matrix."
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Matrix.permMatrix_one",
+        "module": "Mathlib.LinearAlgebra.Matrix.Permutation",
+        "match_kind": "exact"
+      },
+      "note": "permMatrix_one shows the permutation matrix of the identity permutation is the identity matrix.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Reflection matrix is symmetric",
+      "anchor": {
+        "section": "Lower dimensions",
+        "snippet": "A reflection is its own inverse"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Submodule.reflection_inv",
+        "module": "Mathlib.Analysis.InnerProductSpace.Projection.Reflection",
+        "match_kind": null
+      },
+      "note": "Reflections are shown to be involutive/self-inverse (reflection_inv, reflection_involutive) as isometries, but matrix symmetry of a reflection is not stated.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Products of rotation/reflection matrices",
+      "anchor": {
+        "section": "Lower dimensions",
+        "snippet": "The product of two rotation matrices is a rotation matrix"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Matrix.specialOrthogonalGroup",
+        "module": "Mathlib.LinearAlgebra.UnitaryGroup",
+        "match_kind": null
+      },
+      "note": "Closure of rotations (SO) under products follows from the group structure, but the detailed product rules of rotations and reflections are not stated.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Classification as rotational or not",
+      "anchor": {
+        "section": "Higher dimensions",
+        "snippet": "it is always possible to classify orthogonal matrices as purely rotational or not"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Matrix.mem_specialOrthogonalGroup_iff",
+        "module": "Mathlib.LinearAlgebra.UnitaryGroup",
+        "match_kind": null
+      },
+      "note": "The determinant-1 condition distinguishing rotational matrices is formalized via specialOrthogonalGroup, but no theorem packages the full rotational/non-rotational classification.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Higher dimensions",
+          "snippet": "it is always possible to classify orthogonal matrices as purely rotational or not"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle {\\begin{bmatrix}-1&amp;0&amp;0\\\\0&amp;-1&amp;0\\\\0&amp;0&amp;-1\\end{bmatrix}}{\\text{ and }}{\\begin{bmatrix}0&amp;-1&amp;0\\\\1&amp;0&amp;0\\\\0&amp;0&amp;-1\\end{bmatrix}}}"
+        }
+      ]
+    },
+    {
+      "kind": "example",
+      "label": "Inversion and rotoinversion",
+      "anchor": {
+        "section": "Higher dimensions",
+        "snippet": "represent an inversion through the origin and a rotoinversion"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Inversion and rotoinversion matrices are not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Higher-dimensional rotations need several angles",
+      "anchor": {
+        "section": "Higher dimensions",
+        "snippet": "Rotations become more complicated in higher dimensions"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The description of higher-dimensional rotations requiring multiple angles is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Transposition",
+      "anchor": {
+        "section": "Primitives",
+        "snippet": "The most elementary permutation is a transposition"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Equiv.swap",
+        "module": "Mathlib.Logic.Equiv.Basic",
+        "match_kind": "exact"
+      },
+      "note": "Equiv.swap is the transposition permutation exchanging two elements.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Permutation matrix as product of transpositions",
+      "anchor": {
+        "section": "Primitives",
+        "snippet": "Any n × n permutation matrix can be constructed as a product of no more than n − 1 transpositions."
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Equiv.Perm.swap_induction_on",
+        "module": "Mathlib.GroupTheory.Perm.Sign",
+        "match_kind": null
+      },
+      "note": "Every permutation is a product of transpositions (swap_induction_on/truncSwapFactors) and permMatrix is multiplicative, but the matrix statement with the n−1 bound is not given.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Householder reflection",
+      "anchor": {
+        "section": "Primitives",
+        "snippet": "A Householder reflection is constructed from a non- null vector v"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Submodule.reflection",
+        "module": "Mathlib.Analysis.InnerProductSpace.Projection.Reflection",
+        "match_kind": null
+      },
+      "note": "Reflections in a subspace (including hyperplanes) are formalized abstractly, but the explicit Householder matrix I − 2vvᵀ/(vᵀv) is not defined.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Primitives",
+          "snippet": "A Householder reflection is constructed from a non- null vector v"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle Q=I-2{\\frac {{\\mathbf {v} }{\\mathbf {v} }^{\\mathrm {T} }}{{\\mathbf {v} }^{\\mathrm {T} }{\\mathbf {v} }}}.}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Orthogonal matrix as product of Householder reflections",
+      "anchor": {
+        "section": "Primitives",
+        "snippet": "Any orthogonal matrix of size n × n can be constructed as a product of at most n such reflections."
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The decomposition of an orthogonal matrix into Householder reflections is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Givens rotation",
+      "anchor": {
+        "section": "Primitives",
+        "snippet": "A Givens rotation acts on a two-dimensional (planar) subspace"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Givens rotations are not defined in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Rotation matrix as product of Givens rotations",
+      "anchor": {
+        "section": "Primitives",
+        "snippet": "Any rotation matrix of size n × n can be constructed as a product of at most"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The decomposition of a rotation matrix into Givens rotations is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Jacobi rotation",
+      "anchor": {
+        "section": "Primitives",
+        "snippet": "A Jacobi rotation has the same form as a Givens rotation"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Jacobi rotations are not defined in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Orthogonal iff columns form orthonormal basis",
+      "anchor": {
+        "section": "Matrix properties",
+        "snippet": "A real square matrix is orthogonal if and only if its columns form an orthonormal basis"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Matrix.mem_orthogonalGroup_iff'",
+        "module": "Mathlib.LinearAlgebra.UnitaryGroup",
+        "match_kind": null
+      },
+      "note": "mem_orthogonalGroup_iff' (Aᵀ A = 1) is exactly the orthonormal-columns condition, but it is not phrased as 'columns form an orthonormal basis'.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Determinant is ±1",
+      "anchor": {
+        "section": "Matrix properties",
+        "snippet": "The determinant of any orthogonal matrix is +1 or −1."
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Matrix.det_of_mem_unitary",
+        "module": "Mathlib.LinearAlgebra.UnitaryGroup",
+        "match_kind": "generalization"
+      },
+      "note": "det_of_mem_unitary shows the determinant lies in the unitary elements of the base ring, which for ℝ are ±1 (used explicitly in OrthonormalBasis.det_to_matrix_orthonormalBasis_real).",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Matrix properties",
+          "snippet": "The determinant of any orthogonal matrix is +1 or −1."
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle 1=\\det(I)=\\det \\left(Q^{\\mathrm {T} }Q\\right)=\\det \\left(Q^{\\mathrm {T} }\\right)\\det(Q)={\\bigl (}\\det(Q){\\bigr )}^{2}.}"
+        }
+      ]
+    },
+    {
+      "kind": "example",
+      "label": "Determinant ±1 does not imply orthogonality",
+      "anchor": {
+        "section": "Matrix properties",
+        "snippet": "having a determinant of ±1 is no guarantee of orthogonality"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No counterexample showing det ±1 does not imply orthogonality is formalized.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Matrix properties",
+          "snippet": "having a determinant of ±1 is no guarantee of orthogonality"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle {\\begin{bmatrix}2&amp;0\\\\0&amp;{\\frac {1}{2}}\\end{bmatrix}}}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Permutation determinant equals signature",
+      "anchor": {
+        "section": "Matrix properties",
+        "snippet": "With permutation matrices the determinant matches the signature"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Matrix.det_permutation",
+        "module": "Mathlib.LinearAlgebra.Matrix.Permutation",
+        "match_kind": "exact"
+      },
+      "note": "det_permutation states the determinant of a permutation matrix equals the sign of the permutation.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Diagonalizable over ℂ with eigenvalues of modulus 1",
+      "anchor": {
+        "section": "Matrix properties",
+        "snippet": "an orthogonal matrix can always be diagonalized over the complex numbers"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Unitary.spectrum_subset_circle",
+        "module": "Mathlib.Analysis.CStarAlgebra.Spectrum",
+        "match_kind": null
+      },
+      "note": "The spectrum (eigenvalues) of a unitary element lies on the unit circle, but complex unitary diagonalizability of orthogonal/normal matrices is not directly formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Orthogonal matrices form a compact Lie group",
+      "anchor": {
+        "section": "Group properties",
+        "snippet": "The inverse of every orthogonal matrix is again orthogonal"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Matrix.orthogonalGroup",
+        "module": "Mathlib.LinearAlgebra.UnitaryGroup",
+        "match_kind": null
+      },
+      "note": "The group structure (and hence closure under inverse) is formalized, but compactness and the Lie group/manifold structure are not.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "SO(n) is a normal subgroup of index 2",
+      "anchor": {
+        "section": "Group properties",
+        "snippet": "The orthogonal matrices whose determinant is +1 form a path-connected normal subgroup"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Matrix.specialOrthogonalGroup",
+        "module": "Mathlib.LinearAlgebra.UnitaryGroup",
+        "match_kind": null
+      },
+      "note": "SO(n) is defined as the determinant-1 subgroup, but normality, index 2, and path-connectedness are not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "O(n) is a subgroup of O(n+1)",
+      "anchor": {
+        "section": "Group properties",
+        "snippet": "thus O( n ) is a subgroup of O( n + 1)"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The embedding O(n) ↪ O(n+1) is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Orthogonal group is a reflection group",
+      "anchor": {
+        "section": "Group properties",
+        "snippet": "an orthogonal group is a reflection group"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The fact that the orthogonal group is generated by reflections is not formalized for the matrix orthogonal group.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "SO(n) is a subgroup of SO(n+1)",
+      "anchor": {
+        "section": "Group properties",
+        "snippet": "SO( n ) is a subgroup of SO( n + 1)"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The embedding SO(n) ↪ SO(n+1) is not formalized.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Group properties",
+          "snippet": "SO( n ) is a subgroup of SO( n + 1)"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle (n-1)+(n-2)+\\cdots +1={\\frac {n(n-1)}{2}}}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Permutation matrices form the symmetric group",
+      "anchor": {
+        "section": "Group properties",
+        "snippet": "Permutation matrices are simpler still; they form, not a Lie group , but only a finite group"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Matrix.permMatrixHom",
+        "module": "Mathlib.LinearAlgebra.Matrix.Permutation",
+        "match_kind": null
+      },
+      "note": "permMatrixHom is the monoid homomorphism Perm n →* matrices, but its injectivity/isomorphism onto the permutation matrices is not stated.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Block-diagonal decomposition of orthogonal matrices",
+      "anchor": {
+        "section": "Canonical form",
+        "snippet": "the effect of any orthogonal matrix separates into independent actions on orthogonal two-dimensional subspaces"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The block-diagonal (2×2 block) decomposition of orthogonal matrices is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Canonical form of any orthogonal matrix",
+      "anchor": {
+        "section": "Canonical form",
+        "snippet": "any orthogonal matrix can be brought to the form"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The canonical rotation-block form of orthogonal matrices is not formalized.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Canonical form",
+          "snippet": "any orthogonal matrix can be brought to the form"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle P^{\\mathrm {T} }QP={\\begin{bmatrix}{\\begin{matrix}R_{1}&amp;&amp;\\\\&amp;\\ddots &amp;\\\\&amp;&amp;R_{k}\\end{matrix}}&amp;0\\\\0&amp;{\\begin{matrix}\\pm 1&amp;&amp;\\\\&amp;\\ddots &amp;\\\\&amp;&amp;\\pm 1\\end{matrix}}\\\\\\end{bmatrix}},}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Eigenvalues on unit circle; real eigenvalue when n odd",
+      "anchor": {
+        "section": "Canonical form",
+        "snippet": "If n is odd, there is at least one real eigenvalue, +1 or −1"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Unitary.spectrum_subset_circle",
+        "module": "Mathlib.Analysis.CStarAlgebra.Spectrum",
+        "match_kind": null
+      },
+      "note": "Eigenvalues lie on the unit circle (spectrum_subset_circle), but the existence of a real eigenvalue when n is odd is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Lie algebra consists of skew-symmetric matrices",
+      "anchor": {
+        "section": "Lie algebra",
+        "snippet": "the Lie algebra of an orthogonal matrix group consists of skew-symmetric matrices"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "LieAlgebra.Orthogonal.so",
+        "module": "Mathlib.Algebra.Lie.Classical",
+        "match_kind": "exact"
+      },
+      "note": "so n R is defined as the Lie subalgebra of skew-adjoint matrices, with mem_so giving Aᵀ = -A (skew-symmetric).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Exponential of skew-symmetric is orthogonal",
+      "anchor": {
+        "section": "Lie algebra",
+        "snippet": "the matrix exponential of any skew-symmetric matrix is an orthogonal matrix"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "exp_mem_unitary_of_mem_skewAdjoint",
+        "module": "Mathlib.Analysis.Normed.Algebra.Exponential",
+        "match_kind": "generalization"
+      },
+      "note": "exp_mem_unitary_of_mem_skewAdjoint shows the exponential of a skew-adjoint element is unitary; the orthogonal matrix case over ℝ is a special case.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Angular velocity as Lie algebra element",
+      "anchor": {
+        "section": "Lie algebra",
+        "snippet": "the three-dimensional object physics calls angular velocity is a differential rotation"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The physics interpretation of angular velocity as a Lie algebra element is not formalized.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Lie algebra",
+          "snippet": "the three-dimensional object physics calls angular velocity is a differential rotation"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\Omega ={\\begin{bmatrix}0&amp;-z\\theta &amp;y\\theta \\\\z\\theta &amp;0&amp;-x\\theta \\\\-y\\theta &amp;x\\theta &amp;0\\end{bmatrix}}.}"
+        }
+      ]
+    },
+    {
+      "kind": "example",
+      "label": "Exponential gives axis-angle rotation matrix",
+      "anchor": {
+        "section": "Lie algebra",
+        "snippet": "The exponential of this is the orthogonal matrix for rotation around axis v by angle θ"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The explicit axis-angle rotation matrix obtained by exponentiation is not formalized.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Lie algebra",
+          "snippet": "The exponential of this is the orthogonal matrix for rotation around axis v by angle θ"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\exp(\\Omega )={\\begin{bmatrix}1-2s^{2}+2x^{2}s^{2}&amp;2xys^{2}-2zsc&amp;2xzs^{2}+2ysc\\\\2xys^{2}+2zsc&amp;1-2s^{2}+2y^{2}s^{2}&amp;2yzs^{2}-2xsc\\\\2xzs^{2}-2ysc&amp;2yzs^{2}+2xsc&amp;1-2s^{2}+2z^{2}s^{2}\\end{bmatrix}}.}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Condition number is 1",
+      "anchor": {
+        "section": "Benefits",
+        "snippet": "the condition number is 1 (which is the minimum)"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The notion of matrix condition number, and that it equals 1 for orthogonal matrices, is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "QR decomposition",
+      "anchor": {
+        "section": "Decompositions",
+        "snippet": "Q orthogonal, R upper triangular"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "gramSchmidtOrthonormalBasis",
+        "module": "Mathlib.Analysis.InnerProductSpace.GramSchmidtOrtho",
+        "match_kind": null
+      },
+      "note": "Gram–Schmidt produces an orthonormal basis with an upper-triangular change of basis (the essence of QR), but a matrix QR factorization theorem is not stated.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Singular value decomposition",
+      "anchor": {
+        "section": "Decompositions",
+        "snippet": "U and V orthogonal, Σ diagonal matrix"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "LinearMap.singularValues",
+        "module": "Mathlib.Analysis.InnerProductSpace.SingularValues",
+        "match_kind": null
+      },
+      "note": "Singular values of a linear map are defined, but the UΣVᵀ factorization is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Spectral decomposition of symmetric matrix",
+      "anchor": {
+        "section": "Decompositions",
+        "snippet": "S symmetric , Q orthogonal, Λ diagonal"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Matrix.IsHermitian.spectral_theorem",
+        "module": "Mathlib.Analysis.Matrix.Spectrum",
+        "match_kind": "generalization"
+      },
+      "note": "spectral_theorem diagonalizes a Hermitian matrix as a unitary conjugate of a diagonal eigenvalue matrix; real symmetric matrices are the special case with Q orthogonal.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Polar decomposition",
+      "anchor": {
+        "section": "Decompositions",
+        "snippet": "S symmetric positive-semidefinite"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The polar decomposition of a matrix is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Overdetermined system via QR",
+      "anchor": {
+        "section": "Examples (2)",
+        "snippet": "Consider an overdetermined system of linear equations"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Solving overdetermined systems via QR is not formalized.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Examples (2)",
+          "snippet": "Consider an overdetermined system of linear equations"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle R={\\begin{bmatrix}\\cdot &amp;\\cdot &amp;\\cdot \\\\0&amp;\\cdot &amp;\\cdot \\\\0&amp;0&amp;\\cdot \\\\0&amp;0&amp;0\\\\0&amp;0&amp;0\\end{bmatrix}}.}"
+        }
+      ]
+    },
+    {
+      "kind": "example",
+      "label": "Linear least squares problem",
+      "anchor": {
+        "section": "Examples (2)",
+        "snippet": "The linear least squares problem is to find the x that minimizes"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Submodule.starProjection",
+        "module": "Mathlib.Analysis.InnerProductSpace.Projection.Basic",
+        "match_kind": null
+      },
+      "note": "Orthogonal projection onto a subspace gives the norm-minimizing point (the mathematical core of least squares), but the linear-least-squares formulation itself is not stated.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Underdetermined system via SVD pseudoinverse",
+      "anchor": {
+        "section": "Examples (2)",
+        "snippet": "In the case of a linear system which is underdetermined"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The SVD pseudoinverse solution of underdetermined systems is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Polar decomposition gives nearest orthogonal matrix",
+      "anchor": {
+        "section": "Examples (2)",
+        "snippet": "The polar decomposition factors a matrix into a pair"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The polar decomposition and its nearest-orthogonal-matrix property are not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Averaging algorithm convergence",
+      "anchor": {
+        "section": "Examples (2)",
+        "snippet": "consider a non-orthogonal matrix for which the simple averaging algorithm takes seven steps"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The averaging algorithm and its convergence are not formalized.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Examples (2)",
+          "snippet": "consider a non-orthogonal matrix for which the simple averaging algorithm takes seven steps"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle {\\begin{bmatrix}3&amp;1\\\\7&amp;5\\end{bmatrix}}\\rightarrow {\\begin{bmatrix}1.8125&amp;0.0625\\\\3.4375&amp;2.6875\\end{bmatrix}}\\rightarrow \\cdots \\rightarrow {\\begin{bmatrix}0.8&amp;-0.6\\\\0.6&amp;0.8\\end{bmatrix}}}"
+        }
+      ]
+    },
+    {
+      "kind": "definition",
+      "label": "Uniform via Haar measure",
+      "anchor": {
+        "section": "Randomization",
+        "snippet": "is defined in terms of Haar measure"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "A Haar/uniform measure on the orthogonal group is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "QR of normal entries yields uniform orthogonal matrices",
+      "anchor": {
+        "section": "Randomization",
+        "snippet": "the QR decomposition of independent normally distributed random entries does"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Generating Haar-uniform orthogonal matrices via QR of Gaussian entries is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Subgroup algorithm for random orthogonal matrices",
+      "anchor": {
+        "section": "Randomization",
+        "snippet": "To generate an ( n + 1) × ( n + 1) orthogonal matrix"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The subgroup algorithm for sampling random orthogonal matrices is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Nearest orthogonal matrix via SVD",
+      "anchor": {
+        "section": "Nearest orthogonal matrix",
+        "snippet": "The problem of finding the orthogonal matrix Q nearest a given matrix M"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The SVD-based nearest-orthogonal-matrix solution is not formalized.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Nearest orthogonal matrix",
+          "snippet": "The problem of finding the orthogonal matrix Q nearest a given matrix M"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle Q=M\\left(M^{\\mathrm {T} }M\\right)^{-{\\frac {1}{2}}}}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Quadratically convergent recurrence",
+      "anchor": {
+        "section": "Nearest orthogonal matrix",
+        "snippet": "a recurrence which converges to an orthogonal matrix quadratically"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The quadratically convergent recurrence for the nearest orthogonal matrix is not formalized.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Nearest orthogonal matrix",
+          "snippet": "a recurrence which converges to an orthogonal matrix quadratically"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle Q_{n+1}=2M\\left(Q_{n}^{-1}M+M^{\\mathrm {T} }Q_{n}\\right)^{-1}}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Stability condition for iterations",
+      "anchor": {
+        "section": "Nearest orthogonal matrix",
+        "snippet": "These iterations are stable provided the condition number of M is less than three."
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The stability condition (condition number < 3) for these iterations is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "SO(n) is not simply connected",
+      "anchor": {
+        "section": "Spin and pin",
+        "snippet": "the +1 component, SO( n ) , is not simply connected"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The non-simply-connectedness of SO(n) is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Spin(n) is the universal cover of SO(n)",
+      "anchor": {
+        "section": "Spin and pin",
+        "snippet": "Spin( n ) is simply connected and thus the universal covering group for SO( n )"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": "spinGroup",
+        "module": "Mathlib.LinearAlgebra.CliffordAlgebra.SpinGroup",
+        "match_kind": null
+      },
+      "note": "spinGroup is defined in the Clifford algebra, but it is not connected to SO(n) as a universal cover and no covering/simply-connected facts are proved.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Spin(3) = SU(2)",
+      "anchor": {
+        "section": "Spin and pin",
+        "snippet": "the most famous example of a spin group is Spin(3)"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The isomorphism Spin(3) ≅ SU(2) is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Non-square: the two conditions differ",
+      "anchor": {
+        "section": "Rectangular matrices",
+        "snippet": "the conditions Q T Q = I and QQ T = I are not equivalent"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The orthogonalGroup is defined only for square matrices, and the non-equivalence of QᵀQ=I and QQᵀ=I for rectangular Q is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Orthogonal k-frames and Stiefel manifold",
+      "anchor": {
+        "section": "Rectangular matrices",
+        "snippet": "matrices with orthonormal columns may be referred to as orthogonal k-frames"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Orthogonal k-frames and the Stiefel manifold are not formalized.",
+      "provenance": "ai"
+    }
+  ]
+}

@@ -1,0 +1,425 @@
+{
+  "slug": "Altitude_triangle",
+  "wikipedia_title": "Altitude (triangle)",
+  "display_title": "Altitude (triangle)",
+  "schema_version": 3,
+  "annotation_style": "theorem_article",
+  "annotations": [
+    {
+      "kind": "definition",
+      "label": "Altitude of a triangle",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "an altitude of a triangle is a line segment through a given vertex"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Affine.Simplex.altitude",
+        "module": "Mathlib.Geometry.Euclidean.Altitude",
+        "match_kind": "generalization"
+      },
+      "note": "`Affine.Simplex.altitude` defines the altitude of a simplex (through a vertex, orthogonal to the opposite face), which specializes to the triangle altitude.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Base and extended base",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "are called, respectively, the base and extended base of the altitude"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has no explicit notion named 'base' or 'extended base' of an altitude; the opposite face is referenced via `s.points '' {i}ᶜ` in the altitude definition but is not given this name.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Foot of the altitude",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "is called the foot of the altitude"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Affine.Simplex.altitudeFoot",
+        "module": "Mathlib.Geometry.Euclidean.Altitude",
+        "match_kind": "generalization"
+      },
+      "note": "`Affine.Simplex.altitudeFoot` is the orthogonal projection of a vertex onto the opposite face, exactly the foot of the altitude.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Length of the altitude (height)",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "is the distance between the foot and the apex"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Affine.Simplex.height",
+        "module": "Mathlib.Geometry.Euclidean.Altitude",
+        "match_kind": "generalization"
+      },
+      "note": "`Affine.Simplex.height` is defined as `dist (s.points i) (s.altitudeFoot i)`, the length of the altitude.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Dropping the altitude",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "is known as dropping the altitude at that vertex"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This is informal terminology for the construction; Mathlib defines the resulting altitude/foot but does not name the action.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Area formula via altitude",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "one-half of the product of an altitude's length and its base's length"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has no notion of triangle area as ½·base·height; no such formula was found.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Longest altitude perpendicular to shortest side",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "the longest altitude is perpendicular to the shortest side of the triangle"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No lemma comparing the lengths of distinct altitudes to the lengths of the opposite sides was found.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Isosceles altitude properties",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "the altitude having the incongruent side as its base will have the midpoint of that side as its foot"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has no `Isosceles` triangle predicate or lemma identifying the altitude foot with the midpoint of the base.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Isosceles altitude is angle bisector",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "the altitude having the incongruent side as its base will be the angle bisector of the vertex angle"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No isosceles-triangle altitude/angle-bisector coincidence lemma found in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Geometric mean theorem",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "the altitude drawn to the hypotenuse c divides the hypotenuse into two segments"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Searches for 'geometric mean theorem' and related right-triangle altitude identities returned no matches in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Location of altitude feet by triangle type",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "For acute triangles, the feet of the altitudes all fall on the triangle's sides"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib defines `Affine.Simplex.AcuteAngled` but has no theorem characterizing where altitude feet lie relative to the sides by acute/right/obtuse classification.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Orthocenter",
+      "anchor": {
+        "section": "Orthocenter",
+        "snippet": "is the point where the three (possibly extended) altitudes intersect"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Affine.Triangle.orthocenter",
+        "module": "Mathlib.Geometry.Euclidean.MongePoint",
+        "match_kind": "exact"
+      },
+      "note": "`Affine.Triangle.orthocenter` is defined via the Monge point and shown to lie on all altitudes (`orthocenter_mem_altitude`).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Orthocenter location characterization",
+      "anchor": {
+        "section": "Orthocenter",
+        "snippet": "The orthocenter lies inside the triangle if and only if the triangle is acute"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No lemma relating membership of the orthocenter in the triangle's interior to acuteness/obtuseness is present in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Orthocenter of right triangle",
+      "anchor": {
+        "section": "Orthocenter",
+        "snippet": "the orthocenter coincides with the vertex at the right angle"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No statement identifying the orthocenter of a right triangle with the right-angle vertex was found.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Orthocenter of equilateral triangle",
+      "anchor": {
+        "section": "Orthocenter",
+        "snippet": "all triangle centers (including the orthocenter) coincide at its centroid"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has `Equilateral` and `centroid`/`orthocenter`/`circumcenter`/`incenter` but no lemma stating they coincide for an equilateral triangle.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Altitude in terms of the sides",
+      "anchor": {
+        "section": "Altitude in terms of the sides",
+        "snippet": "the altitude from side a (the base) is given by"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No formula expressing the altitude length in terms of side lengths (Heron-style) was found in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Altitudes inversely proportional to sides",
+      "anchor": {
+        "section": "Altitude in terms of the sides",
+        "snippet": "Any two altitudes of a triangle are inversely proportional with the sides on which they fall"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No lemma stating `hₐ · a = h_b · b` (twice area) for triangle altitudes was found.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Inradius theorem",
+      "anchor": {
+        "section": "Inradius theorems",
+        "snippet": "The altitudes and the incircle radius r are related by"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib defines `Affine.Simplex.inradius` (in `Geometry/Euclidean/Incenter.lean`) but has no lemma relating it to the sum of reciprocals of the altitudes.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Circumradius theorem",
+      "anchor": {
+        "section": "Circumradius theorem",
+        "snippet": "and the triangle's circumradius (radius of the triangle's circumscribed circle) as R , the altitude is given by"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has `Affine.Simplex.circumradius` but no formula expressing an altitude in terms of two sides and the circumradius.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Interior point altitude relation",
+      "anchor": {
+        "section": "Interior point",
+        "snippet": "are the perpendicular distances from any point P to the sides"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No theorem of the form `y₁/hₐ + y₂/h_b + y₃/h_c = 1` for distances from an interior point was found in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Area reciprocal theorem",
+      "anchor": {
+        "section": "Area theorem",
+        "snippet": "the semi-sum of the reciprocals of the altitudes"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No area formula involving the reciprocals of the altitudes was found in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "General point on an altitude",
+      "anchor": {
+        "section": "General point on an altitude",
+        "snippet": "If E is any point on an altitude AD of any triangle"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No identity `AC² + EB² = AB² + CE²` for points on an altitude was found in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Triangle inequality for altitudes",
+      "anchor": {
+        "section": "Triangle inequality",
+        "snippet": "the triangle inequality"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No lemma asserting that the altitudes of a triangle themselves satisfy the triangle inequality was found.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Viviani's theorem",
+      "anchor": {
+        "section": "Equilateral triangle",
+        "snippet": "the sum of the perpendiculars to the three sides is equal to the altitude of the triangle"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "A grep for 'Viviani' returned no results in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Legs as altitudes in right triangle",
+      "anchor": {
+        "section": "Right triangle",
+        "snippet": "each of the legs is also an altitude"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No statement identifying the legs of a right triangle with two of its altitudes was found.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Inverse Pythagorean theorem",
+      "anchor": {
+        "section": "Right triangle",
+        "snippet": "This is also known as the inverse Pythagorean theorem"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "A grep for 'inverse Pythagorean' returned no results; only the standard Pythagorean theorem is present in Mathlib.",
+      "provenance": "ai"
+    }
+  ]
+}

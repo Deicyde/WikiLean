@@ -1,0 +1,585 @@
+{
+  "slug": "Simplex_algorithm",
+  "wikipedia_title": "Simplex algorithm",
+  "display_title": "Simplex algorithm",
+  "schema_version": 3,
+  "annotation_style": "theorem_article",
+  "annotations": [
+    {
+      "kind": "definition",
+      "label": "Simplex algorithm",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "is an algorithm for linear programming"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Mathlib.Tactic.Linarith.SimplexAlgorithm.runSimplexAlgorithm",
+        "module": "Mathlib.Tactic.Linarith.Oracle.SimplexAlgorithm.SimplexAlgorithm",
+        "match_kind": "special_case"
+      },
+      "note": "Mathlib has an executable simplex-algorithm implementation, but only as a meta tactic oracle used by linarith for certificate search, not as a general LP solver with a mathematical specification.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Canonical form of a linear program",
+      "anchor": {
+        "section": "Overview",
+        "snippet": "The simplex algorithm operates on linear programs in the canonical form"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No mathematical definition of a linear program (canonical form: maximize cᵀx s.t. Ax ≤ b, x ≥ 0) is found in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Basic feasible solution (vertex of feasible polytope)",
+      "anchor": {
+        "section": "Overview",
+        "snippet": "An extreme point or vertex of this polytope is known as basic feasible solution"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Set.extremePoints",
+        "module": "Mathlib.Analysis.Convex.Extreme",
+        "match_kind": "generalization"
+      },
+      "note": "The general convex-geometric notion of extreme points exists (`Set.extremePoints`, `IsExtreme`), but no LP-specific algebraic notion of basic feasible solution is formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Maximum attained at an extreme point",
+      "anchor": {
+        "section": "Overview",
+        "snippet": "if the objective function has a maximum value on the feasible region, then it has this value on (at least) one of the extreme points"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "closure_convexHull_extremePoints",
+        "module": "Mathlib.Analysis.Convex.KreinMilman",
+        "match_kind": "generalization"
+      },
+      "note": "The Krein–Milman theorem is in Mathlib, but the LP/Bauer maximum-principle statement that a linear objective on a polytope attains its maximum at an extreme point is not stated as such.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Improving edge from a non-optimal extreme point",
+      "anchor": {
+        "section": "Overview",
+        "snippet": "if an extreme point is not a maximum point of the objective function, then there is an edge containing the point so that the value of the objective function is strictly increasing on the edge moving away from the point"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No formalization of polytope edges or of the local improvement lemma for the simplex method is found.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Termination of the simplex algorithm",
+      "anchor": {
+        "section": "Overview",
+        "snippet": "The algorithm always terminates because the number of vertices in the polytope is finite"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The linarith oracle's `runSimplexAlgorithm` is asserted to terminate by Bland's rule in a docstring, but no termination theorem is proved.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Infeasible linear program",
+      "anchor": {
+        "section": "Overview",
+        "snippet": "In the latter case the linear program is called infeasible"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Mathlib.Tactic.Linarith.SimplexAlgorithm.SimplexAlgorithmException.infeasible",
+        "module": "Mathlib.Tactic.Linarith.Oracle.SimplexAlgorithm.SimplexAlgorithm",
+        "match_kind": "special_case"
+      },
+      "note": "Only an `infeasible` exception constructor in the tactic monad exists; there is no mathematical definition of infeasibility of an LP.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Phase I and Phase II of the simplex method",
+      "anchor": {
+        "section": "Overview",
+        "snippet": "The solution of a linear program is accomplished in two steps"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Two-phase simplex method is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Slack variable",
+      "anchor": {
+        "section": "Standard form",
+        "snippet": "a new variable, called a slack variable , is introduced to change the constraint to an equality constraint"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Slack variables for LP are not formalized; no occurrence of the term in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Surplus variable",
+      "anchor": {
+        "section": "Standard form",
+        "snippet": "some authors refer to the variable introduced as a surplus variable"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Surplus variables for LP are not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Standard-form transformation procedure",
+      "anchor": {
+        "section": "Standard form",
+        "snippet": "The transformation of a linear program to one in standard form may be accomplished as follows"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No LP standardization procedure is formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Canonical form of a simplex tableau",
+      "anchor": {
+        "section": "Simplex tableau",
+        "snippet": "then the tableau is said to be in canonical form"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Mathlib.Tactic.Linarith.SimplexAlgorithm.Tableau",
+        "module": "Mathlib.Tactic.Linarith.Oracle.SimplexAlgorithm.Datatypes",
+        "match_kind": "special_case"
+      },
+      "note": "The `Tableau` structure stores basic/free indices and the coefficient matrix, but no formal predicate for `canonical form` is defined.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Basic and nonbasic (free) variables",
+      "anchor": {
+        "section": "Simplex tableau",
+        "snippet": "The variables corresponding to the columns of the identity matrix are called basic variables while the remaining variables are called nonbasic or free variables"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Mathlib.Tactic.Linarith.SimplexAlgorithm.Tableau",
+        "module": "Mathlib.Tactic.Linarith.Oracle.SimplexAlgorithm.Datatypes",
+        "match_kind": "special_case"
+      },
+      "note": "The `Tableau` structure carries `basic` and `free` index arrays, mirroring the partition into basic and nonbasic variables at the implementation level.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Reduction of any BFS to canonical-form tableau",
+      "anchor": {
+        "section": "Simplex tableau",
+        "snippet": "given a basic feasible solution, the columns corresponding to the nonzero variables can be expanded to a nonsingular matrix"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The statement that any BFS can be expanded to a canonical-form tableau via a nonsingular submatrix is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Pricing out and relative cost coefficients",
+      "anchor": {
+        "section": "Simplex tableau",
+        "snippet": "This process is called pricing out and results in a canonical tableau"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Pricing out and reduced/relative cost coefficients are not named or formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Pivot operation",
+      "anchor": {
+        "section": "Pivot operations",
+        "snippet": "The geometrical operation of moving from a basic feasible solution to an adjacent basic feasible solution is implemented as a pivot operation"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Mathlib.Tactic.Linarith.SimplexAlgorithm.doPivotOperation",
+        "module": "Mathlib.Tactic.Linarith.Oracle.SimplexAlgorithm.SimplexAlgorithm",
+        "match_kind": "special_case"
+      },
+      "note": "`doPivotOperation` implements a pivot on the linarith oracle's `Tableau`, swapping one basic and one free index and updating the matrix, but lacks a mathematical specification.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Entering and leaving variables",
+      "anchor": {
+        "section": "Pivot operations",
+        "snippet": "the variable corresponding to the pivot column enters the set of basic variables and is called the entering variable"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Mathlib.Tactic.Linarith.SimplexAlgorithm.choosePivots",
+        "module": "Mathlib.Tactic.Linarith.Oracle.SimplexAlgorithm.SimplexAlgorithm",
+        "match_kind": "special_case"
+      },
+      "note": "`chooseEnteringVar` and `chooseExitingVar` (combined in `choosePivots`) play the roles of entering/leaving variable selection in the tactic, without abstract definitions.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Entering variable selection rule",
+      "anchor": {
+        "section": "Entering variable selection",
+        "snippet": "one should select a pivot column whose the corresponding entry in the objective row"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Mathlib.Tactic.Linarith.SimplexAlgorithm.chooseEnteringVar",
+        "module": "Mathlib.Tactic.Linarith.Oracle.SimplexAlgorithm.SimplexAlgorithm",
+        "match_kind": "special_case"
+      },
+      "note": "Mathlib's `chooseEnteringVar` selects an entering variable, but using Bland's smallest-index rule rather than the Dantzig negative-cost rule described in the article.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Optimality when no negative entry in objective row",
+      "anchor": {
+        "section": "Entering variable selection",
+        "snippet": "If none of the entries in the objective row is negative then no choice of entering variable can be made and the solution is in fact at the maximum"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The optimality criterion for tableau form is not proven as a theorem.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Unboundedness criterion in leaving variable selection",
+      "anchor": {
+        "section": "Leaving variable selection",
+        "snippet": "If there are no positive entries in the pivot column then the entering variable can take any non-negative value with the solution remaining feasible"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The unboundedness detection criterion is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Minimum ratio test",
+      "anchor": {
+        "section": "Leaving variable selection",
+        "snippet": "This is called the minimum ratio test"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Mathlib.Tactic.Linarith.SimplexAlgorithm.chooseExitingVar",
+        "module": "Mathlib.Tactic.Linarith.Oracle.SimplexAlgorithm.SimplexAlgorithm",
+        "match_kind": "special_case"
+      },
+      "note": "`chooseExitingVar` computes the minimum ratio inside the linarith tactic, but the minimum ratio test is not defined abstractly.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Simplex example (Phase II run)",
+      "anchor": {
+        "section": "Example",
+        "snippet": "Consider the linear program"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No worked LP example of this form appears in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Artificial variables and Phase I problem",
+      "anchor": {
+        "section": "Finding an initial canonical tableau",
+        "snippet": "This can be accomplished by the introduction of artificial variables"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Artificial variables and the Phase I auxiliary LP are not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Phase I termination and feasibility characterization",
+      "anchor": {
+        "section": "Finding an initial canonical tableau",
+        "snippet": "The simplex algorithm applied to the Phase I problem must terminate with a minimum value for the new objective function"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Phase I termination/feasibility theorem is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Phase I/II simplex example with equality constraints",
+      "anchor": {
+        "section": "Example (2)",
+        "snippet": "It differs from the previous example by having equality instead of inequality constraints"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No two-phase worked example appears in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Standard simplex algorithm (tableau implementation)",
+      "anchor": {
+        "section": "Implementation",
+        "snippet": "This implementation is referred to as the \" standard simplex algorithm\""
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Mathlib.Tactic.Linarith.SimplexAlgorithm.runSimplexAlgorithm",
+        "module": "Mathlib.Tactic.Linarith.Oracle.SimplexAlgorithm.SimplexAlgorithm",
+        "match_kind": "special_case"
+      },
+      "note": "Mathlib's `runSimplexAlgorithm` operates on the explicit `Tableau` matrix, matching the tableau-based standard implementation, though only for linarith certificate search.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Revised simplex algorithm",
+      "anchor": {
+        "section": "Implementation",
+        "snippet": "These observations motivate the \" revised simplex algorithm \""
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The revised simplex method (basis-inverse representation) is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Degenerate basic feasible solution",
+      "anchor": {
+        "section": "Degeneracy: stalling and cycling",
+        "snippet": "Basic feasible solutions where at least one of the basic variables is zero are called degenerate"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Degeneracy of a BFS is not defined in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Stalling and cycling",
+      "anchor": {
+        "section": "Degeneracy: stalling and cycling",
+        "snippet": "Worse than stalling is the possibility the same set of basic variables occurs twice"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Notions of stalling and cycling for the simplex method are not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Bland's rule prevents cycling",
+      "anchor": {
+        "section": "Degeneracy: stalling and cycling",
+        "snippet": "Bland's rule prevents cycling and thus guarantees that the simplex algorithm always terminates"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Bland's rule is implemented in the linarith oracle (in `choosePivots`), but its no-cycling/termination guarantee is not proved as a theorem.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Klee–Minty exponential worst case",
+      "anchor": {
+        "section": "Efficiency in the worst case",
+        "snippet": "showing that the worst-case complexity of simplex method as formulated by Dantzig is exponential time"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Klee–Minty's exponential lower bound is not in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "NP-mightiness of a simplex variant",
+      "anchor": {
+        "section": "Efficiency in the worst case",
+        "snippet": "it was proved"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Complexity-theoretic results about simplex variants are not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "PSPACE-completeness of Dantzig's pivot rule output",
+      "anchor": {
+        "section": "Efficiency in the worst case",
+        "snippet": "computing the output of Dantzig's pivot rule is PSPACE-complete"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "PSPACE-completeness of simplex pivot output is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Polynomial average-case complexity",
+      "anchor": {
+        "section": "Efficiency in practice",
+        "snippet": "The simplex algorithm has polynomial-time average-case complexity under various probability distributions"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Average-case polynomial complexity of simplex is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Smoothed analysis of the simplex method",
+      "anchor": {
+        "section": "Efficiency in practice",
+        "snippet": "the running time of the simplex method on input with noise is polynomial in the number of variables and the magnitude of the perturbations"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Spielman–Teng smoothed analysis is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Linear-fractional programming",
+      "anchor": {
+        "section": "Linear-fractional programming",
+        "snippet": "the objective function of a linear–fractional program is a ratio of two linear functions"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Linear-fractional programming is not formalized in Mathlib.",
+      "provenance": "ai"
+    }
+  ]
+}

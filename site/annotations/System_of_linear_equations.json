@@ -1,0 +1,755 @@
+{
+  "slug": "System_of_linear_equations",
+  "wikipedia_title": "System of linear equations",
+  "display_title": "System of linear equations",
+  "schema_version": 3,
+  "annotation_style": "theorem_article",
+  "annotations": [
+    {
+      "kind": "definition",
+      "label": "System of linear equations",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "is a collection of two or more linear equations involving the same variables"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Matrix.mulVec",
+        "module": "Mathlib.Data.Matrix.Mul",
+        "match_kind": "generalization"
+      },
+      "note": "Mathlib has no named 'system of linear equations' object; a system is encoded as the matrix-vector equation A *ᵥ x = b via Matrix.mulVec.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Three equations in three variables",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "is a system of three equations in the three variables"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This is a specific illustrative example with no dedicated Mathlib declaration.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Solution to a linear system",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "A solution to a linear system is an assignment of values to the variables such that all the equations are simultaneously satisfied"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Matrix.mulVec",
+        "module": "Mathlib.Data.Matrix.Mul",
+        "match_kind": "generalization"
+      },
+      "note": "A solution is simply a vector x with A *ᵥ x = b; Mathlib expresses this directly but has no standalone 'solution' definition.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "One equation in one unknown",
+      "anchor": {
+        "section": "Trivial example",
+        "snippet": "The system of one equation in one unknown"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "A trivial worked example with no corresponding Mathlib declaration.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Two equations, two variables",
+      "anchor": {
+        "section": "Simple nontrivial example",
+        "snippet": "The simplest kind of nontrivial linear system involves two equations and two variables"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "A worked numerical example with no corresponding Mathlib declaration.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "General system form",
+      "anchor": {
+        "section": "General form",
+        "snippet": "A general system of m linear equations with n unknowns and coefficients can be written as"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Matrix.mulVec",
+        "module": "Mathlib.Data.Matrix.Mul",
+        "match_kind": "generalization"
+      },
+      "note": "The general m×n system is captured by the matrix-vector product A *ᵥ x over arbitrary index types m, n.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Vector equation view",
+      "anchor": {
+        "section": "Vector equation",
+        "snippet": "each unknown is a weight for a column vector in a linear combination"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Matrix.mulVec_eq_sum",
+        "module": "Mathlib.Data.Matrix.Mul",
+        "match_kind": "exact"
+      },
+      "note": "Matrix.mulVec_eq_sum states A *ᵥ v is the sum of the columns weighted by the entries of v, exactly the linear-combination-of-columns view.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Matrix equation form",
+      "anchor": {
+        "section": "Matrix equation",
+        "snippet": "The vector equation is equivalent to a matrix equation of the form"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Matrix.mulVec",
+        "module": "Mathlib.Data.Matrix.Mul",
+        "match_kind": "exact"
+      },
+      "note": "The matrix equation A x = b is exactly Matrix.mulVec (A *ᵥ x), with Matrix.mulVecLin giving its linear-map form.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Matrix equation",
+          "snippet": "The vector equation is equivalent to a matrix equation of the form"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle A\\mathbf {x} =\\mathbf {b} }"
+        }
+      ]
+    },
+    {
+      "kind": "definition",
+      "label": "Solution set",
+      "anchor": {
+        "section": "Solution set",
+        "snippet": "The set of all possible solutions is called the solution set"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Matrix.mulVecLin",
+        "module": "Mathlib.LinearAlgebra.Matrix.ToLin",
+        "match_kind": "generalization"
+      },
+      "note": "Mathlib has no standalone 'solution set' notion, but for homogeneous systems it is LinearMap.ker of Matrix.mulVecLin and for general systems a coset thereof.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Three possible behaviors",
+      "anchor": {
+        "section": "Solution set",
+        "snippet": "A linear system may behave in any one of three possible ways"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No single Mathlib theorem states a linear system has zero, one, or infinitely many solutions.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Two variables: lines",
+      "anchor": {
+        "section": "Geometric interpretation",
+        "snippet": "each linear equation determines a line on the xy - plane"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The geometric interpretation of a two-variable equation as a line is not formalized as a statement in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Three variables: planes",
+      "anchor": {
+        "section": "Geometric interpretation",
+        "snippet": "each linear equation determines a plane in three-dimensional space"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The geometric interpretation of a three-variable equation as a plane is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "n variables: hyperplanes",
+      "anchor": {
+        "section": "Geometric interpretation",
+        "snippet": "each linear equation determines a hyperplane in n -dimensional space"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The statement that a single linear equation cuts out a hyperplane is not formalized as such, though Mathlib has a separate notion of hyperplanes.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Underdetermined system",
+      "anchor": {
+        "section": "General behavior",
+        "snippet": "a system with fewer equations than unknowns has infinitely many solutions"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This 'general behavior' heuristic (which can fail for inconsistent systems) has no matching Mathlib theorem.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Square system unique solution",
+      "anchor": {
+        "section": "General behavior",
+        "snippet": "a system with the same number of equations and unknowns has a single unique solution"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Matrix.mulVec_injective_iff_isUnit",
+        "module": "Mathlib.LinearAlgebra.Matrix.NonsingularInverse",
+        "match_kind": "special_case"
+      },
+      "note": "The precise version—A square and a unit (full rank) gives a unique solution—is Matrix.mulVec_injective_iff_isUnit together with mulVec_surjective_iff_isUnit.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Overdetermined system",
+      "anchor": {
+        "section": "General behavior",
+        "snippet": "a system with more equations than unknowns has no solution"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This 'general behavior' heuristic (which can fail for consistent overdetermined systems) has no matching Mathlib theorem.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Dimension of solution set",
+      "anchor": {
+        "section": "General behavior",
+        "snippet": "the dimension of the solution set is, in general, equal to n − m"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "LinearMap.finrank_range_add_finrank_ker",
+        "module": "Mathlib.LinearAlgebra.FiniteDimensional.Lemmas",
+        "match_kind": "generalization"
+      },
+      "note": "The exact statement is rank–nullity (finrank_range_add_finrank_ker), giving dim of solution space = n − rank, which equals n − m only when the rows are independent.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Independent equations",
+      "anchor": {
+        "section": "Independence",
+        "snippet": "The equations of a linear system are independent if none of the equations can be derived algebraically from the others"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Matrix.linearIndependent_rows_iff_isUnit",
+        "module": "Mathlib.LinearAlgebra.Matrix.NonsingularInverse",
+        "match_kind": "special_case"
+      },
+      "note": "Independence of equations corresponds to linear independence of the coefficient rows, formalized via LinearIndependent and (for square A) linearIndependent_rows_iff_isUnit.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Scaled equation not independent",
+      "anchor": {
+        "section": "Independence",
+        "snippet": "are not independent — they are the same equation when scaled by a factor of two"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "A specific example of dependent equations with no dedicated Mathlib declaration.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Sum of two equations not independent",
+      "anchor": {
+        "section": "Independence",
+        "snippet": "are not independent, because the third equation is the sum of the other two"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "A specific example of dependent equations with no dedicated Mathlib declaration.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Consistent and inconsistent systems",
+      "anchor": {
+        "section": "Consistency",
+        "snippet": "A linear system is inconsistent if it has no solution, and otherwise, it is said to be consistent"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "LinearMap.mem_range",
+        "module": "Mathlib.Algebra.Module.Submodule.Range",
+        "match_kind": "generalization"
+      },
+      "note": "Consistency (existence of a solution) is membership of b in the range of the linear map, i.e. LinearMap.mem_range, but 'consistent system' is not a named definition.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Inconsistent pair of equations",
+      "anchor": {
+        "section": "Consistency",
+        "snippet": "In fact, by subtracting the first equation from the second one"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "A specific worked example of an inconsistent pair with no dedicated Mathlib declaration.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Three pairwise-consistent inconsistent equations",
+      "anchor": {
+        "section": "Consistency",
+        "snippet": "It is possible for three linear equations to be inconsistent, even though any two of them are consistent together"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "A specific worked example with no dedicated Mathlib declaration.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Inconsistency and linear dependence",
+      "anchor": {
+        "section": "Consistency",
+        "snippet": "inconsistencies occur if the left-hand sides of the equations in a system are linearly dependent"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Matrix.exists_mulVec_eq_zero_iff",
+        "module": "Mathlib.LinearAlgebra.Matrix.ToLinearEquiv",
+        "match_kind": "generalization"
+      },
+      "note": "Related infrastructure links dependence of rows/columns (det = 0) to a nontrivial kernel via exists_mulVec_eq_zero_iff, but the inconsistency-vs-dependence statement itself is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Rouché–Capelli theorem",
+      "anchor": {
+        "section": "Consistency",
+        "snippet": "according to the Rouché–Capelli theorem , any system of equations (overdetermined or otherwise) is inconsistent if the rank of the augmented matrix is greater than the rank of the coefficient matrix"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has Matrix.rank but no Rouché–Capelli theorem relating consistency to the rank of the augmented matrix.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Equivalent linear systems",
+      "anchor": {
+        "section": "Equivalence",
+        "snippet": "Two linear systems using the same set of variables are equivalent if each of the equations in the second system can be derived algebraically"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has no notion of equivalence of linear systems.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Equivalent iff same solution set",
+      "anchor": {
+        "section": "Equivalence",
+        "snippet": "It follows that two linear systems are equivalent if and only if they have the same solution set"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Without a formalized notion of system equivalence, this characterization is not stated in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Free variables",
+      "anchor": {
+        "section": "Describing the solution",
+        "snippet": "typically some of the variables are designated as free"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has no notion of free variables in a solved system.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Degrees of freedom",
+      "anchor": {
+        "section": "Describing the solution",
+        "snippet": "Each free variable gives the solution space one degree of freedom"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The 'degrees of freedom' counting via free variables is not formalized, though it corresponds to the finrank of the kernel.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Elimination of variables method",
+      "anchor": {
+        "section": "Elimination of variables",
+        "snippet": "The simplest method for solving a system of linear equations is to repeatedly eliminate variables"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The variable-elimination solving algorithm is not formalized as a Mathlib definition.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Row reduction (Gaussian elimination)",
+      "anchor": {
+        "section": "Row reduction",
+        "snippet": "In row reduction (also known as Gaussian elimination ), the linear system is represented as an augmented matrix"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Matrix.exists_list_transvec_mul_diagonal_mul_list_transvec",
+        "module": "Mathlib.LinearAlgebra.Matrix.Transvection",
+        "match_kind": "generalization"
+      },
+      "note": "Mathlib formalizes reduction of a matrix to diagonal form by transvections, the algebraic core of Gaussian elimination, but not the augmented-matrix solving procedure.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Elementary row operations",
+      "anchor": {
+        "section": "Row reduction",
+        "snippet": "There are three types of elementary row operations"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Matrix.TransvectionStruct",
+        "module": "Mathlib.LinearAlgebra.Matrix.Transvection",
+        "match_kind": "special_case"
+      },
+      "note": "Mathlib formalizes transvections (the row-addition operation) via TransvectionStruct, but not a unified 'three elementary row operations' concept.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Row operations preserve equivalence",
+      "anchor": {
+        "section": "Row reduction",
+        "snippet": "Because these operations are reversible, the augmented matrix produced always represents a linear system that is equivalent to the original"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Matrix.TransvectionStruct.inv_mul",
+        "module": "Mathlib.LinearAlgebra.Matrix.Transvection",
+        "match_kind": "generalization"
+      },
+      "note": "Reversibility of transvections is formalized (inv_mul gives an explicit inverse), but the resulting preservation of a system's solution set is not stated.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Cramer's rule",
+      "anchor": {
+        "section": "Cramer's rule",
+        "snippet": "Cramer's rule is an explicit formula for the solution of a system of linear equations, with each variable given by a quotient of two determinants"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Matrix.mulVec_cramer",
+        "module": "Mathlib.LinearAlgebra.Matrix.Adjugate",
+        "match_kind": "exact"
+      },
+      "note": "Cramer's rule is Matrix.mulVec_cramer (A *ᵥ cramer A b = det A • b) together with Matrix.cramer_apply expressing each component as a determinant quotient.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Square full-rank matrix solution",
+      "anchor": {
+        "section": "Matrix solution",
+        "snippet": "If the matrix A is square (has m rows and n = m columns) and has full rank (all m rows are independent), then the system has a unique solution given by"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Matrix.inv_mulVec_eq_vec",
+        "module": "Mathlib.LinearAlgebra.Matrix.NonsingularInverse",
+        "match_kind": "exact"
+      },
+      "note": "For invertible (full-rank square) A, the unique solution x = A⁻¹ b is Matrix.inv_mulVec_eq_vec, with uniqueness from mulVec_injective_of_invertible.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Moore–Penrose general solution",
+      "anchor": {
+        "section": "Matrix solution",
+        "snippet": "all solutions (if any exist) are given using the Moore–Penrose inverse of A"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib does not have the Moore–Penrose pseudoinverse.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Existence condition for solutions",
+      "anchor": {
+        "section": "Matrix solution",
+        "snippet": "A necessary and sufficient condition for any solution(s) to exist is that the potential solution obtained using"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The criterion A A⁺ b = b is stated via the Moore–Penrose inverse, which is absent from Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Iterative methods",
+      "anchor": {
+        "section": "Other methods",
+        "snippet": "This leads to the class of iterative methods"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Iterative linear solvers are not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Jacobi method",
+      "anchor": {
+        "section": "Other methods",
+        "snippet": "One example of an iterative method is the Jacobi method"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Jacobi iterative method is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Homogeneous system",
+      "anchor": {
+        "section": "Homogeneous systems",
+        "snippet": "A system of linear equations is homogeneous if all of the constant terms are zero"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Matrix.mulVecLin",
+        "module": "Mathlib.LinearAlgebra.Matrix.ToLin",
+        "match_kind": "generalization"
+      },
+      "note": "A homogeneous system A *ᵥ x = 0 is represented directly, its solution set being LinearMap.ker of Matrix.mulVecLin, but 'homogeneous system' is not a named definition.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Trivial solution exists",
+      "anchor": {
+        "section": "Homogeneous solution set",
+        "snippet": "Every homogeneous system has at least one solution, known as the zero (or trivial ) solution"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Matrix.mulVec_zero",
+        "module": "Mathlib.Data.Matrix.Mul",
+        "match_kind": "exact"
+      },
+      "note": "Matrix.mulVec_zero states A *ᵥ 0 = 0, i.e. the zero vector always solves a homogeneous system.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Closure of homogeneous solutions",
+      "anchor": {
+        "section": "Homogeneous solution set",
+        "snippet": "If u and v are two vectors representing solutions to a homogeneous system, then the vector sum u + v is also a solution to the system"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Matrix.mulVec_add",
+        "module": "Mathlib.Data.Matrix.Mul",
+        "match_kind": "invocation"
+      },
+      "note": "Matrix.mulVec_add (A *ᵥ (u+v) = A *ᵥ u + A *ᵥ v) immediately gives that the sum of two homogeneous solutions is a solution; the solution set is the submodule LinearMap.ker.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Solution set is null space",
+      "anchor": {
+        "section": "Homogeneous solution set",
+        "snippet": "the solution set to a homogeneous system is the same as the null space of the corresponding matrix A"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Matrix.mulVecLin",
+        "module": "Mathlib.LinearAlgebra.Matrix.ToLin",
+        "match_kind": "exact"
+      },
+      "note": "The null space is LinearMap.ker of Matrix.mulVecLin, whose membership (LinearMap.mem_ker with mulVecLin_apply) is exactly A *ᵥ v = 0.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Solution set as translation",
+      "anchor": {
+        "section": "Relation to nonhomogeneous systems",
+        "snippet": "if p is any specific solution to the linear system"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "LinearMap.sub_mem_ker_iff",
+        "module": "Mathlib.Algebra.Module.Submodule.Ker",
+        "match_kind": "generalization"
+      },
+      "note": "LinearMap.sub_mem_ker_iff (x − p ∈ ker f ↔ f x = f p) shows every solution is a particular solution p plus a kernel element.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Geometric translation of solution sets",
+      "anchor": {
+        "section": "Relation to nonhomogeneous systems",
+        "snippet": "this says that the solution set for A x = b is a translation of the solution set for A x = 0"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "LinearMap.sub_mem_ker_iff",
+        "module": "Mathlib.Algebra.Module.Submodule.Ker",
+        "match_kind": "generalization"
+      },
+      "note": "The algebraic content (solutions of Ax=b form a coset of ker) is sub_mem_ker_iff, but the geometric 'translation' interpretation is not stated as such.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Solution exists iff b in image",
+      "anchor": {
+        "section": "Relation to nonhomogeneous systems",
+        "snippet": "This occurs if and only if the vector b lies in the image of the linear transformation A"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "LinearMap.mem_range",
+        "module": "Mathlib.Algebra.Module.Submodule.Range",
+        "match_kind": "exact"
+      },
+      "note": "LinearMap.mem_range states b ∈ range f ↔ ∃ x, f x = b, exactly that a solution exists iff b is in the image (with Matrix.range_mulVecLin giving the span of columns).",
+      "provenance": "ai"
+    }
+  ]
+}

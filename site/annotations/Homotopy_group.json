@@ -1,0 +1,313 @@
+{
+  "slug": "Homotopy_group",
+  "wikipedia_title": "Homotopy group",
+  "display_title": "Homotopy group",
+  "schema_version": 3,
+  "annotation_style": "theorem_article",
+  "annotations": [
+    {
+      "kind": "definition",
+      "label": "Homotopy classes / nth homotopy group",
+      "anchor": {
+        "section": "Definition",
+        "snippet": "we define"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "HomotopyGroup.Pi",
+        "module": "Mathlib.Topology.Homotopy.HomotopyGroup",
+        "match_kind": "exact"
+      },
+      "note": "`HomotopyGroup.Pi n X x` (notation `π_ n X x`) is the quotient of generalized loops by boundary-relative homotopy.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Equivalent cube definition of π_n",
+      "anchor": {
+        "section": "Definition",
+        "snippet": "Equivalently, define"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "GenLoop",
+        "module": "Mathlib.Topology.Homotopy.HomotopyGroup",
+        "match_kind": "exact"
+      },
+      "note": "`GenLoop N X x` is exactly the cube definition: continuous maps `I^N → X` sending the boundary to `x`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Sum of maps (cube definition)",
+      "anchor": {
+        "section": "Definition",
+        "snippet": "We therefore define the sum of maps"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "GenLoop.transAt",
+        "module": "Mathlib.Topology.Homotopy.HomotopyGroup",
+        "match_kind": "exact"
+      },
+      "note": "`GenLoop.transAt i f g` concatenates two cube-based loops along the `i`-th coordinate, giving the group multiplication on `HomotopyGroup`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Sum of maps (sphere definition)",
+      "anchor": {
+        "section": "Definition",
+        "snippet": "For the corresponding definition in terms of spheres"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib's homotopy groups are built from cubes, not from `S^n` with an equator-pinching map, and no such sphere-based sum is defined.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Higher homotopy groups are abelian",
+      "anchor": {
+        "section": "Definition",
+        "snippet": "is abelian"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "HomotopyGroup.commGroup",
+        "module": "Mathlib.Topology.Homotopy.HomotopyGroup",
+        "match_kind": "exact"
+      },
+      "note": "The `CommGroup (HomotopyGroup N X x)` instance for `Nontrivial N` proves abelianness of `π_(n+2)` via the Eckmann–Hilton argument.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Basepoint independence for path-connected spaces",
+      "anchor": {
+        "section": "Definition",
+        "snippet": "for a path-connected space any two choices of basepoint give rise to isomorphic"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "FundamentalGroup.mapOfEq",
+        "module": "Mathlib.AlgebraicTopology.FundamentalGroupoid.FundamentalGroup",
+        "match_kind": "special_case"
+      },
+      "note": "Only the fundamental-group case has a basepoint-change isomorphism via path conjugation; no analogue is proved for `HomotopyGroup` with `n ≥ 2`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Long exact sequence of a fibration",
+      "anchor": {
+        "section": "Long exact sequence of a fibration",
+        "snippet": "Then there is a long exact sequence of homotopy groups"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No long exact sequence of homotopy groups associated to a (Serre or Hurewicz) fibration is present in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Hopf fibration",
+      "anchor": {
+        "section": "Long exact sequence of a fibration",
+        "snippet": "Example: the Hopf fibration"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Grep for `Hopf` / `hopfFibration` in `Mathlib/` finds nothing; the Hopf map `S^3 → S^2` is not constructed.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Covering space homotopy groups",
+      "anchor": {
+        "section": "Long exact sequence of a fibration",
+        "snippet": "In the case of a cover space, when the fiber is discrete"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "IsCoveringMap.liftHomotopy",
+        "module": "Mathlib.Topology.Homotopy.Lifting",
+        "match_kind": "invocation"
+      },
+      "note": "The homotopy-lifting property of covering maps is formalized, but the consequence that `π_n` of a cover equals `π_n` of the base for `n ≥ 2` is not stated.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Puppe sequence from mapping fibre/cone",
+      "anchor": {
+        "section": "Long exact sequence of a fibration",
+        "snippet": "When the fibration is the mapping fibre"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No mapping-fibre, mapping-cone, or Puppe sequence of homotopy groups is defined in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "SO fibration and low-order homotopy groups",
+      "anchor": {
+        "section": "Special orthogonal group",
+        "snippet": "There is a fibration"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No fibration `SO(n-1) → SO(n) → S^{n-1}` or computations of low-order homotopy groups of `SO(n)` are present.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Milnor's exotic spheres",
+      "anchor": {
+        "section": "Special orthogonal group",
+        "snippet": "he was able to find exotic spheres"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Searching `exotic.*sphere` finds only a mention in `PoincareConjecture.lean`; Milnor's construction of exotic spheres is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Fibration for complex projective space",
+      "anchor": {
+        "section": "Complex projective space",
+        "snippet": "where"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No fibration `S^1 → S^{2n+1} → ℂP^n` and no resulting homotopy-group computations are in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Aspherical spaces have trivial higher homotopy",
+      "anchor": {
+        "section": "Methods of calculation",
+        "snippet": "For some spaces, such as tori"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "There is no notion of aspherical space or Eilenberg–MacLane space `K(G,1)` in Mathlib, and no triviality of `π_n` for `n ≥ 2` for tori or other aspherical spaces.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Hurewicz comparison for n-connected spaces",
+      "anchor": {
+        "section": "Methods of calculation",
+        "snippet": "Certain homotopy groups of"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib does not contain the Hurewicz theorem comparing `π_n` and `H_n` (the only `Hurewicz` hit is for covering maps being Hurewicz fibrations).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Relative homotopy groups",
+      "anchor": {
+        "section": "Relative homotopy groups",
+        "snippet": "called relative homotopy groups"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No `RelativeHomotopyGroup` or relative `π_n(X, A, x_0)` is defined in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Homotopic relative to A",
+      "anchor": {
+        "section": "Relative homotopy groups",
+        "snippet": "The elements of such a group are homotopy classes of based maps"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "ContinuousMap.HomotopicRel",
+        "module": "Mathlib.Topology.Homotopy.Basic",
+        "match_kind": "generalization"
+      },
+      "note": "`ContinuousMap.HomotopicRel f₀ f₁ S` formalizes homotopy of continuous maps relative to a subset, but it is not specialized to the relative-homotopy-group setting of triples `(X, A, x_0)`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Relative groups: abelian / crossed module",
+      "anchor": {
+        "section": "Relative homotopy groups",
+        "snippet": "These groups are abelian"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Relative homotopy groups are not defined, and no `CrossedModule` structure (search returns nothing) is present in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Long exact sequence of relative homotopy groups",
+      "anchor": {
+        "section": "Relative homotopy groups",
+        "snippet": "There is also a long exact sequence of relative homotopy groups"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Without relative homotopy groups defined, the associated long exact sequence of a pair is also absent from Mathlib.",
+      "provenance": "ai"
+    }
+  ]
+}

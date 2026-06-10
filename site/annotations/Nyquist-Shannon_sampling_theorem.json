@@ -1,0 +1,441 @@
+{
+  "slug": "Nyquist-Shannon_sampling_theorem",
+  "wikipedia_title": "Nyquist–Shannon sampling theorem",
+  "display_title": "Nyquist–Shannon sampling theorem",
+  "schema_version": 3,
+  "annotation_style": "theorem_article",
+  "annotations": [
+    {
+      "kind": "definition",
+      "label": "Nyquist–Shannon sampling theorem",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "The Nyquist–Shannon sampling theorem is a theorem in the field of signal processing"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Grep for 'Nyquist' and 'Shannon' in Mathlib returns no signal-processing results; the sampling theorem is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Nyquist frequency",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "An important consequence of the sampling theorem is the concept of Nyquist frequency"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No occurrence of 'Nyquist' in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Sampling",
+      "anchor": {
+        "section": "Introduction",
+        "snippet": "Sampling is a process of converting a signal"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Signal-processing 'sampling' (discretizing a continuous signal) is not formalized; existing 'sampling' references in Mathlib are probabilistic.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Nyquist rate",
+      "anchor": {
+        "section": "Introduction",
+        "snippet": "is called the Nyquist rate and is an attribute of the continuous-time input"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No Nyquist-related declarations exist in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Nyquist frequency (sampling equipment)",
+      "anchor": {
+        "section": "Introduction",
+        "snippet": "is called the Nyquist frequency and is an attribute of the sampling equipment"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No Nyquist-related declarations exist in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Nyquist criterion (Raabe condition)",
+      "anchor": {
+        "section": "Introduction",
+        "snippet": "The condition described by these inequalities is called the Nyquist criterion"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No Nyquist-related declarations exist in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Sample period / sampling interval",
+      "anchor": {
+        "section": "Introduction",
+        "snippet": "is customarily used to represent the interval between adjacent samples and is called the sample period or sampling interval"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No formalization of signal sample periods in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Sinc interpolation",
+      "anchor": {
+        "section": "Introduction",
+        "snippet": "A mathematically ideal way to interpolate the sequence involves the use of sinc functions"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Real.sinc",
+        "module": "Mathlib.Analysis.SpecialFunctions.Trigonometric.Sinc",
+        "match_kind": "invocation"
+      },
+      "note": "Mathlib defines `Real.sinc` (sin x / x with value 1 at 0) but no sinc-interpolation reconstruction formula is built on it.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Shannon sampling theorem",
+      "anchor": {
+        "type": "theorem_box",
+        "value": "Theorem"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Despite `Real.sinc` and Poisson summation existing, the Shannon sampling/reconstruction theorem itself is not stated in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Periodic summation / DTFT of samples",
+      "anchor": {
+        "section": "Aliasing",
+        "snippet": "Then the samples"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The DTFT and the periodic summation of a Fourier transform from samples are not formalized; Mathlib only has the abstract Poisson summation identity.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Alias",
+      "anchor": {
+        "section": "Aliasing",
+        "snippet": "Any frequency component above"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Signal-processing aliasing is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Anti-aliasing filter",
+      "anchor": {
+        "section": "Aliasing",
+        "snippet": "The type of filter required is a lowpass filter , and in this application it is called an anti-aliasing filter"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No lowpass / anti-aliasing filter concepts in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Recovery of S(f) from periodic summation",
+      "anchor": {
+        "section": "Derivation as a special case of Poisson summation",
+        "snippet": "When there is no overlap of the copies"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Real.tsum_eq_tsum_fourier",
+        "module": "Mathlib.Analysis.Fourier.PoissonSummation",
+        "match_kind": "invocation"
+      },
+      "note": "Mathlib has Poisson summation (`Real.tsum_eq_tsum_fourier`) which is the engine, but the bandlimited-recovery statement is absent.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Whittaker–Shannon interpolation formula",
+      "anchor": {
+        "section": "Derivation as a special case of Poisson summation",
+        "snippet": "The inverse transform of both sides produces the Whittaker–Shannon interpolation formula"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Grep for 'Whittaker' returns no hits; the interpolation formula is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Oversampling",
+      "anchor": {
+        "section": "Derivation as a special case of Poisson summation",
+        "snippet": "called oversampling , have no effect on the outcome of the reconstruction"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Oversampling is a signal-processing notion absent from Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Shannon's original derivation",
+      "anchor": {
+        "section": "Shannon's original proof",
+        "snippet": "Poisson shows that the Fourier series in Eq.1 produces the periodic summation"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Shannon's derivation of the sampling theorem is not present in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Multivariable signals and images",
+      "anchor": {
+        "section": "Application to multivariable signals and images",
+        "snippet": "Grayscale images, for example, are often represented as two-dimensional arrays"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Image/multivariable sampling examples are not modeled in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Critical frequency ambiguity",
+      "anchor": {
+        "section": "Critical frequency",
+        "snippet": "To illustrate the necessity of"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Critical-frequency ambiguity examples are not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Bandpass sampling (non-baseband)",
+      "anchor": {
+        "section": "Sampling of non-baseband signals",
+        "snippet": "A similar result is true if the band does not start at zero frequency"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Bandpass sampling is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "FM radio bandpass sampling",
+      "anchor": {
+        "section": "Sampling of non-baseband signals",
+        "snippet": "For example, in order to sample FM radio signals"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Engineering example, not in scope of Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Bandpass interpolation filter",
+      "anchor": {
+        "section": "Sampling of non-baseband signals",
+        "snippet": "Using the bandpass condition"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Bandpass interpolation filter not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Shannon nonuniform sampling theorem",
+      "anchor": {
+        "section": "Nonuniform sampling",
+        "snippet": "The Shannon sampling theory for non-uniform sampling states that a band-limited signal can be perfectly reconstructed"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Nonuniform sampling theorems are not in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Landau's theorem on average sampling rate",
+      "anchor": {
+        "section": "Nonuniform sampling",
+        "snippet": "He proved that the average sampling rate"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Landau's average-rate bound is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Mishali–Eldar unknown-spectrum bound",
+      "anchor": {
+        "section": "Nonuniform sampling",
+        "snippet": "They show, among other things, that if the frequency locations are unknown"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mishali–Eldar result is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Compressed sensing sub-Nyquist reconstruction",
+      "anchor": {
+        "section": "Sampling below the Nyquist rate under additional restrictions",
+        "snippet": "A non-trivial example of exploiting extra assumptions about the signal is given by the recent field of compressed sensing"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Compressed sensing recovery results are not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Sub-Nyquist optimality under optimal quantization",
+      "anchor": {
+        "section": "Sampling below the Nyquist rate under additional restrictions",
+        "snippet": "Another example where sub-Nyquist sampling is optimal"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Sub-Nyquist quantization optimality examples are not in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Shannon Theorem 13",
+      "anchor": {
+        "section": "Historical background",
+        "snippet": "the sampling theorem is formulated as"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Shannon's Theorem 13 (original sampling theorem) is not formalized in Mathlib.",
+      "provenance": "ai"
+    }
+  ]
+}

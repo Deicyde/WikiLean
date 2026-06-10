@@ -1,0 +1,793 @@
+{
+  "slug": "Linear_programming",
+  "wikipedia_title": "Linear programming",
+  "display_title": "Linear programming",
+  "schema_version": 3,
+  "annotation_style": "theorem_article",
+  "annotations": [
+    {
+      "kind": "definition",
+      "label": "Linear programming (formal definition)",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "linear programming is a technique for the optimization of a linear objective function"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has no linear-program object; Mathlib/Analysis/Convex/Cone/Basic.lean explicitly lists defining linear programs as future work.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Feasible region as convex polytope",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "Its feasible region is a convex polytope"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has Convex sets and convexHull but no polytope definition nor an LP feasible-region construction.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Standard form of a linear program",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "Linear programs are problems that can be expressed in standard form as"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No standard-form LP structure exists in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Objective function",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "is called the objective function"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Linear functionals exist (LinearMap) but no LP objective-function notion is defined.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Standard form (three parts)",
+      "anchor": {
+        "section": "Standard form",
+        "snippet": "Standard form is the usual and most intuitive form of describing a linear programming problem"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No LP standard-form definition is present in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Reduction of other forms to standard form",
+      "anchor": {
+        "section": "Standard form",
+        "snippet": "can always be rewritten into an equivalent problem in standard form"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No LP forms are defined, so no equivalence/reduction theorem exists.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Farmer wheat/barley LP",
+      "anchor": {
+        "section": "Example",
+        "snippet": "Suppose that a farmer has a piece of farm land"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This concrete LP example is not in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Augmented (slack) form",
+      "anchor": {
+        "section": "Augmented form (slack form)",
+        "snippet": "Linear programming problems can be converted into an augmented form"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No slack/augmented-form LP construction exists in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Farmer LP in augmented form",
+      "anchor": {
+        "section": "Example (2)",
+        "snippet": "The example above is converted into the following augmented form"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This specific augmented-form example is not in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Primal and dual problem",
+      "anchor": {
+        "section": "Duality",
+        "snippet": "Every linear programming problem, referred to as a primal problem, can be converted into a dual problem"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "ConvexCone/ProperCone duals exist, but LP primal/dual is listed as future work in Mathlib/Analysis/Convex/Cone/Basic.lean.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Dual of the dual is the primal",
+      "anchor": {
+        "section": "Duality",
+        "snippet": "the dual of a dual linear program is the original primal linear program"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "ProperCone.dual_dual_flip",
+        "module": "Mathlib.Analysis.Convex.Cone.Dual",
+        "match_kind": null
+      },
+      "note": "Mathlib proves the bipolar (double-dual) theorem for proper cones, the cone analog, but not for linear programs.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Weak duality theorem",
+      "anchor": {
+        "section": "Duality",
+        "snippet": "The weak duality theorem states that the objective function value of the dual at any feasible solution is always greater than or equal to"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib/Analysis/Convex/Cone/Basic.lean lists proving weak duality for cone/linear programs as future work.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Strong duality theorem",
+      "anchor": {
+        "section": "Duality",
+        "snippet": "The strong duality theorem states that if the primal has an optimal solution"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Strong duality (and the Farkas lemma it needs) is listed as future work in Mathlib/Analysis/Convex/Cone/Basic.lean.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Unbounded primal implies infeasible dual",
+      "anchor": {
+        "section": "Duality",
+        "snippet": "if the primal is unbounded then the dual is infeasible"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No LP duality theory is formalized, so this consequence is absent.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Covering LP",
+      "anchor": {
+        "section": "Covering/packing dualities",
+        "snippet": "A covering LP is a linear program of the form"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Covering LPs are not defined in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Packing LP (dual of covering LP)",
+      "anchor": {
+        "section": "Covering/packing dualities",
+        "snippet": "The dual of a covering LP is a packing LP"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Packing LPs are not defined in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Packing and covering LP relaxations",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "the LP relaxations of the set packing problem"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "LP relaxations of set packing/covering are not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Fractional coloring as covering LP",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "Finding a fractional coloring of a graph is another example of a covering LP"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Fractional coloring is not formulated as an LP in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Complementary slackness theorem",
+      "anchor": {
+        "section": "Complementary slackness",
+        "snippet": "Suppose that x = ( x 1 , x 2 , ... , x n ) is primal feasible"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Complementary slackness depends on LP duality, which is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Linearity implies local optima are global",
+      "anchor": {
+        "section": "Existence of optimal solutions",
+        "snippet": "A linear function is a convex function , which implies that every local minimum is a global minimum"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "IsMinOn.of_isLocalMin_of_convex_univ",
+        "module": "Mathlib.Analysis.Convex.Extrema",
+        "match_kind": "generalization"
+      },
+      "note": "Mathlib proves a local minimum of a convex function is a global minimum, which generalizes the linear case.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Optimal solution need not exist",
+      "anchor": {
+        "section": "Existence of optimal solutions",
+        "snippet": "An optimal solution need not exist, for two reasons"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This meta-statement about LP infeasibility/unboundedness is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Optimum attained on boundary when bounded",
+      "anchor": {
+        "section": "Optimal vertices (and rays) of polyhedra",
+        "snippet": "if a feasible solution exists and if the constraint set is bounded, then the optimum value is always attained on the boundary"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has a maximum-modulus boundary principle for holomorphic maps but no Bauer-type result that a linear functional attains its optimum on the boundary/extreme points of a compact convex set.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Convex combination of solutions is a solution",
+      "anchor": {
+        "section": "Optimal vertices (and rays) of polyhedra",
+        "snippet": "if there are two distinct solutions, then every convex combination of the solutions is a solution"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "ConvexOn.convex_le",
+        "module": "Mathlib.Analysis.Convex.Function",
+        "match_kind": null
+      },
+      "note": "Mathlib proves sublevel sets of a convex function are convex; the optimal set is such a sublevel set, but this LP-specific corollary is not stated.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Basic feasible solutions (vertices)",
+      "anchor": {
+        "section": "Optimal vertices (and rays) of polyhedra",
+        "snippet": "The vertices of the polytope are also called basic feasible solutions"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Set.extremePoints",
+        "module": "Mathlib.Analysis.Convex.Extreme",
+        "match_kind": null
+      },
+      "note": "Mathlib defines extreme points (the geometric vertices) but not basic feasible solutions in the LP sense.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Fundamental theorem of linear inequalities (vertices)",
+      "anchor": {
+        "section": "Optimal vertices (and rays) of polyhedra",
+        "snippet": "the fundamental theorem of linear inequalities implies (for feasible problems) that for every vertex"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The fundamental theorem of linear inequalities is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Simplex algorithm",
+      "anchor": {
+        "section": "Simplex algorithm of Dantzig",
+        "snippet": "The simplex algorithm , developed by George Dantzig in 1947, solves LP problems by constructing a feasible solution at a vertex"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "A simplex-style routine exists internally in the linarith oracle (Mathlib.Tactic.Linarith.Oracle.SimplexAlgorithm) but the simplex algorithm is not formalized as a verified LP solver.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Simplex efficient on random problems",
+      "anchor": {
+        "section": "Simplex algorithm of Dantzig",
+        "snippet": "The simplex algorithm has been proved to solve \"random\" problems efficiently, i.e. in a cubic number of steps"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Average-case complexity of the simplex method is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Klee–Minty exponential worst case",
+      "anchor": {
+        "section": "Simplex algorithm of Dantzig",
+        "snippet": "Klee and Minty constructed a family of linear programming problems for which the simplex method takes a number of steps exponential in the problem size"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Klee–Minty worst-case construction is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Criss-cross algorithm",
+      "anchor": {
+        "section": "Criss-cross algorithm",
+        "snippet": "the criss-cross algorithm is a basis-exchange algorithm that pivots between bases"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The criss-cross algorithm is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Worst case on Klee–Minty cube",
+      "anchor": {
+        "section": "Criss-cross algorithm",
+        "snippet": "Both algorithms visit all 2 D corners of a (perturbed) cube in dimension D"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Worst-case behavior on the Klee–Minty cube is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Interior-point methods",
+      "anchor": {
+        "section": "Interior point",
+        "snippet": "interior-point methods move through the interior of the feasible region"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Interior-point methods are not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Ellipsoid method polynomial time",
+      "anchor": {
+        "section": "Ellipsoid algorithm, following Khachiyan",
+        "snippet": "This is the first worst-case polynomial-time algorithm ever found for linear programming"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The ellipsoid method and its polynomial-time bound are not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Karmarkar's improved polynomial bound",
+      "anchor": {
+        "section": "Projective algorithm of Karmarkar",
+        "snippet": "improved on Khachiyan's"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Karmarkar's algorithm and complexity bound are not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Vaidya 1987 running time",
+      "anchor": {
+        "section": "Vaidya's 87 algorithm",
+        "snippet": "In 1987, Vaidya proposed an algorithm that runs in"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Vaidya's 1987 running-time result is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Vaidya 1989 running time",
+      "anchor": {
+        "section": "Vaidya's 89 algorithm",
+        "snippet": "In 1989, Vaidya developed an algorithm that runs in"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Vaidya's 1989 running-time result is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Lee–Sidford input sparsity time",
+      "anchor": {
+        "section": "Input sparsity time algorithms",
+        "snippet": "In 2015, Lee and Sidford showed that linear programming can be solved in"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Lee–Sidford complexity result is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Cohen–Lee–Song matrix-multiplication time",
+      "anchor": {
+        "section": "Current matrix multiplication time algorithm",
+        "snippet": "In 2019, Cohen, Lee and Song improved the running time to"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Cohen–Lee–Song complexity result is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Polytopes have subexponential diameter",
+      "anchor": {
+        "section": "Open problems and recent work",
+        "snippet": "It has been proved that all polytopes have subexponential diameter"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Polytope diameter bounds are not formalized (no polytope diameter notion exists).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Arrangement polytope graphs have small diameter",
+      "anchor": {
+        "section": "Open problems and recent work",
+        "snippet": "graphs of arrangement polytopes are known to have small diameter"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Diameter of arrangement-polytope graphs is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Integer (linear) programming",
+      "anchor": {
+        "section": "Integer unknowns",
+        "snippet": "If all of the unknown variables are required to be integers, then the problem is called an integer programming"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Integer programming is not defined in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Integer programming is NP-hard",
+      "anchor": {
+        "section": "Integer unknowns",
+        "snippet": "integer programming problems are in many practical situations (those with bounded variables) NP-hard"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has no complexity-class theory (NP-hardness), so this is absent.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "0–1 (binary) integer programming",
+      "anchor": {
+        "section": "Integer unknowns",
+        "snippet": "0–1 integer programming or binary integer programming (BIP) is the special case of integer programming where variables are required to be 0 or 1"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "0–1 integer programming is not defined in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Mixed integer programming",
+      "anchor": {
+        "section": "Integer unknowns",
+        "snippet": "If only some of the unknown variables are required to be integers, then the problem is called a mixed integer (linear) programming"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mixed integer programming is not defined in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Totally unimodular subclasses solvable",
+      "anchor": {
+        "section": "Integer unknowns",
+        "snippet": "some important subclasses of IP and MIP problems that are efficiently solvable, most notably problems where the constraint matrix is totally unimodular"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Matrix.IsTotallyUnimodular",
+        "module": "Mathlib.LinearAlgebra.Matrix.Determinant.TotallyUnimodular",
+        "match_kind": null
+      },
+      "note": "Mathlib defines totally unimodular matrices but proves nothing about efficient solvability of the associated programs.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Integral linear program",
+      "anchor": {
+        "section": "Integral linear programs",
+        "snippet": "A linear program in real variables is said to be integral if it has at least one optimal solution which is integral"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Integral linear programs are not defined in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Integral polyhedron",
+      "anchor": {
+        "section": "Integral linear programs",
+        "snippet": "is said to be integral if for all bounded feasible objective functions c"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Integral polyhedra are not defined in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Edmonds–Giles equivalent characterization",
+      "anchor": {
+        "section": "Integral linear programs",
+        "snippet": "As observed by Edmonds and Giles in 1977, one can equivalently say that the polyhedron"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Edmonds–Giles characterization of integral polyhedra is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Convex hull of solutions is integral polyhedron",
+      "anchor": {
+        "section": "Integral linear programs",
+        "snippet": "the convex hull of the solutions is an integral polyhedron"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "convexHull exists in Mathlib but the integral-polyhedron statement about it is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Total unimodularity implies integrality",
+      "anchor": {
+        "section": "Integral linear programs",
+        "snippet": "One common way of proving that a polyhedron is integral is to show that it is totally unimodular"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Matrix.IsTotallyUnimodular",
+        "module": "Mathlib.LinearAlgebra.Matrix.Determinant.TotallyUnimodular",
+        "match_kind": null
+      },
+      "note": "Total unimodularity is defined, but the Hoffman–Kruskal implication that it yields integral polyhedra is not formalized.",
+      "provenance": "ai"
+    }
+  ]
+}

@@ -1,0 +1,404 @@
+{
+  "slug": "Linear_regression",
+  "wikipedia_title": "Linear regression",
+  "display_title": "Linear regression",
+  "schema_version": 3,
+  "annotations": [
+    {
+      "kind": "definition",
+      "label": "Linear regression",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "linear regression is a model that estimates the relationship between a scalar response"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "definition",
+      "label": "Linear in parameters",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "linear in its unknown parameters"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "example",
+      "label": "Examples of linear regression",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "In the above equations, the coefficients (parameters) are linear"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "example",
+      "label": "Examples of non-linear regression",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "In the above equations, the coefficients (parameters) are non-linear."
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "definition",
+      "label": "Simple vs multiple linear regression",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "A model with exactly one explanatory variable is a simple linear regression"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "definition",
+      "label": "Linear regression model",
+      "anchor": {
+        "section": "Formulation",
+        "snippet": "a linear regression model assumes that the relationship between the dependent variable y and the vector of regressors x is linear"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "definition",
+      "label": "Regressand / dependent variable",
+      "anchor": {
+        "section": "Notation and terminology",
+        "snippet": "of the variable called the regressand"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "definition",
+      "label": "Regressors / design matrix",
+      "anchor": {
+        "section": "Notation and terminology",
+        "snippet": "which are known as regressors , exogenous variables"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "definition",
+      "label": "Parameter vector / regression coefficients",
+      "anchor": {
+        "section": "Notation and terminology",
+        "snippet": "Its elements are known as effects or regression coefficients"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "definition",
+      "label": "Error term",
+      "anchor": {
+        "section": "Notation and terminology",
+        "snippet": "This part of the model is called the error term , disturbance term"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "definition",
+      "label": "Sum of squared errors",
+      "anchor": {
+        "section": "Notation and terminology",
+        "snippet": "it is common to use the sum of squared errors"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "example",
+      "label": "Ball tossed in the air",
+      "anchor": {
+        "section": "Example",
+        "snippet": "Consider a situation where a small ball is being tossed up in the air"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "definition",
+      "label": "Unique effect (interpretation of coefficient)",
+      "anchor": {
+        "section": "Interpretation",
+        "snippet": "the interpretation of β j is the expected change in y for a one-unit change in x j when the other covariates are held fixed"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "definition",
+      "label": "Simple linear regression",
+      "anchor": {
+        "section": "Simple and multiple linear regression",
+        "snippet": "The simplest case of a single scalar predictor variable x and a single scalar response variable y is known as simple linear regression"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "definition",
+      "label": "Multiple linear regression",
+      "anchor": {
+        "section": "Simple and multiple linear regression",
+        "snippet": "Multiple linear regression is a generalization of simple linear regression to the case of more than one independent variable"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "definition",
+      "label": "Multivariate linear regression",
+      "anchor": {
+        "section": "Simple and multiple linear regression",
+        "snippet": "In the more general multivariate linear regression, there is one equation of the above form for each of m > 1 dependent variables"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "definition",
+      "label": "General linear model",
+      "anchor": {
+        "section": "General linear models",
+        "snippet": "The general linear model considers the situation when the response variable is not a scalar"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "definition",
+      "label": "Weighted least squares (heteroscedastic)",
+      "anchor": {
+        "section": "Heteroscedastic models",
+        "snippet": "weighted least squares is a method for estimating linear regression models when the response variables may have different error variances"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "definition",
+      "label": "Generalized linear model",
+      "anchor": {
+        "section": "Generalized linear models",
+        "snippet": "The Generalized linear model (GLM) is a framework for modeling response variables that are bounded or discrete."
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "definition",
+      "label": "Link function",
+      "anchor": {
+        "section": "Generalized linear models",
+        "snippet": "Generalized linear models allow for an arbitrary link function"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "definition",
+      "label": "Hierarchical linear models",
+      "anchor": {
+        "section": "Hierarchical linear models",
+        "snippet": "organizes the data into a hierarchy of regressions"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "definition",
+      "label": "Errors-in-variables models",
+      "anchor": {
+        "section": "Errors-in-variables",
+        "snippet": "Errors-in-variables models (or \"measurement error models\") extend the traditional linear regression model to allow the predictor variables X to be observed with error."
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "definition",
+      "label": "Group effect",
+      "anchor": {
+        "section": "Group effects",
+        "snippet": "is defined as a linear combination of their parameters"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "definition",
+      "label": "Meaningful group effect",
+      "anchor": {
+        "section": "Group effects",
+        "snippet": "is said to be meaningful if the underlying simultaneous changes of the"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "proposition",
+      "label": "Minimum-variance unbiased estimator of group effect",
+      "anchor": {
+        "section": "Group effects",
+        "snippet": "and its minimum-variance unbiased linear estimator is"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "definition",
+      "label": "Dempster–Shafer swept-matrix representation",
+      "anchor": {
+        "section": "Others",
+        "snippet": "a linear regression model may be represented as a partially swept matrix"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "definition",
+      "label": "Least-squares optimum parameter",
+      "anchor": {
+        "section": "Least-squares estimation and related techniques",
+        "snippet": "the optimum parameter vector is defined as such that minimizes the sum of mean squared loss"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "proposition",
+      "label": "Convex loss minimized at gradient zero",
+      "anchor": {
+        "section": "Least-squares estimation and related techniques",
+        "snippet": "As the loss function is convex , the optimum solution lies at gradient zero."
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "proposition",
+      "label": "Normal equations (gradient zero solution)",
+      "anchor": {
+        "section": "Least-squares estimation and related techniques",
+        "snippet": "Setting the gradient to zero produces the optimum parameter"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "theorem",
+      "label": "Gauss–Markov theorem",
+      "anchor": {
+        "section": "Least-squares estimation and related techniques",
+        "snippet": "This is provided by the Gauss–Markov theorem ."
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "definition",
+      "label": "Maximum likelihood estimation",
+      "anchor": {
+        "section": "Maximum likelihood estimation",
+        "snippet": "Maximum likelihood estimation can be performed when the distribution of the error terms is known to belong to a certain parametric family"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "proposition",
+      "label": "Normal errors give OLS estimate",
+      "anchor": {
+        "section": "Maximum likelihood estimation",
+        "snippet": "the resulting estimate is identical to the OLS estimate"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "proposition",
+      "label": "Least squares equals MLE",
+      "anchor": {
+        "section": "Maximum likelihood estimation",
+        "snippet": "the result of the least squares method is the same as the result of the maximum likelihood estimation method"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "definition",
+      "label": "Regularized (ridge/lasso) regression",
+      "anchor": {
+        "section": "Regularized Regression",
+        "snippet": "deliberately introduce bias into the estimation of β in order to reduce the variability of the estimate"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "definition",
+      "label": "Least absolute deviation regression",
+      "anchor": {
+        "section": "Least Absolute Deviation",
+        "snippet": "Least absolute deviation (LAD) regression is a robust estimation technique"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "proposition",
+      "label": "LAD equals MLE under Laplace model",
+      "anchor": {
+        "section": "Least Absolute Deviation",
+        "snippet": "It is equivalent to maximum likelihood estimation under a Laplace distribution model"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "proposition",
+      "label": "Adaptive estimation optimal estimator",
+      "anchor": {
+        "section": "Adaptive Estimation",
+        "snippet": "then the optimal estimator is the 2-step MLE"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "definition",
+      "label": "Bayesian linear regression",
+      "anchor": {
+        "section": "Other estimation techniques",
+        "snippet": "Bayesian linear regression applies the framework of Bayesian statistics to linear regression."
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "definition",
+      "label": "Quantile regression",
+      "anchor": {
+        "section": "Other estimation techniques",
+        "snippet": "Quantile regression focuses on the conditional quantiles of y given X"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "definition",
+      "label": "Mixed models",
+      "anchor": {
+        "section": "Other estimation techniques",
+        "snippet": "Mixed models are widely used to analyze linear regression relationships involving dependent data"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "definition",
+      "label": "Principal component regression",
+      "anchor": {
+        "section": "Other estimation techniques",
+        "snippet": "is used when the number of predictor variables is large, or when strong correlations exist among the predictor variables"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "definition",
+      "label": "Least-angle regression",
+      "anchor": {
+        "section": "Other estimation techniques",
+        "snippet": "is an estimation procedure for linear regression models that was developed to handle high-dimensional covariate vectors"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "definition",
+      "label": "Theil–Sen estimator",
+      "anchor": {
+        "section": "Other estimation techniques",
+        "snippet": "The Theil–Sen estimator is a simple robust estimation technique that chooses the slope of the fit line to be the median of the slopes"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "definition",
+      "label": "Trend line",
+      "anchor": {
+        "section": "Trend line",
+        "snippet": "A trend line represents a trend, the long-term movement in time series data"
+      },
+      "provenance": "ai-agent1"
+    }
+  ]
+}

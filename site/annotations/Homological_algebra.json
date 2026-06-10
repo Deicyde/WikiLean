@@ -1,0 +1,425 @@
+{
+  "slug": "Homological_algebra",
+  "wikipedia_title": "Homological algebra",
+  "display_title": "Homological algebra",
+  "schema_version": 3,
+  "annotation_style": "theorem_article",
+  "annotations": [
+    {
+      "kind": "definition",
+      "label": "Chain complex",
+      "anchor": {
+        "section": "Chain complexes and homology",
+        "snippet": "An abstract chain complex is a sequence"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "ChainComplex",
+        "module": "Mathlib.Algebra.Homology.HomologicalComplex",
+        "match_kind": "exact"
+      },
+      "note": "`HomologicalComplex` (and its `ChainComplex` specialization) is exactly a sequence of objects with differentials satisfying `d ∘ d = 0`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "n-chains and boundary maps",
+      "anchor": {
+        "section": "Chain complexes and homology",
+        "snippet": "are called the boundary maps or differentials"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "HomologicalComplex.d",
+        "module": "Mathlib.Algebra.Homology.HomologicalComplex",
+        "match_kind": "exact"
+      },
+      "note": "The objects `X i` and differentials `d i j` are the fields of the `HomologicalComplex` structure.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Cycles and boundaries",
+      "anchor": {
+        "section": "Chain complexes and homology",
+        "snippet": "the cycles Z n = Ker d n and the boundaries"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "HomologicalComplex.cycles",
+        "module": "Mathlib.Algebra.Homology.ShortComplex.HomologicalComplex",
+        "match_kind": null
+      },
+      "note": "Cycles `Ker dₙ` are formalized as `HomologicalComplex.cycles`, but boundaries are not a standalone named subobject (handled implicitly via `toCycles`/homology).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Homology group",
+      "anchor": {
+        "section": "Chain complexes and homology",
+        "snippet": "the factor group of the n -cycles by the n -boundaries"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "HomologicalComplex.homology",
+        "module": "Mathlib.Algebra.Homology.ShortComplex.HomologicalComplex",
+        "match_kind": "exact"
+      },
+      "note": "`HomologicalComplex.homology i` is the homology object in degree `i`, defined as cycles modulo boundaries via the short complex.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Acyclic / exact sequence",
+      "anchor": {
+        "section": "Chain complexes and homology",
+        "snippet": "A chain complex is called acyclic or an exact sequence"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "HomologicalComplex.Acyclic",
+        "module": "Mathlib.Algebra.Homology.ShortComplex.HomologicalComplex",
+        "match_kind": "exact"
+      },
+      "note": "`HomologicalComplex.Acyclic` is `∀ i, K.ExactAt i`, i.e. vanishing homology everywhere, matching the acyclic/exact-sequence notion.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Singular and simplicial chains",
+      "anchor": {
+        "section": "Chain complexes and homology",
+        "snippet": "the singular chains C n ( X ) are formal linear combinations of continuous maps"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "singularChainComplexFunctor",
+        "module": "Mathlib.AlgebraicTopology.SingularHomology.Basic",
+        "match_kind": "special_case"
+      },
+      "note": "`singularChainComplexFunctor` builds the singular chain complex of a topological space, with simplicial chains underneath via `SSet.chainComplexFunctor`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Exact sequence",
+      "anchor": {
+        "section": "Exact sequences",
+        "snippet": "is called exact if the image of each homomorphism is equal to the kernel"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "CategoryTheory.ShortComplex.Exact",
+        "module": "Mathlib.Algebra.Homology.ShortComplex.Exact",
+        "match_kind": "exact"
+      },
+      "note": "`ShortComplex.Exact` (and `ComposableArrows.Exact` for longer chains) expresses image equals kernel at each spot.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Short exact sequence",
+      "anchor": {
+        "section": "Short",
+        "snippet": "where ƒ is a monomorphism and g is an epimorphism"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "CategoryTheory.ShortComplex.ShortExact",
+        "module": "Mathlib.Algebra.Homology.ShortComplex.ShortExact",
+        "match_kind": "exact"
+      },
+      "note": "`ShortComplex.ShortExact` packages exactness with `f` mono and `g` epi.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Long exact sequence",
+      "anchor": {
+        "section": "Long",
+        "snippet": "A long exact sequence is an exact sequence indexed by the natural numbers"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "CategoryTheory.ComposableArrows.Exact",
+        "module": "Mathlib.Algebra.Homology.ExactSequence",
+        "match_kind": null
+      },
+      "note": "Arbitrary-length exact sequences are captured by `ComposableArrows.Exact` and acyclic complexes, but there is no dedicated ℕ-indexed long-exact-sequence object.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Five lemma",
+      "anchor": {
+        "section": "Five lemma",
+        "snippet": "The five lemma states that, if the rows are exact"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "CategoryTheory.Abelian.isIso_of_epi_of_isIso_of_isIso_of_mono",
+        "module": "Mathlib.CategoryTheory.Abelian.DiagramLemmas.Four",
+        "match_kind": "exact"
+      },
+      "note": "This lemma is the five lemma for abelian categories, proving the middle map is an isomorphism given exact rows and iso outer maps.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Snake lemma",
+      "anchor": {
+        "section": "Snake lemma",
+        "snippet": "Then there is an exact sequence relating the kernels and cokernels"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "CategoryTheory.ShortComplex.SnakeInput.snake_lemma",
+        "module": "Mathlib.Algebra.Homology.ShortComplex.SnakeLemma",
+        "match_kind": "exact"
+      },
+      "note": "`SnakeInput.snake_lemma` proves exactness of the six-term sequence with connecting map `δ`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Abelian category",
+      "anchor": {
+        "section": "Abelian categories",
+        "snippet": "an abelian category is a category in which morphisms and objects can be added"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "CategoryTheory.Abelian",
+        "module": "Mathlib.CategoryTheory.Abelian.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`CategoryTheory.Abelian` is the standard abelian-category typeclass extending preadditive with normal mono/epi, finite products, kernels and cokernels.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Abelian category (concrete characterization)",
+      "anchor": {
+        "section": "Abelian categories",
+        "snippet": "More concretely, a category is abelian if"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "CategoryTheory.Abelian",
+        "module": "Mathlib.CategoryTheory.Abelian.Basic",
+        "match_kind": "exact"
+      },
+      "note": "Mathlib's `Abelian` definition is exactly this concrete characterization: zero object, kernels/cokernels, every mono a kernel and every epi a cokernel.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Right derived functors",
+      "anchor": {
+        "section": "Derived functors",
+        "snippet": "given by the right derived functors of F"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "CategoryTheory.Functor.rightDerived",
+        "module": "Mathlib.CategoryTheory.Abelian.RightDerived",
+        "match_kind": "exact"
+      },
+      "note": "`Functor.rightDerived F n` is defined via injective resolutions and homology of the homotopy category.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Exactness criterion via derived functors",
+      "anchor": {
+        "section": "Derived functors",
+        "snippet": "F is an exact functor if and only if R 1 F = 0"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Derived-functor vanishing lemmas and `rightDerivedZeroIsoSelf` exist, but the exact biconditional 'F exact ⟺ R¹F = 0' is not stated as such.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Ext functor",
+      "anchor": {
+        "section": "Ext functor",
+        "snippet": "The Ext functor is defined by"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Ext",
+        "module": "Mathlib.CategoryTheory.Abelian.Ext",
+        "match_kind": "exact"
+      },
+      "note": "`Ext R C n` is defined as a derived functor of the Hom bifunctor in an `R`-linear abelian category.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Ext functor (alternative definition)",
+      "anchor": {
+        "section": "Ext functor",
+        "snippet": "An alternative definition is given using the functor"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "CategoryTheory.Abelian.Ext",
+        "module": "Mathlib.Algebra.Homology.DerivedCategory.Ext.Basic",
+        "match_kind": null
+      },
+      "note": "The modern `Abelian.Ext` defined via derived-category Hom is the alternative symmetric construction, computable by projective or injective resolutions.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Equivalence of the two Ext constructions",
+      "anchor": {
+        "section": "Ext functor",
+        "snippet": "These two constructions turn out to yield isomorphic results"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "CategoryTheory.Abelian.Ext",
+        "module": "Mathlib.Algebra.Homology.DerivedCategory.Ext.Basic",
+        "match_kind": null
+      },
+      "note": "The derived-category `Abelian.Ext` is balanced (computable both ways), giving the agreement, but no single iso lemma between the two classical derived-functor constructions was found.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Tor functor",
+      "anchor": {
+        "section": "Tor functor",
+        "snippet": "its left derived functors L n T are defined"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "CategoryTheory.Tor",
+        "module": "Mathlib.CategoryTheory.Monoidal.Tor",
+        "match_kind": "exact"
+      },
+      "note": "`Tor C n` is defined by left-deriving the tensor bifunctor, matching the left-derived-functor definition.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Spectral sequence",
+      "anchor": {
+        "section": "Spectral sequences",
+        "snippet": "A spectral sequence is a choice of a nonnegative integer"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "CategoryTheory.SpectralSequence",
+        "module": "Mathlib.Algebra.Homology.SpectralSequence.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`SpectralSequence` packages the pages as homological complexes with isomorphisms from each page's homology to the next.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Induced homomorphism on homology",
+      "anchor": {
+        "section": "Functoriality",
+        "snippet": "A continuous map of topological spaces gives rise to a homomorphism between their"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "singularHomologyFunctor",
+        "module": "Mathlib.AlgebraicTopology.SingularHomology.Basic",
+        "match_kind": "special_case"
+      },
+      "note": "`singularHomologyFunctor` is functorial in `TopCat`, so a continuous map induces a map on singular homology.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Morphism of chain complexes",
+      "anchor": {
+        "section": "Functoriality",
+        "snippet": "is a family of homomorphisms of abelian groups"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "HomologicalComplex.Hom",
+        "module": "Mathlib.Algebra.Homology.HomologicalComplex",
+        "match_kind": "exact"
+      },
+      "note": "`HomologicalComplex.Hom` is a degreewise family of maps commuting with the differentials.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Quasi-isomorphism",
+      "anchor": {
+        "section": "Functoriality",
+        "snippet": "A morphism F is called a quasi-isomorphism if it induces an isomorphism"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "HomologicalComplex.QuasiIso",
+        "module": "Mathlib.Algebra.Homology.QuasiIso",
+        "match_kind": "exact"
+      },
+      "note": "`QuasiIso f` holds when `f` induces isomorphisms on homology in all degrees.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Functoriality property",
+      "anchor": {
+        "section": "Functoriality",
+        "snippet": "have the following functoriality property"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "HomologicalComplex.homologyFunctor",
+        "module": "Mathlib.Algebra.Homology.ShortComplex.HomologicalComplex",
+        "match_kind": "exact"
+      },
+      "note": "`homologyFunctor` makes homology a functor, encoding that it respects composition and identities of chain maps.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Exact triple / short exact sequence of complexes",
+      "anchor": {
+        "section": "Functoriality",
+        "snippet": "is called an exact triple , or a short exact sequence of complexes"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "CategoryTheory.ShortComplex.ShortExact",
+        "module": "Mathlib.Algebra.Homology.ShortComplex.ShortExact",
+        "match_kind": "special_case"
+      },
+      "note": "A short exact sequence of complexes is `ShortComplex.ShortExact` in the abelian category `HomologicalComplex C c`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Zig-zag lemma (long exact sequence in homology)",
+      "anchor": {
+        "section": "Functoriality",
+        "snippet": "sometimes known as the zig-zag lemma"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "CategoryTheory.ShortComplex.ShortExact.δ",
+        "module": "Mathlib.Algebra.Homology.HomologySequence",
+        "match_kind": "exact"
+      },
+      "note": "The connecting map `ShortExact.δ` together with `homology_exact₁/₂/₃` gives the long exact homology sequence of a short exact sequence of complexes.",
+      "provenance": "ai"
+    }
+  ]
+}

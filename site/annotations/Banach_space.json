@@ -1,0 +1,3029 @@
+{
+  "slug": "Banach_space",
+  "wikipedia_title": "Banach space",
+  "display_title": "Banach space",
+  "schema_version": 3,
+  "annotation_style": "theorem_article",
+  "annotations": [
+    {
+      "kind": "definition",
+      "label": "Banach space",
+      "anchor": {
+        "section": "Definition",
+        "snippet": "A Banach space is a complete normed space"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "CompleteSpace",
+        "module": "Mathlib.Topology.UniformSpace.Cauchy",
+        "match_kind": "invocation"
+      },
+      "note": "Banach spaces are expressed as the typeclass combination NormedSpace + CompleteSpace; there is no dedicated BanachSpace class.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Definition",
+          "snippet": "A Banach space is a complete normed space"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle d(x,y):=\\|y-x\\|=\\|x-y\\|.}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle d(x_{n},x_{m})=\\|x_{n}-x_{m}\\|&lt;r.}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\lim _{n\\to \\infty }x_{n}=x\\;{\\text{ in }}(X,d),}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\lim _{n\\to \\infty }\\|x_{n}-x\\|=0\\;{\\text{ in }}\\mathbb {R} .}"
+        }
+      ]
+    },
+    {
+      "kind": "definition",
+      "label": "Normed space",
+      "anchor": {
+        "section": "Definition",
+        "snippet": "A normed space is a pair"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "NormedSpace",
+        "module": "Mathlib.Analysis.Normed.Module.Basic",
+        "match_kind": "exact"
+      },
+      "note": "NormedSpace (over SeminormedAddCommGroup/NormedAddCommGroup) is the exact notion.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Definition",
+          "snippet": "A normed space is a pair"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle d(x,y):=\\|y-x\\|=\\|x-y\\|.}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle d(x_{n},x_{m})=\\|x_{n}-x_{m}\\|&lt;r.}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\lim _{n\\to \\infty }x_{n}=x\\;{\\text{ in }}(X,d),}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\lim _{n\\to \\infty }\\|x_{n}-x\\|=0\\;{\\text{ in }}\\mathbb {R} .}"
+        }
+      ]
+    },
+    {
+      "kind": "definition",
+      "label": "Norm-induced (canonical) metric",
+      "anchor": {
+        "section": "Definition",
+        "snippet": "called the canonical or"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "dist_eq_norm",
+        "module": "Mathlib.Analysis.Normed.Group.Defs",
+        "match_kind": "exact"
+      },
+      "note": "The canonical metric d(x,y)=‖x−y‖ is built into NormedAddCommGroup via dist_eq_norm.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Definition",
+          "snippet": "called the canonical or"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle d(x,y):=\\|y-x\\|=\\|x-y\\|.}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle d(x_{n},x_{m})=\\|x_{n}-x_{m}\\|&lt;r.}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\lim _{n\\to \\infty }x_{n}=x\\;{\\text{ in }}(X,d),}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\lim _{n\\to \\infty }\\|x_{n}-x\\|=0\\;{\\text{ in }}\\mathbb {R} .}"
+        }
+      ]
+    },
+    {
+      "kind": "definition",
+      "label": "Cauchy sequence",
+      "anchor": {
+        "section": "Definition",
+        "snippet": "is called Cauchy in"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "CauchySeq",
+        "module": "Mathlib.Topology.UniformSpace.Cauchy",
+        "match_kind": "exact"
+      },
+      "note": "CauchySeq is the exact notion of a Cauchy sequence in a (uniform/metric) space.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Definition",
+          "snippet": "is called Cauchy in"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle d(x,y):=\\|y-x\\|=\\|x-y\\|.}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle d(x_{n},x_{m})=\\|x_{n}-x_{m}\\|&lt;r.}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\lim _{n\\to \\infty }x_{n}=x\\;{\\text{ in }}(X,d),}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\lim _{n\\to \\infty }\\|x_{n}-x\\|=0\\;{\\text{ in }}\\mathbb {R} .}"
+        }
+      ]
+    },
+    {
+      "kind": "definition",
+      "label": "Complete norm",
+      "anchor": {
+        "section": "Definition",
+        "snippet": "is called a complete norm if"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "CompleteSpace",
+        "module": "Mathlib.Topology.UniformSpace.Cauchy",
+        "match_kind": "exact"
+      },
+      "note": "Completeness of the norm metric is CompleteSpace on the normed space.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Existence of L-semi-inner product",
+      "anchor": {
+        "section": "L-semi-inner product",
+        "snippet": "there exists an L-semi-inner product"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Lumer–Giles semi-inner products are not present in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Series characterization of completeness",
+      "anchor": {
+        "section": "Characterization in terms of series",
+        "snippet": "is a Banach space if and only if each absolutely convergent series"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "NormedAddCommGroup.summable_imp_tendsto_iff_completeSpace",
+        "module": "Mathlib.Analysis.Normed.Group.Completeness",
+        "match_kind": "exact"
+      },
+      "note": "Exactly states completeness iff every absolutely convergent series converges.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Characterization in terms of series",
+          "snippet": "is a Banach space if and only if each absolutely convergent series"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\sum _{n=1}^{\\infty }\\|v_{n}\\|&lt;\\infty \\implies \\sum _{n=1}^{\\infty }v_{n}{\\text{ converges in }}X.}"
+        }
+      ]
+    },
+    {
+      "kind": "definition",
+      "label": "Norm-induced topology",
+      "anchor": {
+        "section": "Topology",
+        "snippet": "induces the usual metric topology"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "NormedAddCommGroup",
+        "module": "Mathlib.Analysis.Normed.Group.Defs",
+        "match_kind": "invocation"
+      },
+      "note": "The topology of a normed space is the metric/uniform topology induced by the norm by construction.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Banach space is a Baire space",
+      "anchor": {
+        "section": "Topology",
+        "snippet": "every Banach space is a Baire space"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "BaireSpace",
+        "module": "Mathlib.Topology.Baire.CompleteMetrizable",
+        "match_kind": "generalization"
+      },
+      "note": "Mathlib provides a BaireSpace instance for every complete (pseudo)metric space, covering Banach spaces.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Open and closed balls",
+      "anchor": {
+        "section": "Topology",
+        "snippet": "The open and closed balls of radius"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Metric.closedBall",
+        "module": "Mathlib.Topology.MetricSpace.Pseudo.Defs",
+        "match_kind": "exact"
+      },
+      "note": "Metric.ball and Metric.closedBall define open and closed balls.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Topology",
+          "snippet": "The open and closed balls of radius"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle B_{r}(x):=\\{z\\in X\\mid \\|z-x\\|&lt;r\\}\\qquad {\\text{ and }}\\qquad C_{r}(x):=\\{z\\in X\\mid \\|z-x\\|\\leq r\\}.}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle x_{0}+s\\,B_{r}(x)=B_{|s|r}(x_{0}+sx)\\qquad {\\text{ and }}\\qquad x_{0}+s\\,C_{r}(x)=C_{|s|r}(x_{0}+sx).}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\{B_{r}(0)\\mid r&gt;0\\},\\qquad \\{C_{r}(0)\\mid r&gt;0\\},\\qquad \\{B_{r_{n}}(0)\\mid n\\in \\mathbb {N} \\},\\qquad {\\text{ and }}\\qquad \\{C_{r_{n}}(0)\\mid n\\in \\mathbb {N} \\},}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle U=\\bigcup _{x\\in I}B_{r_{x}}(x)=\\bigcup _{x\\in I}x+B_{r_{x}}(0)=\\bigcup _{x\\in I}x+r_{x}\\,B_{1}(0)}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Compact ball iff finite-dimensional",
+      "anchor": {
+        "section": "Topology",
+        "snippet": "a compact ball/ neighborhood exists if and only if"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "FiniteDimensional.of_isCompact_closedBall",
+        "module": "Mathlib.Analysis.Normed.Module.FiniteDimension",
+        "match_kind": "exact"
+      },
+      "note": "Riesz' theorem (compact closed ball ⇒ finite-dimensional) with the converse via FiniteDimensional.proper.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Topology",
+          "snippet": "a compact ball/ neighborhood exists if and only if"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle B_{r}(x):=\\{z\\in X\\mid \\|z-x\\|&lt;r\\}\\qquad {\\text{ and }}\\qquad C_{r}(x):=\\{z\\in X\\mid \\|z-x\\|\\leq r\\}.}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle x_{0}+s\\,B_{r}(x)=B_{|s|r}(x_{0}+sx)\\qquad {\\text{ and }}\\qquad x_{0}+s\\,C_{r}(x)=C_{|s|r}(x_{0}+sx).}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\{B_{r}(0)\\mid r&gt;0\\},\\qquad \\{C_{r}(0)\\mid r&gt;0\\},\\qquad \\{B_{r_{n}}(0)\\mid n\\in \\mathbb {N} \\},\\qquad {\\text{ and }}\\qquad \\{C_{r_{n}}(0)\\mid n\\in \\mathbb {N} \\},}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle U=\\bigcup _{x\\in I}B_{r_{x}}(x)=\\bigcup _{x\\in I}x+B_{r_{x}}(0)=\\bigcup _{x\\in I}x+r_{x}\\,B_{1}(0)}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Finite-dimensional spaces are separable Banach spaces",
+      "anchor": {
+        "section": "Homeomorphism classes of separable Banach spaces",
+        "snippet": "All finite–dimensional normed spaces are separable Banach spaces"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "FiniteDimensional.complete",
+        "module": "Mathlib.Analysis.Normed.Module.FiniteDimension",
+        "match_kind": "generalization"
+      },
+      "note": "Finite-dimensional normed spaces over a complete field are complete (and second-countable/separable).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Separable Hilbert space isometric to ℓ²",
+      "anchor": {
+        "section": "Homeomorphism classes of separable Banach spaces",
+        "snippet": "Every separable infinite–dimensional Hilbert space is linearly isometrically isomorphic"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "HilbertBasis.repr",
+        "module": "Mathlib.Analysis.InnerProductSpace.l2Space",
+        "match_kind": "generalization"
+      },
+      "note": "Any Hilbert space is isometrically isomorphic to ℓ²(ι,𝕜) via a Hilbert basis; the separable case has countable ι.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Anderson–Kadec theorem",
+      "anchor": {
+        "section": "Homeomorphism classes of separable Banach spaces",
+        "snippet": "The Anderson–Kadec theorem states that every infinite–dimensional separable Fréchet space is homeomorphic"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Anderson–Kadec homeomorphism theorem is not in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Metric Banach manifold",
+      "anchor": {
+        "section": "Homeomorphism classes of separable Banach spaces",
+        "snippet": "known as metric Banach manifolds"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Banach manifolds modeled on metric Banach spaces are not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Henderson embedding theorem",
+      "anchor": {
+        "section": "Homeomorphism classes of separable Banach spaces",
+        "snippet": "David Henderson showed"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Henderson's embedding theorem for infinite-dimensional manifolds is absent.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Compact set with non-closed convex hull",
+      "anchor": {
+        "section": "Compact and convex subsets",
+        "snippet": "is not closed and thus also not compact"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This specific counterexample is not present.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Closed convex hull of compact set is compact",
+      "anchor": {
+        "section": "Compact and convex subsets",
+        "snippet": "like in all Banach spaces, the closed convex hull"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "totallyBounded_convexHull",
+        "module": "Mathlib.Analysis.Convex.TotallyBounded",
+        "match_kind": null
+      },
+      "note": "Mathlib proves the convex hull of a totally bounded set is totally bounded (the crux), but not the packaged 'closed convex hull of a compact set is compact'.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Topological vector space",
+      "anchor": {
+        "section": "As a topological vector space",
+        "snippet": "into what is known as a topological vector space"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "ContinuousSMul",
+        "module": "Mathlib.Topology.Algebra.Module.Basic",
+        "match_kind": null
+      },
+      "note": "Mathlib has no single TVS class; the notion is the combination Module + ContinuousSMul + IsTopologicalAddGroup.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Characterization of normable TVS",
+      "anchor": {
+        "section": "As a topological vector space",
+        "snippet": "Normable TVSs are characterized by being Hausdorff and having a bounded convex neighborhood"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Kolmogorov's normability criterion is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Banach spaces are barrelled",
+      "anchor": {
+        "section": "As a topological vector space",
+        "snippet": "All Banach spaces are barrelled spaces"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "BaireSpace.instBarrelledSpace",
+        "module": "Mathlib.Analysis.LocallyConvex.Barrelled",
+        "match_kind": "generalization"
+      },
+      "note": "Baire spaces are barrelled, and Banach spaces are Baire, so this instance applies.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Comparison of complete metrizable topologies",
+      "anchor": {
+        "section": "Comparison of complete metrizable vector topologies",
+        "snippet": "The open mapping theorem implies that when"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The comparison/uniqueness of comparable complete metrizable vector topologies is not stated.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Equivalent norms",
+      "anchor": {
+        "section": "Complete norms and equivalent norms",
+        "snippet": "are said to be equivalent if they induce the same topology"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "There is no named definition of equivalent norms in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Completeness under equivalent norms",
+      "anchor": {
+        "section": "Complete norms and equivalent norms",
+        "snippet": "are two equivalent norms on a vector space"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No statement that completeness is preserved by equivalent norms.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "All norms equivalent in finite dimension",
+      "anchor": {
+        "section": "Complete norms and equivalent norms",
+        "snippet": "All norms on a finite-dimensional vector space are equivalent"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "LinearMap.continuous_of_finiteDimensional",
+        "module": "Mathlib.Analysis.Normed.Module.FiniteDimension",
+        "match_kind": null
+      },
+      "note": "Mathlib establishes the equivalent consequences (all linear maps continuous, unique topology) but does not state 'all norms are equivalent' explicitly.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "When a metric is norm-induced",
+      "anchor": {
+        "section": "Complete norms vs complete metrics",
+        "snippet": "is induced by a norm on"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The characterization of when a metric comes from a norm is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Translation-invariant metric and completeness",
+      "anchor": {
+        "section": "Complete norms vs complete metrics",
+        "snippet": "is a Banach space if and only if"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This translation-invariant metric criterion is not stated.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Klee's theorem",
+      "anchor": {
+        "section": "Complete norms vs complete metrics",
+        "snippet": "a theorem of Klee"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Klee's theorem on translation-invariant complete metrics is absent.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Fréchet space",
+      "anchor": {
+        "section": "Complete norms vs complete metrics",
+        "snippet": "A Fréchet space is a locally convex topological vector space"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "LocallyConvexSpace",
+        "module": "Mathlib.Topology.Algebra.Module.LocallyConvex",
+        "match_kind": null
+      },
+      "note": "LocallyConvexSpace exists but there is no dedicated complete-metrizable-LCTVS 'Fréchet space' structure.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Banach spaces are Fréchet spaces",
+      "anchor": {
+        "section": "Complete norms vs complete metrics",
+        "snippet": "Every Banach space is a Fréchet space but not conversely"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Without a Fréchet space notion, this implication is not stated.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Complete topological vector space",
+      "anchor": {
+        "section": "Complete norms vs complete topological vector spaces",
+        "snippet": "the notion of a complete topological vector space"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "CompleteSpace",
+        "module": "Mathlib.Topology.UniformSpace.Cauchy",
+        "match_kind": null
+      },
+      "note": "Completeness w.r.t. the canonical TVS uniformity is expressible via CompleteSpace + IsUniformAddGroup but not packaged as a 'complete TVS' notion.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Banach iff complete as TVS",
+      "anchor": {
+        "section": "Complete norms vs complete topological vector spaces",
+        "snippet": "if and only if it is complete as a topological vector space"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The metric and TVS uniformities of a normed space coincide, but no theorem states this equivalence as such.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Normability via strong dual",
+      "anchor": {
+        "section": "Complete norms vs complete topological vector spaces",
+        "snippet": "is normable if and only if its strong dual space"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This normability criterion via the strong dual is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Completion of a normed space",
+      "anchor": {
+        "section": "Completions",
+        "snippet": "Every normed space can be isometrically embedded onto a dense vector subspace of a Banach space"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "UniformSpace.Completion",
+        "module": "Mathlib.Analysis.Normed.Module.Completion",
+        "match_kind": "exact"
+      },
+      "note": "The completion carries NormedAddCommGroup/NormedSpace instances with a dense isometric embedding of the original space.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Uniqueness of completion",
+      "anchor": {
+        "section": "Completions",
+        "snippet": "This Hausdorff completion is unique up to isometric isomorphism."
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "UniformSpace.Completion.extension",
+        "module": "Mathlib.Topology.UniformSpace.Completion",
+        "match_kind": null
+      },
+      "note": "The universal property is formalized, implying uniqueness, but uniqueness up to isometric isomorphism is not packaged as a theorem.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Continuity iff bounded on unit ball",
+      "anchor": {
+        "section": "Linear operators, isomorphisms",
+        "snippet": "is continuous if and only if it is bounded on the closed unit ball"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "SemilinearMapClass.bound_of_continuous",
+        "module": "Mathlib.Analysis.Normed.Operator.Basic",
+        "match_kind": "exact"
+      },
+      "note": "Both directions exist: bound_of_continuous and LinearMap.continuous_of_bound.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Linear operators, isomorphisms",
+          "snippet": "is continuous if and only if it is bounded on the closed unit ball"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\|T\\|=\\sup\\{\\|Tx\\|_{Y}\\mid x\\in X,\\ \\|x\\|_{X}\\leq 1\\}.}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "L(X,Y) is a Banach space",
+      "anchor": {
+        "section": "Linear operators, isomorphisms",
+        "snippet": "is a Banach space with respect to this norm"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "ContinuousLinearMap.completeSpace",
+        "module": "Mathlib.Topology.Algebra.Module.Spaces.ContinuousLinearMap",
+        "match_kind": "exact"
+      },
+      "note": "E →SL[σ] F is complete when F is complete.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "L(X) is a unital Banach algebra",
+      "anchor": {
+        "section": "Linear operators, isomorphisms",
+        "snippet": "forms a unital Banach algebra"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "ContinuousLinearMap.toNormedRing",
+        "module": "Mathlib.Analysis.Normed.Operator.NormedSpace",
+        "match_kind": "exact"
+      },
+      "note": "E →L[𝕜] E is a (unital) normed ring/algebra, complete when E is complete.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Isomorphic normed spaces",
+      "anchor": {
+        "section": "Linear operators, isomorphisms",
+        "snippet": "they are isomorphic normed spaces if there exists a linear bijection"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "ContinuousLinearEquiv",
+        "module": "Mathlib.Topology.Algebra.Module.Equiv",
+        "match_kind": "exact"
+      },
+      "note": "A topological/normed isomorphism is a ContinuousLinearEquiv (E ≃L[𝕜] F).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Isometrically isomorphic spaces",
+      "anchor": {
+        "section": "Linear operators, isomorphisms",
+        "snippet": "are isometrically isomorphic if in addition"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "LinearIsometryEquiv",
+        "module": "Mathlib.Analysis.Normed.Operator.LinearIsometry",
+        "match_kind": "exact"
+      },
+      "note": "Isometric isomorphism is LinearIsometryEquiv (E ≃ₗᵢ[𝕜] F).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Banach–Mazur distance",
+      "anchor": {
+        "section": "Linear operators, isomorphisms",
+        "snippet": "gives a measure of how much the two spaces"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Banach–Mazur distance is not defined in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Bounded equals continuous for linear operators",
+      "anchor": {
+        "section": "Continuous and bounded linear functions and seminorms",
+        "snippet": "Every continuous linear operator is a bounded linear operator"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "SemilinearMapClass.bound_of_continuous",
+        "module": "Mathlib.Analysis.Normed.Operator.Basic",
+        "match_kind": "exact"
+      },
+      "note": "Continuity ⇔ boundedness for linear maps is given by bound_of_continuous and continuous_of_bound.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Continuity of subadditive functions",
+      "anchor": {
+        "section": "Continuous and bounded linear functions and seminorms",
+        "snippet": "is a subadditive function"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The general 'subadditive, continuous at 0 ⇒ continuous everywhere' lemma is not present.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Functional continuous iff real part is",
+      "anchor": {
+        "section": "Continuous and bounded linear functions and seminorms",
+        "snippet": "is continuous if and only if this is true of its real part"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No theorem stating a complex functional is continuous iff its real part is.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Product complete iff factors complete",
+      "anchor": {
+        "section": "Basic notions",
+        "snippet": "is complete if and only if the two factors are complete"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "CompleteSpace.prod",
+        "module": "Mathlib.Topology.UniformSpace.Cauchy",
+        "match_kind": "exact"
+      },
+      "note": "CompleteSpace.prod plus CompleteSpace.fst_of_prod/snd_of_prod give both directions.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Basic notions",
+          "snippet": "is complete if and only if the two factors are complete"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\|(x,y)\\|_{1}=\\|x\\|+\\|y\\|,\\qquad \\|(x,y)\\|_{\\infty }=\\max(\\|x\\|,\\|y\\|)}"
+        }
+      ]
+    },
+    {
+      "kind": "definition",
+      "label": "Quotient norm",
+      "anchor": {
+        "section": "Basic notions",
+        "snippet": "there is a natural norm on the quotient space"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "quotient_norm_mk_eq",
+        "module": "Mathlib.Analysis.Normed.Group.Quotient",
+        "match_kind": "exact"
+      },
+      "note": "The quotient norm (infimum over the coset) is defined on M ⧸ S.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Basic notions",
+          "snippet": "there is a natural norm on the quotient space"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\|x+M\\|=\\inf \\limits _{m\\in M}\\|x+m\\|.}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Quotient is Banach when X complete",
+      "anchor": {
+        "section": "Basic notions",
+        "snippet": "is a Banach space when"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Submodule.Quotient.completeSpace",
+        "module": "Mathlib.Analysis.Normed.Group.Quotient",
+        "match_kind": "exact"
+      },
+      "note": "The quotient of a complete normed space by a closed subspace is complete.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Complemented subspace",
+      "anchor": {
+        "section": "Basic notions",
+        "snippet": "is said to be a complemented subspace"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Submodule.ClosedComplemented",
+        "module": "Mathlib.Analysis.Normed.Module.Complemented",
+        "match_kind": "exact"
+      },
+      "note": "Submodule.ClosedComplemented captures topologically complemented subspaces.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Canonical factorization of bounded operator",
+      "anchor": {
+        "section": "Basic notions",
+        "snippet": "There exists a canonical factorization of"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The canonical quotient/inclusion factorization of a bounded operator is not packaged.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Basic notions",
+          "snippet": "There exists a canonical factorization of"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle T=T_{1}\\circ \\pi ,\\quad T:X{\\overset {\\pi }{{}\\longrightarrow {}}}X/\\ker T{\\overset {T_{1}}{{}\\longrightarrow {}}}Y}"
+        }
+      ]
+    },
+    {
+      "kind": "example",
+      "label": "Classical Banach spaces",
+      "anchor": {
+        "section": "Classical spaces",
+        "snippet": "Basic examples [ 25 ] of Banach spaces include"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "lp",
+        "module": "Mathlib.Analysis.Normed.Lp.lpSpace",
+        "match_kind": "generalization"
+      },
+      "note": "Classical spaces such as lp, Lp, and C(K) are formalized as (Banach) normed spaces.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Classical spaces",
+          "snippet": "Basic examples [ 25 ] of Banach spaces include"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\|f\\|_{C(K)}=\\max\\{|f(x)|\\mid x\\in K\\},\\quad f\\in C(K).}"
+        }
+      ]
+    },
+    {
+      "kind": "theorem",
+      "label": "Banach–Mazur theorem",
+      "anchor": {
+        "section": "Classical spaces",
+        "snippet": "every Banach space is isometrically isomorphic to a subspace of some"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Banach–Mazur universality theorem (embedding into C[0,1]) is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Hilbert space as Banach space",
+      "anchor": {
+        "section": "Classical spaces",
+        "snippet": "Any Hilbert space serves as an example of a Banach space"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "InnerProductSpace",
+        "module": "Mathlib.Analysis.InnerProductSpace.Basic",
+        "match_kind": "invocation"
+      },
+      "note": "A complete InnerProductSpace is a normed space, hence a Banach space.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Classical spaces",
+          "snippet": "Any Hilbert space serves as an example of a Banach space"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\|x\\|_{H}={\\sqrt {\\langle x,x\\rangle }},}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\langle \\cdot ,\\cdot \\rangle :H\\times H\\to \\mathbb {K} }"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle {\\begin{aligned}\\langle y,x\\rangle &amp;={\\overline {\\langle x,y\\rangle }},\\quad {\\text{ for all }}x,y\\in H\\\\\\langle x,x\\rangle &amp;\\geq 0,\\quad {\\text{ for all }}x\\in H\\\\\\langle x,x\\rangle =0{\\text{ if and only if }}x&amp;=0.\\end{aligned}}}"
+        }
+      ]
+    },
+    {
+      "kind": "example",
+      "label": "L² is a Hilbert space",
+      "anchor": {
+        "section": "Classical spaces",
+        "snippet": "is a Hilbert space"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "MeasureTheory.L2.innerProductSpace",
+        "module": "Mathlib.MeasureTheory.Function.L2Space",
+        "match_kind": "exact"
+      },
+      "note": "Lp E 2 μ is given an InnerProductSpace instance.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Hardy and Sobolev spaces",
+      "anchor": {
+        "section": "Classical spaces",
+        "snippet": "The Hardy spaces , the Sobolev spaces are examples of Banach spaces"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Hardy spaces and (general) Sobolev spaces as Banach spaces are not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Banach algebra",
+      "anchor": {
+        "section": "Banach algebras",
+        "snippet": "A Banach algebra is a Banach space"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "NormedAlgebra",
+        "module": "Mathlib.Analysis.Normed.Module.Basic",
+        "match_kind": "invocation"
+      },
+      "note": "A Banach algebra is a complete NormedRing/NormedAlgebra; expressed via the typeclass combination plus CompleteSpace.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "C(X) with pointwise product",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "with the pointwise product, is a Banach algebra"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "ContinuousMap.instNormedCommRing",
+        "module": "Mathlib.Topology.ContinuousMap.Compact",
+        "match_kind": "exact"
+      },
+      "note": "C(α,R) over a compact α is a NormedRing/NormedCommRing/NormedAlgebra under pointwise product.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Disk algebra",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "consists of functions holomorphic in the open unit disk"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The disk algebra is not defined in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Wiener algebra",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "is the algebra of functions on the unit circle"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Wiener algebra of absolutely convergent Fourier series is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Bounded operators as Banach algebra",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "with the composition of maps as product, is a Banach algebra"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "ContinuousLinearMap.toNormedRing",
+        "module": "Mathlib.Analysis.Normed.Operator.NormedSpace",
+        "match_kind": "exact"
+      },
+      "note": "E →L[𝕜] E with composition is a normed ring (Banach algebra when E is complete).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "C*-algebra",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "A C*-algebra is a complex Banach algebra"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "CStarAlgebra",
+        "module": "Mathlib.Analysis.CStarAlgebra.Classes",
+        "match_kind": "exact"
+      },
+      "note": "CStarAlgebra (extending CStarRing) is the exact notion.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Gelfand–Naimark theorem",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "The Gelfand–Naimark theorem states that every C*-algebra is isometrically isomorphic"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "gelfandTransform_bijective",
+        "module": "Mathlib.Analysis.CStarAlgebra.GelfandDuality",
+        "match_kind": "special_case"
+      },
+      "note": "The commutative case (Gelfand duality) and the GNS construction are formalized, but not the general representation into B(H).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Continuous dual space",
+      "anchor": {
+        "section": "Dual space",
+        "snippet": "the continuous dual space is the space of continuous linear maps"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "StrongDual",
+        "module": "Mathlib.Analysis.Normed.Module.Dual",
+        "match_kind": "exact"
+      },
+      "note": "The continuous dual is StrongDual 𝕜 E = E →L[𝕜] 𝕜.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Dual is a Banach space",
+      "anchor": {
+        "section": "Dual space",
+        "snippet": "is a Banach space, for every normed space"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "ContinuousLinearMap.completeSpace",
+        "module": "Mathlib.Topology.Algebra.Module.Spaces.ContinuousLinearMap",
+        "match_kind": "special_case"
+      },
+      "note": "The dual E →L[𝕜] 𝕜 is complete since 𝕜 is complete.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Hahn–Banach extension of functionals",
+      "anchor": {
+        "section": "Dual space",
+        "snippet": "every continuous linear functional on a subspace of a normed space can be continuously extended"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "exists_extension_norm_eq",
+        "module": "Mathlib.Analysis.Normed.Module.HahnBanach",
+        "match_kind": "exact"
+      },
+      "note": "Norm-preserving Hahn–Banach extension of continuous functionals is formalized.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Dual space",
+          "snippet": "every continuous linear functional on a subspace of a normed space can be continuously extended"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle f(x)=\\|x\\|_{X},\\quad \\|f\\|_{X'}\\leq 1.}"
+        }
+      ]
+    },
+    {
+      "kind": "definition",
+      "label": "Norming functional",
+      "anchor": {
+        "section": "Dual space",
+        "snippet": "must have norm one, and is called a norming functional"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "exists_dual_vector",
+        "module": "Mathlib.Analysis.Normed.Module.HahnBanach",
+        "match_kind": "exact"
+      },
+      "note": "exists_dual_vector gives a norm-one functional g with g x = ‖x‖.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Hahn–Banach separation theorem",
+      "anchor": {
+        "section": "Dual space",
+        "snippet": "The Hahn–Banach separation theorem states that two disjoint non-empty convex sets"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "geometric_hahn_banach_closed_point",
+        "module": "Mathlib.Analysis.NormedSpace.HahnBanach.Separation",
+        "match_kind": "exact"
+      },
+      "note": "The geometric Hahn–Banach separation theorems for convex sets are formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Total subset",
+      "anchor": {
+        "section": "Dual space",
+        "snippet": "is total if the linear span of"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Totality is expressible as Dense (Submodule.span ...) but there is no named 'total subset' predicate.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Dual of a direct sum",
+      "anchor": {
+        "section": "Dual space",
+        "snippet": "is isomorphic to the direct sum of the duals of"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The duality (⊕ Xᵢ)* ≅ ∏ Xᵢ* for normed spaces is not stated.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Dual space",
+          "snippet": "is isomorphic to the direct sum of the duals of"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle M^{\\bot }=\\{x'\\in X\\mid x'(m)=0{\\text{ for all }}m\\in M\\}.}"
+        }
+      ]
+    },
+    {
+      "kind": "theorem",
+      "label": "Hahn–Banach theorem",
+      "anchor": {
+        "type": "theorem_box",
+        "value": "Hahn–Banach theorem — Let [MATH] be a ve"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "exists_extension_of_le_sublinear",
+        "module": "Mathlib.Analysis.Convex.Cone.Extension",
+        "match_kind": "exact"
+      },
+      "note": "The analytic Hahn–Banach theorem (extension dominated by a sublinear functional) is formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Separability of dual implies separability",
+      "anchor": {
+        "type": "theorem_box",
+        "value": "Theorem [ 33 ]"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No theorem that separability of the dual implies separability of the space.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Weak topology",
+      "anchor": {
+        "section": "Weak topologies",
+        "snippet": "is the coarsest topology on"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "WeakSpace",
+        "module": "Mathlib.Analysis.LocallyConvex.WeakSpace",
+        "match_kind": "exact"
+      },
+      "note": "The weak topology is given by WeakSpace/WeakBilin (coarsest topology making all dual functionals continuous).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Norm-closed convex sets are weakly closed",
+      "anchor": {
+        "section": "Weak topologies",
+        "snippet": "a norm-closed convex subset of a Banach space is also weakly closed"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Convex.toWeakSpace_closure",
+        "module": "Mathlib.Analysis.LocallyConvex.WeakSpace",
+        "match_kind": "generalization"
+      },
+      "note": "The closure of a convex set coincides with its weak closure, so closed convex sets are weakly closed.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Norm-continuous maps are weakly continuous",
+      "anchor": {
+        "section": "Weak topologies",
+        "snippet": "A norm-continuous linear map between two Banach spaces"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "toWeakSpaceCLM",
+        "module": "Mathlib.Analysis.LocallyConvex.WeakSpace",
+        "match_kind": null
+      },
+      "note": "The weak-topology machinery (toWeakSpaceCLM, WeakBilin.continuous_of_continuous_eval) exists but 'every continuous linear map is weak-weak continuous' is not a single packaged lemma.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Algebraic dual space",
+      "anchor": {
+        "section": "Weak topologies",
+        "snippet": "is called the algebraic dual space"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Module.Dual",
+        "module": "Mathlib.LinearAlgebra.Dual.Defs",
+        "match_kind": "exact"
+      },
+      "note": "Module.Dual is the algebraic dual (all linear functionals).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Weak* topology",
+      "anchor": {
+        "section": "Weak topologies",
+        "snippet": "called the weak* topology"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "WeakDual",
+        "module": "Mathlib.Analysis.Normed.Module.WeakDual",
+        "match_kind": "exact"
+      },
+      "note": "WeakDual carries the weak-* topology on the dual.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Banach–Alaoglu theorem",
+      "anchor": {
+        "type": "theorem_box",
+        "value": "Banach–Alaoglu theorem — Let [MATH] be a"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "WeakDual.isCompact_closedBall",
+        "module": "Mathlib.Analysis.Normed.Module.WeakDual",
+        "match_kind": "exact"
+      },
+      "note": "The Banach–Alaoglu theorem (weak-* compactness of the dual closed ball/polar) is formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Dual of ℓ¹",
+      "anchor": {
+        "section": "Examples of dual spaces",
+        "snippet": "for every bounded linear functional"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The identification (ℓ¹)* ≅ ℓ∞ is not formalized.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Examples of dual spaces",
+          "snippet": "for every bounded linear functional"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle f(x)=\\sum _{n\\in \\mathbb {N} }x_{n}y_{n},\\qquad x=\\{x_{n}\\}\\in c_{0},\\ \\ {\\text{and}}\\ \\ \\|f\\|_{(c_{0})'}=\\|y\\|_{\\ell _{1}}.}"
+        }
+      ]
+    },
+    {
+      "kind": "example",
+      "label": "Dual of Lp space",
+      "anchor": {
+        "section": "Examples of dual spaces",
+        "snippet": "The dual of Lebesgue space"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Lᵖ–Lq duality theorem is not formalized as an isometric dual isomorphism.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Riesz representation theorem",
+      "anchor": {
+        "section": "Examples of dual spaces",
+        "snippet": "The Riesz representation theorem states that every continuous linear functional"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "InnerProductSpace.toDual",
+        "module": "Mathlib.Analysis.InnerProductSpace.Dual",
+        "match_kind": "exact"
+      },
+      "note": "The Fréchet–Riesz representation of the dual of a Hilbert space is InnerProductSpace.toDual.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Dual of C(K) as Radon measures",
+      "anchor": {
+        "section": "Examples of dual spaces",
+        "snippet": "is the space of Radon measures in the sense of Bourbaki"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "RieszMarkovKakutani",
+        "module": "Mathlib.MeasureTheory.Integral.RieszMarkovKakutani.Real",
+        "match_kind": "special_case"
+      },
+      "note": "Riesz–Markov–Kakutani represents (positive/real) functionals by measures, but C(K)* ≅ Radon measures is not packaged as a normed dual isomorphism.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Amir–Cambern extension",
+      "anchor": {
+        "section": "Examples of dual spaces",
+        "snippet": "The result has been extended by Amir"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Amir–Cambern theorem is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Maximal ideals as Dirac measures",
+      "anchor": {
+        "section": "Examples of dual spaces",
+        "snippet": "the maximal ideals are precisely kernels of Dirac measures"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The identification of maximal ideals of C(K) with Dirac measures is not stated.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Examples of dual spaces",
+          "snippet": "the maximal ideals are precisely kernels of Dirac measures"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle I_{x}=\\ker \\delta _{x}=\\{f\\in C(K)\\mid f(x)=0\\},\\quad x\\in K.}"
+        }
+      ]
+    },
+    {
+      "kind": "theorem",
+      "label": "Gelfand–Mazur identification of maximal ideals",
+      "anchor": {
+        "section": "Examples of dual spaces",
+        "snippet": "by the Gelfand–Mazur theorem , the maximal ideals of a unital commutative Banach algebra"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "gelfandTransform_bijective",
+        "module": "Mathlib.Analysis.CStarAlgebra.GelfandDuality",
+        "match_kind": "special_case"
+      },
+      "note": "Gelfand–Mazur and the character space are formalized, but the maximal-ideal/character correspondence for general Banach algebras is only partial.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Gelfand representation theorem",
+      "anchor": {
+        "section": "Examples of dual spaces",
+        "snippet": "Gelfand's representation theorem for commutative C*-algebras states"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "gelfandTransform_bijective",
+        "module": "Mathlib.Analysis.CStarAlgebra.GelfandDuality",
+        "match_kind": "exact"
+      },
+      "note": "The Gelfand representation for commutative C*-algebras (bijective isometric Gelfand transform) is formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Banach–Stone theorem",
+      "anchor": {
+        "type": "theorem_box",
+        "value": "Banach–Stone Theorem — If [MATH] and [MA"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Banach–Stone theorem is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Maximal ideal space of C(X)",
+      "anchor": {
+        "type": "theorem_box",
+        "value": "Theorem"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "gelfandTransform_bijective",
+        "module": "Mathlib.Analysis.CStarAlgebra.GelfandDuality",
+        "match_kind": null
+      },
+      "note": "Character-space/Gelfand-duality machinery exists, but the homeomorphism between X and the maximal ideal space of C(X) is not packaged.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Bidual (second dual)",
+      "anchor": {
+        "section": "Bidual",
+        "snippet": "is called the bidual or second dual"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "NormedSpace.inclusionInDoubleDual",
+        "module": "Mathlib.Analysis.Normed.Module.DoubleDual",
+        "match_kind": "exact"
+      },
+      "note": "The bidual StrongDual (StrongDual E) and the canonical map into it are defined.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Bidual",
+          "snippet": "is called the bidual or second dual"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle {\\begin{cases}F_{X}\\colon X\\to X''\\\\F_{X}(x)(f)=f(x)&amp;{\\text{ for all }}x\\in X,{\\text{ and for all }}f\\in X'\\end{cases}}}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Canonical map into bidual is isometric",
+      "anchor": {
+        "section": "Bidual",
+        "snippet": "is isometric, thus injective"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "NormedSpace.inclusionInDoubleDualLi",
+        "module": "Mathlib.Analysis.Normed.Module.DoubleDual",
+        "match_kind": "exact"
+      },
+      "note": "inclusionInDoubleDualLi is the canonical isometric (hence injective) embedding into the bidual.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Reflexive space",
+      "anchor": {
+        "section": "Bidual",
+        "snippet": "is called reflexive"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Reflexivity of normed spaces is not defined in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Reflexive normed spaces are Banach",
+      "anchor": {
+        "section": "Bidual",
+        "snippet": "every reflexive normed space is a Banach space"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Without reflexivity, this statement is absent.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Goldstine theorem",
+      "anchor": {
+        "section": "Bidual",
+        "snippet": "The Goldstine theorem states that the unit ball of a normed space is weakly*-dense"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Goldstine's theorem is not formalized.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Bidual",
+          "snippet": "The Goldstine theorem states that the unit ball of a normed space is weakly*-dense"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\sup _{i\\in I}\\|x_{i}\\|\\leq \\|x''\\|,\\ \\ x''(f)=\\lim _{i}f(x_{i}),\\quad f\\in X'.}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Banach space not a countable union of closed subspaces",
+      "anchor": {
+        "section": "Banach's theorems",
+        "snippet": "a Banach space cannot be the union of countably many closed subspaces"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This Baire-category consequence about proper closed subspaces is not stated (though the Baire theorem is available).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Countable Hamel basis implies finite-dimensional",
+      "anchor": {
+        "section": "Banach's theorems",
+        "snippet": "a Banach space with a countable Hamel basis is finite-dimensional"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This Baire-category consequence is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Banach–Steinhaus theorem",
+      "anchor": {
+        "type": "theorem_box",
+        "value": "Banach–Steinhaus Theorem — Let [MATH] be"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "banach_steinhaus",
+        "module": "Mathlib.Analysis.Normed.Operator.BanachSteinhaus",
+        "match_kind": "exact"
+      },
+      "note": "The uniform boundedness principle is formalized as banach_steinhaus.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Open Mapping theorem",
+      "anchor": {
+        "type": "theorem_box",
+        "value": "The Open Mapping Theorem — Let [MATH] an"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "ContinuousLinearMap.isOpenMap",
+        "module": "Mathlib.Analysis.Normed.Operator.Banach",
+        "match_kind": "exact"
+      },
+      "note": "A surjective bounded linear map between Banach spaces is open.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Bounded bijection is an isomorphism",
+      "anchor": {
+        "type": "theorem_box",
+        "value": "Corollary"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "ContinuousLinearMap.ofBijective",
+        "module": "Mathlib.Analysis.Normed.Operator.Banach",
+        "match_kind": "exact"
+      },
+      "note": "A bijective bounded linear map between Banach spaces has a bounded inverse (ContinuousLinearEquiv).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "First Isomorphism theorem for Banach spaces",
+      "anchor": {
+        "type": "theorem_box",
+        "value": "The First Isomorphism Theorem for Banach"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "ContinuousLinearMap.equivRange",
+        "module": "Mathlib.Analysis.Normed.Operator.Banach",
+        "match_kind": null
+      },
+      "note": "Closed-range/quotient infrastructure exists (e.g. equivRange) but E/ker f ≅ range f is not stated as the first isomorphism theorem.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Closed Graph theorem",
+      "anchor": {
+        "type": "theorem_box",
+        "value": "The Closed Graph Theorem — Let [MATH] be"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "ContinuousLinearMap.ofIsClosedGraph",
+        "module": "Mathlib.Analysis.Normed.Operator.Banach",
+        "match_kind": "exact"
+      },
+      "note": "A linear map between Banach spaces with closed graph is continuous.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Reflexive normed space",
+      "anchor": {
+        "section": "Reflexivity",
+        "snippet": "is called reflexive when the natural map"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Reflexivity is not defined in Mathlib.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Reflexivity",
+          "snippet": "is called reflexive when the natural map"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle {\\begin{cases}F_{X}:X\\to X''\\\\F_{X}(x)(f)=f(x)&amp;{\\text{ for all }}x\\in X,{\\text{ and for all }}f\\in X'\\end{cases}}}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Reflexive normed spaces are Banach spaces",
+      "anchor": {
+        "section": "Reflexivity",
+        "snippet": "Reflexive normed spaces are Banach spaces."
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Absent due to no reflexivity notion.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Reflexivity",
+          "snippet": "Reflexive normed spaces are Banach spaces."
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle {\\begin{cases}F_{X}:X\\to X''\\\\F_{X}(x)(f)=f(x)&amp;{\\text{ for all }}x\\in X,{\\text{ and for all }}f\\in X'\\end{cases}}}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Bounded surjection preserves reflexivity",
+      "anchor": {
+        "section": "Reflexivity",
+        "snippet": "by the open mapping theorem, if there is a bounded linear operator from the Banach space"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Absent due to no reflexivity notion.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Separable dual implies separable",
+      "anchor": {
+        "section": "Reflexivity",
+        "snippet": "Indeed, if the dual"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No theorem that separable dual implies separable space.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Reflexive and non-reflexive spaces",
+      "anchor": {
+        "section": "Reflexivity",
+        "snippet": "Hilbert spaces are reflexive."
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Reflexivity is not formalized, so these examples are absent.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "James space",
+      "anchor": {
+        "section": "Reflexivity",
+        "snippet": "Robert C. James has constructed an example"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The James space is not constructed in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Closed bounded convex sets weakly compact",
+      "anchor": {
+        "section": "Reflexivity",
+        "snippet": "all closed and bounded convex subsets of"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This reflexivity characterization is absent.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Convex functions attain minimum on unit ball",
+      "anchor": {
+        "section": "Reflexivity",
+        "snippet": "every convex continuous function on the unit ball"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This minimization result for reflexive spaces is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Bishop–Phelps theorem",
+      "anchor": {
+        "section": "Reflexivity",
+        "snippet": "the Bishop – Phelps theorem"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Bishop–Phelps theorem is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Subspaces and quotients of reflexive spaces",
+      "anchor": {
+        "type": "theorem_box",
+        "value": "Theorem"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Absent due to no reflexivity notion.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "X reflexive iff dual reflexive",
+      "anchor": {
+        "type": "theorem_box",
+        "value": "Theorem"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Absent due to no reflexivity notion.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Reflexive separable iff dual separable",
+      "anchor": {
+        "type": "theorem_box",
+        "value": "Corollary"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Absent due to no reflexivity notion.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Product reflexive iff factors reflexive",
+      "anchor": {
+        "type": "theorem_box",
+        "value": "Theorem"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Absent due to no reflexivity notion.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Reflexive iff unit ball weakly compact",
+      "anchor": {
+        "type": "theorem_box",
+        "value": "Theorem"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Absent due to no reflexivity notion.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "James' theorem",
+      "anchor": {
+        "type": "theorem_box",
+        "value": "James' Theorem — For a Banach space the "
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "James' theorem is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Weakly convergent sequence",
+      "anchor": {
+        "section": "Weak convergences of sequences",
+        "snippet": "is weakly convergent to a vector"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "WeakSpace",
+        "module": "Mathlib.Analysis.LocallyConvex.WeakSpace",
+        "match_kind": null
+      },
+      "note": "Weak convergence is expressible as Tendsto in WeakSpace but there is no dedicated 'weakly convergent' predicate.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Weakly Cauchy sequence",
+      "anchor": {
+        "section": "Weak convergences of sequences",
+        "snippet": "is a weakly Cauchy sequence if"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "WeakSpace",
+        "module": "Mathlib.Analysis.LocallyConvex.WeakSpace",
+        "match_kind": null
+      },
+      "note": "Expressible via the weak topology but no named 'weakly Cauchy' predicate exists.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Weakly* convergent sequence",
+      "anchor": {
+        "section": "Weak convergences of sequences",
+        "snippet": "is weakly* convergent to a functional"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "WeakDual",
+        "module": "Mathlib.Analysis.Normed.Module.WeakDual",
+        "match_kind": null
+      },
+      "note": "Weak-* convergence is convergence in WeakDual but is not a separately named predicate.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Weakly sequentially complete space",
+      "anchor": {
+        "section": "Weak convergences of sequences",
+        "snippet": "is weakly sequentially complete if every weakly Cauchy sequence"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "WeakSpace",
+        "module": "Mathlib.Analysis.LocallyConvex.WeakSpace",
+        "match_kind": null
+      },
+      "note": "The weak topology exists but weak sequential completeness is not defined as a notion.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Orthonormal sequence converges weakly to zero",
+      "anchor": {
+        "section": "Weak convergences of sequences",
+        "snippet": "An orthonormal sequence in a Hilbert space is a simple example of a weakly convergent sequence"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Weak convergence of orthonormal sequences to 0 is not stated (though Bessel's inequality exists).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Convex combinations of weakly null sequence norm-converge",
+      "anchor": {
+        "section": "Weak convergences of sequences",
+        "snippet": "there exists a sequence of convex combinations of vectors"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Convex.toWeakSpace_closure",
+        "module": "Mathlib.Analysis.LocallyConvex.WeakSpace",
+        "match_kind": null
+      },
+      "note": "Mazur's lemma follows from weak closure = norm closure of convex sets, but is not packaged as a sequence statement.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Schur property of ℓ¹",
+      "anchor": {
+        "section": "Weak convergences of sequences",
+        "snippet": "satisfies Schur's property"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Schur's property of ℓ¹ is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "L¹(μ) is weakly sequentially complete",
+      "anchor": {
+        "type": "theorem_box",
+        "value": "Theorem [ 47 ]"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Weak sequential completeness of L¹ is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Unit ball of bidual as first Baire class",
+      "anchor": {
+        "section": "Results involving the 𝓁 1 basis",
+        "snippet": "The unit ball of the bidual is a pointwise compact subset of the first Baire class"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This Baire-class description of the bidual ball is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Rosenthal ℓ¹ dichotomy theorem",
+      "anchor": {
+        "type": "theorem_box",
+        "value": "Theorem [ 51 ]"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Rosenthal's ℓ¹ theorem is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Odell–Rosenthal characterization",
+      "anchor": {
+        "type": "theorem_box",
+        "value": "Theorem [ 52 ]"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Odell–Rosenthal theorem is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Separable space has weak*-compact metrizable dual ball",
+      "anchor": {
+        "section": "Sequences, weak and weak* compactness",
+        "snippet": "the unit ball of the dual is weak*-compact by the Banach–Alaoglu theorem and metrizable"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "WeakDual.metrizable_of_isCompact",
+        "module": "Mathlib.Analysis.Normed.Module.WeakDual",
+        "match_kind": "exact"
+      },
+      "note": "Compact subsets of the weak dual of a separable normed space are metrizable, combined with Banach–Alaoglu compactness.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Weak topology metrizable iff finite-dimensional",
+      "anchor": {
+        "section": "Sequences, weak and weak* compactness",
+        "snippet": "The weak topology of a Banach space"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The metrizability-iff-finite-dimensional characterization of the weak topology is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Reflexivity via bounded sequences",
+      "anchor": {
+        "section": "Sequences, weak and weak* compactness",
+        "snippet": "is reflexive if and only if each bounded sequence"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Absent due to no reflexivity notion.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Weakly compact subset of ℓ¹ is norm-compact",
+      "anchor": {
+        "section": "Sequences, weak and weak* compactness",
+        "snippet": "is norm-compact"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This consequence of the Schur property is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Eberlein–Šmulian theorem",
+      "anchor": {
+        "type": "theorem_box",
+        "value": "Eberlein–Šmulian theorem [ 56 ] — A set "
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Eberlein–Šmulian theorem is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Type and cotype",
+      "anchor": {
+        "section": "Type and cotype",
+        "snippet": "A way to classify Banach spaces is through the probabilistic notion of type and cotype"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Rademacher type and cotype are not defined in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Schauder basis",
+      "anchor": {
+        "section": "Schauder bases",
+        "snippet": "A Schauder basis in a Banach space"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "GeneralSchauderBasis",
+        "module": "Mathlib.Analysis.Normed.Module.Bases",
+        "match_kind": "exact"
+      },
+      "note": "Schauder bases are defined via GeneralSchauderBasis/SchauderBasis.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Schauder bases",
+          "snippet": "A Schauder basis in a Banach space"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle x=\\sum _{n=0}^{\\infty }x_{n}e_{n},\\quad {\\textit {i.e.,}}\\quad x=\\lim _{n}P_{n}(x),\\ P_{n}(x):=\\sum _{k=0}^{n}x_{k}e_{k}.}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Schauder basis implies separable",
+      "anchor": {
+        "section": "Schauder bases",
+        "snippet": "Banach spaces with a Schauder basis are necessarily separable"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "GeneralSchauderBasis",
+        "module": "Mathlib.Analysis.Normed.Module.Bases",
+        "match_kind": null
+      },
+      "note": "Schauder bases are defined but the implication 'basis ⇒ separable' is not proven.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Biorthogonal functionals",
+      "anchor": {
+        "section": "Schauder bases",
+        "snippet": "They are called biorthogonal functionals."
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "GeneralSchauderBasis.coord",
+        "module": "Mathlib.Analysis.Normed.Module.Bases",
+        "match_kind": "exact"
+      },
+      "note": "The coordinate (biorthogonal) functionals with the ortho relation are part of the Schauder basis structure.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Classical explicit bases",
+      "anchor": {
+        "section": "Schauder bases",
+        "snippet": "Most classical separable spaces have explicit bases."
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "GeneralSchauderBasis",
+        "module": "Mathlib.Analysis.Normed.Module.Bases",
+        "match_kind": null
+      },
+      "note": "The Schauder basis structure exists, but explicit classical bases (Haar, trigonometric, etc.) are not all constructed.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Bočkarev basis for disk algebra",
+      "anchor": {
+        "section": "Schauder bases",
+        "snippet": "until Bočkarev showed in 1974"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Bočkarev's construction is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Basis implies bounded approximation property",
+      "anchor": {
+        "section": "Schauder bases",
+        "snippet": "satisfies the bounded approximation property"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The approximation property is not defined in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Enflo space without approximation property",
+      "anchor": {
+        "section": "Schauder bases",
+        "snippet": "The first example by Enflo of a space failing the approximation property"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Enflo's counterexample is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "James reflexivity criterion for bases",
+      "anchor": {
+        "section": "Schauder bases",
+        "snippet": "is reflexive if and only if the basis is both shrinking and boundedly complete"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Shrinking/boundedly complete reflexivity criterion is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Tensor product and universal property",
+      "anchor": {
+        "section": "Tensor product",
+        "snippet": "which has the following universal property"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "TensorProduct",
+        "module": "Mathlib.LinearAlgebra.TensorProduct.Basic",
+        "match_kind": "exact"
+      },
+      "note": "The algebraic tensor product with its universal property is formalized (the Banach cross-norm completion is not).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Universal property of tensor product",
+      "anchor": {
+        "section": "Tensor product",
+        "snippet": "then there exists a unique linear mapping"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "TensorProduct.lift",
+        "module": "Mathlib.LinearAlgebra.TensorProduct.Basic",
+        "match_kind": "exact"
+      },
+      "note": "TensorProduct.lift (with uniqueness) realizes the universal property for bilinear maps.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Simple tensor",
+      "anchor": {
+        "section": "Tensor product",
+        "snippet": "and called a simple tensor"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "TensorProduct.tmul",
+        "module": "Mathlib.LinearAlgebra.TensorProduct.Basic",
+        "match_kind": "exact"
+      },
+      "note": "Simple tensors x ⊗ₜ y are TensorProduct.tmul.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Projective and injective cross norms",
+      "anchor": {
+        "section": "Tensor product",
+        "snippet": "the projective cross norm and injective cross norm introduced by A. Grothendieck"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Projective/injective cross norms on tensor products are not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Projective tensor product",
+      "anchor": {
+        "section": "Tensor product",
+        "snippet": "the projective tensor product [ 64 ] of two Banach spaces"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The projective tensor product of Banach spaces is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Grothendieck tensor isomorphisms",
+      "anchor": {
+        "section": "Tensor product",
+        "snippet": "Grothendieck proved in particular that"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Grothendieck's tensor isomorphisms are not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Tensor product as closure of finite rank operators",
+      "anchor": {
+        "section": "Tensor products and the approximation property",
+        "snippet": "is identified isometrically with the closure in"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This injective tensor product identification is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Injectivity criterion and approximation property",
+      "anchor": {
+        "section": "Tensor products and the approximation property",
+        "snippet": "is one-to-one if and only if"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Depends on the approximation property, which is not formalized.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Tensor products and the approximation property",
+          "snippet": "is one-to-one if and only if"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle Y{\\widehat {\\otimes }}_{\\pi }X\\to Y{\\widehat {\\otimes }}_{\\varepsilon }X}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle X'{\\widehat {\\otimes }}_{\\pi }X\\ \\longrightarrow X'{\\widehat {\\otimes }}_{\\varepsilon }X}"
+        }
+      ]
+    },
+    {
+      "kind": "theorem",
+      "label": "Pisier disproof of Grothendieck conjecture",
+      "anchor": {
+        "section": "Tensor products and the approximation property",
+        "snippet": "This was disproved by Gilles Pisier in 1983"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Pisier's counterexample is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Szankowski: B(H) lacks approximation property",
+      "anchor": {
+        "section": "Tensor products and the approximation property",
+        "snippet": "Szankowski proved that the classical space"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Szankowski's theorem is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Parallelogram identity characterizes inner product",
+      "anchor": {
+        "section": "Characterizations of Hilbert space among Banach spaces",
+        "snippet": "A necessary and sufficient condition for the norm of a Banach space"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "InnerProductSpace.ofNorm",
+        "module": "Mathlib.Analysis.InnerProductSpace.OfNorm",
+        "match_kind": "exact"
+      },
+      "note": "A norm satisfying the parallelogram identity yields an InnerProductSpace via InnerProductSpace.ofNorm.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Polarization identity recovers inner product",
+      "anchor": {
+        "section": "Characterizations of Hilbert space among Banach spaces",
+        "snippet": "the associated inner product is given by the polarization identity"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "inner_eq_sum_norm_sq_div_four",
+        "module": "Mathlib.Analysis.InnerProductSpace.Basic",
+        "match_kind": "exact"
+      },
+      "note": "The polarization identity recovering the inner product from the norm is formalized.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Characterizations of Hilbert space among Banach spaces",
+          "snippet": "the associated inner product is given by the polarization identity"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\langle x,y\\rangle ={\\tfrac {1}{4}}(\\|x+y\\|^{2}-\\|x-y\\|^{2}).}"
+        }
+      ]
+    },
+    {
+      "kind": "theorem",
+      "label": "Kwapień's theorem",
+      "anchor": {
+        "section": "Characterizations of Hilbert space among Banach spaces",
+        "snippet": "Kwapień proved that if"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Kwapień's theorem (type 2 and cotype 2 ⇒ Hilbertian) is not formalized.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Characterizations of Hilbert space among Banach spaces",
+          "snippet": "Kwapień proved that if"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle c^{-2}\\sum _{k=1}^{n}\\|x_{k}\\|^{2}\\leq \\operatorname {Ave} _{\\pm }\\left\\|\\sum _{k=1}^{n}\\pm x_{k}\\right\\|^{2}\\leq c^{2}\\sum _{k=1}^{n}\\|x_{k}\\|^{2}}"
+        }
+      ]
+    },
+    {
+      "kind": "theorem",
+      "label": "Lindenstrauss–Tzafriri complementation theorem",
+      "anchor": {
+        "section": "Characterizations of Hilbert space among Banach spaces",
+        "snippet": "Lindenstrauss and Tzafriri proved that a Banach space in which every closed linear subspace is complemented"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Lindenstrauss–Tzafriri theorem is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Dvoretzky's theorem",
+      "anchor": {
+        "section": "Characterizations of Hilbert space among Banach spaces",
+        "snippet": "Dvoretzky's theorem states that for every integer"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Dvoretzky's theorem is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Homogeneous Banach space",
+      "anchor": {
+        "section": "Characterizations of Hilbert space among Banach spaces",
+        "snippet": "is said to be homogeneous if it is isomorphic to all its infinite-dimensional closed subspaces"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Homogeneous Banach spaces are not defined.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Hereditarily indecomposable space",
+      "anchor": {
+        "section": "Characterizations of Hilbert space among Banach spaces",
+        "snippet": "is hereditarily indecomposable when no subspace of it can be isomorphic"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Hereditarily indecomposable spaces are not defined.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Gowers dichotomy theorem",
+      "anchor": {
+        "section": "Characterizations of Hilbert space among Banach spaces",
+        "snippet": "The Gowers dichotomy theorem"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Gowers' dichotomy theorem is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Parallelogram identity",
+      "anchor": {
+        "type": "theorem_box",
+        "value": "Parallelogram identity — for all [MATH]"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "parallelogram_law_with_norm",
+        "module": "Mathlib.Analysis.InnerProductSpace.Basic",
+        "match_kind": "exact"
+      },
+      "note": "The parallelogram law ‖x+y‖²+‖x−y‖²=2(‖x‖²+‖y‖²) holds in inner product spaces.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Homogeneous space is separable Hilbert",
+      "anchor": {
+        "type": "theorem_box",
+        "value": "Theorem [ 73 ]"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Komorowski–Tomczak/Gowers result identifying homogeneous spaces with ℓ² is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Mazur–Ulam theorem",
+      "anchor": {
+        "section": "Metric classification",
+        "snippet": "the Mazur–Ulam theorem states that"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Isometry.toRealAffineIsometryEquiv",
+        "module": "Mathlib.Analysis.Normed.Affine.MazurUlam",
+        "match_kind": "exact"
+      },
+      "note": "An isometric bijection between real normed (affine) spaces is affine, via the Mazur-Ulam conversions (toRealLinearIsometryEquiv / toRealAffineIsometryEquiv).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Finite-dimensional homeomorphism classification",
+      "anchor": {
+        "section": "Topological classification",
+        "snippet": "Finite dimensional Banach spaces are homeomorphic as topological spaces, if and only if they have the same dimension"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "ContinuousLinearEquiv.ofFinrankEq",
+        "module": "Mathlib.Analysis.Normed.Module.FiniteDimension",
+        "match_kind": "special_case"
+      },
+      "note": "Equal finite dimension gives a linear homeomorphism, but the converse (different dimensions are not homeomorphic) is not packaged.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Separable Banach spaces are homeomorphic",
+      "anchor": {
+        "section": "Topological classification",
+        "snippet": "any two infinite-dimensional separable Banach spaces are homeomorphic as topological spaces"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Kadec/Anderson homeomorphism classification is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Toruńczyk density character classification",
+      "anchor": {
+        "section": "Topological classification",
+        "snippet": "Kadec's theorem was extended by Torunczyk"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Toruńczyk's density-character classification is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Homeomorphic compacta give isometric C(K)",
+      "anchor": {
+        "section": "Spaces of continuous functions",
+        "snippet": "are homeomorphic , the Banach spaces"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Composition with a homeomorphism gives an algebra iso of C(K), but the isometric C(K)≅C(L) statement is not packaged as such.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Countable compacta as ordinal intervals",
+      "anchor": {
+        "section": "Spaces of continuous functions",
+        "snippet": "is homeomorphic to some closed interval of ordinal numbers"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Mazurkiewicz–Sierpiński classification of countable compacta is not formalized.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Spaces of continuous functions",
+          "snippet": "is homeomorphic to some closed interval of ordinal numbers"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\langle 1,\\alpha \\rangle =\\{\\gamma \\mid 1\\leq \\gamma \\leq \\alpha \\}}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle C(\\langle 1,\\omega \\rangle ),\\ C(\\langle 1,\\omega ^{\\omega }\\rangle ),\\ C(\\langle 1,\\omega ^{\\omega ^{2}}\\rangle ),\\ C(\\langle 1,\\omega ^{\\omega ^{3}}\\rangle ),\\cdots ,C(\\langle 1,\\omega ^{\\omega ^{\\omega }}\\rangle ),\\cdots }"
+        }
+      ]
+    },
+    {
+      "kind": "theorem",
+      "label": "Milutin theorem",
+      "anchor": {
+        "type": "theorem_box",
+        "value": "Theorem [ 79 ]"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Milutin's theorem is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Fréchet derivative on Banach spaces",
+      "anchor": {
+        "section": "Derivatives",
+        "snippet": "The Fréchet derivative allows for an extension of the concept of a total derivative"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "fderiv",
+        "module": "Mathlib.Analysis.Calculus.FDeriv.Basic",
+        "match_kind": "exact"
+      },
+      "note": "The Fréchet derivative is fderiv, defined between normed/Banach spaces.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Complete non-Banach spaces",
+      "anchor": {
+        "section": "Generalizations",
+        "snippet": "are complete but are not normed vector spaces and hence not Banach spaces"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "These specific examples of complete non-normable spaces are not catalogued as such.",
+      "provenance": "ai"
+    }
+  ]
+}

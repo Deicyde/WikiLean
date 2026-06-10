@@ -1,0 +1,809 @@
+{
+  "slug": "Stereographic_projection",
+  "wikipedia_title": "Stereographic projection",
+  "display_title": "Stereographic projection",
+  "schema_version": 3,
+  "annotation_style": "theorem_article",
+  "annotations": [
+    {
+      "kind": "definition",
+      "label": "Stereographic projection",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "a stereographic projection is a perspective projection of the sphere"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "stereographic",
+        "module": "Mathlib.Geometry.Manifold.Instances.Sphere",
+        "match_kind": "generalization"
+      },
+      "note": "Mathlib defines `stereographic` as an open partial homeomorphism from the unit sphere in any real inner product space (minus a unit vector v) to the orthogonal complement of v, generalizing the classical 2-sphere construction.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Conformality and circle-preservation",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "It maps circles on the sphere to circles or lines on the plane, and is conformal"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Neither conformality of `stereographic` nor its circle-to-circle/line behavior is proved in Mathlib; only smoothness is established.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Not isometric or equiareal",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "It is neither isometric (distance preserving) nor equiareal (area preserving)"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No statement about isometry/area-preservation failure of stereographic projection appears in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Induced metric from inverse projection",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "The metric induced by the inverse stereographic projection from the plane to the sphere defines a geodesic distance"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib does not formalize the pullback metric/geodesic distance obtained from inverse stereographic projection.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Unit sphere and north pole setup",
+      "anchor": {
+        "section": "First formulation",
+        "snippet": "The unit sphere"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Metric.sphere",
+        "module": "Mathlib.Topology.MetricSpace.Defs",
+        "match_kind": "generalization"
+      },
+      "note": "The unit sphere `sphere (0 : E) 1` is standard, and a unit vector `v` with `‖v‖ = 1` plays the role of the north pole in `stereographic`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Stereographic projection of a point",
+      "anchor": {
+        "section": "First formulation",
+        "snippet": "there is a unique line through"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "stereographic_apply",
+        "module": "Mathlib.Geometry.Manifold.Instances.Sphere",
+        "match_kind": "generalization"
+      },
+      "note": "`stereographic_apply` gives the closed form `(2/(1−⟪v,x⟫)) • orthogonalProjection x`, the abstract analogue of the line-through-north-pole construction.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Cartesian formulas for projection",
+      "anchor": {
+        "section": "First formulation",
+        "snippet": "In Cartesian coordinates"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "stereoToFun_apply",
+        "module": "Mathlib.Geometry.Manifold.Instances.Sphere",
+        "match_kind": "generalization"
+      },
+      "note": "The general inner-product formula is in `stereoToFun_apply`, but the explicit (x,y,z)→(X,Y) Cartesian coordinate formulas are not separately spelled out.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Spherical-coordinate formulas",
+      "anchor": {
+        "section": "First formulation",
+        "snippet": "In spherical coordinates"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has no spherical-coordinate expression for stereographic projection.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Cylindrical-coordinate formulas",
+      "anchor": {
+        "section": "First formulation",
+        "snippet": "In cylindrical coordinates"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has no cylindrical-coordinate expression for stereographic projection.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Projection onto tangent plane at south pole",
+      "anchor": {
+        "section": "Other conventions",
+        "snippet": "define stereographic projection from the north pole"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "stereographic",
+        "module": "Mathlib.Geometry.Manifold.Instances.Sphere",
+        "match_kind": "generalization"
+      },
+      "note": "Mathlib's `stereographic` projects from `v` onto the equatorial hyperplane `(ℝ∙v)ᗮ`, not the tangent plane at `−v`, so the convention differs by a factor of 2.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Equator maps to circle of radius 2",
+      "anchor": {
+        "section": "Other conventions",
+        "snippet": "this projection sends the equator to the circle of radius 2 centered at the origin"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The image of the equator under the equatorial-plane stereographic projection is not computed in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Half-radius sphere convention",
+      "anchor": {
+        "section": "Other conventions",
+        "snippet": "Other authors"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib only formalizes the unit sphere convention; no half-radius variant is defined.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "General stereographic projection from a point",
+      "anchor": {
+        "section": "Other conventions",
+        "snippet": "In general, one can define a stereographic projection from any point"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "stereographic",
+        "module": "Mathlib.Geometry.Manifold.Instances.Sphere",
+        "match_kind": "exact"
+      },
+      "note": "`stereographic hv` is parametrized by an arbitrary unit vector `v`, exactly capturing projection from a chosen point on the sphere.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Stereographic projection on n-sphere",
+      "anchor": {
+        "section": "Generalizations",
+        "snippet": "stereographic projection may be applied to the unit"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "stereographic'",
+        "module": "Mathlib.Geometry.Manifold.Instances.Sphere",
+        "match_kind": "generalization"
+      },
+      "note": "`stereographic'` packages stereographic projection on the unit sphere of any `(n+1)`-dimensional real inner product space as an open partial homeomorphism with target `EuclideanSpace ℝ (Fin n)`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Stereographic projection on quadric hypersurface",
+      "anchor": {
+        "section": "Generalizations",
+        "snippet": "Still more generally, suppose that"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib's stereographic construction is restricted to spheres; no version for general quadric hypersurfaces exists.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Quadric as rational hypersurface",
+      "anchor": {
+        "section": "Generalizations",
+        "snippet": "The stereographic projection presents the quadric hypersurface as a rational hypersurface"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No statement about rationality of quadric hypersurfaces via stereographic projection appears in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Image of south pole, equator, hemispheres",
+      "anchor": {
+        "section": "Properties",
+        "snippet": "sends the \"south pole\""
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "stereographic_apply_neg",
+        "module": "Mathlib.Geometry.Manifold.Instances.Sphere",
+        "match_kind": "special_case"
+      },
+      "note": "`stereographic_apply_neg` proves the antipode of the projection point maps to 0, but Mathlib has no separate statements about the equator or hemispheres.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Behavior near projection point",
+      "anchor": {
+        "section": "Properties",
+        "snippet": "The projection is not defined at the projection point"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "stereographic_source",
+        "module": "Mathlib.Geometry.Manifold.Instances.Sphere",
+        "match_kind": "exact"
+      },
+      "note": "`stereographic_source` shows the source is `{⟨v,_⟩}ᶜ`, i.e., the projection is defined exactly on the sphere minus the projection point.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Sphere as one-point compactification",
+      "anchor": {
+        "section": "Properties",
+        "snippet": "the sphere is homeomorphic to the one-point compactification of the plane"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "onePointEquivSphereOfFinrankEq",
+        "module": "Mathlib.Topology.Compactification.OnePoint.Sphere",
+        "match_kind": "generalization"
+      },
+      "note": "`onePointEquivSphereOfFinrankEq` (and `onePointHyperplaneHomeoUnitSphere`) build the homeomorphism between the one-point compactification of a hyperplane/vector space and the unit sphere.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Rationality of point and image",
+      "anchor": {
+        "section": "Properties",
+        "snippet": "either both are rational points or none of them"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib does not state preservation of rational points by stereographic projection on the sphere.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Conformality and non-area-preservation",
+      "anchor": {
+        "section": "Properties",
+        "snippet": "Stereographic projection is conformal, meaning that it preserves the angles"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Conformality of `stereographic` is not proved in Mathlib; `conformalGroupoid` exists abstractly but is not connected to the sphere.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Area element formula",
+      "anchor": {
+        "section": "Properties",
+        "snippet": "The area element is given in"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No area-element formula for stereographic projection is given in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Scale factors near equator and origin",
+      "anchor": {
+        "section": "Properties",
+        "snippet": "Along the unit circle"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib does not compute scale factors of stereographic projection.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Metric formula on the plane",
+      "anchor": {
+        "section": "Properties",
+        "snippet": "The metric is given in"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The pullback Riemannian metric formula on the plane is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "No conformal area-preserving map sphere→plane",
+      "anchor": {
+        "section": "Properties",
+        "snippet": "No map from the sphere to the plane can be both conformal and area-preserving"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This obstruction theorem (a consequence of nonzero Gaussian curvature) is not in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Circles map to circles or lines",
+      "anchor": {
+        "section": "Properties",
+        "snippet": "Circles on the sphere that do not pass through the point of projection are projected to circles on the plane"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The circle-preservation theorem for stereographic projection is not proved in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Lines in plane lift to circles through projection point",
+      "anchor": {
+        "section": "Properties",
+        "snippet": "All lines in the plane, when transformed to circles on the sphere by the inverse of stereographic projection, meet at the projection point"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has no statement about the preimage of straight lines under inverse stereographic projection.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Loxodromes map to logarithmic spirals",
+      "anchor": {
+        "section": "Properties",
+        "snippet": "The loxodromes of the sphere map to curves on the plane"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Loxodromes are not defined in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Relation to plane inversion",
+      "anchor": {
+        "section": "Properties",
+        "snippet": "The stereographic projection relates to the plane inversion in a simple way"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Although `inversion` exists in `Mathlib.Geometry.Euclidean.Inversion.Basic`, its relation to stereographic projection is explicitly flagged as a TODO in the Sphere instances file.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Antipodal projections are inversive images",
+      "anchor": {
+        "section": "Properties",
+        "snippet": "then P ′ and P″ are inversive images of each other in the unit circle"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib does not relate north-pole and south-pole stereographic projections via plane inversion.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Metric tensor of stereographic projection",
+      "anchor": {
+        "section": "Metric",
+        "snippet": "The associated metric tensor of the specific stereographic projection"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Riemannian metric tensor pulled back via stereographic projection is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Wulff net",
+      "anchor": {
+        "section": "Wulff net",
+        "snippet": "This special graph paper is called a stereonet or Wulff net"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Wulff net/stereonet is not defined in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Area distortion ratio approaches 4",
+      "anchor": {
+        "section": "Wulff net",
+        "snippet": "If the grid is made finer, this ratio approaches exactly 4"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No statement about the limiting area-distortion ratio of stereographic projection appears in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Orthogonality of parallels and meridians on Wulff net",
+      "anchor": {
+        "section": "Wulff net",
+        "snippet": "On the Wulff net, the images of the parallels and meridians intersect at right angles"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib lacks any treatment of the Wulff net's orthogonality.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Plotting a point on the Wulff net",
+      "anchor": {
+        "section": "Wulff net",
+        "snippet": "For an example of the use of the Wulff net"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No Wulff-net plotting procedure is formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Two-projection cover of the sphere",
+      "anchor": {
+        "section": "Complex analysis",
+        "snippet": "the entire sphere can be mapped using two projections from distinct projection points"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "EuclideanSpace.instChartedSpaceSphere",
+        "module": "Mathlib.Geometry.Manifold.Instances.Sphere",
+        "match_kind": "generalization"
+      },
+      "note": "The charted-space instance uses many stereographic charts (one per point) and does not single out a two-chart cover, although individual `stereographic'` charts have target `Set.univ`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Stereographic projection in complex coordinates",
+      "anchor": {
+        "section": "Complex analysis",
+        "snippet": "The stereographic projection from the north pole onto the equatorial plane is then"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "stereographic",
+        "module": "Mathlib.Geometry.Manifold.Instances.Sphere",
+        "match_kind": "generalization"
+      },
+      "note": "Mathlib's `stereographic` specializes to the complex case (sphere in ℂ via `Circle`) but the projection is not separately written in terms of a complex coordinate ζ.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "South-pole projection and transition maps",
+      "anchor": {
+        "section": "Complex analysis",
+        "snippet": "define a stereographic projection from the south pole onto the equatorial plane"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "EuclideanSpace.instIsManifoldSphere",
+        "module": "Mathlib.Geometry.Manifold.Instances.Sphere",
+        "match_kind": "generalization"
+      },
+      "note": "Smoothness of the transition maps between any pair of `stereographic'` charts is the core of the `IsManifold` instance, generalizing the north/south transition `ζ ↦ 1/ζ̄`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Standard metric agrees with Fubini–Study",
+      "anchor": {
+        "section": "Complex analysis",
+        "snippet": "The standard metric on the unit sphere agrees with the Fubini–Study metric on the Riemann sphere"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Fubini–Study metric is not defined in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Disk visualization of real projective plane",
+      "anchor": {
+        "section": "Visualization of lines and planes",
+        "snippet": "one can visualize it as a disk"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has no disk-model visualization of ℝP².",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Planes through origin map to circles",
+      "anchor": {
+        "section": "Visualization of lines and planes",
+        "snippet": "every plane through the origin intersects the unit sphere in a great circle"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The image of great circles under stereographic projection is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Pole of a plane",
+      "anchor": {
+        "section": "Visualization of lines and planes",
+        "snippet": "Further associated with each plane is a unique line, called the plane's pole"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib does not define the pole of a plane in this projective-visualization sense.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Schlegel diagram",
+      "anchor": {
+        "section": "Other visualization",
+        "snippet": "In a Schlegel diagram"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Schlegel diagrams of polytopes are not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Pythagorean triples via stereographic projection",
+      "anchor": {
+        "section": "Arithmetic geometry",
+        "snippet": "stereographic projection from the unit circle provides a means to describe all primitive Pythagorean triples"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "circleEquivGen",
+        "module": "Mathlib.NumberTheory.PythagoreanTriples",
+        "match_kind": "invocation"
+      },
+      "note": "`circleEquivGen` parametrizes the unit circle via `t ↦ (2t/(1+t²), (1−t²)/(1+t²))` and is used to classify Pythagorean triples.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Bijection of rationals on circle and x-axis",
+      "anchor": {
+        "section": "Arithmetic geometry",
+        "snippet": "gives a one-to-one correspondence between the rational number points"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "circleEquivGen",
+        "module": "Mathlib.NumberTheory.PythagoreanTriples",
+        "match_kind": "generalization"
+      },
+      "note": "`circleEquivGen` is an explicit `Equiv` between the parameter field `K` and circle points with `y ≠ −1`; specializing to `K = ℚ` yields the rational-points correspondence.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Tangent half-angle parametrization",
+      "anchor": {
+        "section": "Tangent half-angle substitution",
+        "snippet": "The stereographic projection gives an alternative parametrization of the unit circle"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Real.sin_eq_two_mul_tan_half_div_one_add_tan_half_sq",
+        "module": "Mathlib.Analysis.SpecialFunctions.Trigonometric.Complex",
+        "match_kind": "exact"
+      },
+      "note": "The formulas `sin x = 2t/(1+t²)`, `cos x = (1−t²)/(1+t²)` with `t = tan(x/2)` are stated explicitly (also `cos_eq_…` and `tan_eq_…`), and `circleEquivGen` packages the same parametrization as an equivalence.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Length element under reparametrization",
+      "anchor": {
+        "section": "Tangent half-angle substitution",
+        "snippet": "the length element"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The length element `dx = 2 dt/(1+t²)` of the tangent half-angle substitution is not stated as a lemma in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "No accurate angle+area map",
+      "anchor": {
+        "section": "Cartography",
+        "snippet": "no map from the sphere to the plane can accurately represent both angles and areas"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This cartographic impossibility (Gauss-Bonnet/Theorema Egregium consequence) is not in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Polar aspect: meridians to rays, parallels to circles",
+      "anchor": {
+        "section": "Cartography",
+        "snippet": "It sends meridians to rays emanating from the origin and parallels to circles centered at the origin"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib does not formalize the image of meridians/parallels under polar stereographic projection.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Unique all-circles-to-circles projection",
+      "anchor": {
+        "section": "Planetary science",
+        "snippet": "The stereographic is the only projection that maps all circles on a sphere to circles on a plane"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This uniqueness characterization of stereographic projection is not formalized in Mathlib.",
+      "provenance": "ai"
+    }
+  ]
+}

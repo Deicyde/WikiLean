@@ -1,0 +1,49 @@
+{
+  "slug": "Axiom_of_choice",
+  "wikipedia_title": "Axiom of choice",
+  "display_title": "Axiom of choice",
+  "schema_version": 1,
+  "source": "claude-agent-sdk/annotate_articles.py",
+  "annotations": [
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\forall X\\left[\\varnothing \\in X\\lor \\exists f\\left[\\mathrm {dom} \\ f=X\\land \\forall A\\in X\\left[f\\left(A\\right)\\in A\\right]\\right]\\right].}"
+      },
+      "status": "partial",
+      "decl": "ZFSet.choice",
+      "module": "Mathlib.SetTheory.ZFC.Class",
+      "note": "Mathlib formalizes the ZFC choice function via ZFSet.choice with choice_isFunc/choice_mem, not the raw first-order sentence."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle {\\begin{aligned}\\forall x(&\\\\&\\exists e(e\\in x\\land \\lnot \\exists y(y\\in e))\\lor \\\\&\\exists a\\,\\exists b\\,\\exists c\\,(a\\in x\\land b\\in x\\land c\\in a\\land c\\in b\\land \\lnot (a=b))\\lor \\\\&\\exists c\\,\\forall e\\,(e\\in x\\implies \\exists a\\,(a\\in e\\land a\\in c\\land \\forall b\\,((b\\in e\\land b\\in c)\\implies a=b))))\\end{aligned}}}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Zermelo's pairwise-disjoint-sets variant with a transversal singleton is not formalized as a standalone Mathlib statement."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle (\\forall x^{\\sigma })(\\exists y^{\\tau })R(x,y)\\to (\\exists f^{\\sigma \\to \\tau })(\\forall x^{\\sigma })R(x,f(x)).}"
+      },
+      "status": "formalized",
+      "decl": "Classical.axiomOfChoice",
+      "module": "Mathlib.Logic.Basic",
+      "note": "This is exactly the type-theoretic AC captured by Classical.axiomOfChoice (∀x, ∃y, R x y) → ∃ f, ∀ x, R x (f x)."
+    },
+    {
+      "anchor": {
+        "type": "theorem_box",
+        "value": "Axiom — For any set X {\\displaystyle X} of nonempty sets, th"
+      },
+      "status": "formalized",
+      "decl": "Classical.axiomOfChoice",
+      "module": "Mathlib.Logic.Basic",
+      "note": "The English statement of AC corresponds directly to Classical.axiomOfChoice in Mathlib (and alias axiom_of_choice)."
+    }
+  ]
+}

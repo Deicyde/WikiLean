@@ -1,0 +1,129 @@
+{
+  "slug": "Exterior_algebra",
+  "wikipedia_title": "Exterior algebra",
+  "display_title": "Exterior algebra",
+  "schema_version": 1,
+  "source": "claude-agent-sdk/annotate_articles.py",
+  "annotations": [
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\mathbf {e} _{1}={\\begin{bmatrix}1\\\\0\\end{bmatrix}},\\quad \\mathbf {e} _{2}={\\begin{bmatrix}0\\\\1\\end{bmatrix}}.}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Concrete basis vectors of R²; example notation, not a standalone Mathlib decl."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\mathbf {v} ={\\begin{bmatrix}a\\\\b\\end{bmatrix}}=a\\,\\mathbf {e} _{1}+b\\,\\mathbf {e} _{2},\\quad \\mathbf {w} ={\\begin{bmatrix}c\\\\d\\end{bmatrix}}=c\\,\\mathbf {e} _{1}+d\\,\\mathbf {e} _{2}}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Example expansion of vectors in a basis; not a standalone Mathlib statement."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle {\\text{Area}}=\\left|\\det {\\begin{bmatrix}\\mathbf {v} &\\mathbf {w} \\end{bmatrix}}\\right|=\\left|\\det {\\begin{bmatrix}a&c\\\\b&d\\end{bmatrix}}\\right|=\\left|ad-bc\\right|.}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Determinant-as-area formula; no decl in the provided list captures this geometric statement."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle {\\begin{aligned}\\mathbf {v} \\wedge \\mathbf {w} &=(a\\,\\mathbf {e} _{1}+b\\,\\mathbf {e} _{2})\\wedge (c\\,\\mathbf {e} _{1}+d\\,\\mathbf {e} _{2})\\\\&=ac\\,\\mathbf {e} _{1}\\wedge \\mathbf {e} _{1}+ad\\,\\mathbf {e} _{1}\\wedge \\mathbf {e} _{2}+bc\\,\\mathbf {e} _{2}\\wedge \\mathbf {e} _{1}+bd\\,\\mathbf {e} _{2}\\wedge \\mathbf {e} _{2}\\\\&=ad\\,\\mathbf {e} _{1}\\wedge \\mathbf {e} _{2}+bc\\,\\mathbf {e} _{2}\\wedge \\mathbf {e} _{1}\\\\&=\\left(ad-bc\\right)\\mathbf {e} _{1}\\wedge \\mathbf {e} _{2},\\end{aligned}}}"
+      },
+      "status": "partial",
+      "decl": "ExteriorAlgebra.ι",
+      "module": "Mathlib.LinearAlgebra.ExteriorAlgebra.Basic",
+      "note": "Wedge expansion computation; uses ι and the alternating property (ι m * ι m = 0) of the exterior algebra."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\mathbf {u} =u_{1}\\mathbf {e} _{1}+u_{2}\\mathbf {e} _{2}+u_{3}\\mathbf {e} _{3}}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Expansion of a 3D vector in a basis; example notation, not a Mathlib decl."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\mathbf {v} =v_{1}\\mathbf {e} _{1}+v_{2}\\mathbf {e} _{2}+v_{3}\\mathbf {e} _{3}}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Expansion of a 3D vector in a basis; example notation, not a Mathlib decl."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle {\\begin{aligned}\\mathbf {u} \\wedge \\mathbf {v} \\,&=(u_{1}v_{2}-u_{2}v_{1})(\\mathbf {e} _{1}\\wedge \\mathbf {e} _{2})\\\\&+(u_{3}v_{1}-u_{1}v_{3})(\\mathbf {e} _{3}\\wedge \\mathbf {e} _{1})\\\\&+(u_{2}v_{3}-u_{3}v_{2})(\\mathbf {e} _{2}\\wedge \\mathbf {e} _{3})\\end{aligned}}}"
+      },
+      "status": "partial",
+      "decl": "ExteriorAlgebra.ι",
+      "module": "Mathlib.LinearAlgebra.ExteriorAlgebra.Basic",
+      "note": "Bivector expansion of u∧v in 3D; computed via ι, not a standalone formula in Mathlib."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\mathbf {w} =w_{1}\\mathbf {e} _{1}+w_{2}\\mathbf {e} _{2}+w_{3}\\mathbf {e} _{3},}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Expansion of a 3D vector in a basis; example notation, not a Mathlib decl."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\mathbf {u} \\wedge \\mathbf {v} \\wedge \\mathbf {w} =(u_{1}v_{2}w_{3}+u_{2}v_{3}w_{1}+u_{3}v_{1}w_{2}-u_{1}v_{3}w_{2}-u_{2}v_{1}w_{3}-u_{3}v_{2}w_{1})(\\mathbf {e} _{1}\\wedge \\mathbf {e} _{2}\\wedge \\mathbf {e} _{3})}"
+      },
+      "status": "partial",
+      "decl": "ExteriorAlgebra.ιMulti",
+      "module": "Mathlib.LinearAlgebra.ExteriorAlgebra.Basic",
+      "note": "Triple wedge product equal to the determinant times e₁∧e₂∧e₃; related to ιMulti but not a named lemma."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\iota _{\\alpha }\\colon {\\textstyle \\bigwedge ^{\\!k}}(V)\\to {\\textstyle \\bigwedge ^{\\!k-1}}(V).}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Interior product (contraction) of exterior algebra; no decl for it in the provided list."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle (\\iota _{\\alpha }w)(u_{1},u_{2},\\ldots ,u_{k-1})=w(\\alpha ,u_{1},u_{2},\\ldots ,u_{k-1}).}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Defining formula for interior product on alternating multilinear forms; no matching decl in the provided list."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle (\\alpha \\wedge \\beta )(x_{1}\\wedge \\cdots \\wedge x_{k})=(\\alpha \\otimes \\beta )\\left(\\Delta (x_{1}\\wedge \\cdots \\wedge x_{k})\\right)}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Coproduct/bialgebra structure on the exterior algebra; not present among the provided decls."
+    }
+  ]
+}

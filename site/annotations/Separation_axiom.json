@@ -1,0 +1,953 @@
+{
+  "slug": "Separation_axiom",
+  "wikipedia_title": "Separation axiom",
+  "display_title": "Separation axiom",
+  "schema_version": 3,
+  "annotation_style": "theorem_article",
+  "annotations": [
+    {
+      "kind": "definition",
+      "label": "Topologically distinguishable points",
+      "anchor": {
+        "section": "Preliminary definitions",
+        "snippet": "two points x and y in X are topologically distinguishable"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Inseparable",
+        "module": "Mathlib.Topology.Defs.Filter",
+        "match_kind": "generalization"
+      },
+      "note": "Mathlib formalizes the complementary relation `Inseparable` (same neighborhood filters); topologically distinguishable corresponds to `¬ Inseparable x y` but is not given its own name.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Separated points",
+      "anchor": {
+        "section": "Preliminary definitions",
+        "snippet": "Two points x and y are separated if each of them has a neighbourhood that is not a neighbourhood of the other"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No dedicated predicate for two points being separated (having mutually non-contained neighborhoods) appears in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Separated subsets",
+      "anchor": {
+        "section": "Preliminary definitions",
+        "snippet": "two subsets A and B of X are separated if each is disjoint from the other's closure"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "SeparatedNhds",
+        "module": "Mathlib.Topology.Separation.SeparatedNhds",
+        "match_kind": "special_case"
+      },
+      "note": "Mathlib's `SeparatedNhds` (disjoint open neighborhoods) is strictly stronger; the closure-disjoint notion appears only as `SeparatedNhds.disjoint_closure_left/right` consequences.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Separated by neighbourhoods",
+      "anchor": {
+        "section": "Preliminary definitions",
+        "snippet": "Subsets A and B are separated by neighbourhoods if they have disjoint neighbourhoods"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "SeparatedNhds",
+        "module": "Mathlib.Topology.Separation.SeparatedNhds",
+        "match_kind": "exact"
+      },
+      "note": "`SeparatedNhds s t` is defined as the existence of disjoint open sets containing `s` and `t` respectively.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Separated by closed neighbourhoods",
+      "anchor": {
+        "section": "Preliminary definitions",
+        "snippet": "They are separated by closed neighbourhoods if they have disjoint closed neighbourhoods"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No standalone predicate for disjoint closed neighborhoods; only appears unfolded inside `T25Space` and `exists_nhds_disjoint_closure`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Separated by a continuous function",
+      "anchor": {
+        "section": "Preliminary definitions",
+        "snippet": "They are separated by a continuous function if there exists a continuous function f from the space X to the real line"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "exists_continuous_zero_one_of_isClosed",
+        "module": "Mathlib.Topology.UrysohnsLemma",
+        "match_kind": "invocation"
+      },
+      "note": "The notion is not packaged as a predicate but is realized by lemmas like `exists_continuous_zero_one_of_isClosed` producing the Urysohn-style separating function.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Precisely separated by a continuous function",
+      "anchor": {
+        "section": "Preliminary definitions",
+        "snippet": "they are precisely separated by a continuous function if there exists a continuous function f from X to"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No predicate for `f⁻¹{0}=A` and `f⁻¹{1}=B` style precise separation appears in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "T0 (Kolmogorov) space",
+      "anchor": {
+        "section": "Main definitions",
+        "snippet": "or Kolmogorov , if any two distinct points in X are topologically distinguishable"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "T0Space",
+        "module": "Mathlib.Topology.Separation.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`T0Space` is defined as `Inseparable x y → x = y`, equivalent to distinct points being topologically distinguishable.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "R0 (symmetric) space",
+      "anchor": {
+        "section": "Main definitions",
+        "snippet": "or symmetric , if any two topologically distinguishable points in X are separated"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "R0Space",
+        "module": "Mathlib.Topology.Separation.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`R0Space` is defined by symmetry of the specialization relation, equivalent to the Wikipedia condition.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "T1 (accessible/Fréchet) space",
+      "anchor": {
+        "section": "Main definitions",
+        "snippet": "or accessible or Fréchet , if any two distinct points in X are separated"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "T1Space",
+        "module": "Mathlib.Topology.Separation.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`T1Space` is the standard typeclass with `IsClosed {x}` and equivalent reformulations.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "T1 iff T0 and R0",
+      "anchor": {
+        "section": "Main definitions",
+        "snippet": "Thus, X is T 1 if and only if it is both T 0 and R 0"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "t1Space_iff_t0Space_and_r0Space",
+        "module": "Mathlib.Topology.Separation.Basic",
+        "match_kind": "exact"
+      },
+      "note": "The exact equivalence is stated at `Mathlib/Topology/Separation/Basic.lean:454`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "R1 (preregular) space",
+      "anchor": {
+        "section": "Main definitions",
+        "snippet": "or preregular , if any two topologically distinguishable points in X are separated by neighbourhoods"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "R1Space",
+        "module": "Mathlib.Topology.Separation.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`R1Space` requires that any two points either specialize or have disjoint neighborhoods, matching the preregular condition.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "R1 implies R0",
+      "anchor": {
+        "section": "Main definitions",
+        "snippet": "Every R 1 space is also R 0"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "R1Space.toR0Space",
+        "module": "Mathlib.Topology.Separation.Basic",
+        "match_kind": "exact"
+      },
+      "note": "An anonymous priority-100 `R0Space X` instance is given for `[R1Space X]` at `Mathlib/Topology/Separation/Basic.lean:889`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Hausdorff (T2) space",
+      "anchor": {
+        "section": "Main definitions",
+        "snippet": "is Hausdorff , or T 2 or separated , if any two distinct points in X are separated by neighbourhoods"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "T2Space",
+        "module": "Mathlib.Topology.Separation.Hausdorff",
+        "match_kind": "exact"
+      },
+      "note": "`T2Space` is the standard Hausdorff typeclass with disjoint open neighborhoods of distinct points.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Hausdorff iff T0 and R1",
+      "anchor": {
+        "section": "Main definitions",
+        "snippet": "Thus, X is Hausdorff if and only if it is both T 0 and R 1"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "R1Space.t2Space_iff_t0Space",
+        "module": "Mathlib.Topology.Separation.Hausdorff",
+        "match_kind": "exact"
+      },
+      "note": "Under `[R1Space X]`, `T2Space X ↔ T0Space X` is proved at line 135.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Hausdorff implies T1",
+      "anchor": {
+        "section": "Main definitions",
+        "snippet": "Every Hausdorff space is also T 1"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "T2Space.t1Space",
+        "module": "Mathlib.Topology.Separation.Hausdorff",
+        "match_kind": "exact"
+      },
+      "note": "The instance `T2Space.t1Space` at line 115 derives `T1Space` from `T2Space`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "T2½ (Urysohn) space",
+      "anchor": {
+        "section": "Main definitions",
+        "snippet": "or Urysohn , if any two distinct points in X are separated by closed neighbourhoods"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "T25Space",
+        "module": "Mathlib.Topology.Separation.Regular",
+        "match_kind": "exact"
+      },
+      "note": "`T25Space` requires disjoint closed neighborhoods of distinct points (formulated via `lift' closure` filters).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "T2½ implies Hausdorff",
+      "anchor": {
+        "section": "Main definitions",
+        "snippet": "Every T 2½ space is also Hausdorff"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "T25Space.t2Space",
+        "module": "Mathlib.Topology.Separation.Regular",
+        "match_kind": "exact"
+      },
+      "note": "Priority-100 instance `T25Space.t2Space` at line 371 gives the implication.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Completely Hausdorff space",
+      "anchor": {
+        "section": "Main definitions",
+        "snippet": "is completely Hausdorff , or completely T 2 , if any two distinct points in X are separated by a continuous function"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No `CompletelyHausdorffSpace` / `CompletelyT2Space` typeclass exists in Mathlib; only the related `T35Space`-level lemma `separatesPoints_continuous_of_t35Space` appears.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Completely Hausdorff implies T2½",
+      "anchor": {
+        "section": "Main definitions",
+        "snippet": "Every completely Hausdorff space is also T 2½"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Without a `CompletelyHausdorff` class in Mathlib, this implication is not stated.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Regular space",
+      "anchor": {
+        "section": "Main definitions",
+        "snippet": "is regular if, given any point x and closed set F in X such that x does not belong to F , they are separated by neighbourhoods"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "RegularSpace",
+        "module": "Mathlib.Topology.Separation.Regular",
+        "match_kind": "exact"
+      },
+      "note": "`RegularSpace` is defined via `Disjoint (𝓝ˢ s) (𝓝 a)` for closed `s` not containing `a`, matching the Wikipedia definition.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Regular implies R1",
+      "anchor": {
+        "section": "Main definitions",
+        "snippet": "Every regular space is also R 1"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "RegularSpace.toR1Space",
+        "module": "Mathlib.Topology.Separation.Regular",
+        "match_kind": "exact"
+      },
+      "note": "Priority-100 `R1Space X` instance under `[RegularSpace X]` at `Mathlib/Topology/Separation/Regular.lean:165` (with comment `A regular space is R₁`).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Regular Hausdorff (T3) space",
+      "anchor": {
+        "section": "Main definitions",
+        "snippet": "is regular Hausdorff , or T 3 , if it is both T 0 and regular"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "T3Space",
+        "module": "Mathlib.Topology.Separation.Regular",
+        "match_kind": "exact"
+      },
+      "note": "`T3Space` extends `T0Space` and `RegularSpace` (line 408).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Regular Hausdorff implies T2½",
+      "anchor": {
+        "section": "Main definitions",
+        "snippet": "Every regular Hausdorff space is also T 2½"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "T3Space.t25Space",
+        "module": "Mathlib.Topology.Separation.Regular",
+        "match_kind": "exact"
+      },
+      "note": "Priority-100 instance `T3Space.t25Space` at line 416.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Completely regular space",
+      "anchor": {
+        "section": "Main definitions",
+        "snippet": "is completely regular if, given any point x and closed set F in X such that x does not belong to F , they are separated by a continuous function"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "CompletelyRegularSpace",
+        "module": "Mathlib.Topology.Separation.CompletelyRegular",
+        "match_kind": "exact"
+      },
+      "note": "`CompletelyRegularSpace` is defined via separation of a point from a closed set by a continuous `X → I` function.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Completely regular implies regular",
+      "anchor": {
+        "section": "Main definitions",
+        "snippet": "Every completely regular space is also regular"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "CompletelyRegularSpace.instRegularSpace",
+        "module": "Mathlib.Topology.Separation.CompletelyRegular",
+        "match_kind": "exact"
+      },
+      "note": "Instance at line 86 derives `RegularSpace` from `CompletelyRegularSpace`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Tychonoff (T3½) space",
+      "anchor": {
+        "section": "Main definitions",
+        "snippet": "is Tychonoff , or T 3½ , completely T 3 , or completely regular Hausdorff , if it is both T 0 and completely regular"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "T35Space",
+        "module": "Mathlib.Topology.Separation.CompletelyRegular",
+        "match_kind": "exact"
+      },
+      "note": "`T35Space` extends `T0Space` and `CompletelyRegularSpace` (line 231).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Tychonoff implies regular Hausdorff and completely Hausdorff",
+      "anchor": {
+        "section": "Main definitions",
+        "snippet": "Every Tychonoff space is both regular Hausdorff and completely Hausdorff"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "T35Space.instT3space",
+        "module": "Mathlib.Topology.Separation.CompletelyRegular",
+        "match_kind": "exact"
+      },
+      "note": "`T35Space.instT3space` gives the T3 part and `separatesPoints_continuous_of_t35Space` (line 250) witnesses the completely Hausdorff conclusion, though the latter is not stated as an instance of a `CompletelyHausdorff` class.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Normal space",
+      "anchor": {
+        "section": "Main definitions",
+        "snippet": "is normal if any two disjoint closed subsets of X are separated by neighbourhoods"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "NormalSpace",
+        "module": "Mathlib.Topology.Separation.Regular",
+        "match_kind": "exact"
+      },
+      "note": "`NormalSpace` is defined by `SeparatedNhds` of disjoint closed sets at line 465.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Urysohn's lemma",
+      "anchor": {
+        "section": "Main definitions",
+        "snippet": "a space is normal if and only if any two disjoint closed sets can be separated by a continuous function"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "exists_continuous_zero_one_of_isClosed",
+        "module": "Mathlib.Topology.UrysohnsLemma",
+        "match_kind": "special_case"
+      },
+      "note": "The forward direction of Urysohn's lemma (`NormalSpace → exists separating continuous function`) is proved as `exists_continuous_zero_one_of_isClosed`; the converse and packaged `↔` are not explicitly stated.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Normal regular space",
+      "anchor": {
+        "section": "Main definitions",
+        "snippet": "is normal regular if it is both R 0 and normal"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has no `NormalRegularSpace` class; the compound assumption `[NormalSpace X] [R0Space X]` is used directly (e.g. in `NormalSpace.instCompletelyRegularSpace`).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Normal regular implies completely regular",
+      "anchor": {
+        "section": "Main definitions",
+        "snippet": "Every normal regular space is also completely regular"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "NormalSpace.instCompletelyRegularSpace",
+        "module": "Mathlib.Topology.Separation.CompletelyRegular",
+        "match_kind": "exact"
+      },
+      "note": "Instance at line 95 derives `CompletelyRegularSpace` from `[NormalSpace X] [R0Space X]`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Normal Hausdorff (T4) space",
+      "anchor": {
+        "section": "Main definitions",
+        "snippet": "is normal Hausdorff , or T 4 , if it is both T 1 and normal"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "T4Space",
+        "module": "Mathlib.Topology.Separation.Regular",
+        "match_kind": "exact"
+      },
+      "note": "`T4Space` extends `T1Space` and `NormalSpace` (line 521).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Normal Hausdorff implies Tychonoff and normal regular",
+      "anchor": {
+        "section": "Main definitions",
+        "snippet": "Every normal Hausdorff space is also both Tychonoff and normal regular"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "T4Space.instT35Space",
+        "module": "Mathlib.Topology.Separation.CompletelyRegular",
+        "match_kind": "exact"
+      },
+      "note": "`T4Space.instT35Space` gives Tychonoff; T1 ⇒ R0 plus `NormalSpace` is the normal regular condition (no dedicated class).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Completely normal space",
+      "anchor": {
+        "section": "Main definitions",
+        "snippet": "is completely normal if any two separated sets are separated by neighbourhoods"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "CompletelyNormalSpace",
+        "module": "Mathlib.Topology.Separation.Regular",
+        "match_kind": "exact"
+      },
+      "note": "`CompletelyNormalSpace` is defined via the closure-disjointness hypothesis implying disjoint neighborhood filters (line 559).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Completely normal implies normal",
+      "anchor": {
+        "section": "Main definitions",
+        "snippet": "Every completely normal space is also normal"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "CompletelyNormalSpace.toNormalSpace",
+        "module": "Mathlib.Topology.Separation.Regular",
+        "match_kind": "exact"
+      },
+      "note": "Priority-100 instance at line 569.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Completely normal Hausdorff (T5) space",
+      "anchor": {
+        "section": "Main definitions",
+        "snippet": "is completely normal Hausdorff , or T 5 or completely T 4 , if it is both completely normal and T 1"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "T5Space",
+        "module": "Mathlib.Topology.Separation.Regular",
+        "match_kind": "exact"
+      },
+      "note": "`T5Space` extends `T1Space` and `CompletelyNormalSpace` (line 640).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Completely normal Hausdorff implies normal Hausdorff",
+      "anchor": {
+        "section": "Main definitions",
+        "snippet": "Every completely normal Hausdorff space is also normal Hausdorff"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "T5Space.toT4Space",
+        "module": "Mathlib.Topology.Separation.Regular",
+        "match_kind": "exact"
+      },
+      "note": "Priority-100 instance `T5Space.toT4Space` at line 654.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Perfectly normal space",
+      "anchor": {
+        "section": "Main definitions",
+        "snippet": "is perfectly normal if any two disjoint closed sets are precisely separated by a continuous function"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "PerfectlyNormalSpace",
+        "module": "Mathlib.Topology.Separation.GDelta",
+        "match_kind": "generalization"
+      },
+      "note": "Mathlib defines `PerfectlyNormalSpace` as normal plus closed sets are Gδ — the standard equivalent characterization — but does not phrase it directly as 'precisely separated by a continuous function'.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Perfectly normal implies completely normal and completely regular",
+      "anchor": {
+        "section": "Main definitions",
+        "snippet": "Every perfectly normal space is also both completely normal and completely regular"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "PerfectlyNormalSpace.toCompletelyNormalSpace",
+        "module": "Mathlib.Topology.Separation.GDelta",
+        "match_kind": "exact"
+      },
+      "note": "Instance at line 103 gives completely normal; combined with the priority-100 `[PerfectlyNormalSpace X] : R0Space X` at line 116 and `NormalSpace.instCompletelyRegularSpace`, completely regular follows.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Perfectly normal Hausdorff (T6) space",
+      "anchor": {
+        "section": "Main definitions",
+        "snippet": "is perfectly normal Hausdorff , or T 6 or perfectly T 4 , if it is both perfectly normal and T 0"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "T6Space",
+        "module": "Mathlib.Topology.Separation.GDelta",
+        "match_kind": "exact"
+      },
+      "note": "`T6Space` extends `T0Space` and `PerfectlyNormalSpace` (line 127).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Perfectly normal Hausdorff implies completely normal Hausdorff",
+      "anchor": {
+        "section": "Main definitions",
+        "snippet": "Every perfectly normal Hausdorff space is also completely normal Hausdorff"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "T6Space.toT5Space",
+        "module": "Mathlib.Topology.Separation.GDelta",
+        "match_kind": "exact"
+      },
+      "note": "Priority-100 instance `T6Space.toT5Space` at line 131.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Sober space",
+      "anchor": {
+        "section": "Other separation axioms",
+        "snippet": "is sober if, for every nonempty closed set C that is not the union of two of its closed proper subsets"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "QuasiSober",
+        "module": "Mathlib.Topology.Sober",
+        "match_kind": "generalization"
+      },
+      "note": "Mathlib provides `QuasiSober` (every irreducible closed set has a generic point); 'sober' (uniqueness of generic point) is the combination `[QuasiSober X] [T0Space X]` rather than a single class.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Hausdorff implies sober implies T0",
+      "anchor": {
+        "section": "Other separation axioms",
+        "snippet": "Any Hausdorff space must be sober, and any sober space must be T 0"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "R1Space.quasiSober",
+        "module": "Mathlib.Topology.Sober",
+        "match_kind": "generalization"
+      },
+      "note": "`R1Space.quasiSober` gives the (stronger) implication R1 ⇒ QuasiSober, hence Hausdorff ⇒ QuasiSober; the 'sober ⇒ T0' direction is built into the Mathlib convention that sober = QuasiSober + T0.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Weak Hausdorff space",
+      "anchor": {
+        "section": "Other separation axioms",
+        "snippet": "is weak Hausdorff if, for every continuous map f to X from a compact Hausdorff space, the image of f is closed in X"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No `WeakHausdorffSpace` class or equivalent definition appears in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Hausdorff implies weak Hausdorff implies T1",
+      "anchor": {
+        "section": "Other separation axioms",
+        "snippet": "Any Hausdorff space must be weak Hausdorff, and any weak Hausdorff space must be T 1"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Without weak Hausdorff defined, these implications are not stated.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "KC space",
+      "anchor": {
+        "section": "Other separation axioms",
+        "snippet": "is a KC space if all compact subsets of X are closed"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has `IsCompact.isClosed` under `T2Space`, but no `KCSpace` typeclass abstracting the property.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "KC strictly between T1 and T2",
+      "anchor": {
+        "section": "Other separation axioms",
+        "snippet": "The KC space property is strictly between T 1 and T 2 (Hausdorff) in strength"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Not stated; KC space is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "KC stronger than weak Hausdorff",
+      "anchor": {
+        "section": "Other separation axioms",
+        "snippet": "The KC space property is strictly"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Neither KC nor weak Hausdorff is formalized, so the implication is absent.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Semiregular space",
+      "anchor": {
+        "section": "Other separation axioms",
+        "snippet": "is semiregular if the regular open sets form a base for the open sets of X"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No `SemiregularSpace` class found in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Regular implies semiregular",
+      "anchor": {
+        "section": "Other separation axioms",
+        "snippet": "Any regular space must also be semiregular"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Not formalized as semiregular is not defined.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Quasi-regular space",
+      "anchor": {
+        "section": "Other separation axioms",
+        "snippet": "is quasi-regular if for any nonempty open set G , there is a nonempty open set H such that the closure of H is contained in G"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No quasi-regular space typeclass found in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Fully normal space",
+      "anchor": {
+        "section": "Other separation axioms",
+        "snippet": "is fully normal if every open cover has an open star refinement"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No `FullyNormalSpace` class found in Mathlib; only `ParacompactSpace` is provided.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Fully T4 space",
+      "anchor": {
+        "section": "Other separation axioms",
+        "snippet": "is fully T 4 , or fully normal Hausdorff , if it is both T 1 and fully normal"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Not formalized as fully normal is not defined.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Fully normal implies normal; fully T4 implies T4",
+      "anchor": {
+        "section": "Other separation axioms",
+        "snippet": "Every fully normal space is normal and every fully T 4 space is T 4"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Not formalized since fully normal/fully T4 are absent.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Fully T4 implies paracompact",
+      "anchor": {
+        "section": "Other separation axioms",
+        "snippet": "one can show that every fully T 4 space is paracompact"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib formalizes `ParacompactSpace` but not 'fully T4', so the equivalence/implication is not stated.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Cofinite topology: T1 KC counterexample",
+      "anchor": {
+        "section": "Explanatory notes",
+        "snippet": "for the cofinite topology on infinitely many points, which is T 1 , every subset is compact but not every subset is closed"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "CofiniteTopology",
+        "module": "Mathlib.Topology.CountableSeparatingOn",
+        "match_kind": "invocation"
+      },
+      "note": "`CofiniteTopology` is defined and shown to be T1 (`t1Space_cofinite`), but the specific KC counterexample fact (compact ≠ closed) is not stated as KC is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Cocountable topology: KC not Hausdorff",
+      "anchor": {
+        "section": "Explanatory notes",
+        "snippet": "for the cocountable topology on uncountably many points, the compact sets are all finite and hence all closed but the space is not T 2"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The cocountable topology and the KC-but-not-T2 example are not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Continuous image of compact Hausdorff in KC is closed",
+      "anchor": {
+        "section": "Explanatory notes",
+        "snippet": "The image of a continuous map from a compact Hausdorff space is necessarily compact"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "IsCompact.image",
+        "module": "Mathlib.Topology.Compactness.Compact",
+        "match_kind": "invocation"
+      },
+      "note": "`IsCompact.image` plus `IsCompact.isClosed` (under `T2Space`) realize this, but no statement uses a KC-codomain hypothesis since KC is not formalized.",
+      "provenance": "ai"
+    }
+  ]
+}

@@ -1,0 +1,265 @@
+{
+  "slug": "Cook-Levin_theorem",
+  "wikipedia_title": "Cook–Levin theorem",
+  "display_title": "Cook–Levin theorem",
+  "schema_version": 3,
+  "annotation_style": "theorem_article",
+  "annotations": [
+    {
+      "kind": "theorem",
+      "label": "Cook–Levin theorem (SAT is NP-complete)",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "states that the Boolean satisfiability problem is NP-complete"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has Turing-machine computability but defines no complexity classes (P, NP), no SAT, and no NP-completeness, so Cook–Levin is absent.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Polynomial SAT algorithm implies P = NP",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "if there exists a deterministic polynomial-time algorithm for solving Boolean satisfiability"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Neither the classes P and NP nor the SAT problem are defined in Mathlib, so this implication is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Baker–Gill–Solovay oracle separation",
+      "anchor": {
+        "section": "Contributions",
+        "snippet": "there exists an oracle A such that, for all subexponential deterministic-time complexity classes T"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has relative computability/Turing degrees but no time-bounded complexity classes or relativized P/NP, so this oracle separation is absent.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Levin's optimal-time algorithms",
+      "anchor": {
+        "section": "Contributions",
+        "snippet": "he found for each of these problems an algorithm that solves it in optimal time"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No notion of optimal-time search algorithms for NP problems exists in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Decision problem in NP",
+      "anchor": {
+        "section": "Definitions",
+        "snippet": "A decision problem is in NP if it can be decided by a nondeterministic Turing machine in polynomial time"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has deterministic Turing machines but no nondeterministic Turing machines and no polynomial-time class, so the class NP is not defined.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Instance of Boolean satisfiability problem",
+      "anchor": {
+        "section": "Definitions",
+        "snippet": "An instance of the Boolean satisfiability problem is a Boolean expression that combines Boolean variables using Boolean operators"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has Boolean algebras but no propositional/Boolean-formula datatype underlying the SAT problem.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Satisfiable expression",
+      "anchor": {
+        "section": "Definitions",
+        "snippet": "Such an expression is satisfiable if there is some assignment of truth values to the variables"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib's `ModelTheory/Satisfiability.lean` covers first-order satisfiability, not propositional truth-assignment satisfiability of Boolean expressions.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "SAT is in NP",
+      "anchor": {
+        "section": "Proof",
+        "snippet": "SAT is in NP because any assignment of Boolean values to Boolean variables that is claimed to satisfy the given expression can be verified in polynomial time"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Neither SAT nor the class NP is defined in Mathlib, so membership SAT ∈ NP is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Every NP problem reduces to SAT",
+      "anchor": {
+        "section": "Proof",
+        "snippet": "every NP problem can be reduced to an instance of a SAT problem by a polynomial-time many-one reduction"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib lacks NP and SAT, and only has computable (not polynomial-time) reductions, so this universal reduction is absent.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Construction of Boolean expression satisfiable iff machine accepts",
+      "anchor": {
+        "section": "Proof",
+        "snippet": "specify a Boolean expression"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has no Boolean-formula encoding of Turing-machine computations (the tableau construction), so this is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Transformation is a polynomial-time reduction",
+      "anchor": {
+        "section": "Proof",
+        "snippet": "Thus the transformation is certainly a polynomial-time many-one reduction"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "ManyOneReducible",
+        "module": "Mathlib.Computability.Reduce",
+        "match_kind": "generalization"
+      },
+      "note": "Mathlib formalizes computable many-one reductions (`ManyOneReducible`), a resource-unbounded generalization, but not the polynomial-time-bounded reductions needed here.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "QBF is PSPACE-complete",
+      "anchor": {
+        "section": "Complexity",
+        "snippet": "proving that there exists a problem (the recognition of true quantified Boolean formulas) that is PSPACE-complete"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib defines neither PSPACE nor quantified Boolean formulas, so this completeness result is absent.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "DQBF is NL-complete",
+      "anchor": {
+        "section": "Complexity",
+        "snippet": "proving that there exists a problem that is NL-complete"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has no logarithmic-space complexity class NL or associated completeness theory.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "NP reduces to SAT in logarithmic space",
+      "anchor": {
+        "section": "Consequences",
+        "snippet": "every problem in NP can be reduced in polynomial time (in fact, logarithmic space suffices) to an instance of the Boolean satisfiability problem"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has neither NP/SAT nor logarithmic-space-bounded reductions, so this refinement is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Karp's 21 NP-complete problems",
+      "anchor": {
+        "section": "Consequences",
+        "snippet": "21 diverse combinatorial and graph theoretical problems , each infamous for its intractability, are NP-complete"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No NP-completeness framework or any of Karp's 21 problems is formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "3SAT is NP-complete",
+      "anchor": {
+        "section": "Consequences",
+        "snippet": "he showed the problem 3SAT (the Boolean satisfiability problem for expressions in conjunctive normal form (CNF) with exactly three variables or negations of variables per clause) to be NP-complete"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has no CNF/3SAT formula representation or NP-completeness, so this result is absent.",
+      "provenance": "ai"
+    }
+  ]
+}

@@ -1,0 +1,649 @@
+{
+  "slug": "Expected_value",
+  "wikipedia_title": "Expected value",
+  "display_title": "Expected value",
+  "schema_version": 3,
+  "annotation_style": "theorem_article",
+  "annotations": [
+    {
+      "kind": "definition",
+      "label": "Expected value (informal)",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "is a generalization of the weighted average"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "MeasureTheory.integral",
+        "module": "Mathlib.MeasureTheory.Integral.Bochner.Basic",
+        "match_kind": "generalization"
+      },
+      "note": "Mathlib's Bochner integral `MeasureTheory.integral` is the measure-theoretic generalization of the weighted average that defines expectation against any (probability) measure.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Expected value of a random vector/matrix",
+      "anchor": {
+        "section": "Definition",
+        "snippet": "Any definition of expected value may be extended to define an expected value of a multidimensional random variable"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "MeasureTheory.integral",
+        "module": "Mathlib.MeasureTheory.Integral.Bochner.Basic",
+        "match_kind": "generalization"
+      },
+      "note": "The Bochner integral is defined for any function valued in a normed space, so vector- and matrix-valued expectations are subsumed by the same `MeasureTheory.integral`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Expectation for finitely many outcomes",
+      "anchor": {
+        "section": "Random variables with finitely many outcomes",
+        "snippet": "each of which (respectively) has probability"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "MeasureTheory.integral_finset",
+        "module": "Mathlib.MeasureTheory.Integral.Bochner.Basic",
+        "match_kind": "special_case"
+      },
+      "note": "Integration with respect to a finitely-supported measure (e.g. a finite sum of weighted Diracs) reduces the Bochner integral to the finite weighted sum form, captured by `integral_finset`/`integral_const`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Fair six-sided die",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "represent the outcome of a roll of a fair six-sided die"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No grep hit for a worked die-roll expectation example in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Roulette $1 straight-up bet",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "The roulette game consists of a small ball and a wheel with 38 numbered pockets around the edge"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No grep hit for a roulette expected-value example in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Expectation for countably infinite outcomes",
+      "anchor": {
+        "section": "Random variables with countably infinitely many outcomes",
+        "snippet": "Informally, the expectation of a random variable with a countably infinite set of possible outcomes is defined analogously"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "MeasureTheory.integral_tsum",
+        "module": "Mathlib.MeasureTheory.Integral.Bochner.Basic",
+        "match_kind": "generalization"
+      },
+      "note": "Countable sums of weighted point-mass expectations are captured by Bochner integration plus `integral_tsum`/`lintegral_tsum` against a countably supported measure.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Logarithmic-series distribution expectation",
+      "anchor": {
+        "section": "Example",
+        "snippet": "is the scaling factor which makes the probabilities sum to 1"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No grep hit for a logarithmic-series distribution in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Expectation via probability density function",
+      "anchor": {
+        "section": "Random variables with density",
+        "snippet": "which has a probability density function given by a function"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "MeasureTheory.integral_pdf_smul",
+        "module": "Mathlib.Probability.Density",
+        "match_kind": "exact"
+      },
+      "note": "`integral_pdf_smul` expresses `∫ f x · pdf X x dx = ∫ f ∘ X dℙ`, the density-based formula for expectation of `f(X)`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Expectation via Lebesgue integral",
+      "anchor": {
+        "section": "Arbitrary real-valued random variables",
+        "snippet": "All definitions of the expected value may be expressed in the language of measure theory"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "MeasureTheory.integral",
+        "module": "Mathlib.MeasureTheory.Integral.Bochner.Basic",
+        "match_kind": "exact"
+      },
+      "note": "Mathlib defines `MeasureTheory.integral` as the Bochner integral (with `lintegral` for the nonnegative Lebesgue case), which is the measure-theoretic expectation.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Absolutely continuous random variable",
+      "anchor": {
+        "section": "Arbitrary real-valued random variables",
+        "snippet": "is said to be absolutely continuous if any of the following conditions are satisfied"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "MeasureTheory.HasPDF",
+        "module": "Mathlib.Probability.Density",
+        "match_kind": "exact"
+      },
+      "note": "`HasPDF X ℙ μ` (with `HasPDF.absolutelyContinuous : map X ℙ ≪ μ`) is Mathlib's notion of a random variable with a density / absolutely continuous law.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Expectation via CDF area equality",
+      "anchor": {
+        "section": "Arbitrary real-valued random variables",
+        "snippet": "can also be defined on the graph of its cumulative distribution function"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "ProbabilityTheory.cdf",
+        "module": "Mathlib.Probability.CDF",
+        "match_kind": null
+      },
+      "note": "Mathlib has `ProbabilityTheory.cdf` and Stieltjes integration infrastructure, but no single lemma equating `E[X]` to the signed area between the CDF and the axes was found.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Daily precipitation model",
+      "anchor": {
+        "section": "Example (2)",
+        "snippet": "Let the daily precipitation"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No grep hit for a precipitation/mixed-distribution worked example in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Infinite expected values (positive/negative parts)",
+      "anchor": {
+        "section": "Infinite expected values",
+        "snippet": "it is fundamental to be able to consider expected values"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "MeasureTheory.integral_eq_lintegral_pos_part_sub_lintegral_neg_part",
+        "module": "Mathlib.MeasureTheory.Integral.Bochner.Basic",
+        "match_kind": "exact"
+      },
+      "note": "This lemma decomposes a real Bochner integral as the difference of the Lebesgue integrals of the positive and negative parts, the standard formal definition allowing infinite expectations.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "St. Petersburg paradox expectation",
+      "anchor": {
+        "section": "Infinite expected values",
+        "snippet": "In the case of the St. Petersburg paradox"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No grep hit for the St. Petersburg paradox in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Tail-sum formula",
+      "anchor": {
+        "section": "Tail-sum formula",
+        "snippet": "the expected value can also be expressed in terms of its tail probabilities"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "MeasureTheory.lintegral_eq_integral_meas_lt",
+        "module": "Mathlib.MeasureTheory.Integral.Layercake",
+        "match_kind": "generalization"
+      },
+      "note": "Mathlib's layercake formulas (`Mathlib.MeasureTheory.Integral.Layercake`) generalize the tail-sum identity `E[X] = ∫₀^∞ ℙ(X > t) dt` for nonnegative random variables.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Non-negativity of expectation",
+      "anchor": {
+        "section": "Properties",
+        "snippet": "Non-negativity"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "MeasureTheory.integral_nonneg_of_ae",
+        "module": "Mathlib.MeasureTheory.Integral.Bochner.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`integral_nonneg_of_ae` states `0 ≤ᵐ[μ] f → 0 ≤ ∫ f ∂μ`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Linearity of expectation",
+      "anchor": {
+        "section": "Properties",
+        "snippet": "Linearity of expectation"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "MeasureTheory.integral_add",
+        "module": "Mathlib.MeasureTheory.Integral.Bochner.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`integral_add` together with `integral_smul` give linearity of the Bochner integral / expectation.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Monotonicity of expectation",
+      "anchor": {
+        "section": "Properties",
+        "snippet": "Monotonicity"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "MeasureTheory.integral_mono",
+        "module": "Mathlib.MeasureTheory.Integral.Bochner.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`integral_mono` provides `f ≤ g → ∫ f ≤ ∫ g` under integrability assumptions.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Non-degeneracy of expectation",
+      "anchor": {
+        "section": "Properties",
+        "snippet": "Non-degeneracy"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "MeasureTheory.integral_eq_zero_iff_of_nonneg_ae",
+        "module": "Mathlib.MeasureTheory.Integral.Bochner.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`integral_eq_zero_iff_of_nonneg_ae` characterises when the integral of a nonneg integrable function vanishes (iff `f =ᵐ 0`).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Almost-sure equality preserves expectation",
+      "anchor": {
+        "section": "Properties",
+        "snippet": "if X and Y are random variables that take different values with probability zero"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "MeasureTheory.integral_congr_ae",
+        "module": "Mathlib.MeasureTheory.Integral.Bochner.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`integral_congr_ae` shows `f =ᵐ[μ] g → ∫ f ∂μ = ∫ g ∂μ`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Expectation of an almost-sure constant",
+      "anchor": {
+        "section": "Properties",
+        "snippet": "for some real number c"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "MeasureTheory.integral_const",
+        "module": "Mathlib.MeasureTheory.Integral.Bochner.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`integral_const : ∫ _, c ∂μ = μ.real univ • c` gives `E[c] = c` under a probability measure.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Absolute value bound on expectation",
+      "anchor": {
+        "section": "Properties",
+        "snippet": "together with the triangle inequality"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "MeasureTheory.norm_integral_le_integral_norm",
+        "module": "Mathlib.MeasureTheory.Integral.Bochner.Basic",
+        "match_kind": "generalization"
+      },
+      "note": "`norm_integral_le_integral_norm` is the normed-space form of `|E[X]| ≤ E[|X|]`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Expectation of indicator equals probability",
+      "anchor": {
+        "section": "Properties",
+        "snippet": "denote the indicator function of an event A"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "MeasureTheory.integral_indicator_one",
+        "module": "Mathlib.MeasureTheory.Integral.Bochner.Set",
+        "match_kind": "exact"
+      },
+      "note": "`integral_indicator_one` proves `∫ 𝟙_A dμ = μ.real A`, i.e. `E[𝟙_A] = ℙ(A)`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Expectation formulas in terms of CDF",
+      "anchor": {
+        "section": "Properties",
+        "snippet": "Formulas in terms of CDF"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "ProbabilityTheory.cdf",
+        "module": "Mathlib.Probability.CDF",
+        "match_kind": null
+      },
+      "note": "Mathlib has `ProbabilityTheory.cdf` and Stieltjes integration, but no specific identity expressing `E[X]` directly as an integral against the CDF was located.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Non-multiplicativity and independence",
+      "anchor": {
+        "section": "Properties",
+        "snippet": "Non-multiplicativity"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "ProbabilityTheory.IndepFun.integral_mul_eq_mul_integral",
+        "module": "Mathlib.Probability.Independence.Integration",
+        "match_kind": "exact"
+      },
+      "note": "`IndepFun.integral_mul_eq_mul_integral` gives `E[XY] = E[X]·E[Y]` for independent integrable real random variables.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Law of the unconscious statistician",
+      "anchor": {
+        "section": "Properties",
+        "snippet": "Law of the unconscious statistician"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "MeasureTheory.integral_map",
+        "module": "Mathlib.MeasureTheory.Integral.Bochner.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`integral_map` proves `∫ f d(map φ μ) = ∫ f ∘ φ dμ`, i.e. `E[g(X)] = ∫ g d(law of X)`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Markov's inequality",
+      "anchor": {
+        "section": "Inequalities",
+        "snippet": "Markov's inequality is among the best-known and simplest to prove"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "MeasureTheory.mul_meas_ge_le_lintegral",
+        "module": "Mathlib.MeasureTheory.Integral.Lebesgue.Markov",
+        "match_kind": "exact"
+      },
+      "note": "`mul_meas_ge_le_lintegral` is the Markov inequality `ε·μ{f ≥ ε} ≤ ∫⁻ f dμ`; the dedicated file `ChebyshevMarkov.lean` also packages variants.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Chebyshev's inequality",
+      "anchor": {
+        "section": "Inequalities",
+        "snippet": "to obtain Chebyshev's inequality"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "ProbabilityTheory.meas_ge_le_variance_div_sq",
+        "module": "Mathlib.Probability.Moments.Variance",
+        "match_kind": "exact"
+      },
+      "note": "`meas_ge_le_variance_div_sq` is exactly Chebyshev's inequality `ℙ(|X − E[X]| ≥ c) ≤ Var(X)/c²`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Kolmogorov inequality",
+      "anchor": {
+        "section": "Inequalities",
+        "snippet": "The Kolmogorov inequality extends the Chebyshev inequality"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "MeasureTheory.maximal_ineq",
+        "module": "Mathlib.Probability.Martingale.OptionalStopping",
+        "match_kind": null
+      },
+      "note": "Mathlib has Doob's submartingale maximal inequality (`maximal_ineq`), which subsumes the partial-sum Kolmogorov inequality, but no statement specialized to independent zero-mean partial sums was found.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Jensen's inequality",
+      "anchor": {
+        "section": "Inequalities",
+        "snippet": "Jensen's inequality"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "ConvexOn.map_integral_le",
+        "module": "Mathlib.Analysis.Convex.Integral",
+        "match_kind": "exact"
+      },
+      "note": "`ConvexOn.map_integral_le` proves `g(∫ f dμ) ≤ ∫ g ∘ f dμ` for convex `g` under a probability measure — Jensen's inequality.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Lyapunov inequality",
+      "anchor": {
+        "section": "Inequalities",
+        "snippet": "one obtains the Lyapunov inequality"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "MeasureTheory.eLpNorm_le_eLpNorm_of_exponent_le",
+        "module": "Mathlib.MeasureTheory.Function.LpSeminorm.CompareExp",
+        "match_kind": "exact"
+      },
+      "note": "`eLpNorm_le_eLpNorm_of_exponent_le` is exactly Lyapunov's inequality: `‖X‖_p ≤ ‖X‖_q` for `p ≤ q` under a probability measure.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Hölder's inequality",
+      "anchor": {
+        "section": "Inequalities",
+        "snippet": "Hölder's inequality"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "ENNReal.lintegral_mul_le_Lp_mul_Lq",
+        "module": "Mathlib.MeasureTheory.Integral.MeanInequalities",
+        "match_kind": "exact"
+      },
+      "note": "`ENNReal.lintegral_mul_le_Lp_mul_Lq` is Hölder's inequality for integrals; analogous Bochner/Lp statements are also in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Cauchy–Schwarz inequality",
+      "anchor": {
+        "section": "Inequalities",
+        "snippet": "is called the Cauchy–Schwarz inequality"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "MeasureTheory.integral_inner",
+        "module": "Mathlib.MeasureTheory.Function.L2Space",
+        "match_kind": "special_case"
+      },
+      "note": "The `p = q = 2` case of `lintegral_mul_le_Lp_mul_Lq`, together with `L2Space.lean` lemmas, gives the integral Cauchy–Schwarz inequality.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Minkowski inequality",
+      "anchor": {
+        "section": "Inequalities",
+        "snippet": "Minkowski inequality"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "MeasureTheory.eLpNorm_add_le",
+        "module": "Mathlib.MeasureTheory.Function.LpSeminorm.TriangleInequality",
+        "match_kind": "exact"
+      },
+      "note": "`eLpNorm_add_le` is the Minkowski (Lp triangle) inequality.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Monotone convergence theorem",
+      "anchor": {
+        "section": "Expectations under convergence of random variables",
+        "snippet": "Monotone convergence theorem"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "MeasureTheory.lintegral_iSup",
+        "module": "Mathlib.MeasureTheory.Integral.Lebesgue.Add",
+        "match_kind": "exact"
+      },
+      "note": "`lintegral_iSup` is the monotone convergence theorem for nonnegative measurable functions.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Fatou's lemma",
+      "anchor": {
+        "section": "Expectations under convergence of random variables",
+        "snippet": "Fatou's lemma"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "MeasureTheory.lintegral_liminf_le",
+        "module": "Mathlib.MeasureTheory.Integral.Lebesgue.Add",
+        "match_kind": "exact"
+      },
+      "note": "`lintegral_liminf_le` is Fatou's lemma: `∫⁻ liminf fₙ ≤ liminf ∫⁻ fₙ`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Dominated convergence theorem",
+      "anchor": {
+        "section": "Expectations under convergence of random variables",
+        "snippet": "Dominated convergence theorem"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "MeasureTheory.tendsto_integral_of_dominated_convergence",
+        "module": "Mathlib.MeasureTheory.Integral.DominatedConvergence",
+        "match_kind": "exact"
+      },
+      "note": "`tendsto_integral_of_dominated_convergence` is Lebesgue's dominated convergence theorem for Bochner integrals.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Uniform integrability and convergence of expectations",
+      "anchor": {
+        "section": "Expectations under convergence of random variables",
+        "snippet": "Uniform integrability"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "MeasureTheory.UniformIntegrable",
+        "module": "Mathlib.MeasureTheory.Function.UniformIntegrable",
+        "match_kind": null
+      },
+      "note": "Mathlib defines `UniformIntegrable` and several consequences (e.g. `UniformIntegrable.memLp_of_tendstoInMeasure`), but a direct `E[Xₙ] → E[X]` style statement matching the Wikipedia wording was not found.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Density via characteristic function inversion",
+      "anchor": {
+        "section": "Relationship with characteristic function",
+        "snippet": "is related to its characteristic function"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No characteristic-function inversion formula recovering the density was found in Mathlib's `CharacteristicFunction` files.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Expectation via characteristic function (Plancherel)",
+      "anchor": {
+        "section": "Relationship with characteristic function",
+        "snippet": "we can use this inversion formula to obtain"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "MeasureTheory.charFun_eq_integral_innerProbChar",
+        "module": "Mathlib.MeasureTheory.Measure.CharacteristicFunction.Basic",
+        "match_kind": null
+      },
+      "note": "`charFun_eq_integral_innerProbChar` defines `charFun` as `E[e^{i⟨X,t⟩}]`, but a Plancherel-style identity expressing arbitrary `E[g(X)]` via the characteristic function is not present.",
+      "provenance": "ai"
+    }
+  ]
+}

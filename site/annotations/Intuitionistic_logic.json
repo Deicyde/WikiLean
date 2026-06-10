@@ -1,0 +1,857 @@
+{
+  "slug": "Intuitionistic_logic",
+  "wikipedia_title": "Intuitionistic logic",
+  "display_title": "Intuitionistic logic",
+  "schema_version": 3,
+  "annotation_style": "theorem_article",
+  "annotations": [
+    {
+      "kind": "definition",
+      "label": "Intuitionistic logic",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "refers to systems of symbolic logic that differ from the systems used for classical logic by more closely mirroring the notion of constructive proof"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "HeytingAlgebra",
+        "module": "Mathlib.Order.Heyting.Basic",
+        "match_kind": "generalization"
+      },
+      "note": "Mathlib has the algebraic semantics (`HeytingAlgebra`) and a propositional proof-search tactic (`itauto`/`IProp`), but no formal definition of the deductive system itself.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "BHK interpretation as standard explanation",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "The standard explanation of intuitionistic logic is the BHK interpretation"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No formalization of the Brouwer–Heyting–Kolmogorov interpretation was found in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Semantics induce logics stronger than Heyting's",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "Yet such semantics persistently induce logics properly stronger than Heyting’s logic"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib does not formalize the meta-statement comparing strengths of constructive semantics versus Heyting's logic.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Law of excluded middle (classical semantics)",
+      "anchor": {
+        "section": "Mathematical constructivism",
+        "snippet": "This is referred to as the 'law of excluded middle', because it excludes the possibility of any truth value besides 'true' or 'false'"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Classical.em",
+        "module": "Init.Classical",
+        "match_kind": "exact"
+      },
+      "note": "`Classical.em` (re-exported throughout Mathlib) states `∀ p, p ∨ ¬p`, the law of excluded middle.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Inhabitation by a proof (Curry–Howard)",
+      "anchor": {
+        "section": "Mathematical constructivism",
+        "snippet": "that it is inhabited by a proof in the Curry–Howard sense"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Curry–Howard correspondence is the meta-foundation of Lean itself, but is not a declaration inside Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Disjunction and existence properties",
+      "anchor": {
+        "section": "Mathematical constructivism",
+        "snippet": "its restrictions produce proofs that have the disjunction and existence properties"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No formal statement or proof of the disjunction/existence properties of intuitionistic logic was found in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Four color theorem verification",
+      "anchor": {
+        "section": "Mathematical constructivism",
+        "snippet": "One example of a proof that was impossible to satisfactorily verify without formal verification is the famous proof of the four color theorem"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The four color theorem is not formalized in Mathlib (it appears only in `docs/100.yaml` and `docs/1000.yaml` lists).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "IPL basic connectives",
+      "anchor": {
+        "section": "Syntax",
+        "snippet": "In intuitionistic propositional logic (IPL) it is customary to use"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Mathlib.Tactic.ITauto.IProp",
+        "module": "Mathlib.Tactic.ITauto",
+        "match_kind": "special_case"
+      },
+      "note": "The inductive `IProp` in `itauto` formalizes the IPL syntax (atoms, ⊤, ⊥, ∧, ∨, →) used by the tactic's decision procedure.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Hilbert-style calculus for intuitionistic logic",
+      "anchor": {
+        "section": "Hilbert-style calculus",
+        "snippet": "Intuitionistic logic can be defined using the following Hilbert-style calculus"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No Hilbert-style deductive system for intuitionistic logic is formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Modus ponens inference rule",
+      "anchor": {
+        "section": "Hilbert-style calculus",
+        "snippet": "In propositional logic, the inference rule is modus ponens"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Modus ponens is the Lean function-application primitive, not a Mathlib declaration; no formal inference-rule object exists in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Generalization rules for predicate logic",
+      "anchor": {
+        "section": "Hilbert-style calculus",
+        "snippet": "To make this a system of first-order predicate logic , the generalization rules"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No Hilbert-style predicate-logic generalization rules are formalized as Mathlib declarations.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Negation axioms NOT-1' and NOT-2'",
+      "anchor": {
+        "section": "Negation",
+        "snippet": "If one wishes to include a connective"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No Hilbert axiom schemata for intuitionistic negation are formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Alternative negation axioms without false",
+      "anchor": {
+        "section": "Negation",
+        "snippet": "There are a number of alternatives available if one wishes to omit the connective"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib does not formalize alternative axiomatizations of negation without ⊥.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Equivalence connective as abbreviation",
+      "anchor": {
+        "section": "Equivalence",
+        "snippet": "The connective"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "While `Iff` exists in Lean core, Mathlib does not formalize the IPL syntactic abbreviation of ↔ in the Hilbert calculus sense.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Gentzen's sequent calculus LJ",
+      "anchor": {
+        "section": "Sequent calculus",
+        "snippet": "Gerhard Gentzen discovered that a simple restriction of his system LK"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Gentzen's LJ sequent calculus is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "LJ' multiple-conclusion variant",
+      "anchor": {
+        "section": "Sequent calculus",
+        "snippet": "Other derivatives of LK are limited to intuitionistic derivations but still allow multiple conclusions in a sequent"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Multiple-conclusion intuitionistic sequent calculi are not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Intuitionistic theorems are classical theorems",
+      "anchor": {
+        "section": "Theorems",
+        "snippet": "Each theorem of intuitionistic logic is a theorem in classical logic, but not conversely"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This meta-theorem about the proper inclusion IL ⊊ CL is not stated formally in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Double negation of excluded middle in minimal logic",
+      "anchor": {
+        "section": "Double negations",
+        "snippet": "Formally, it is a simple theorem that"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No declaration of `¬¬(p ∨ ¬p)` proved in minimal/intuitionistic logic was found in Mathlib (grep returned no matches for `not_not_em` etc.).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Stable proposition",
+      "anchor": {
+        "section": "Double negation and implication",
+        "snippet": "Propositions for which double-negation elimination is possible are also called stable"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Heyting.IsRegular",
+        "module": "Mathlib.Order.Heyting.Regular",
+        "match_kind": "generalization"
+      },
+      "note": "`Heyting.IsRegular a := aᶜᶜ = a` formalizes the Heyting-algebra analogue of `Prop`-level stability.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Stability of negated propositions",
+      "anchor": {
+        "section": "Double negation and implication",
+        "snippet": "As a special case, it follows that propositions of negated form"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Heyting.isRegular_compl",
+        "module": "Mathlib.Order.Heyting.Regular",
+        "match_kind": "generalization"
+      },
+      "note": "`isRegular_compl` shows every complement (negation) is Heyting-regular, the algebraic analogue of stability of `¬p`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Gödel–Gentzen double-negation translation",
+      "anchor": {
+        "section": "Formula translation",
+        "snippet": "a first-order formula is provable in classical logic if and only if its Gödel–Gentzen translation is provable intuitionistically"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Gödel–Gentzen double-negation translation is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Conjunction/disjunction relate to implication via negation",
+      "anchor": {
+        "section": "Non-interdefinability of operators",
+        "snippet": "Already minimal logic easily proves the following theorems, relating conjunction resp. disjunction to the implication using negation"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": null,
+        "module": "Mathlib.Logic.Basic",
+        "match_kind": null
+      },
+      "note": "Mathlib has classical versions like `not_and_or`, `or_iff_not_and_not`, etc., but the minimal-logic intuitionistic statements are not isolated as such.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Non-reversibility of negation-distribution implications",
+      "anchor": {
+        "section": "Non-interdefinability of operators",
+        "snippet": "However, neither of these five implications above can be reversed without immediately implying excluded middle"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The meta-statement that reversing those implications yields excluded middle is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Existential implies negated universal",
+      "anchor": {
+        "section": "Existential vs. universal quantification",
+        "snippet": "If there exists an entity"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "not_forall_of_exists_not",
+        "module": "Mathlib.Logic.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`not_forall_of_exists_not : (∃ x, ¬p x) → ¬ ∀ x, p x` is the intuitionistically valid direction.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Stronger quantifier negation theorem",
+      "anchor": {
+        "section": "Existential vs. universal quantification",
+        "snippet": "And so, in fact, a stronger theorem holds"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The strengthened intuitionistic quantifier-negation theorem cited is not isolated as a Mathlib lemma.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Disjointness characterizations equivalence",
+      "anchor": {
+        "section": "Existential vs. universal quantification",
+        "snippet": "the special case of this equivalence with false"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This equivalence of disjointness characterizations is not formalized as a Mathlib lemma.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Finite De Morgan-type variants for two propositions",
+      "anchor": {
+        "section": "Disjunction vs. conjunction",
+        "snippet": "There are finite variations of the quantifier formulas, with just two propositions"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "not_and_or",
+        "module": "Mathlib.Logic.Basic",
+        "match_kind": "special_case"
+      },
+      "note": "Mathlib has the classical `not_and_or`, `not_or`, etc., but not the intuitionistically restricted minimal-logic variants as isolated lemmas.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Constant domain principle invalidity",
+      "anchor": {
+        "section": "Disjunction vs. conjunction",
+        "snippet": "In predicate logic, the constant domain principle is not valid"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The constant domain principle and its invalidity in IL are not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Import-export equivalence",
+      "anchor": {
+        "section": "Conjunction vs. implication",
+        "snippet": "From the general equivalence also follows import-export , expressing incompatibility of two predicates using two different connectives"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "and_imp",
+        "module": "Mathlib.Logic.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`and_imp : (a ∧ b → c) ↔ (a → b → c)` is the import-export equivalence, intuitionistically valid.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Conjunction of unrejectable propositions unrejectable",
+      "anchor": {
+        "section": "Conjunction vs. implication",
+        "snippet": "which entails that a conjunction of unrejectable propositions cannot be rejected either"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No declaration formalizing `¬¬p ∧ ¬¬q → ¬¬(p ∧ q)` as an isolated lemma was found.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Excluded middle equivalent to consequentia mirabilis",
+      "anchor": {
+        "section": "Disjunction vs. implication",
+        "snippet": "Already minimal logic proves excluded middle equivalent to consequentia mirabilis"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Consequentia mirabilis is not named or formalized in Mathlib (grep for `consequentia`/`mirabilis` returned no Mathlib hits).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Strengthened disjunctive syllogism",
+      "anchor": {
+        "section": "Disjunction vs. implication",
+        "snippet": "Strengthened forms still holds in intuitionistic logic"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Strengthened intuitionistic forms of disjunctive syllogism are not isolated in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Equivalence as conjunction of implications",
+      "anchor": {
+        "section": "Equivalences",
+        "snippet": "An equivalence itself is generally defined as, and then equivalent to, a conjunction"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "iff_iff_implies_and_implies",
+        "module": "Mathlib.Logic.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`iff_iff_implies_and_implies : (a ↔ b) ↔ ((a → b) ∧ (b → a))` formalizes this equivalence.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Kuznetsov functionally complete connectives",
+      "anchor": {
+        "section": "Functionally complete connectives",
+        "snippet": "As shown by Alexander V. Kuznetsov , either of the following connectives"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Kuznetsov's functional completeness theorem for IPC is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Constable's Tarski-like completeness",
+      "anchor": {
+        "section": "Semantics",
+        "snippet": "a Tarski-like model theory was proved complete by Bob Constable"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Constable's Tarski-like completeness theorem for IL is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Glivenko: no third truth value",
+      "anchor": {
+        "section": "Semantics",
+        "snippet": "One can prove that such statements have no third truth value, a result dating back to Glivenko in 1928"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Glivenko's theorem is not formalized in Mathlib (grep for `Glivenko` matched only `docs/1000.yaml`).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Heyting algebra validity characterization",
+      "anchor": {
+        "section": "Heyting algebra semantics",
+        "snippet": "A formula is valid in intuitionistic logic if and only if it receives the value of the top element for any valuation on any Heyting algebra"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The completeness theorem of IPC with respect to Heyting algebras is not formalized; Mathlib has `HeytingAlgebra` but no syntactic-validity bridge.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Open sets of the real line suffice",
+      "anchor": {
+        "section": "Heyting algebra semantics",
+        "snippet": "It can be shown that to recognize valid formulas, it is sufficient to consider a single Heyting algebra whose elements are the open subsets of the real line"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has the Heyting/Frame structure on `TopologicalSpace.Opens` but does not prove completeness of IPC over open sets of ℝ.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Validity of ¬(A ∧ ¬A)",
+      "anchor": {
+        "section": "Heyting algebra semantics",
+        "snippet": "the formula ¬( A ∧ ¬ A ) is valid, because no matter what set"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "not_and_self_iff",
+        "module": "Mathlib.Logic.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`¬(A ∧ ¬A)` is provable intuitionistically; Mathlib has `not_and_self` and a Heyting-algebra analogue `inf_compl_eq_bot`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Invalidity of excluded middle via positive reals",
+      "anchor": {
+        "section": "Heyting algebra semantics",
+        "snippet": "But the law of the excluded middle, A ∨ ¬ A , can be shown to be invalid by using a specific value of the set of positive real numbers"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The specific Heyting-algebra countermodel for excluded middle via positive reals is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "No finite Heyting algebra suffices",
+      "anchor": {
+        "section": "Heyting algebra semantics",
+        "snippet": "No finite Heyting algebra has the second of these two properties"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The result that no finite Heyting algebra is complete for IPC is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Kripke semantics for intuitionistic logic",
+      "anchor": {
+        "section": "Kripke semantics",
+        "snippet": "Saul Kripke created another semantics for intuitionistic logic, known as Kripke semantics or relational semantics"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Kripke semantics for IL is not formalized in Mathlib (grep for `Kripke` returned no matches).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Constable's weaker Tarski-like completeness",
+      "anchor": {
+        "section": "Tarski-like semantics",
+        "snippet": "Robert Constable has shown that a weaker notion of completeness still holds for intuitionistic logic under a Tarski-like model"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Constable's weaker Tarski-like completeness result is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Admissible rule",
+      "anchor": {
+        "section": "Admissible rules",
+        "snippet": "the situation can occur that an implication always holds metatheoretically, but not in the language"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The concept of an admissible (but not derivable) rule is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Disjunction property of IPC",
+      "anchor": {
+        "section": "Theories' features",
+        "snippet": "Theories over constructive logics can exhibit the disjunction property"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The disjunction property of IPC is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Brazilian/dual-intuitionistic logic",
+      "anchor": {
+        "section": "Paraconsistent logic",
+        "snippet": "Intuitionistic logic is related by duality to a paraconsistent logic known as Brazilian , anti-intuitionistic or dual-intuitionistic logic"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "CoheytingAlgebra",
+        "module": "Mathlib.Order.Heyting.Basic",
+        "match_kind": "generalization"
+      },
+      "note": "Mathlib's `CoheytingAlgebra` is the algebraic dual relevant to dual-intuitionistic logic, but the logic itself is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Minimal logic",
+      "anchor": {
+        "section": "Paraconsistent logic",
+        "snippet": "The subsystem of intuitionistic logic with the FALSE (resp. NOT-2) axiom removed is known as minimal logic"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Minimal logic is not formalized as a deductive system in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Intermediate logics from finite Heyting algebras",
+      "anchor": {
+        "section": "Intermediate logics",
+        "snippet": "any finite Heyting algebra that is not equivalent to a Boolean algebra defines (semantically) an intermediate logic"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Intermediate logics defined via finite Heyting algebras are not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Gödel–Dummett logic",
+      "anchor": {
+        "section": "Intermediate logics",
+        "snippet": "Adopting this over intuitionistic logic gives the intermediate logic called Gödel–Dummett logic"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Gödel–Dummett logic is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Classical logic axiom additions",
+      "anchor": {
+        "section": "Relation to classical logic",
+        "snippet": "The system of classical logic is obtained by adding any one of the following axioms"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "peirce",
+        "module": "Mathlib.Logic.Basic",
+        "match_kind": "special_case"
+      },
+      "note": "`peirce`, `Classical.em`, and `Classical.byContradiction` are present, but the meta-result that each individually yields classical logic atop IL is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Gödel: intuitionistic logic not finite-valued",
+      "anchor": {
+        "section": "Many-valued logic",
+        "snippet": "Kurt Gödel 's work involving many-valued logic showed in 1932 that intuitionistic logic is not a finite-valued logic"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Gödel's 1932 result that IPC is not finite-valued is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Gödel–McKinsey–Tarski translation into S4",
+      "anchor": {
+        "section": "Modal logic",
+        "snippet": "it has been demonstrated that the translated formula is valid in the propositional modal logic S4 if and only if the original formula is valid in IPC"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Gödel–McKinsey–Tarski embedding of IPC into S4 is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Curry–Howard with simply typed lambda calculus",
+      "anchor": {
+        "section": "Lambda calculus",
+        "snippet": "There is an extended Curry–Howard correspondence between IPC and simply typed lambda calculus"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Although Lean is itself based on dependent type theory, no formal Curry–Howard correspondence between IPC and simply typed λ-calculus is stated in Mathlib.",
+      "provenance": "ai"
+    }
+  ]
+}

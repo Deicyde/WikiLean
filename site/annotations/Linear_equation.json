@@ -1,0 +1,409 @@
+{
+  "slug": "Linear_equation",
+  "wikipedia_title": "Linear equation",
+  "display_title": "Linear equation",
+  "schema_version": 3,
+  "annotation_style": "theorem_article",
+  "annotations": [
+    {
+      "kind": "definition",
+      "label": "Linear equation",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "a linear equation is an equation that may be put in the form"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "AffineMap",
+        "module": "Mathlib.LinearAlgebra.AffineSpace.AffineMap",
+        "match_kind": null
+      },
+      "note": "Mathlib has no dedicated 'linear equation' object; the left-hand side a₁x₁+…+aₙxₙ+b is an affine functional captured by AffineMap, but the equation/zero-set itself is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Unique solution in one variable",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "In the case of just one variable, there is exactly one solution"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Equiv.mulLeft₀",
+        "module": "Mathlib.Algebra.GroupWithZero.Units.Equiv",
+        "match_kind": "invocation"
+      },
+      "note": "No packaged linear-equation solver, but bijectivity of multiplication by a nonzero field element (Equiv.mulLeft₀) yields the unique solution of ax+b=0.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Solutions form a line (two variables)",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "The solutions of a linear equation form a line in the Euclidean plane"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "AffineSubspace",
+        "module": "Mathlib.LinearAlgebra.AffineSpace.AffineSubspace.Defs",
+        "match_kind": null
+      },
+      "note": "Lines are modeled as 1-dimensional affine subspaces (and Collinear is defined), but there is no theorem that a two-variable linear equation's solution set is such a line.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Solutions form a hyperplane (n variables)",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "the solutions of a linear equation in n variables form a hyperplane"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "finrank_range_add_finrank_ker",
+        "module": "Mathlib.LinearAlgebra.FiniteDimensional.Lemmas",
+        "match_kind": null
+      },
+      "note": "Rank–nullity and LinearMap.ker give that a nonzero functional's kernel has codimension one, but the affine zero-set being a hyperplane is not packaged as a statement.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Linear equation in one variable",
+      "anchor": {
+        "section": "One variable",
+        "snippet": "A linear equation in one variable x can be written as"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "AffineMap",
+        "module": "Mathlib.LinearAlgebra.AffineSpace.AffineMap",
+        "match_kind": null
+      },
+      "note": "The map x ↦ ax+b is an affine map k→k (AffineMap), but the one-variable linear equation is not a defined object in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Solution of one-variable equation",
+      "anchor": {
+        "section": "One variable",
+        "snippet": "The solution is"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Equiv.mulLeft₀",
+        "module": "Mathlib.Algebra.GroupWithZero.Units.Equiv",
+        "match_kind": "invocation"
+      },
+      "note": "The formula x = -b/a is not a named lemma; it follows from inverting multiplication by the nonzero coefficient (Equiv.mulLeft₀).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Linear equation in two variables",
+      "anchor": {
+        "section": "Two variables",
+        "snippet": "A linear equation in two variables x and y can be written as"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "AffineMap",
+        "module": "Mathlib.LinearAlgebra.AffineSpace.AffineMap",
+        "match_kind": null
+      },
+      "note": "ax+by+c is an affine functional on k² (AffineMap), but the two-variable linear equation has no dedicated formalization.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Infinitely many solutions",
+      "anchor": {
+        "section": "Two variables",
+        "snippet": "it has infinitely many solutions"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has no theorem that a nondegenerate two-variable linear equation over an infinite field has infinitely many solutions.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Unique solution for y defines a function",
+      "anchor": {
+        "section": "Linear function",
+        "snippet": "It therefore has a unique solution for y"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Equiv.mulLeft₀",
+        "module": "Mathlib.Algebra.GroupWithZero.Units.Equiv",
+        "match_kind": "invocation"
+      },
+      "note": "Solving for y when its coefficient is nonzero is an instance of inverting nonzero multiplication (Equiv.mulLeft₀); the resulting function-of-x is not separately stated.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Linear function (graph is a line)",
+      "anchor": {
+        "section": "Linear function",
+        "snippet": "The graph of this function is a line with slope"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "slope",
+        "module": "Mathlib.LinearAlgebra.AffineSpace.Slope",
+        "match_kind": null
+      },
+      "note": "Mathlib defines slope of a function (slope_def_field: (f b - f a)/(b - a)) and affine maps, but not 'linear function y=mx+c whose graph is a line' as a packaged definition.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Affine functions and linear maps",
+      "anchor": {
+        "section": "Linear function",
+        "snippet": "the functions whose graph is an arbitrary line are often called affine functions"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "AffineMap",
+        "module": "Mathlib.LinearAlgebra.AffineSpace.AffineMap",
+        "match_kind": "exact"
+      },
+      "note": "Mathlib precisely distinguishes affine functions (AffineMap) from linear maps (LinearMap/IsLinearMap in Mathlib.Algebra.Module.LinearMap.Defs), matching this terminological definition.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Correspondence between lines and equations",
+      "anchor": {
+        "section": "Geometric interpretation",
+        "snippet": "all solutions of the equation form a line"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "AffineSubspace",
+        "module": "Mathlib.LinearAlgebra.AffineSpace.AffineSubspace.Defs",
+        "match_kind": null
+      },
+      "note": "Lines exist as affine subspaces, but the bijective correspondence between lines and (classes of) two-variable linear equations is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Vertical line case (b = 0)",
+      "anchor": {
+        "section": "Geometric interpretation",
+        "snippet": "the line is a vertical line"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The coordinate-specific notion of a vertical line x = -c/a is not a concept in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Horizontal line case (a = 0)",
+      "anchor": {
+        "section": "Geometric interpretation",
+        "snippet": "one has a horizontal line of equation"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The coordinate-specific notion of a horizontal line y = -c/b is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Slope–intercept form",
+      "anchor": {
+        "section": "Slope–intercept form or Gradient-intercept form",
+        "snippet": "A non-vertical line can be defined by its slope m , and its y -intercept"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "slope",
+        "module": "Mathlib.LinearAlgebra.AffineSpace.Slope",
+        "match_kind": null
+      },
+      "note": "Mathlib has a slope function and affine maps but no dedicated slope–intercept representation y=mx+c of a line.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Point–slope form",
+      "anchor": {
+        "section": "Point–slope form or Point-gradient form",
+        "snippet": "of any point of the line"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "slope",
+        "module": "Mathlib.LinearAlgebra.AffineSpace.Slope",
+        "match_kind": null
+      },
+      "note": "slope_def_field rearranges to the point–slope relation y - y₁ = m(x - x₁), but point–slope form is not itself a defined representation.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Intercept form",
+      "anchor": {
+        "section": "Intercept form",
+        "snippet": "does not pass through the origin cuts the axes into two different points"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The intercept form x/x₀ + y/y₀ = 1 of a line is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Two-point form (unique line)",
+      "anchor": {
+        "section": "Two-point form",
+        "snippet": "there is exactly one line that passes through them"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "AffineMap.lineMap",
+        "module": "Mathlib.LinearAlgebra.AffineSpace.AffineMap",
+        "match_kind": null
+      },
+      "note": "lineMap and affineSpan give the line through two points (collinear_pair shows two points are collinear), but the ∃!-uniqueness of the line through two distinct points is not packaged as a theorem.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Determinant form",
+      "anchor": {
+        "section": "Determinant form",
+        "snippet": "can be expressed simply in terms of a determinant"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has collinearity criteria but no determinant-form equation of the line through two given points.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Linear equation in more than two variables",
+      "anchor": {
+        "section": "More than two variables",
+        "snippet": "A linear equation with more than two variables may always be assumed to have the form"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "AffineMap",
+        "module": "Mathlib.LinearAlgebra.AffineSpace.AffineMap",
+        "match_kind": null
+      },
+      "note": "a₁x₁+…+aₙxₙ is a linear functional (LinearMap) and with constant an affine map, but the n-variable linear equation is not a Mathlib object.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Constant term",
+      "anchor": {
+        "section": "More than two variables",
+        "snippet": "is called the constant term"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "'Constant term' here is terminology for b in a linear equation and has no dedicated formalization (only loosely related to polynomial constant coefficients).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Solution as an n-tuple",
+      "anchor": {
+        "section": "More than two variables",
+        "snippet": "A solution of such an equation is a n -tuple such that"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The generic notion of a solution as an n-tuple satisfying the equation is not formalized as a specific definition for linear equations.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Meaningfulness condition",
+      "anchor": {
+        "section": "More than two variables",
+        "snippet": "the coefficient of at least one variable must be non-zero"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The condition that at least one coefficient be nonzero (i.e. the functional is nonzero) is not stated as a meaningfulness lemma for linear equations.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Solutions are points of a hyperplane",
+      "anchor": {
+        "section": "More than two variables",
+        "snippet": "are the Cartesian coordinates of the points of an"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "AffineSubspace",
+        "module": "Mathlib.LinearAlgebra.AffineSpace.AffineSubspace.Defs",
+        "match_kind": null
+      },
+      "note": "Affine subspaces and codimension-one kernels (via rank–nullity) exist, but there is no theorem identifying the solution set with a hyperplane.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Solving for a variable defines a function",
+      "anchor": {
+        "section": "More than two variables",
+        "snippet": "the equation can be solved for x j"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Equiv.mulLeft₀",
+        "module": "Mathlib.Algebra.GroupWithZero.Units.Equiv",
+        "match_kind": "invocation"
+      },
+      "note": "Solving for xⱼ when its coefficient is nonzero is an instance of inverting nonzero multiplication (Equiv.mulLeft₀), yielding an affine function (AffineMap), but this is not stated for linear equations.",
+      "provenance": "ai"
+    }
+  ]
+}

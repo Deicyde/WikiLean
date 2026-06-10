@@ -1,0 +1,809 @@
+{
+  "slug": "Banach-Tarski_paradox",
+  "wikipedia_title": "Banach–Tarski paradox",
+  "display_title": "Banach–Tarski paradox",
+  "schema_version": 3,
+  "annotation_style": "theorem_article",
+  "annotations": [
+    {
+      "kind": "theorem",
+      "label": "Banach–Tarski paradox",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "Given a solid ball in three-dimensional space"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Equidecomp",
+        "module": "Mathlib.Algebra.Group.Action.Equidecomp",
+        "match_kind": null
+      },
+      "note": "The notion of equidecomposability is defined in Mathlib via `Equidecomp`, but the Banach–Tarski theorem itself (that a ball is equidecomposable with two copies of itself) is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Pea and the Sun paradox (alternative form)",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "given any two \"reasonable\" solid objects"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The strong form of Banach–Tarski for bounded subsets with nonempty interiors is not in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Continuous motion of pieces (2005)",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "the pieces in the decomposition can be chosen in such a way that they can be moved continuously into place"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Wilson 2005 result on continuous motion of pieces is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Locale-theoretic resolution (Leroy–Simpson)",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "the Banach–Tarski paradox does not violate volumes if one works with locales"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Locale-theoretic machinery (`Sublocale`) is in Mathlib but the Leroy–Simpson volume result is not.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Strong form of the Banach–Tarski paradox",
+      "anchor": {
+        "section": "Banach and Tarski publication",
+        "snippet": "Given any two bounded subsets A and B of a Euclidean space in at least three dimensions"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The strong form of the paradox is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Doubling a ball via translated copies",
+      "anchor": {
+        "section": "Banach and Tarski publication",
+        "snippet": "Now let A be the original ball and B be the union of two translated copies of the original ball"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The ball-doubling consequence is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Countable analogue in dimensions 1 and 2",
+      "anchor": {
+        "section": "Banach and Tarski publication",
+        "snippet": "an analogous statement remains true if countably many subsets are allowed"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Countable equidecomposability in low dimensions is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Tarski's characterization of amenable groups",
+      "anchor": {
+        "section": "Banach and Tarski publication",
+        "snippet": "Tarski proved that amenable groups are precisely those for which no paradoxical decompositions exist"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "IsFoelner.amenable",
+        "module": "Mathlib.MeasureTheory.Group.FoelnerFilter",
+        "match_kind": null
+      },
+      "note": "Mathlib has Følner-filter amenability (`IsFoelner.amenable`) producing an invariant finitely additive measure, but does not formalize Tarski's characterization via (non)paradoxical decompositions.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Congruent figures under G-action",
+      "anchor": {
+        "section": "Formal treatment",
+        "snippet": "Two geometric figures that can be transformed into each other are called congruent"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "MulAction.orbitRel",
+        "module": "Mathlib.GroupTheory.GroupAction.Basic",
+        "match_kind": null
+      },
+      "note": "Congruence under a group action is captured by `MulAction.orbitRel`, but no `Congruent`-named definition matches this exactly.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "G-equidecomposable sets",
+      "anchor": {
+        "section": "Formal treatment",
+        "snippet": "Two subsets A and B of X are called G -equidecomposable"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Equidecomp",
+        "module": "Mathlib.Algebra.Group.Action.Equidecomp",
+        "match_kind": "exact"
+      },
+      "note": "`Equidecomp X G` (bijection with finite witness `IsDecompOn`) is the Mathlib definition of G-equidecomposability.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Paradoxical set",
+      "anchor": {
+        "section": "Formal treatment",
+        "snippet": "If a set E has two disjoint subsets A and B such that A and E , as well as B and E , are G -equidecomposable, then E is called paradoxical"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib defines `Equidecomp` but no `Paradoxical` predicate built on top of it.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Reformulation of Banach–Tarski paradox",
+      "anchor": {
+        "section": "Formal treatment",
+        "snippet": "A three-dimensional Euclidean ball is equidecomposable with two copies of itself"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Banach–Tarski paradox in equidecomposability form is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Robinson's five-piece sharp result",
+      "anchor": {
+        "section": "Formal treatment",
+        "snippet": "doubling the ball can be accomplished with five pieces, and fewer than five pieces will not suffice"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Robinson's five-piece minimum is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Strong version of the paradox",
+      "anchor": {
+        "section": "Formal treatment",
+        "snippet": "Any two bounded subsets of 3-dimensional Euclidean space with non- empty interiors are equidecomposable"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The strong version of the paradox is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Banach's Bernstein–Schroeder generalization",
+      "anchor": {
+        "section": "Formal treatment",
+        "snippet": "a generalization of the Bernstein–Schroeder theorem due to Banach"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Function.Embedding.schroeder_bernstein",
+        "module": "Mathlib.SetTheory.Cardinal.SchroederBernstein",
+        "match_kind": null
+      },
+      "note": "Mathlib has the cardinal-theoretic Schröder–Bernstein but not Banach's equidecomposability version (TODO comment in `Equidecomp.lean`).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Nonexistence of invariant finitely additive measure",
+      "anchor": {
+        "section": "Formal treatment",
+        "snippet": "it is impossible to find a finitely additive measure"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The nonexistence of a rotation-invariant finitely additive normalized measure on bounded subsets of R^n (n≥3) is not in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Converse: paradox-free implies invariant measure",
+      "anchor": {
+        "section": "Formal treatment",
+        "snippet": "nonexistence of paradoxical decompositions of this type implies the existence of a finitely additive invariant measure"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "IsFoelner.amenable",
+        "module": "Mathlib.MeasureTheory.Group.FoelnerFilter",
+        "match_kind": null
+      },
+      "note": "Mathlib produces an invariant finitely additive measure from Følner conditions but does not state the converse from non-paradoxicality.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Hausdorff paradox",
+      "anchor": {
+        "section": "Formal treatment",
+        "snippet": "the surface of a unit sphere in space is a disjoint union of three sets"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Hausdorff paradox is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Non-equidecomposability of nested Euclidean polygons",
+      "anchor": {
+        "section": "Connection with earlier work and the role of the axiom of choice",
+        "snippet": "Two Euclidean polygons , one of which strictly contains the other, are not equidecomposable"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The classical non-equidecomposability of nested polygons is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Morse: polygon result provable in ZF",
+      "anchor": {
+        "section": "Connection with earlier work and the role of the axiom of choice",
+        "snippet": "A. P. Morse showed that the statement about Euclidean polygons can be proved in ZF set theory"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib does not formalize metamathematical results about ZF-provability of polygon equidecomposability.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Cohen: independence of AC from ZF",
+      "anchor": {
+        "section": "Connection with earlier work and the role of the axiom of choice",
+        "snippet": "Paul Cohen proved that the axiom of choice is independent from ZF"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Independence of AC from ZF is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Banach–Tarski not provable in ZF+DC",
+      "anchor": {
+        "section": "Connection with earlier work and the role of the axiom of choice",
+        "snippet": "The Banach–Tarski paradox is not a theorem of ZF , nor of ZF + DC"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib does not formalize the independence of Banach–Tarski from ZF+DC.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Pawlikowski: paradox from ZF + Hahn–Banach",
+      "anchor": {
+        "section": "Connection with earlier work and the role of the axiom of choice",
+        "snippet": "Janusz Pawlikowski proved that the Banach–Tarski paradox follows from ZF plus the Hahn–Banach theorem"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Pawlikowski's derivation of Banach–Tarski from ZF + Hahn–Banach is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Free group F_2 on two generators",
+      "anchor": {
+        "section": "Step 1",
+        "snippet": "The free group with two generators a and b consists of all finite strings"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "FreeGroup",
+        "module": "Mathlib.GroupTheory.FreeGroup.Basic",
+        "match_kind": "generalization"
+      },
+      "note": "`FreeGroup α` defines the free group on a generating type; `FreeGroup (Fin 2)` (or `Bool`) gives F₂.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "String reduction in F_2",
+      "anchor": {
+        "section": "Step 1",
+        "snippet": "abab −1 a −1 concatenated with abab −1 a yields"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "FreeGroup.Red",
+        "module": "Mathlib.GroupTheory.FreeGroup.Basic",
+        "match_kind": null
+      },
+      "note": "`FreeGroup.Red` formalizes word reduction in the free group; the specific worked example is not isolated as a lemma.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Paradoxical decomposition of F_2",
+      "anchor": {
+        "section": "Step 1",
+        "snippet": "The group [MATH] can be \"paradoxically decomposed\" as follows"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The standard paradoxical partition of F₂ into S(a), S(a⁻¹), S(b), S(b⁻¹) is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Free rotation group H isomorphic to F_2",
+      "anchor": {
+        "section": "Step 2",
+        "snippet": "Therefore, the group H is a free group, isomorphic to F"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No formalization in Mathlib of a free subgroup of SO(3) on two rotations.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Failure in two dimensions",
+      "anchor": {
+        "section": "Step 2",
+        "snippet": "This step cannot be performed in two dimensions since it involves rotations in three dimensions"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The fact that SO(2) is abelian (hence amenable, no free F₂) is implicit but the Banach–Tarski-related implication is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Quaternion proof of free rotation subgroups",
+      "anchor": {
+        "section": "Step 2",
+        "snippet": "An alternative arithmetic proof of the existence of free groups in some special orthogonal groups using integral quaternions"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has `Quaternion` but no formalization of integral-quaternion free subgroups in SO(n).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Paradoxical decomposition of the sphere S^2",
+      "anchor": {
+        "section": "Step 3",
+        "snippet": "the paradoxical decomposition of H yields a paradoxical decomposition of S"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The paradoxical decomposition of S² (minus fixed points) is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Decomposition of solid ball minus center",
+      "anchor": {
+        "section": "Step 4",
+        "snippet": "connect every point on S 2 with a half-open segment to the origin"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Lifting the S² decomposition to the punctured ball is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "S^2 − D equidecomposable with S^2",
+      "anchor": {
+        "section": "Some details, fleshed out",
+        "snippet": "S 2 − D is equidecomposable with S"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The lemma absorbing the countable fixed-point set is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Ball minus a point equidecomposable with ball",
+      "anchor": {
+        "section": "Some details, fleshed out",
+        "snippet": "the ball minus a point is equidecomposable with the ball"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The translation/rotation trick for the missing center is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Transitivity of equidecomposability",
+      "anchor": {
+        "section": "Some details, fleshed out",
+        "snippet": "Use is made of the fact that if A ~ B and B ~ C , then A ~ C"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Equidecomp.trans",
+        "module": "Mathlib.Algebra.Group.Action.Equidecomp",
+        "match_kind": "exact"
+      },
+      "note": "`Equidecomp.trans` composes two equidecompositions into one, witnessing transitivity.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Five pieces is best possible",
+      "anchor": {
+        "section": "Some details, fleshed out",
+        "snippet": "This gives 5 pieces and is the best possible"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Robinson's sharp lower bound of 5 pieces is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "k copies of a ball in n-space",
+      "anchor": {
+        "section": "Obtaining infinitely many balls from one",
+        "snippet": "it is possible to obtain k copies of a ball in the Euclidean n -space from one"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The k-fold (and countable) generalization is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Continuum-many-piece partition of S^{n−1}",
+      "anchor": {
+        "section": "Obtaining infinitely many balls from one",
+        "snippet": "the sphere S n −1 can be partitioned into as many pieces as there are real numbers"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The continuum-piece partition result is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Von Neumann's paradox in the plane",
+      "anchor": {
+        "section": "Von Neumann paradox in the Euclidean plane",
+        "snippet": "Any two bounded subsets of the Euclidean plane with non-empty interiors are equidecomposable with respect to the area-preserving affine maps"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Von Neumann's planar paradox is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Laczkovich's SL(2,R) paradoxical decomposition",
+      "anchor": {
+        "section": "Recent progress",
+        "snippet": "Miklós Laczkovich proved that such a decomposition exists"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Laczkovich's result on SL(2,R)-paradoxes is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Satô: four pieces suffice for SA_2",
+      "anchor": {
+        "section": "Recent progress",
+        "snippet": "Kenzi Satô constructed such a subgroup, confirming that four pieces suffice"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Satô's four-piece result for SA₂ is not in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Tomkowicz: free piecewise linear group on punctured disk",
+      "anchor": {
+        "section": "Recent progress",
+        "snippet": "Grzegorz Tomkowicz constructed such a group"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Tomkowicz's free piecewise-linear group construction is not in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Adams–Mycielski fractional parts of S^2",
+      "anchor": {
+        "section": "Recent progress",
+        "snippet": "the unit sphere S 2 contains a set E that is a half, a third, a fourth"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Adams–Mycielski's fractional-parts theorem for S² is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Tomkowicz: generalization to hyperbolic plane",
+      "anchor": {
+        "section": "Recent progress",
+        "snippet": "Adams and Mycielski construction can be generalized to obtain a set E of H"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The hyperbolic-plane generalization is not in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Banach–Tarski paradox in hyperbolic plane",
+      "anchor": {
+        "section": "Recent progress",
+        "snippet": "there is a Banach–Tarski paradox in the hyperbolic plane"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Banach–Tarski analogue in H² is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Mycielski–Wagon Borel paradox in H^2",
+      "anchor": {
+        "section": "Recent progress",
+        "snippet": "constructed a paradoxical decomposition of the hyperbolic plane"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Borel paradoxical decomposition of H² is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Tomkowicz: free discontinuous subgroup of SA(3,Z)",
+      "anchor": {
+        "section": "Recent progress",
+        "snippet": "who constructed a free properly discontinuous subgroup"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Tomkowicz's construction in SA(3,ℤ) is not in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Countable equidecomposability via Lebesgue pieces",
+      "anchor": {
+        "section": "Recent progress",
+        "snippet": "they have equal Lebesgue measures if and only if they are countably equidecomposable using Lebesgue measurable pieces"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Lebesgue-measurable countable equidecomposability characterization is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Extension to Lie and locally compact groups",
+      "anchor": {
+        "section": "Recent progress",
+        "snippet": "extended this result to finite dimensional Lie groups"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Lie-group / locally compact group extension is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Coloring rule linking paradoxes and optimization",
+      "anchor": {
+        "section": "Recent progress",
+        "snippet": "introduced a coloring rule of points in a Cantor space that links paradoxical decompositions with optimization"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Cantor-space coloring-rule link is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Genericity of bounded paradoxical sets",
+      "anchor": {
+        "section": "Recent progress",
+        "snippet": "in the case of non-supramenable connected Lie groups"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Genericity of paradoxical bounded sets for non-supramenable Lie groups is not formalized in Mathlib.",
+      "provenance": "ai"
+    }
+  ]
+}

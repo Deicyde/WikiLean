@@ -1,0 +1,228 @@
+/* WikiLean rendered-article styles */
+
+:root {
+  --c-formalized:     #2da44e;
+  --c-formalized-bg:  rgba(45, 164, 78, 0.10);
+  --c-partial:        #d29922;
+  --c-partial-bg:     rgba(210, 153, 34, 0.10);
+  --c-not_formalized: #cf222e;
+  --c-not_formalized-bg: rgba(207, 34, 46, 0.10);
+  --c-untouched:      #9da6b0;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  margin: 0;
+  background: #fafbfc;
+  color: #1f2328;
+}
+
+.wl-header {
+  position: sticky;
+  top: 0;
+  background: #fff;
+  border-bottom: 1px solid #d0d7de;
+  padding: 10px 28px;
+  z-index: 100;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+}
+
+.wl-title {
+  display: flex;
+  gap: 8px;
+  align-items: baseline;
+  font-size: 14px;
+}
+.wl-brand    { font-weight: 700; color: #0969da; text-decoration: none; }
+.wl-brand:hover { text-decoration: underline; }
+.wl-sep      { color: #999; }
+.wl-article  { color: #1f2328; font-weight: 500; }
+.wl-nav      { margin-left: auto; display: flex; gap: 14px; align-items: baseline; }
+.wl-navlink, .wl-wikilink { color: #0969da; text-decoration: none; font-size: 12px; }
+.wl-navlink:hover, .wl-wikilink:hover { text-decoration: underline; }
+
+.wl-controls {
+  display: flex;
+  gap: 16px;
+  align-items: center;
+  margin-top: 8px;
+  flex-wrap: wrap;
+  font-size: 12px;
+}
+
+.wl-badge {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: 10px;
+  margin-right: 4px;
+  font-size: 11px;
+  font-weight: 500;
+}
+.wl-badge.wl-formalized     { background: var(--c-formalized-bg);     color: var(--c-formalized); }
+.wl-badge.wl-partial        { background: var(--c-partial-bg);        color: var(--c-partial); }
+.wl-badge.wl-not_formalized { background: var(--c-not_formalized-bg); color: var(--c-not_formalized); }
+.wl-badge.wl-untouched      { background: #eaeef2;                    color: #57606a; }
+
+.wl-toggles { margin-left: auto; display: flex; gap: 4px; }
+.wl-toggles button {
+  padding: 4px 10px;
+  cursor: pointer;
+  background: #f6f8fa;
+  border: 1px solid #d0d7de;
+  border-radius: 4px;
+  font-size: 12px;
+  font-family: inherit;
+  color: #1f2328;
+}
+.wl-toggles button:hover  { background: #eaeef2; }
+.wl-toggles button.active { background: #0969da; color: #fff; border-color: #0969da; }
+
+.wl-article-body {
+  padding: 24px 28px 60px;
+  max-width: 1000px;
+  margin: 0 auto;
+  background: #fff;
+  min-height: calc(100vh - 100px);
+}
+
+/* The original Wikipedia content uses .mw-parser-output as its top-level wrapper. */
+.wl-article-body .mw-parser-output { line-height: 1.65; }
+
+/* MediaWiki ships both MathML and an SVG fallback for every equation, then
+   hides the MathML inline with style="display:none" and shows the SVG.
+   The Wikimedia SVGs use fill="currentColor", which doesn't inherit through
+   <img> boundaries — they render as invisible boxes outside MW's own skin.
+   Fix: swap them — show the MathML (every modern browser renders it natively)
+   and hide the broken SVGs. */
+.mwe-math-mathml-display,
+.mwe-math-mathml-inline {
+  display: inline !important;
+}
+.mwe-math-element-block {
+  display: block;
+  text-align: center;
+  margin: 0.8em 0;
+}
+.mwe-math-fallback-image-display,
+.mwe-math-fallback-image-inline {
+  display: none !important;
+}
+/* MathML font sizing — the default UA size for <math> is sometimes a touch
+   small; bump display math a bit so it stands out from surrounding prose. */
+math[display="block"] { font-size: 1.1em; }
+
+/* ---------- Annotation highlights ---------- */
+
+/* Inline highlight — like a marker pen. No outlines, no padding, no layout
+   disruption. The text stays in normal paragraph flow; only a subtle
+   background wash and a thin bottom border indicate the annotation. */
+.anno {
+  display: inline;
+  cursor: help;
+  border-radius: 2px;
+  padding: 1px 2px;
+  transition: background 0.15s ease, opacity 0.15s ease;
+  -webkit-box-decoration-break: clone;
+  box-decoration-break: clone;
+}
+.anno-formalized     { background: var(--c-formalized-bg); }
+.anno-partial        { background: var(--c-partial-bg); }
+.anno-not_formalized { background: var(--c-not_formalized-bg); }
+
+/* Human-curated annotations get a saturated "signed off" underline in addition
+   to the status wash. AI-only annotations stay with the soft wash alone, so a
+   reader can tell at a glance which annotations a person has actually reviewed
+   (and which still need eyes on them). Uses inset box-shadow so no layout
+   shift inside the inline text flow. */
+.anno[data-provenance="human"].anno-formalized     { box-shadow: inset 0 -2px 0 var(--c-formalized); }
+.anno[data-provenance="human"].anno-partial        { box-shadow: inset 0 -2px 0 var(--c-partial); }
+.anno[data-provenance="human"].anno-not_formalized { box-shadow: inset 0 -2px 0 var(--c-not_formalized); }
+.anno:hover {
+  z-index: 2;
+  filter: brightness(0.93);
+}
+.anno:focus-visible {
+  outline: 2px solid #0969da;
+  outline-offset: 1px;
+}
+
+/* Block-level annotation wrapper (theorem boxes, multi-block ranges). */
+div.anno {
+  display: block;
+  padding: 2px 8px;
+  margin: 0;
+  border-bottom: none;
+  border-left: 3px solid transparent;
+  border-radius: 0 4px 4px 0;
+}
+div.anno.anno-formalized     { border-left-color: var(--c-formalized); }
+div.anno.anno-partial        { border-left-color: var(--c-partial); }
+div.anno.anno-not_formalized { border-left-color: var(--c-not_formalized); }
+div.anno > *:first-child { margin-top: 0 !important; }
+div.anno > *:last-child  { margin-bottom: 0 !important; }
+div.anno > .math_theorem { border-color: transparent; margin: 0; }
+
+/* Display math inside an annotation gets the same color wash as the parent
+   wrapper. Without this, a display:block math element nested in an inline
+   span.anno (or in a div.anno that only carries a left border) wouldn't
+   visibly inherit the annotation color — its block formatting context cuts
+   off the parent's inline background. */
+.anno-formalized     .mwe-math-element-block { background: var(--c-formalized-bg);     border-radius: 4px; padding: 4px 6px; }
+.anno-partial        .mwe-math-element-block { background: var(--c-partial-bg);        border-radius: 4px; padding: 4px 6px; }
+.anno-not_formalized .mwe-math-element-block { background: var(--c-not_formalized-bg); border-radius: 4px; padding: 4px 6px; }
+
+/* ---------- Mode toggles ---------- */
+
+/* Mode: formalized-only — fade everything that isn't formalized. */
+body.show-formalized .anno-partial,
+body.show-formalized .anno-not_formalized {
+  opacity: 0.22;
+  outline-style: dashed;
+}
+
+/* Mode: not_formalized-only — fade formalized and partial. */
+body.show-not_formalized .anno-formalized,
+body.show-not_formalized .anno-partial {
+  opacity: 0.22;
+  outline-style: dashed;
+}
+
+/* Mode: dim unannotated — dim every display-math that isn't inside an anno wrapper. */
+body.show-dim .wl-article-body .mwe-math-element-block { opacity: 0.30; }
+body.show-dim .anno .mwe-math-element-block            { opacity: 1; }
+
+/* ---------- Tooltip ---------- */
+
+#wl-tooltip {
+  position: fixed;
+  max-width: 420px;
+  padding: 12px 14px;
+  background: #1f2328;
+  color: #f5f6f8;
+  border-radius: 6px;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.25);
+  font-size: 12.5px;
+  line-height: 1.55;
+  pointer-events: auto;
+  z-index: 1000;
+}
+#wl-tooltip[hidden] { display: none; }
+#wl-tooltip .tt-label  { font-weight: 600; font-size: 13.5px; color: #f5f6f8; margin-bottom: 4px; }
+#wl-tooltip .tt-status { font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; font-size: 11px; }
+#wl-tooltip .tt-status.formalized     { color: #4ac26b; }
+#wl-tooltip .tt-status.partial        { color: #ecb759; }
+#wl-tooltip .tt-status.not_formalized { color: #ff7b7b; }
+#wl-tooltip .tt-proof  { color: #ecb759; }
+#wl-tooltip .tt-divider {
+  border: 0;
+  border-top: 1px solid rgba(255, 255, 255, 0.18);
+  margin: 12px 0 8px;
+}
+#wl-tooltip code { background: rgba(255, 255, 255, 0.10); padding: 1px 5px; border-radius: 3px; font-size: 11.5px; }
+#wl-tooltip a    { color: #79b8ff; }
+#wl-tooltip .tt-row { margin-top: 6px; }
+/* Provenance — the most important "signal of trust" line, so it gets its own
+   row treatment at the bottom of each annotation in the tooltip. */
+#wl-tooltip .tt-prov { font-size: 11px; margin-top: 10px; font-weight: 500; }
+#wl-tooltip .tt-prov-human { color: #4ac26b; }
+#wl-tooltip .tt-prov-ai    { color: #9da6b0; }

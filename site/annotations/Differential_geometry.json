@@ -1,0 +1,569 @@
+{
+  "slug": "Differential_geometry",
+  "wikipedia_title": "Differential geometry",
+  "display_title": "Differential geometry",
+  "schema_version": 3,
+  "annotation_style": "theorem_article",
+  "annotations": [
+    {
+      "kind": "definition",
+      "label": "Riemannian manifold",
+      "anchor": {
+        "section": "Riemannian geometry",
+        "snippet": "smooth manifolds with a Riemannian metric"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "IsRiemannianManifold",
+        "module": "Mathlib.Geometry.Manifold.Riemannian.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`IsRiemannianManifold I M` is a Prop-valued typeclass on a manifold whose tangent spaces carry a smoothly-varying inner product giving the distance as infimum of path lengths.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Isometry",
+      "anchor": {
+        "section": "Riemannian geometry",
+        "snippet": "A distance-preserving diffeomorphism between Riemannian manifolds is called an isometry"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Isometry",
+        "module": "Mathlib.Topology.MetricSpace.Isometry",
+        "match_kind": "generalization"
+      },
+      "note": "Mathlib defines `Isometry` as any distance-preserving map between (pseudo)emetric spaces, capturing the metric notion but not specifically a diffeomorphism of Riemannian manifolds.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Regular curves are locally isometric",
+      "anchor": {
+        "section": "Riemannian geometry",
+        "snippet": "Any two regular curves are locally isometric"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No result on arclength/local isometry of regular curves was found in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Theorema Egregium",
+      "anchor": {
+        "section": "Riemannian geometry",
+        "snippet": "the existence of a local isometry imposes that the Gaussian curvatures at the corresponding points must be the same"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Gaussian curvature and its isometry-invariance are not defined in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Riemann curvature tensor",
+      "anchor": {
+        "section": "Riemannian geometry",
+        "snippet": "the Riemann curvature tensor is an important pointwise invariant associated with a Riemannian manifold"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Although covariant derivatives exist (CovariantDerivative), no curvature tensor is defined in Mathlib's manifold library.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Riemannian symmetric spaces",
+      "anchor": {
+        "section": "Riemannian geometry",
+        "snippet": "An important class of Riemannian manifolds is the Riemannian symmetric spaces"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Riemannian symmetric spaces are not defined in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Pseudo-Riemannian geometry",
+      "anchor": {
+        "section": "Pseudo-Riemannian geometry",
+        "snippet": "the metric tensor need not be positive-definite"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has no pseudo-Riemannian (indefinite) metric structure on manifolds.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Lorentzian manifold",
+      "anchor": {
+        "section": "Pseudo-Riemannian geometry",
+        "snippet": "A special case of this is a Lorentzian manifold"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Lorentzian manifolds are not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Finsler manifold",
+      "anchor": {
+        "section": "Finsler geometry",
+        "snippet": "a Banach norm defined on each tangent space"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Finsler structures are only mentioned in a code comment, with no Finsler manifold definition in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Almost symplectic manifold / symplectic form",
+      "anchor": {
+        "section": "Symplectic geometry",
+        "snippet": "a smoothly varying non-degenerate skew-symmetric bilinear form on each tangent space"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "SymplecticGroup",
+        "module": "Mathlib.LinearAlgebra.SymplecticGroup",
+        "match_kind": null
+      },
+      "note": "Only the linear-algebra notion of a symplectic (nondegenerate alternating) form is present via SymplecticGroup; no smoothly-varying form on a manifold's tangent bundle is defined.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Symplectic manifold",
+      "anchor": {
+        "section": "Symplectic geometry",
+        "snippet": "an almost symplectic manifold for which the symplectic form"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Symplectic manifolds (closed nondegenerate 2-form) are not defined in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Symplectomorphism",
+      "anchor": {
+        "section": "Symplectic geometry",
+        "snippet": "which preserves the symplectic form is called a symplectomorphism"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Symplectomorphisms of manifolds are not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Symplectic manifolds have even dimension",
+      "anchor": {
+        "section": "Symplectic geometry",
+        "snippet": "symplectic manifolds necessarily have even dimension"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "With no symplectic manifolds defined, this dimension result is absent from Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Symplectic manifold in dimension 2",
+      "anchor": {
+        "section": "Symplectic geometry",
+        "snippet": "a symplectic manifold is just a surface endowed with an area form"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No symplectic-manifold/area-form correspondence on surfaces is formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Darboux's theorem",
+      "anchor": {
+        "section": "Symplectic geometry",
+        "snippet": "all symplectic manifolds are locally isomorphic"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib's `Darboux.lean` is the real-analysis intermediate-value theorem for derivatives, not the symplectic Darboux theorem.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Poincaré–Birkhoff theorem",
+      "anchor": {
+        "section": "Symplectic geometry",
+        "snippet": "if an area preserving map of an annulus twists each boundary component in opposite directions"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Poincaré–Birkhoff fixed-point theorem is not in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Contact structure",
+      "anchor": {
+        "section": "Contact geometry",
+        "snippet": "a smooth hyperplane field H in the tangent bundle"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Contact structures (hyperplane fields) are not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Contact form",
+      "anchor": {
+        "section": "Contact geometry",
+        "snippet": "A local 1-form on M is a contact form if the restriction of its exterior derivative to H is a non-degenerate two-form"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Contact forms are not defined in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Contact Darboux theorem",
+      "anchor": {
+        "section": "Contact geometry",
+        "snippet": "all contact structures on an odd-dimensional manifold are locally isomorphic"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The contact Darboux theorem is not in Mathlib (no contact geometry).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Almost complex manifold",
+      "anchor": {
+        "section": "Complex and Kähler geometry",
+        "snippet": "a vector bundle endomorphism (called an almost complex structure )"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Almost complex structures (J with J²=-1 on the tangent bundle) are not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Almost complex manifolds are even-dimensional",
+      "anchor": {
+        "section": "Complex and Kähler geometry",
+        "snippet": "an almost complex manifold is even-dimensional"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Without almost complex structures, this dimension result is absent from Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Complex manifold",
+      "anchor": {
+        "section": "Complex and Kähler geometry",
+        "snippet": "An almost complex manifold is called complex if"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "IsManifold",
+        "module": "Mathlib.Geometry.Manifold.IsManifold.Basic",
+        "match_kind": null
+      },
+      "note": "Mathlib studies manifolds modeled on ℂ via `IsManifold` (e.g. Geometry.Manifold.Complex on holomorphic functions) but has no dedicated complex/integrable-structure definition.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Complex iff holomorphic atlas",
+      "anchor": {
+        "section": "Complex and Kähler geometry",
+        "snippet": "it admits a holomorphic coordinate atlas"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The equivalence of integrable almost complex structures with holomorphic atlases (Newlander–Nirenberg) is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Almost Hermitian structure",
+      "anchor": {
+        "section": "Complex and Kähler geometry",
+        "snippet": "An almost Hermitian structure is given by an almost complex structure J , along with a Riemannian metric g"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Almost Hermitian structures on manifolds are not defined in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Kähler manifold",
+      "anchor": {
+        "section": "Complex and Kähler geometry",
+        "snippet": "a Kähler manifold is a manifold endowed with a Kähler structure"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib's 'Kähler' refers to Kähler differentials (RingTheory) and the 2D kahler form, not Kähler manifolds.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Kähler manifold is complex and symplectic",
+      "anchor": {
+        "section": "Complex and Kähler geometry",
+        "snippet": "a Kähler manifold is both a complex and a symplectic manifold"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Neither Kähler nor symplectic manifolds are formalized, so this relation is absent.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Hodge manifolds",
+      "anchor": {
+        "section": "Complex and Kähler geometry",
+        "snippet": "the class of Hodge manifolds"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Hodge manifolds are not defined in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "CR geometry",
+      "anchor": {
+        "section": "CR geometry",
+        "snippet": "the intrinsic geometry of boundaries of domains in complex manifolds"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "CR structures/CR geometry are not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Conformal geometry",
+      "anchor": {
+        "section": "Conformal geometry",
+        "snippet": "the set of angle-preserving (conformal) transformations on a space"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "IsConformalMap",
+        "module": "Mathlib.Analysis.Normed.Operator.Conformal",
+        "match_kind": null
+      },
+      "note": "The angle-preserving (conformal) linear-map notion is formalized as `IsConformalMap`, but conformal structures on manifolds are not.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Differential topology",
+      "anchor": {
+        "section": "Differential topology",
+        "snippet": "the study of global geometric invariants without a metric or symplectic form"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Differential topology is a field rather than a single definition; no corresponding decl exists.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Lie group",
+      "anchor": {
+        "section": "Lie groups",
+        "snippet": "A Lie group is a group in the category of smooth manifolds"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "LieGroup",
+        "module": "Mathlib.Geometry.Manifold.Algebra.LieGroup",
+        "match_kind": "exact"
+      },
+      "note": "`LieGroup` is a class on a smooth manifold with group structure whose multiplication and inversion are smooth.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Lie algebra",
+      "anchor": {
+        "section": "Lie groups",
+        "snippet": "the tangent space at the unit endowed with the Lie bracket between left-invariant vector fields"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "GroupLieAlgebra",
+        "module": "Mathlib.Geometry.Manifold.GroupLieAlgebra",
+        "match_kind": "exact"
+      },
+      "note": "`GroupLieAlgebra I G` is the tangent space at the identity equipped with the bracket coming from invariant vector fields, exactly matching the stated definition.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Geometric analysis",
+      "anchor": {
+        "section": "Geometric analysis",
+        "snippet": "a mathematical discipline where tools from differential equations"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Geometric analysis is a field, not a single formalizable statement.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Gauge theory",
+      "anchor": {
+        "section": "Gauge theory",
+        "snippet": "the study of connections on vector bundles and principal bundles"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "CovariantDerivative",
+        "module": "Mathlib.Geometry.Manifold.VectorBundle.CovariantDerivative.Basic",
+        "match_kind": null
+      },
+      "note": "Connections (covariant derivatives / Koszul connections) on vector bundles are formalized as `CovariantDerivative`, but principal bundles and gauge theory proper are not.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Theorema egregium (intrinsic invariant)",
+      "anchor": {
+        "section": "Intrinsic versus extrinsic",
+        "snippet": "Gaussian curvature is an intrinsic invariant"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Gaussian curvature and its intrinsic invariance are not defined in Mathlib.",
+      "provenance": "ai"
+    }
+  ]
+}

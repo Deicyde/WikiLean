@@ -1,0 +1,1661 @@
+{
+  "slug": "Riemann_zeta_function",
+  "wikipedia_title": "Riemann zeta function",
+  "display_title": "Riemann zeta function",
+  "schema_version": 3,
+  "annotation_style": "theorem_article",
+  "annotations": [
+    {
+      "kind": "definition",
+      "label": "Riemann zeta function (lead definition)",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "is a mathematical function of a complex variable defined as"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "riemannZeta",
+        "module": "Mathlib.NumberTheory.LSeries.RiemannZeta",
+        "match_kind": "exact"
+      },
+      "note": "`riemannZeta : ℂ → ℂ` is defined directly in Mathlib as the analytically continued zeta function.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "(Lead)",
+          "snippet": "is a mathematical function of a complex variable defined as"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\zeta (s)=\\sum _{n=1}^{\\infty }{\\frac {1}{n^{s}}}={\\frac {1}{1^{s}}}+{\\frac {1}{2^{s}}}+{\\frac {1}{3^{s}}}+\\cdots }"
+        }
+      ]
+    },
+    {
+      "kind": "theorem",
+      "label": "Irrationality of ζ(3) (Apéry)",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "Roger Apéry proved the irrationality of"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No irrationality result for ζ(3) (or any specific zeta value) exists in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Definition of ζ(s)",
+      "anchor": {
+        "section": "Definition",
+        "snippet": "is a function of a complex variable"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "riemannZeta",
+        "module": "Mathlib.NumberTheory.LSeries.RiemannZeta",
+        "match_kind": "exact"
+      },
+      "note": "`riemannZeta` is the zeta function of a complex variable, with `zeta_eq_tsum_one_div_nat_cpow` giving the Dirichlet sum for Re s > 1.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Definition via analytic continuation",
+      "anchor": {
+        "section": "Definition",
+        "snippet": "is defined for other complex values via analytic continuation"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "riemannZeta",
+        "module": "Mathlib.NumberTheory.LSeries.RiemannZeta",
+        "match_kind": "exact"
+      },
+      "note": "`riemannZeta` is constructed on all of ℂ via the (Hurwitz-zeta-based) analytic continuation.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Analytic continuation to s ≠ 1",
+      "anchor": {
+        "section": "Definition",
+        "snippet": "can be continued analytically to all complex values"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "differentiableAt_riemannZeta",
+        "module": "Mathlib.NumberTheory.LSeries.RiemannZeta",
+        "match_kind": "exact"
+      },
+      "note": "`differentiableAt_riemannZeta` proves ζ is holomorphic at every s ≠ 1.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Definition",
+          "snippet": "can be continued analytically to all complex values"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\lim _{s\\to 1}(s-1)\\zeta (s)=1.}"
+        }
+      ]
+    },
+    {
+      "kind": "theorem",
+      "label": "Meromorphic with simple pole at s=1",
+      "anchor": {
+        "section": "Definition",
+        "snippet": "is a meromorphic function on the whole complex plane"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "riemannZeta_residue_one",
+        "module": "Mathlib.NumberTheory.LSeries.RiemannZeta",
+        "match_kind": "exact"
+      },
+      "note": "`riemannZeta_residue_one` shows the residue at s=1 is 1 (simple pole), and `differentiableAt_riemannZeta`/`analyticOn_riemannZeta` give holomorphy elsewhere.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Definition",
+          "snippet": "is a meromorphic function on the whole complex plane"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\lim _{s\\to 1}(s-1)\\zeta (s)=1.}"
+        }
+      ]
+    },
+    {
+      "kind": "theorem",
+      "label": "Euler product formula",
+      "anchor": {
+        "section": "Euler's product formula",
+        "snippet": "the connection between the zeta function and prime numbers was discovered by Euler, who proved the identity"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "riemannZeta_eulerProduct_tprod",
+        "module": "Mathlib.NumberTheory.EulerProduct.DirichletLSeries",
+        "match_kind": "exact"
+      },
+      "note": "`riemannZeta_eulerProduct_tprod` proves ∏ₚ (1 − p^(−s))⁻¹ = ζ(s) for Re s > 1.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Infinitely many primes",
+      "anchor": {
+        "section": "Euler's product formula",
+        "snippet": "implies that there are infinitely many primes"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Nat.exists_infinite_primes",
+        "module": "Mathlib.Data.Nat.Prime.Infinite",
+        "match_kind": "exact"
+      },
+      "note": "Infinitude of primes is proven as `Nat.exists_infinite_primes`/`Nat.infinite_setOf_prime` (via Euclid, not the Euler product).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Sum of reciprocals of primes diverges",
+      "anchor": {
+        "section": "Euler's product formula",
+        "snippet": "the sum of the reciprocals of the primes is infinite"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "not_summable_one_div_on_primes",
+        "module": "Mathlib.NumberTheory.SumPrimeReciprocals",
+        "match_kind": "exact"
+      },
+      "note": "`not_summable_one_div_on_primes` (and `Nat.Primes.not_summable_one_div`) prove the prime reciprocal sum diverges.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Density of primes is zero",
+      "anchor": {
+        "section": "Euler's product formula",
+        "snippet": "the density of the set of primes within the set of positive integers is zero"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Nat.primeCounting",
+        "module": "Mathlib.NumberTheory.PrimeCounting",
+        "match_kind": null
+      },
+      "note": "The prime-counting function and an upper bound exist, but the asymptotic density limit π(n)/n → 0 is not proven.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Probability of coprimality",
+      "anchor": {
+        "section": "Euler's product formula",
+        "snippet": "the asymptotic probability that s randomly selected integers within a bound are set-wise coprime"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No theorem relating coprimality probability of s integers to 1/ζ(s) is present.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Riemann functional equation",
+      "anchor": {
+        "section": "Riemann's functional equation",
+        "snippet": "This zeta function satisfies the functional equation"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "riemannZeta_one_sub",
+        "module": "Mathlib.NumberTheory.LSeries.RiemannZeta",
+        "match_kind": "exact"
+      },
+      "note": "`riemannZeta_one_sub` is the asymmetric functional equation relating ζ(1−s) and ζ(s).",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Riemann's functional equation",
+          "snippet": "This zeta function satisfies the functional equation"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\zeta (s)=2^{s}\\pi ^{s-1}\\ \\sin \\left({\\frac {\\pi s}{2}}\\right)\\ \\Gamma (1-s)\\ \\zeta (1-s)\\ ,}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Trivial zeros at negative even integers",
+      "anchor": {
+        "section": "Riemann's functional equation",
+        "snippet": "has a simple zero at each even negative integer"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "riemannZeta_neg_two_mul_nat_add_one",
+        "module": "Mathlib.NumberTheory.LSeries.RiemannZeta",
+        "match_kind": null
+      },
+      "note": "`riemannZeta_neg_two_mul_nat_add_one` proves ζ(−2(n+1))=0, but the simplicity (order one) of these zeros is not formalized.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Riemann's functional equation",
+          "snippet": "has a simple zero at each even negative integer"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\zeta (s)=2^{s}\\pi ^{s-1}\\ \\sin \\left({\\frac {\\pi s}{2}}\\right)\\ \\Gamma (1-s)\\ \\zeta (1-s)\\ ,}"
+        }
+      ]
+    },
+    {
+      "kind": "theorem",
+      "label": "Symmetric functional equation (xi function)",
+      "anchor": {
+        "section": "Riemann's xi function",
+        "snippet": "Riemann also found a symmetric version of the functional equation by setting"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "completedRiemannZeta_one_sub",
+        "module": "Mathlib.NumberTheory.LSeries.RiemannZeta",
+        "match_kind": "generalization"
+      },
+      "note": "`completedRiemannZeta_one_sub` proves Λ(1−s)=Λ(s) for the completed zeta Λ = π^(−s/2)Γ(s/2)ζ(s), the symmetric functional equation (Mathlib uses Λ rather than ξ).",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Riemann's xi function",
+          "snippet": "Riemann also found a symmetric version of the functional equation by setting"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\xi (s)={\\frac {s(s-1)}{2}}\\times \\pi ^{-{\\frac {s}{2}}}\\Gamma \\left({\\frac {s}{2}}\\right)\\zeta (s)=(s-1)\\pi ^{-{\\frac {s}{2}}}\\Gamma \\left({\\frac {s}{2}}+1\\right)\\zeta (s)}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\xi (s)=\\xi (1-s)~.}"
+        }
+      ]
+    },
+    {
+      "kind": "definition",
+      "label": "Trivial zeros",
+      "anchor": {
+        "section": "Zeros, the critical line, and the Riemann hypothesis",
+        "snippet": "These are called the trivial zeros"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "riemannZeta_neg_two_mul_nat_add_one",
+        "module": "Mathlib.NumberTheory.LSeries.RiemannZeta",
+        "match_kind": null
+      },
+      "note": "The trivial zeros are proven to be zeros via `riemannZeta_neg_two_mul_nat_add_one`, but there is no named definition isolating exactly the trivial-zero set.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Critical strip",
+      "anchor": {
+        "section": "Zeros, the critical line, and the Riemann hypothesis",
+        "snippet": "which is called the critical strip"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No definition of the critical strip 0 < Re s < 1 exists in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Critical line",
+      "anchor": {
+        "section": "Zeros, the critical line, and the Riemann hypothesis",
+        "snippet": "is called the critical line"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No definition of the critical line Re s = 1/2 is present (it appears only inline inside `RiemannHypothesis`).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Riemann hypothesis",
+      "anchor": {
+        "section": "Zeros, the critical line, and the Riemann hypothesis",
+        "snippet": "asserts that all non-trivial zeros are on the critical line"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "RiemannHypothesis",
+        "module": "Mathlib.NumberTheory.LSeries.RiemannZeta",
+        "match_kind": "exact"
+      },
+      "note": "`RiemannHypothesis` is defined as the Prop that every nontrivial zero has real part 1/2.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Conrey: >40% on critical line",
+      "anchor": {
+        "section": "Zeros, the critical line, and the Riemann hypothesis",
+        "snippet": "Conrey proved that more than 40% of the non-trivial zeros"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No proportion-of-zeros results are formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Trudgian count of zeros N(T)",
+      "anchor": {
+        "section": "Number of zeros in the critical strip",
+        "snippet": "Timothy Trudgian proved that, if T > e , then"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No bound on the zero-counting function N(T) is present.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Hardy: infinitely many real zeros",
+      "anchor": {
+        "section": "Hardy–Littlewood conjectures",
+        "snippet": "G. H. Hardy proved that"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Hardy's theorem on infinitely many zeros on the critical line is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Hardy–Littlewood first conjecture",
+      "anchor": {
+        "section": "Hardy–Littlewood conjectures",
+        "snippet": "the interval ( T , T + H ] contains a zero of odd order"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This conjecture about zeros in short intervals is not present.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Hardy–Littlewood second conjecture",
+      "anchor": {
+        "section": "Hardy–Littlewood conjectures",
+        "snippet": "there exists a T 0 ( ε ) > 0 and c ε > 0 such that the inequality"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This conjecture on zero density in short intervals is not present.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "PNT equivalent to no zeros on Re(s)=1",
+      "anchor": {
+        "section": "Zero-free region",
+        "snippet": "The prime number theorem is equivalent to the fact that there are no zeros of the zeta function on the line Re( s ) = 1"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "riemannZeta_ne_zero_of_one_le_re",
+        "module": "Mathlib.NumberTheory.LSeries.Nonvanishing",
+        "match_kind": null
+      },
+      "note": "Non-vanishing on Re s = 1 is proven (`riemannZeta_ne_zero_of_one_le_re`), but the prime number theorem and the equivalence itself are not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Korobov–Vinogradov zero-free region",
+      "anchor": {
+        "section": "Zero-free region",
+        "snippet": "independently showed via the Vinogradov's mean-value theorem"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Korobov–Vinogradov zero-free region is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Platt–Trudgian computational zero-free region",
+      "anchor": {
+        "section": "Zero-free region",
+        "snippet": "verified computationally that"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This computational zero-free region is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Mossinghoff–Trudgian–Yang zero-free region",
+      "anchor": {
+        "section": "Zero-free region",
+        "snippet": "that zeta has no zeros in the region"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This explicit zero-free region is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Yang zero-free region",
+      "anchor": {
+        "section": "Zero-free region",
+        "snippet": "showed that ζ ( σ + it ) ≠ 0 if"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Yang's zero-free region is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Bellotti zero-free region (after Ford)",
+      "anchor": {
+        "section": "Zero-free region",
+        "snippet": "building on the work of Ford"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Bellotti's zero-free region is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Bellotti large |t| zero-free region",
+      "anchor": {
+        "section": "Zero-free region",
+        "snippet": "Bellotti also showed that for sufficiently large"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Bellotti's large-|t| zero-free region is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Infinitely many zeros on critical line",
+      "anchor": {
+        "section": "Other results",
+        "snippet": "It is known that there are infinitely many zeros on the critical line"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No result on zeros lying on the critical line is formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Littlewood on imaginary parts of zeros",
+      "anchor": {
+        "section": "Other results",
+        "snippet": "Littlewood showed that if the sequence"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Littlewood's result on the distribution of imaginary parts of zeros is not present.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Critical line theorem",
+      "anchor": {
+        "section": "Other results",
+        "snippet": "asserts that a positive proportion of the nontrivial zeros lies on the critical line"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The critical line theorem (positive proportion of zeros) is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "First nontrivial zero",
+      "anchor": {
+        "section": "Other results",
+        "snippet": "the zero with smallest non-negative imaginary part is"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The numerical location of the first nontrivial zero (≈ 1/2 + 14.13i) is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Zeros symmetric about real axis",
+      "anchor": {
+        "section": "Other results",
+        "snippet": "are symmetric about the real axis"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No `riemannZeta (conj s) = conj (riemannZeta s)` (reflection across the real axis) lemma exists.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Nontrivial zeros symmetric about critical line",
+      "anchor": {
+        "section": "Other results",
+        "snippet": "the non-trivial zeros are symmetric about the critical line"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "riemannZeta_one_sub",
+        "module": "Mathlib.NumberTheory.LSeries.RiemannZeta",
+        "match_kind": null
+      },
+      "note": "The functional equation `riemannZeta_one_sub`/`completedRiemannZeta_one_sub` underlies this symmetry, but symmetry of zeros about Re s = 1/2 is not stated as such.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "No zeros on line Re(s)=1",
+      "anchor": {
+        "section": "Other results",
+        "snippet": "no zeros lie on the line with real part 1"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "riemannZeta_ne_zero_of_one_le_re",
+        "module": "Mathlib.NumberTheory.LSeries.Nonvanishing",
+        "match_kind": "generalization"
+      },
+      "note": "`riemannZeta_ne_zero_of_one_le_re` proves ζ(s) ≠ 0 for Re s ≥ 1, covering the line Re s = 1.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Grosswald–Schnitzer modified zeta functions",
+      "anchor": {
+        "section": "Other results",
+        "snippet": "A large class of modified zeta functions exists that share the same non-trivial zeros"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Grosswald–Schnitzer modified zeta functions are not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Values at even positive integers",
+      "anchor": {
+        "section": "Specific values",
+        "snippet": "For any positive even integer 2 n"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "riemannZeta_two_mul_nat",
+        "module": "Mathlib.NumberTheory.LSeries.HurwitzZetaValues",
+        "match_kind": "exact"
+      },
+      "note": "`riemannZeta_two_mul_nat` gives the closed form of ζ(2k) in terms of Bernoulli numbers.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Specific values",
+          "snippet": "For any positive even integer 2 n"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\zeta (2n)={\\frac {|{B_{2n}}|(2\\pi )^{2n}}{2(2n)!}},}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\zeta (2)=1+{\\frac {1}{2^{2}}}+{\\frac {1}{3^{2}}}+\\cdots ={\\frac {\\pi ^{2}}{6}}}"
+        }
+      ]
+    },
+    {
+      "kind": "example",
+      "label": "Basel problem ζ(2)",
+      "anchor": {
+        "section": "Specific values",
+        "snippet": "is known as the Basel problem"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "riemannZeta_two",
+        "module": "Mathlib.NumberTheory.LSeries.HurwitzZetaValues",
+        "match_kind": "exact"
+      },
+      "note": "`riemannZeta_two` proves ζ(2) = π²/6.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Specific values",
+          "snippet": "is known as the Basel problem"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\zeta (2n)={\\frac {|{B_{2n}}|(2\\pi )^{2n}}{2(2n)!}},}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\zeta (2)=1+{\\frac {1}{2^{2}}}+{\\frac {1}{3^{2}}}+\\cdots ={\\frac {\\pi ^{2}}{6}}}"
+        }
+      ]
+    },
+    {
+      "kind": "example",
+      "label": "Probability two numbers are coprime",
+      "anchor": {
+        "section": "Specific values",
+        "snippet": "What is the probability that two numbers selected from a uniform distribution"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The 6/π² coprimality probability is not formalized.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Specific values",
+          "snippet": "What is the probability that two numbers selected from a uniform distribution"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\zeta (2n)={\\frac {|{B_{2n}}|(2\\pi )^{2n}}{2(2n)!}},}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\zeta (2)=1+{\\frac {1}{2^{2}}}+{\\frac {1}{3^{2}}}+\\cdots ={\\frac {\\pi ^{2}}{6}}}"
+        }
+      ]
+    },
+    {
+      "kind": "definition",
+      "label": "Apéry's constant ζ(3)",
+      "anchor": {
+        "section": "Specific values",
+        "snippet": "is Apéry's constant"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "riemannZeta",
+        "module": "Mathlib.NumberTheory.LSeries.RiemannZeta",
+        "match_kind": null
+      },
+      "note": "ζ(3) is well-defined as `riemannZeta 3`, but there is no dedicated Apéry's-constant definition or closed-form/irrationality result.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Specific values",
+          "snippet": "is Apéry's constant"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\zeta (3)=1+{\\frac {1}{2^{3}}}+{\\frac {1}{3^{3}}}+\\cdots =1.202056903159594285399...}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Values at nonpositive integers",
+      "anchor": {
+        "section": "Specific values",
+        "snippet": "via analytic continuation one can show that"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "riemannZeta_neg_nat_eq_bernoulli",
+        "module": "Mathlib.NumberTheory.LSeries.HurwitzZetaValues",
+        "match_kind": "exact"
+      },
+      "note": "`riemannZeta_neg_nat_eq_bernoulli` gives ζ(−k) = (−1)^k B_{k+1}/(k+1).",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Specific values",
+          "snippet": "via analytic continuation one can show that"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\zeta (-n)=-{\\frac {B_{n+1}}{n+1}}}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\zeta (-1)=-{\\tfrac {1}{12}}}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\zeta (0)=-{\\tfrac {1}{2}}}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Vanishing at negative even integers",
+      "anchor": {
+        "section": "Specific values",
+        "snippet": "ζ vanishes at the negative even integers"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "riemannZeta_neg_two_mul_nat_add_one",
+        "module": "Mathlib.NumberTheory.LSeries.RiemannZeta",
+        "match_kind": "exact"
+      },
+      "note": "`riemannZeta_neg_two_mul_nat_add_one` proves ζ(−2(n+1)) = 0.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Specific values",
+          "snippet": "ζ vanishes at the negative even integers"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\zeta (-n)=-{\\frac {B_{n+1}}{n+1}}}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\zeta (-1)=-{\\tfrac {1}{12}}}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\zeta (0)=-{\\tfrac {1}{2}}}"
+        }
+      ]
+    },
+    {
+      "kind": "example",
+      "label": "ζ(−1) and 1+2+3+⋯",
+      "anchor": {
+        "section": "Specific values",
+        "snippet": "assigning a finite value to the divergent series"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "riemannZeta_neg_nat_eq_bernoulli",
+        "module": "Mathlib.NumberTheory.LSeries.HurwitzZetaValues",
+        "match_kind": "special_case"
+      },
+      "note": "ζ(−1) = −1/12 is the k=1 special case of `riemannZeta_neg_nat_eq_bernoulli`; the divergent-series regularization interpretation itself is not formalized.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Specific values",
+          "snippet": "assigning a finite value to the divergent series"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\zeta (-n)=-{\\frac {B_{n+1}}{n+1}}}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\zeta (-1)=-{\\tfrac {1}{12}}}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\zeta (0)=-{\\tfrac {1}{2}}}"
+        }
+      ]
+    },
+    {
+      "kind": "example",
+      "label": "ζ(0) and 1+1+1+⋯",
+      "anchor": {
+        "section": "Specific values",
+        "snippet": "assigning a finite result to the divergent series"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "riemannZeta_zero",
+        "module": "Mathlib.NumberTheory.LSeries.RiemannZeta",
+        "match_kind": "exact"
+      },
+      "note": "`riemannZeta_zero` proves ζ(0) = −1/2.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Specific values",
+          "snippet": "assigning a finite result to the divergent series"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\zeta (-n)=-{\\frac {B_{n+1}}{n+1}}}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\zeta (-1)=-{\\tfrac {1}{12}}}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\zeta (0)=-{\\tfrac {1}{2}}}"
+        }
+      ]
+    },
+    {
+      "kind": "example",
+      "label": "Value used in kinetic boundary layer problems",
+      "anchor": {
+        "section": "Specific values",
+        "snippet": "is employed in calculating kinetic boundary layer problems"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The value ζ(3/2) and its physical application are not formalized.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Specific values",
+          "snippet": "is employed in calculating kinetic boundary layer problems"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\zeta {\\bigl (}{\\tfrac {1}{2}}{\\bigr )}=-1.46035450880958681288\\ldots }"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Cauchy principal value equals Euler–Mascheroni",
+      "anchor": {
+        "section": "Specific values",
+        "snippet": "its Cauchy principal value"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "tendsto_riemannZeta_sub_one_div",
+        "module": "Mathlib.NumberTheory.Harmonic.ZetaAsymp",
+        "match_kind": null
+      },
+      "note": "`tendsto_riemannZeta_sub_one_div` proves lim (ζ(s) − 1/(s−1)) = γ (the constant Laurent term), which equals the Cauchy principal value, but the principal-value formulation is not stated.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Specific values",
+          "snippet": "its Cauchy principal value"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\zeta (1)=1+{\\tfrac {1}{2}}+{\\tfrac {1}{3}}+\\cdots }"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\lim _{\\varepsilon \\to 0}{\\frac {\\zeta (1+\\varepsilon )+\\zeta (1-\\varepsilon )}{2}}}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Limit at +∞ and essential singularity",
+      "anchor": {
+        "section": "Specific values",
+        "snippet": "Taking the limit s → +∞ through the real numbers"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No lemma stating ζ(s) → 1 as s → +∞ or describing the essential singularity at infinity is present.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Reciprocal via Möbius function",
+      "anchor": {
+        "section": "Reciprocal",
+        "snippet": "The reciprocal of the zeta function may be expressed as a Dirichlet series over the Möbius function"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "LSeries_zeta_mul_Lseries_moebius",
+        "module": "Mathlib.NumberTheory.LSeries.Dirichlet",
+        "match_kind": null
+      },
+      "note": "`LSeries_zeta_mul_Lseries_moebius` proves ζ(s)·∑μ(n)n^(−s) = 1 for Re s > 1, equivalent to 1/ζ(s) = ∑μ(n)n^(−s).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "RH equivalent to Möbius series validity",
+      "anchor": {
+        "section": "Reciprocal",
+        "snippet": "is equivalent to the claim that this expression is valid"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The RH-equivalence in terms of convergence of the Möbius Dirichlet series is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Zeta universality (Voronin)",
+      "anchor": {
+        "section": "Universality",
+        "snippet": "This zeta function universality states, roughly, that vertical translates of"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Voronin's universality theorem is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Functions F and G",
+      "anchor": {
+        "section": "Estimates of the maximum of the modulus of the zeta function",
+        "snippet": "Let the functions F ( T ; H ) and G ( s 0 ; Δ) be defined by the equalities"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Karatsuba F(T;H) and G(s₀;Δ) maximum-modulus functions are not defined.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Karatsuba estimates of F and G",
+      "anchor": {
+        "section": "Estimates of the maximum of the modulus of the zeta function",
+        "snippet": "if the values H and Δ exceed certain sufficiently small constants"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Karatsuba's estimates of F and G are not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Argument S(t) of zeta",
+      "anchor": {
+        "section": "Argument of the Riemann zeta function",
+        "snippet": "is called the argument of the Riemann zeta function"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The argument function S(t) of the zeta function is not defined.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Sign changes of S(t)",
+      "anchor": {
+        "section": "Argument of the Riemann zeta function",
+        "snippet": "points where the function S ( t ) changes sign"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Results on sign changes of S(t) are not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Rearranged Dirichlet series (Re s > 0)",
+      "anchor": {
+        "section": "Dirichlet series",
+        "snippet": "converges for Re( s ) > 0"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The rearranged series converging for Re s > 0 (related to the Dirichlet eta function) is not formalized; Mathlib's Dirichlet sum is only for Re s > 1.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Rising-factorial series on whole plane",
+      "anchor": {
+        "section": "Dirichlet series",
+        "snippet": "uses the rising factorial and is valid for the entire complex plane"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The globally valid rising-factorial series representation is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Mellin transform",
+      "anchor": {
+        "section": "Mellin-type integrals",
+        "snippet": "The Mellin transform of a function f ( x ) is defined as"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "mellin",
+        "module": "Mathlib.Analysis.MellinTransform",
+        "match_kind": "exact"
+      },
+      "note": "`mellin f s = ∫ x in Ioi 0, x^(s−1) • f x` is defined in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Zeta as Mellin-type integral (Re s > 1)",
+      "anchor": {
+        "section": "Mellin-type integrals",
+        "snippet": "If the real part of s is greater than one, we have"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "completedZeta_eq_tsum_of_one_lt_re",
+        "module": "Mathlib.NumberTheory.LSeries.RiemannZeta",
+        "match_kind": null
+      },
+      "note": "Mellin–Dirichlet machinery exists (`mellin`, `completedZeta_eq_tsum_of_one_lt_re`), but the specific identity ζ(s)Γ(s) = ∫ x^(s−1)/(e^x−1) dx is not stated.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Riemann contour integral for all s",
+      "anchor": {
+        "section": "Mellin-type integrals",
+        "snippet": "By modifying the contour , Riemann showed that"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Riemann's Hankel-contour integral representation valid for all s is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Integral with prime-counting function",
+      "anchor": {
+        "section": "Mellin-type integrals",
+        "snippet": "If π ( x ) is the prime-counting function"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The integral expressing log ζ(s) via the prime-counting function is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Mellin transform with Riemann J(x)",
+      "anchor": {
+        "section": "Mellin-type integrals",
+        "snippet": "A similar Mellin transform involves the Riemann function J ( x )"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Riemann prime-counting function J(x) and its Mellin relation are not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Zeta via Jacobi theta function",
+      "anchor": {
+        "section": "Theta functions",
+        "snippet": "The Riemann zeta function can be given by a Mellin transform"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "completedRiemannZeta",
+        "module": "Mathlib.NumberTheory.LSeries.RiemannZeta",
+        "match_kind": null
+      },
+      "note": "`completedRiemannZeta` is built from a Mellin transform of a theta kernel (`jacobiTheta₂`-based `evenKernel`), but the explicit ζ-via-theta Mellin formula is not stated at the ζ level.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Regularized theta expression",
+      "anchor": {
+        "section": "Theta functions",
+        "snippet": "which is well defined for all s except 0 and 1"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "differentiable_completedZeta₀",
+        "module": "Mathlib.NumberTheory.LSeries.RiemannZeta",
+        "match_kind": null
+      },
+      "note": "`differentiable_completedZeta₀` shows the regularized Λ₀ is entire and `completedRiemannZeta_eq` removes the s=0,1 poles, but the explicit regularized theta integral is not stated.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Laurent series about s=1",
+      "anchor": {
+        "section": "Laurent series",
+        "snippet": "It can therefore be expanded as a Laurent series about s = 1"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "tendsto_riemannZeta_sub_one_div",
+        "module": "Mathlib.NumberTheory.Harmonic.ZetaAsymp",
+        "match_kind": null
+      },
+      "note": "The principal-part (residue 1) and constant term (γ) are proven via `riemannZeta_residue_one`/`tendsto_riemannZeta_sub_one_div`, but the full Laurent expansion with Stieltjes constants is not.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Stieltjes constants",
+      "anchor": {
+        "section": "Laurent series",
+        "snippet": "are called the Stieltjes constants"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "tendsto_riemannZeta_sub_one_div",
+        "module": "Mathlib.NumberTheory.Harmonic.ZetaAsymp",
+        "match_kind": null
+      },
+      "note": "Only the 0th Stieltjes constant γ₀ = γ appears (`tendsto_riemannZeta_sub_one_div`); the general Stieltjes constants γₙ are not defined.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Abel–Plana integral relation",
+      "anchor": {
+        "section": "Integral",
+        "snippet": "the integral relation (cf. Abel–Plana formula"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Neither the Abel–Plana formula nor this integral relation for ζ is formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Hadamard product expansion",
+      "anchor": {
+        "section": "Hadamard product",
+        "snippet": "Hadamard gave the infinite product expansion"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Hadamard product over the zeros (Mathlib's `Hadamard.lean` is the three-lines theorem) is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Simpler Hadamard product",
+      "anchor": {
+        "section": "Hadamard product",
+        "snippet": "A simpler infinite product expansion is"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The simplified Hadamard product is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Knopp–Hasse globally convergent series",
+      "anchor": {
+        "section": "Globally convergent series",
+        "snippet": "was conjectured by Konrad Knopp in 1926"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Knopp–Hasse globally convergent series (and the Dirichlet eta function) are not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Hasse second globally convergent series",
+      "anchor": {
+        "section": "Globally convergent series",
+        "snippet": "Hasse also proved the globally converging series"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Hasse's second globally convergent series is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Maślanka globally convergent series",
+      "anchor": {
+        "section": "Globally convergent series",
+        "snippet": "gave another globally convergent"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Maślanka's globally convergent series is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Asymptotics of coefficients (saddle point)",
+      "anchor": {
+        "section": "Globally convergent series",
+        "snippet": "Using the saddle point method, we can show that"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The saddle-point asymptotics of these coefficients are not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Báez-Duarte criterion for RH",
+      "anchor": {
+        "section": "Globally convergent series",
+        "snippet": "provided a new criterion for the Riemann hypothesis"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Báez-Duarte criterion for RH is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Borwein rapidly convergent series",
+      "anchor": {
+        "section": "Rapidly convergent series",
+        "snippet": "Peter Borwein developed an algorithm that applies Chebyshev polynomials to the Dirichlet eta function"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Borwein's Chebyshev-based algorithm for ζ is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Series via the primorial",
+      "anchor": {
+        "section": "Series representation at positive integers via the primorial",
+        "snippet": "Here p n # is the primorial sequence and J k is Jordan's totient function"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The primorial/Jordan-totient series representation of ζ is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Series via incomplete poly-Bernoulli numbers",
+      "anchor": {
+        "section": "Series representation by the incomplete poly-Bernoulli numbers",
+        "snippet": "The function ζ can be represented, for Re( s ) > 1 , by the infinite series"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The incomplete poly-Bernoulli series representation is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Mellin transform of the Engel map",
+      "anchor": {
+        "section": "Mellin transform of the Engel map",
+        "snippet": "is related to the Riemann zeta function by the formula"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Engel map and its Mellin-transform relation to ζ are not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Stochastic representation via Brownian motion",
+      "anchor": {
+        "section": "Stochastic representations",
+        "snippet": "The Brownian motion and Riemann zeta function are connected through the moment-generating functions of stochastic processes"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Brownian-motion stochastic representation of ζ is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Euler–Maclaurin numerical algorithm",
+      "anchor": {
+        "section": "Numerical algorithms",
+        "snippet": "A classical algorithm, in use prior to about 1930, proceeds by applying the Euler–Maclaurin formula"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Neither the Euler–Maclaurin formula nor its application to compute ζ is formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Applications in applied statistics",
+      "anchor": {
+        "section": "Applications",
+        "snippet": "The zeta function occurs in applied statistics including Zipf's law"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Zipf's-law/zeta-distribution applications are not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Casimir effect / zeta regularization",
+      "anchor": {
+        "section": "Applications",
+        "snippet": "shows up explicitly in one method of calculating the Casimir effect"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Zeta regularization for the Casimir effect is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Musical tuning / equal divisions of the octave",
+      "anchor": {
+        "section": "Musical tuning",
+        "snippet": "the zeta function can be used to find equal divisions of the octave"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The musical-tuning application of ζ is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Zeta at equidistant integers in series for constants",
+      "anchor": {
+        "section": "Infinite series",
+        "snippet": "appears in infinite series representations of a number of constants"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "These constant-generating series involving ζ at equidistant integers are not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Series for the lemniscate constant",
+      "anchor": {
+        "section": "Infinite series",
+        "snippet": "relates to the natural logarithm of the lemniscate constant"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The zeta series for the lemniscate constant is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Hurwitz zeta function",
+      "anchor": {
+        "section": "Generalizations",
+        "snippet": "These include the Hurwitz zeta function"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "hurwitzZeta",
+        "module": "Mathlib.NumberTheory.LSeries.HurwitzZeta",
+        "match_kind": "exact"
+      },
+      "note": "`hurwitzZeta (a : UnitAddCircle) (s : ℂ)` is defined in Mathlib (with `riemannZeta = hurwitzZeta 0`).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Polylogarithm",
+      "anchor": {
+        "section": "Generalizations",
+        "snippet": "The polylogarithm is given by"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No polylogarithm Liₛ(z) is defined in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Lerch transcendent",
+      "anchor": {
+        "section": "Generalizations",
+        "snippet": "The Lerch transcendent is given by"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Lerch transcendent is not defined in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Multiple zeta functions",
+      "anchor": {
+        "section": "Generalizations",
+        "snippet": "The multiple zeta functions are defined by"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Multiple zeta functions/values are not defined in Mathlib.",
+      "provenance": "ai"
+    }
+  ]
+}

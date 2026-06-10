@@ -1,0 +1,201 @@
+{
+  "slug": "Functional_analysis",
+  "wikipedia_title": "Functional analysis",
+  "display_title": "Functional analysis",
+  "schema_version": 3,
+  "annotation_style": "theorem_article",
+  "annotations": [
+    {
+      "kind": "definition",
+      "label": "Banach space",
+      "anchor": {
+        "section": "Normed vector spaces",
+        "snippet": "complete normed vector spaces over the real or complex numbers"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "NormedSpace",
+        "module": "Mathlib.Analysis.Normed.Module.Basic",
+        "match_kind": "exact"
+      },
+      "note": "Mathlib encodes Banach spaces as the combination `[NormedSpace 𝕜 E] [CompleteSpace E]` rather than a dedicated class.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Hilbert space",
+      "anchor": {
+        "section": "Normed vector spaces",
+        "snippet": "An important example is a Hilbert space , where the norm arises from an inner product"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "InnerProductSpace",
+        "module": "Mathlib.Analysis.InnerProductSpace.Defs",
+        "match_kind": "exact"
+      },
+      "note": "Hilbert spaces are encoded as `[InnerProductSpace 𝕜 E] [CompleteSpace E]` with the norm-from-inner-product structure built in.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Classification of Hilbert spaces",
+      "anchor": {
+        "section": "Hilbert spaces",
+        "snippet": "there is a unique Hilbert space up to isomorphism for every cardinality of the orthonormal basis"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "exists_hilbertBasis",
+        "module": "Mathlib.Analysis.InnerProductSpace.l2Space",
+        "match_kind": "exact"
+      },
+      "note": "`HilbertBasis.repr` provides an isometric isomorphism `E ≃ₗᵢ ℓ²(ι, 𝕜)`, and `exists_hilbertBasis` shows every Hilbert space has one, yielding the classification.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Invariant subspace problem",
+      "anchor": {
+        "section": "Hilbert spaces",
+        "snippet": "every bounded linear operator on a Hilbert space has a proper invariant subspace"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No formalization found — the invariant subspace problem remains an open problem and is not stated in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "L^p spaces",
+      "anchor": {
+        "section": "Banach spaces",
+        "snippet": "has as its vectors equivalence classes"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "MeasureTheory.Lp",
+        "module": "Mathlib.MeasureTheory.Function.LpSpace.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`MeasureTheory.Lp E p μ` is defined as equivalence classes of measurable functions with finite Lp norm, with the Banach space structure proved.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Sequence spaces with counting measure",
+      "anchor": {
+        "section": "Banach spaces",
+        "snippet": "is the counting measure , then the integral may be replaced by a sum"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "lp",
+        "module": "Mathlib.Analysis.Normed.Lp.lpSpace",
+        "match_kind": "exact"
+      },
+      "note": "`lp E p` is defined directly as a subgroup of dependent sequences with finite p-norm and given its Banach space instance.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Dual space and bidual",
+      "anchor": {
+        "section": "Banach spaces",
+        "snippet": "the space of all continuous linear maps from the space into its underlying field"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "NormedSpace.inclusionInDoubleDual",
+        "module": "Mathlib.Analysis.Normed.Module.DoubleDual",
+        "match_kind": "exact"
+      },
+      "note": "The dual is `StrongDual 𝕜 E := E →L[𝕜] 𝕜` and the canonical bidual embedding is `NormedSpace.inclusionInDoubleDual`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Uniform boundedness principle",
+      "anchor": {
+        "type": "theorem_box",
+        "value": "Theorem (Uniform Boundedness Principle)"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "banach_steinhaus",
+        "module": "Mathlib.Analysis.Normed.Operator.BanachSteinhaus",
+        "match_kind": "exact"
+      },
+      "note": "`banach_steinhaus` proves a pointwise bounded family of continuous linear maps from a complete space is uniformly bounded in operator norm.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Spectral theorem",
+      "anchor": {
+        "type": "theorem_box",
+        "value": "Spectral theorem [ 7 ] — Let [MATH] be a"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "LinearMap.IsSymmetric.eigenvectorBasis_apply_self_apply",
+        "module": "Mathlib.Analysis.InnerProductSpace.Spectrum",
+        "match_kind": "special_case"
+      },
+      "note": "Mathlib formalizes the finite-dimensional spectral/diagonalization theorem for symmetric operators and a continuous functional calculus for C*-algebras, but no general spectral theorem for bounded self-adjoint operators on Hilbert spaces.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Hahn–Banach theorem",
+      "anchor": {
+        "type": "theorem_box",
+        "value": "Hahn–Banach theorem: [ 8 ] — If [MATH] i"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "exists_extension_norm_eq",
+        "module": "Mathlib.Analysis.Normed.Module.HahnBanach",
+        "match_kind": "exact"
+      },
+      "note": "`exists_extension_norm_eq` extends a continuous linear functional from a subspace to the whole normed space preserving norm.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Open mapping theorem",
+      "anchor": {
+        "type": "theorem_box",
+        "value": "Open mapping theorem — If [MATH] and [MA"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "ContinuousLinearMap.isOpenMap",
+        "module": "Mathlib.Analysis.Normed.Operator.Banach",
+        "match_kind": "exact"
+      },
+      "note": "A surjective continuous linear map between Banach spaces is open via `ContinuousLinearMap.isOpenMap`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Closed graph theorem",
+      "anchor": {
+        "type": "theorem_box",
+        "value": "Closed graph theorem — If [MATH] is a to"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "LinearMap.continuous_of_isClosed_graph",
+        "module": "Mathlib.Analysis.Normed.Operator.Banach",
+        "match_kind": "exact"
+      },
+      "note": "`LinearMap.continuous_of_isClosed_graph` shows a linear map between Banach spaces with closed graph is continuous.",
+      "provenance": "ai"
+    }
+  ]
+}

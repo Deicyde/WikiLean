@@ -1,0 +1,121 @@
+{
+  "slug": "Transfinite_induction",
+  "wikipedia_title": "Transfinite induction",
+  "display_title": "Transfinite induction",
+  "schema_version": 3,
+  "annotation_style": "theorem_article",
+  "annotations": [
+    {
+      "kind": "theorem",
+      "label": "Principle of transfinite induction",
+      "anchor": {
+        "section": "Overview",
+        "snippet": "The principle of transfinite induction is as follows:"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Ordinal.induction",
+        "module": "Mathlib.SetTheory.Ordinal.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`Ordinal.induction` states that if `p` holds at `j` whenever it holds for all `k < j`, then it holds for every ordinal, which is the principle of transfinite induction.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Induction by cases",
+      "anchor": {
+        "section": "Induction by cases",
+        "snippet": "A proof by transfinite induction is often broken down into three cases:"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Ordinal.limitRecOn",
+        "module": "Mathlib.SetTheory.Ordinal.Arithmetic",
+        "match_kind": "exact"
+      },
+      "note": "`Ordinal.limitRecOn` provides exactly the three-case induction principle (zero, successor, limit) used to prove properties of all ordinals.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Basis of a vector space via transfinite recursion",
+      "anchor": {
+        "section": "Transfinite recursion",
+        "snippet": "As an example, a basis for a (possibly infinite-dimensional) vector space can be created by starting with the empty set"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Basis.ofVectorSpace",
+        "module": "Mathlib.LinearAlgebra.Basis.VectorSpace",
+        "match_kind": "exact"
+      },
+      "note": "`Basis.ofVectorSpace` produces a basis for an arbitrary vector space (the result of the construction), though Mathlib's proof uses Zorn's lemma rather than explicit transfinite recursion.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Transfinite Recursion Theorem (version 1)",
+      "anchor": {
+        "section": "Transfinite recursion",
+        "snippet": "Given a class function"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "WellFoundedLT.fix",
+        "module": "Mathlib.Order.RelClasses",
+        "match_kind": "generalization"
+      },
+      "note": "`WellFoundedLT.fix` (and `IsWellFounded.fix`) yields the unique value at each point from a rule depending on all earlier values; applied to ordinals it gives the version-1 transfinite recursion theorem.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Transfinite Recursion Theorem (version 2)",
+      "anchor": {
+        "section": "Transfinite recursion",
+        "snippet": "Given a set g 1 , and class functions G 2 , G 3 , there exists a unique function"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Ordinal.limitRecOn",
+        "module": "Mathlib.SetTheory.Ordinal.Arithmetic",
+        "match_kind": "exact"
+      },
+      "note": "`Ordinal.limitRecOn` defines a function on ordinals by giving a zero value, a successor step, and a limit step, with computation rules `limitRecOn_zero/succ/limit` matching version 2.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Transfinite recursion on well-founded relations",
+      "anchor": {
+        "section": "Transfinite recursion",
+        "snippet": "More generally, one can define objects by transfinite recursion on any well-founded relation"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "IsWellFounded.fix",
+        "module": "Mathlib.Order.RelClasses",
+        "match_kind": "exact"
+      },
+      "note": "`IsWellFounded.fix` defines values by recursion along any well-founded relation `r`, with `IsWellFounded.fix_eq` giving the defining equation.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Vitali set construction",
+      "anchor": {
+        "section": "Relationship to the axiom of choice",
+        "snippet": "The following construction of the Vitali set shows one way that the axiom of choice can be used"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Grep for `Vitali set`/`VitaliSet` in Mathlib turns up only comments referencing such a set (in `MeasureTheory.Integral.Lebesgue.Basic`); no construction of a non-measurable Vitali set is formalized.",
+      "provenance": "ai"
+    }
+  ]
+}

@@ -1,0 +1,934 @@
+{
+  "slug": "Complete_metric_space",
+  "wikipedia_title": "Complete metric space",
+  "display_title": "Complete metric space",
+  "schema_version": 3,
+  "annotations": [
+    {
+      "kind": "definition",
+      "label": "Complete metric space",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "a metric space M is called complete"
+      },
+      "provenance": "ai",
+      "status": "formalized",
+      "mathlib": {
+        "decl": "CompleteSpace",
+        "module": "Mathlib.Topology.UniformSpace.Cauchy",
+        "match_kind": "generalization"
+      },
+      "note": "Mathlib defines `CompleteSpace` as a typeclass for uniform spaces where every Cauchy filter converges, generalizing the metric-space definition."
+    },
+    {
+      "kind": "example",
+      "label": "Rationals are not complete (intuitive)",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "the set of rational numbers is not complete"
+      },
+      "provenance": "ai",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib does not contain a direct statement that the rationals with the standard metric are not a CompleteSpace. The reals are constructed as the Cauchy completion of the rationals, which implicitly relies on this fact."
+    },
+    {
+      "kind": "definition",
+      "label": "Cauchy sequence in a metric space",
+      "anchor": {
+        "section": "Definition",
+        "snippet": "is called Cauchy if for every positive real number"
+      },
+      "provenance": "ai",
+      "status": "formalized",
+      "mathlib": {
+        "decl": "CauchySeq",
+        "module": "Mathlib.Topology.UniformSpace.Cauchy",
+        "match_kind": "generalization"
+      },
+      "note": "Mathlib defines `CauchySeq u` for sequences in uniform spaces. The metric-space epsilon-N characterization is proved as `cauchySeq_iff` in `Mathlib.Topology.MetricSpace.Cauchy`.",
+      "anchors": [
+        {
+          "section": "Definition",
+          "snippet": "is called Cauchy if for every positive real number"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle d(x_{m},x_{n})&lt;r.}"
+        }
+      ]
+    },
+    {
+      "kind": "definition",
+      "label": "Complete space (equivalent conditions)",
+      "anchor": {
+        "section": "Definition",
+        "snippet": "is complete if any of the following equivalent conditions"
+      },
+      "provenance": "ai",
+      "status": "formalized",
+      "mathlib": {
+        "decl": "CompleteSpace",
+        "module": "Mathlib.Topology.UniformSpace.Cauchy",
+        "match_kind": "generalization"
+      },
+      "note": "The equivalence of the Cauchy-sequence and Cauchy-filter definitions follows from the general theory. `CompleteSpace` requires every Cauchy filter to converge."
+    },
+    {
+      "kind": "definition",
+      "label": "Complete space — Cauchy sequence condition",
+      "anchor": {
+        "section": "Definition",
+        "snippet": "Every Cauchy sequence in [MATH] converges in"
+      },
+      "provenance": "ai",
+      "status": "formalized",
+      "mathlib": {
+        "decl": "CompleteSpace",
+        "module": "Mathlib.Topology.UniformSpace.Cauchy",
+        "match_kind": "generalization"
+      },
+      "note": "The Cauchy sequence convergence condition is subsumed by the Cauchy filter formulation of `CompleteSpace`. The equivalence for metric spaces is available via `Metric.complete_of_cauchySeq_tendsto`."
+    },
+    {
+      "kind": "definition",
+      "label": "Complete space — nested closed sets condition (Cantor's intersection theorem)",
+      "anchor": {
+        "section": "Definition",
+        "snippet": "Every decreasing sequence of non-empty closed subsets"
+      },
+      "provenance": "ai",
+      "status": "formalized",
+      "mathlib": {
+        "decl": "IsCompact.nonempty_iInter_of_sequence_nonempty_isCompact_isClosed",
+        "module": "Mathlib.Topology.Compactness.Compact",
+        "match_kind": "special_case"
+      },
+      "note": "Mathlib proves Cantor's intersection theorem for compact spaces. For complete metric spaces with diameter tending to zero, the result follows from completeness. The compact version is `IsCompact.nonempty_iInter_of_sequence_nonempty_isCompact_isClosed`."
+    },
+    {
+      "kind": "example",
+      "label": "Rationals are not complete",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "of rational numbers, with the standard metric"
+      },
+      "provenance": "ai",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib does not contain a direct statement that the rationals with the standard metric are not a CompleteSpace. The reals are constructed as the Cauchy completion of the rationals (`Data.Real.Basic`), which implicitly relies on this fact."
+    },
+    {
+      "kind": "example",
+      "label": "Open interval (0,1) is not complete",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "The open interval (0,1) , again with the absolute difference metric, is not complete"
+      },
+      "provenance": "ai",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "There is no explicit Mathlib statement that the open interval (0,1) is not complete. This could be derived from facts about subspaces."
+    },
+    {
+      "kind": "example",
+      "label": "Closed interval [0,1] is complete",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "However the closed interval [0,1] is complete"
+      },
+      "provenance": "ai",
+      "status": "formalized",
+      "mathlib": {
+        "decl": "IsClosed.isComplete",
+        "module": "Mathlib.Topology.UniformSpace.Cauchy",
+        "match_kind": "invocation"
+      },
+      "note": "The closed interval `Set.Icc 0 1` is a closed subset of the complete space R, so it inherits completeness via `IsClosed.isComplete`. Also `isCompact_Icc` gives compactness, which implies completeness."
+    },
+    {
+      "kind": "example",
+      "label": "Real numbers and complex numbers are complete",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "of real numbers and the space"
+      },
+      "provenance": "ai",
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Real.instCompleteSpace",
+        "module": "Mathlib.Topology.UniformSpace.Real",
+        "match_kind": "exact"
+      },
+      "note": "Mathlib provides `Real.instCompleteSpace : CompleteSpace R` directly. Complex completeness is in `Mathlib.Analysis.Complex.Basic`."
+    },
+    {
+      "kind": "example",
+      "label": "Euclidean space is complete",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "and so is Euclidean space"
+      },
+      "provenance": "ai",
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Pi.complete",
+        "module": "Mathlib.Topology.UniformSpace.Pi",
+        "match_kind": "generalization"
+      },
+      "note": "Euclidean space `EuclideanSpace R (Fin n)` is a `PiLp` type. Completeness follows from `Pi.complete` (products of complete spaces are complete) and `CompleteSpace R`."
+    },
+    {
+      "kind": "definition",
+      "label": "Banach space (complete normed vector space)",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "those that are complete are Banach spaces"
+      },
+      "provenance": "ai",
+      "status": "formalized",
+      "mathlib": {
+        "decl": "CompleteSpace",
+        "module": "Mathlib.Topology.UniformSpace.Cauchy",
+        "match_kind": "generalization"
+      },
+      "note": "Mathlib does not define a separate `BanachSpace` class. A Banach space is simply a `NormedSpace` that is also `CompleteSpace`. This convention is used throughout `Mathlib.Analysis.Normed`."
+    },
+    {
+      "kind": "example",
+      "label": "C([a,b]) is a Banach space with supremum norm",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "of continuous real-valued functions on a closed and bounded interval is a Banach space"
+      },
+      "provenance": "ai",
+      "status": "formalized",
+      "mathlib": {
+        "decl": "BoundedContinuousFunction.instCompleteSpace",
+        "module": "Mathlib.Topology.ContinuousMap.Bounded.Basic",
+        "match_kind": "generalization"
+      },
+      "note": "Mathlib proves that bounded continuous functions `a ->b beta` form a `CompleteSpace` when the target is complete. Since [a,b] is compact, every continuous function on it is bounded, so this covers C([a,b])."
+    },
+    {
+      "kind": "proposition",
+      "label": "Supremum norm does not give a norm on C(R)",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "the supremum norm does not give a norm on the space"
+      },
+      "provenance": "ai",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib does not contain an explicit statement that the supremum norm fails to be a norm on C(R) due to unbounded functions. The `BoundedContinuousFunction` type sidesteps this by restricting to bounded functions."
+    },
+    {
+      "kind": "definition",
+      "label": "Frechet space",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "a locally convex topological vector space whose topology can be induced by a complete translation-invariant metric"
+      },
+      "provenance": "ai",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib does not define Frechet spaces as a class. While locally convex spaces and topological vector spaces exist in Mathlib, there is no dedicated Frechet space typeclass."
+    },
+    {
+      "kind": "example",
+      "label": "C(R) is a Frechet space with compact convergence topology",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "can be given the structure of a Fréchet space"
+      },
+      "provenance": "ai",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib does not define Frechet spaces as a class. The topology of compact convergence on C(R) is not formalized in this specific way."
+    },
+    {
+      "kind": "example",
+      "label": "p-adic numbers are complete",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "of p -adic numbers is complete for any prime number"
+      },
+      "provenance": "ai",
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Padic.instCompleteSpace",
+        "module": "Mathlib.NumberTheory.Padics.PadicNumbers",
+        "match_kind": "exact"
+      },
+      "note": "Mathlib proves `instance : CompleteSpace Q_[p]` in `Mathlib.NumberTheory.Padics.PadicNumbers`."
+    },
+    {
+      "kind": "example",
+      "label": "Sequence space over arbitrary set is complete",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "of all sequences in [MATH] becomes a complete metric space"
+      },
+      "provenance": "ai",
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Pi.complete",
+        "module": "Mathlib.Topology.UniformSpace.Pi",
+        "match_kind": "generalization"
+      },
+      "note": "The space of all sequences (functions N -> alpha, or more generally iota -> alpha) inherits completeness from `Pi.complete` when the target space is complete."
+    },
+    {
+      "kind": "definition",
+      "label": "Geodesic manifold (complete Riemannian manifold)",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "Riemannian manifolds which are complete are called geodesic manifolds"
+      },
+      "provenance": "ai",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib does not define geodesic manifolds or completeness for Riemannian manifolds. The differential geometry library does not yet reach this level."
+    },
+    {
+      "kind": "proposition",
+      "label": "Completeness of Riemannian manifolds follows from Hopf-Rinow",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "completeness follows from the Hopf–Rinow theorem"
+      },
+      "provenance": "ai",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Hopf-Rinow theorem is not formalized in Mathlib."
+    },
+    {
+      "kind": "proposition",
+      "label": "Every compact metric space is complete",
+      "anchor": {
+        "section": "Some theorems",
+        "snippet": "Every compact metric space is complete"
+      },
+      "provenance": "ai",
+      "status": "formalized",
+      "mathlib": {
+        "decl": "IsCompact.isComplete",
+        "module": "Mathlib.Topology.UniformSpace.Cauchy",
+        "match_kind": "generalization"
+      },
+      "note": "Mathlib proves `IsCompact.isComplete` for any uniform space: a compact set is complete. The global version follows via `isCompact_iff_totallyBounded_isComplete`."
+    },
+    {
+      "kind": "proposition",
+      "label": "A metric space is compact iff complete and totally bounded",
+      "anchor": {
+        "section": "Some theorems",
+        "snippet": "a metric space is compact if and only if it is complete and totally bounded"
+      },
+      "provenance": "ai",
+      "status": "formalized",
+      "mathlib": {
+        "decl": "isCompact_iff_totallyBounded_isComplete",
+        "module": "Mathlib.Topology.UniformSpace.Cauchy",
+        "match_kind": "generalization"
+      },
+      "note": "Mathlib proves this for general uniform spaces: `isCompact_iff_totallyBounded_isComplete : IsCompact s <-> TotallyBounded s /\\ IsComplete s`."
+    },
+    {
+      "kind": "proposition",
+      "label": "Heine-Borel theorem: closed and bounded subspace of R^n is compact",
+      "anchor": {
+        "section": "Some theorems",
+        "snippet": "any closed and bounded subspace [MATH] of [MATH] is compact and therefore complete"
+      },
+      "provenance": "ai",
+      "status": "formalized",
+      "mathlib": {
+        "decl": "ProperSpace.isCompact_closedBall",
+        "module": "Mathlib.Topology.MetricSpace.ProperSpace",
+        "match_kind": "generalization"
+      },
+      "note": "Mathlib formalizes Heine-Borel via `ProperSpace`, where closed balls are compact. The instance for finite-dimensional normed spaces shows R^n is proper."
+    },
+    {
+      "kind": "proposition",
+      "label": "Closed subset of a complete space is complete",
+      "anchor": {
+        "section": "Some theorems",
+        "snippet": "is a closed set, then [MATH] is also complete"
+      },
+      "provenance": "ai",
+      "status": "formalized",
+      "mathlib": {
+        "decl": "IsClosed.isComplete",
+        "module": "Mathlib.Topology.UniformSpace.Cauchy",
+        "match_kind": "generalization"
+      },
+      "note": "Mathlib proves `IsClosed.isComplete` for uniform spaces: a closed subset of a complete space is complete."
+    },
+    {
+      "kind": "proposition",
+      "label": "Complete subspace of a metric space is closed",
+      "anchor": {
+        "section": "Some theorems",
+        "snippet": "is a complete subspace, then [MATH] is also closed"
+      },
+      "provenance": "ai",
+      "status": "formalized",
+      "mathlib": {
+        "decl": "IsComplete.isClosed",
+        "module": "Mathlib.Topology.UniformSpace.CompleteSeparated",
+        "match_kind": "generalization"
+      },
+      "note": "Mathlib proves `IsComplete.isClosed` for T0 uniform spaces. Since metric spaces are T0, this gives that complete subspaces are closed."
+    },
+    {
+      "kind": "proposition",
+      "label": "Subspace of complete space is complete iff closed (theorem box)",
+      "anchor": {
+        "type": "theorem_box",
+        "value": "Theorem"
+      },
+      "provenance": "ai",
+      "status": "formalized",
+      "mathlib": {
+        "decl": "IsClosed.isComplete",
+        "module": "Mathlib.Topology.UniformSpace.Cauchy",
+        "match_kind": "generalization"
+      },
+      "note": "The biconditional follows from combining `IsClosed.isComplete` (closed in complete implies complete) and `IsComplete.isClosed` (complete in T0 implies closed)."
+    },
+    {
+      "kind": "proposition",
+      "label": "Bounded functions into complete space form a complete space",
+      "anchor": {
+        "section": "Some theorems",
+        "snippet": "of all bounded functions [MATH] from [MATH] to [MATH] is a complete metric space"
+      },
+      "provenance": "ai",
+      "status": "formalized",
+      "mathlib": {
+        "decl": "BoundedContinuousFunction.instCompleteSpace",
+        "module": "Mathlib.Topology.ContinuousMap.Bounded.Basic",
+        "match_kind": "special_case"
+      },
+      "note": "Mathlib proves that bounded continuous functions form a complete space when the target is complete. This is a special case (continuous bounded rather than all bounded), but the general result follows from `Pi.complete`.",
+      "anchors": [
+        {
+          "section": "Some theorems",
+          "snippet": "of all bounded functions [MATH] from [MATH] to [MATH] is a complete metric space"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle d(f,g)\\equiv \\sup\\{d[f(x),g(x)]:x\\in X\\}}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Continuous bounded functions into complete space form closed subspace",
+      "anchor": {
+        "section": "Some theorems",
+        "snippet": "consisting of all continuous bounded functions [MATH] is a closed subspace"
+      },
+      "provenance": "ai",
+      "status": "formalized",
+      "mathlib": {
+        "decl": "BoundedContinuousFunction.instCompleteSpace",
+        "module": "Mathlib.Topology.ContinuousMap.Bounded.Basic",
+        "match_kind": "exact"
+      },
+      "note": "Mathlib proves directly that bounded continuous functions `alpha ->b beta` form a `CompleteSpace` when the target is complete, which is equivalent to the continuous bounded functions being a closed subspace of bounded functions."
+    },
+    {
+      "kind": "proposition",
+      "label": "Baire category theorem: complete metric space is a Baire space",
+      "anchor": {
+        "section": "Some theorems",
+        "snippet": "every complete metric space is a Baire space"
+      },
+      "provenance": "ai",
+      "status": "formalized",
+      "mathlib": {
+        "decl": "BaireSpace.of_completelyPseudoMetrizable",
+        "module": "Mathlib.Topology.Baire.CompleteMetrizable",
+        "match_kind": "generalization"
+      },
+      "note": "Mathlib proves that completely pseudometrizable spaces are Baire in `BaireSpace.of_completelyPseudoMetrizable`. This generalizes the result from complete metric spaces to completely (pseudo)metrizable spaces."
+    },
+    {
+      "kind": "proposition",
+      "label": "Banach fixed-point theorem: contraction mapping admits a fixed point",
+      "anchor": {
+        "section": "Some theorems",
+        "snippet": "a contraction mapping on a complete metric space admits a fixed point"
+      },
+      "provenance": "ai",
+      "status": "formalized",
+      "mathlib": {
+        "decl": "ContractingWith.fixedPoint",
+        "module": "Mathlib.Topology.MetricSpace.Contracting",
+        "match_kind": "exact"
+      },
+      "note": "Mathlib defines `ContractingWith K f` and provides `fixedPoint` giving the unique fixed point on a complete nonempty metric space, along with `fixedPoint_isFixedPt` and `fixedPoint_unique`."
+    },
+    {
+      "kind": "proposition",
+      "label": "Fixed-point theorem used to prove inverse function theorem",
+      "anchor": {
+        "section": "Some theorems",
+        "snippet": "often used to prove the inverse function theorem on complete metric spaces such as Banach spaces"
+      },
+      "provenance": "ai",
+      "status": "formalized",
+      "mathlib": {
+        "decl": "HasStrictFDerivAt.toOpenPartialHomeomorph",
+        "module": "Mathlib.Analysis.Calculus.InverseFunctionTheorem.FDeriv",
+        "match_kind": "exact"
+      },
+      "note": "Mathlib proves the inverse function theorem in `Mathlib.Analysis.Calculus.InverseFunctionTheorem.FDeriv` via `HasStrictFDerivAt.toOpenPartialHomeomorph`, using the Banach fixed-point theorem through `ApproximatesLinearOn`."
+    },
+    {
+      "kind": "proposition",
+      "label": "Ursescu's theorem (theorem box)",
+      "anchor": {
+        "type": "theorem_box",
+        "value": "Theorem [ 2 ] (C. Ursescu)"
+      },
+      "provenance": "ai",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Ursescu theorem is not formalized in Mathlib."
+    },
+    {
+      "kind": "proposition",
+      "label": "Existence of completion for any metric space",
+      "anchor": {
+        "section": "Completion",
+        "snippet": "it is possible to construct a complete metric space"
+      },
+      "provenance": "ai",
+      "status": "formalized",
+      "mathlib": {
+        "decl": "UniformSpace.Completion",
+        "module": "Mathlib.Topology.UniformSpace.Completion",
+        "match_kind": "generalization"
+      },
+      "note": "Mathlib constructs `UniformSpace.Completion alpha` for any uniform space and proves it is complete (`Completion.completeSpace`). For metric spaces, a compatible `MetricSpace` instance is given in `Mathlib.Topology.MetricSpace.Completion`."
+    },
+    {
+      "kind": "proposition",
+      "label": "Universal property of completion",
+      "anchor": {
+        "section": "Completion",
+        "snippet": "there exists a unique uniformly continuous function"
+      },
+      "provenance": "ai",
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Completion.extension_unique",
+        "module": "Mathlib.Topology.UniformSpace.Completion",
+        "match_kind": "exact"
+      },
+      "note": "Mathlib provides `Completion.extension f` extending any uniformly continuous function to the completion, and `Completion.extension_unique` proving uniqueness."
+    },
+    {
+      "kind": "proposition",
+      "label": "Completion is unique up to isometry",
+      "anchor": {
+        "section": "Completion",
+        "snippet": "is determined up to isometry by this property"
+      },
+      "provenance": "ai",
+      "status": "formalized",
+      "mathlib": {
+        "decl": "AbstractCompletion.compareEquiv",
+        "module": "Mathlib.Topology.UniformSpace.AbstractCompletion",
+        "match_kind": "generalization"
+      },
+      "note": "Mathlib proves uniqueness via `AbstractCompletion.compareEquiv` which gives a uniform equivalence between any two abstract completions."
+    },
+    {
+      "kind": "proposition",
+      "label": "Completion constructed via equivalence classes of Cauchy sequences",
+      "anchor": {
+        "section": "Completion",
+        "snippet": "can be constructed as a set of equivalence classes of Cauchy sequences"
+      },
+      "provenance": "ai",
+      "status": "formalized",
+      "mathlib": {
+        "decl": "UniformSpace.Completion",
+        "module": "Mathlib.Topology.UniformSpace.Completion",
+        "match_kind": "generalization"
+      },
+      "note": "Mathlib constructs the completion as `SeparationQuotient (CauchyFilter alpha)`, using Cauchy filters rather than sequences. This is the generalization to uniform spaces of the equivalence-class-of-Cauchy-sequences construction.",
+      "anchors": [
+        {
+          "section": "Completion",
+          "snippet": "can be constructed as a set of equivalence classes of Cauchy sequences"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle d\\left(x_{\\bullet },y_{\\bullet }\\right)=\\lim _{n}d\\left(x_{n},y_{n}\\right)}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Distance on Cauchy sequences is a pseudometric",
+      "anchor": {
+        "section": "Completion",
+        "snippet": "This is only a pseudometric , not yet a metric"
+      },
+      "provenance": "ai",
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Completion.instPseudoMetricSpace",
+        "module": "Mathlib.Topology.MetricSpace.Completion",
+        "match_kind": "exact"
+      },
+      "note": "Mathlib first equips the completion with a `PseudoMetricSpace` structure, then derives a `MetricSpace` via the separation quotient."
+    },
+    {
+      "kind": "proposition",
+      "label": "Embedding into completion defines an isometry onto dense subspace",
+      "anchor": {
+        "section": "Completion",
+        "snippet": "This defines an isometry onto a dense subspace"
+      },
+      "provenance": "ai",
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Completion.coe_isometry",
+        "module": "Mathlib.Topology.MetricSpace.Completion",
+        "match_kind": "exact"
+      },
+      "note": "Mathlib proves `Completion.coe_isometry : Isometry (coe : alpha -> Completion alpha)` and `Completion.denseRange_coe : DenseRange (coe : alpha -> Completion alpha)`."
+    },
+    {
+      "kind": "proposition",
+      "label": "Real numbers are completion of rationals",
+      "anchor": {
+        "section": "Completion",
+        "snippet": "the real numbers are the completion of the rational numbers"
+      },
+      "provenance": "ai",
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Real.equivCauchy",
+        "module": "Mathlib.Data.Real.Basic",
+        "match_kind": "exact"
+      },
+      "note": "Mathlib defines R as a structure wrapping `CauSeq.Completion.Cauchy` of Q with the absolute value, and `Real.equivCauchy` gives the equivalence. The construction is directly via Cauchy sequences of rationals."
+    },
+    {
+      "kind": "proposition",
+      "label": "Real numbers are the unique totally ordered complete field",
+      "anchor": {
+        "section": "Completion",
+        "snippet": "is the unique totally ordered complete field"
+      },
+      "provenance": "ai",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib does not contain a formal uniqueness statement characterizing the reals as the unique totally ordered complete field (up to isomorphism)."
+    },
+    {
+      "kind": "proposition",
+      "label": "p-adic numbers arise from completing rationals with different metric",
+      "anchor": {
+        "section": "Completion",
+        "snippet": "the p -adic numbers arise by completing the rational numbers"
+      },
+      "provenance": "ai",
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Padic",
+        "module": "Mathlib.NumberTheory.Padics.PadicNumbers",
+        "match_kind": "exact"
+      },
+      "note": "Mathlib defines Q_[p] as the Cauchy completion of Q with respect to the p-adic norm."
+    },
+    {
+      "kind": "proposition",
+      "label": "Completion of normed vector space is a Banach space",
+      "anchor": {
+        "section": "Completion",
+        "snippet": "applied to a normed vector space, the result is a Banach space"
+      },
+      "provenance": "ai",
+      "status": "formalized",
+      "mathlib": {
+        "decl": "UniformSpace.Completion.instNormedSpace",
+        "module": "Mathlib.Analysis.Normed.Module.Completion",
+        "match_kind": "exact"
+      },
+      "note": "Mathlib proves the completion of a normed space is again a normed space (`NormedSpace` instance on `Completion E`) and it is always `CompleteSpace`, giving a Banach space."
+    },
+    {
+      "kind": "proposition",
+      "label": "Completion of inner product space is a Hilbert space",
+      "anchor": {
+        "section": "Completion",
+        "snippet": "applied to an inner product space , the result is a Hilbert space"
+      },
+      "provenance": "ai",
+      "status": "formalized",
+      "mathlib": {
+        "decl": "UniformSpace.Completion.innerProductSpace",
+        "module": "Mathlib.Analysis.InnerProductSpace.Completion",
+        "match_kind": "exact"
+      },
+      "note": "Mathlib proves an `InnerProductSpace` instance on `Completion E` when `E` is an inner product space, and the completion is complete, giving a Hilbert space."
+    },
+    {
+      "kind": "proposition",
+      "label": "Completeness is a metric property, not topological",
+      "anchor": {
+        "section": "Topologically complete spaces",
+        "snippet": "Completeness is a property of the metric and not of the topology"
+      },
+      "provenance": "ai",
+      "status": "partial",
+      "mathlib": {
+        "decl": "IsCompletelyMetrizableSpace",
+        "module": "Mathlib.Topology.Metrizable.CompletelyMetrizable",
+        "match_kind": "generalization"
+      },
+      "note": "Mathlib distinguishes `CompleteSpace` (a property of the uniform structure) from `IsCompletelyMetrizableSpace` (a topological property: existence of some complete compatible metric). This distinction embodies the fact that completeness depends on the metric."
+    },
+    {
+      "kind": "example",
+      "label": "Reals are homeomorphic to (0,1) but complete vs not",
+      "anchor": {
+        "section": "Topologically complete spaces",
+        "snippet": "complete but homeomorphic to the open interval (0,1) , which is not complete"
+      },
+      "provenance": "ai",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib does not contain the explicit example that R is homeomorphic to (0,1) as a witness to completeness being metric-dependent."
+    },
+    {
+      "kind": "definition",
+      "label": "Completely metrizable space",
+      "anchor": {
+        "section": "Topologically complete spaces",
+        "snippet": "completely metrizable spaces , spaces for which there exists at least one complete metric"
+      },
+      "provenance": "ai",
+      "status": "formalized",
+      "mathlib": {
+        "decl": "IsCompletelyMetrizableSpace",
+        "module": "Mathlib.Topology.Metrizable.CompletelyMetrizable",
+        "match_kind": "exact"
+      },
+      "note": "Mathlib defines `IsCompletelyMetrizableSpace X` as a typeclass asserting that there exists a `MetricSpace` structure compatible with the topology making the space complete."
+    },
+    {
+      "kind": "proposition",
+      "label": "Characterization of completely metrizable spaces as G-delta sets",
+      "anchor": {
+        "section": "Topologically complete spaces",
+        "snippet": "can be written as an intersection of countably many open subsets"
+      },
+      "provenance": "ai",
+      "status": "partial",
+      "mathlib": {
+        "decl": "IsOpen.polishSpace",
+        "module": "Mathlib.Topology.MetricSpace.Polish",
+        "match_kind": "special_case"
+      },
+      "note": "Mathlib proves that open subsets of Polish spaces are Polish (`IsOpen.polishSpace`) and closed subsets are Polish (`IsClosed.polishSpace`). The full Alexandrov theorem (G-delta subset of complete metric space is completely metrizable) is partially covered but not stated in full generality as a biconditional."
+    },
+    {
+      "kind": "proposition",
+      "label": "Baire category theorem applies to completely metrizable spaces",
+      "anchor": {
+        "section": "Topologically complete spaces",
+        "snippet": "Since the conclusion of the Baire category theorem is purely topological, it applies to these spaces as well"
+      },
+      "provenance": "ai",
+      "status": "formalized",
+      "mathlib": {
+        "decl": "BaireSpace.of_completelyPseudoMetrizable",
+        "module": "Mathlib.Topology.Baire.CompleteMetrizable",
+        "match_kind": "exact"
+      },
+      "note": "Mathlib directly proves that completely pseudometrizable spaces are Baire spaces, which is exactly this statement."
+    },
+    {
+      "kind": "definition",
+      "label": "Completely uniformizable space",
+      "anchor": {
+        "section": "Topologically complete spaces",
+        "snippet": "the term topologically complete for a wider class of topological spaces, the completely uniformizable spaces"
+      },
+      "provenance": "ai",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib does not define 'completely uniformizable space' as a class. The file `Mathlib.Topology.UniformSpace.Uniformizable` discusses uniformizable spaces but not the complete variant."
+    },
+    {
+      "kind": "definition",
+      "label": "Polish space",
+      "anchor": {
+        "section": "Topologically complete spaces",
+        "snippet": "homeomorphic to a separable complete metric space is called a Polish space"
+      },
+      "provenance": "ai",
+      "status": "formalized",
+      "mathlib": {
+        "decl": "PolishSpace",
+        "module": "Mathlib.Topology.MetricSpace.Polish",
+        "match_kind": "exact"
+      },
+      "note": "Mathlib defines `PolishSpace alpha` as a typeclass for separable completely metrizable spaces."
+    },
+    {
+      "kind": "definition",
+      "label": "Completeness via group structure (topological groups)",
+      "anchor": {
+        "section": "Alternatives and generalizations",
+        "snippet": "an alternative to relying on a metric structure for defining completeness"
+      },
+      "provenance": "ai",
+      "status": "formalized",
+      "mathlib": {
+        "decl": "IsTopologicalGroup.completeSpace_rightUniformSpace_iff_leftUniformSpace",
+        "module": "Mathlib.Topology.Algebra.IsUniformGroup.Basic",
+        "match_kind": "exact"
+      },
+      "note": "Mathlib defines left and right uniform structures on topological groups and proves that completeness with respect to both agrees. This is the formalization of completeness via group structure."
+    },
+    {
+      "kind": "definition",
+      "label": "Completeness in uniform spaces",
+      "anchor": {
+        "section": "Alternatives and generalizations",
+        "snippet": "A common generalization of these definitions can be found in the context of a uniform space"
+      },
+      "provenance": "ai",
+      "status": "formalized",
+      "mathlib": {
+        "decl": "CompleteSpace",
+        "module": "Mathlib.Topology.UniformSpace.Cauchy",
+        "match_kind": "exact"
+      },
+      "note": "Mathlib's `CompleteSpace` is defined for uniform spaces, which is precisely the common generalization described in the article."
+    },
+    {
+      "kind": "definition",
+      "label": "Completeness via Cauchy nets or Cauchy filters",
+      "anchor": {
+        "section": "Alternatives and generalizations",
+        "snippet": "replace Cauchy sequences in the definition of completeness by Cauchy nets or Cauchy filters"
+      },
+      "provenance": "ai",
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Cauchy",
+        "module": "Mathlib.Topology.UniformSpace.Cauchy",
+        "match_kind": "exact"
+      },
+      "note": "Mathlib defines `Cauchy f` for a filter `f` in a uniform space. Filters generalize both nets and sequences; this is the primary formalization of the Cauchy concept in Mathlib."
+    },
+    {
+      "kind": "definition",
+      "label": "Complete space via Cauchy nets/filters",
+      "anchor": {
+        "section": "Alternatives and generalizations",
+        "snippet": "If every Cauchy net (or equivalently every Cauchy filter) has a limit"
+      },
+      "provenance": "ai",
+      "status": "formalized",
+      "mathlib": {
+        "decl": "CompleteSpace",
+        "module": "Mathlib.Topology.UniformSpace.Cauchy",
+        "match_kind": "exact"
+      },
+      "note": "Mathlib defines `CompleteSpace alpha` exactly as requiring every Cauchy filter to converge, which is the filter-based generalization described in this article section."
+    },
+    {
+      "kind": "proposition",
+      "label": "Completion exists for arbitrary uniform spaces",
+      "anchor": {
+        "section": "Alternatives and generalizations",
+        "snippet": "construct a completion for an arbitrary uniform space similar to the completion of metric spaces"
+      },
+      "provenance": "ai",
+      "status": "formalized",
+      "mathlib": {
+        "decl": "UniformSpace.Completion",
+        "module": "Mathlib.Topology.UniformSpace.Completion",
+        "match_kind": "exact"
+      },
+      "note": "Mathlib constructs `UniformSpace.Completion alpha` for any uniform space and proves it is a complete Hausdorff uniform space with a dense uniform embedding from alpha."
+    },
+    {
+      "kind": "definition",
+      "label": "Cauchy spaces as most general setting for Cauchy nets",
+      "anchor": {
+        "section": "Alternatives and generalizations",
+        "snippet": "The most general situation in which Cauchy nets apply is Cauchy spaces"
+      },
+      "provenance": "ai",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib does not define Cauchy spaces (in the sense of axiomatic Cauchy structures). This is a concept from general topology not yet formalized."
+    }
+  ]
+}

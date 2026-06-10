@@ -1,0 +1,169 @@
+{
+  "slug": "Godel_numbering",
+  "wikipedia_title": "Gödel numbering",
+  "display_title": "Gödel numbering",
+  "schema_version": 3,
+  "annotation_style": "theorem_article",
+  "annotations": [
+    {
+      "kind": "definition",
+      "label": "Gödel numbering",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "a Gödel numbering is a function that assigns to each symbol and well-formed formula"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Nat.Partrec.Code.encodeCode",
+        "module": "Mathlib.Computability.PartrecCode",
+        "match_kind": "generalization"
+      },
+      "note": "Mathlib has a Gödel numbering for partial recursive function codes (file header literally titled \"Gödel Numbering for Partial Recursive Functions\") but not a general definition for arbitrary formal-language symbols and formulas.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Gödel's prime-power encoding of sequences",
+      "anchor": {
+        "section": "Gödel's encoding",
+        "snippet": "the Gödel encoding of the sequence is the product of the first n primes raised to their corresponding values in the sequence"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib formalizes the alternative Chinese-remainder-based encoding (`Nat.beta`) rather than the prime-power product encoding ∏ pᵢ^{aᵢ}.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Unique recovery via fundamental theorem of arithmetic",
+      "anchor": {
+        "section": "Gödel's encoding",
+        "snippet": "any number (and, in particular, a number obtained in this way) can be uniquely factored into prime factors"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Nat.factorization_prod_pow_eq_self",
+        "module": "Mathlib.Data.Nat.Factorization.Defs",
+        "match_kind": "exact"
+      },
+      "note": "Unique prime factorization on ℕ is fully formalized; `Nat.factorization_prod_pow_eq_self` recovers a natural number from its prime exponents.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Gödel number of \"0 = 0\" (Nagel and Newman)",
+      "anchor": {
+        "section": "Example",
+        "snippet": "the Gödel number of the formula"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This is a specific worked numerical example of Nagel–Newman's scheme and has no counterpart in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Non-uniqueness of Gödel numberings",
+      "anchor": {
+        "section": "Lack of uniqueness",
+        "snippet": "Infinitely many different Gödel numberings are possible"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib does not state non-uniqueness of Gödel numberings as a theorem (no formal `Gödel numbering` predicate is defined).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Alternative Gödel numbering via bijective base-K",
+      "anchor": {
+        "section": "Lack of uniqueness",
+        "snippet": "an alternative Gödel numbering could be constructed by invertibly mapping this set of symbols"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No bijective-base-K encoding of symbol strings is defined in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Course-of-values recursion is primitive recursive",
+      "anchor": {
+        "section": "Recursion",
+        "snippet": "show how functions defined by course-of-values recursion are in fact primitive recursive functions"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Primrec.nat_strong_rec",
+        "module": "Mathlib.Computability.Primrec.List",
+        "match_kind": "exact"
+      },
+      "note": "`Primrec.nat_strong_rec` shows strong (course-of-values) recursion with a primitive recursive step is itself primitive recursive.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Inference rules as arithmetical functions",
+      "anchor": {
+        "section": "Expressing statements and proofs by numbers",
+        "snippet": "each inference rule of the theory can be expressed as a function on the natural numbers"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib does not formalize an arithmetization of a deductive system's inference rules (the lean4-logic project does this separately, see `GodelBetaFunction` references).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Generalized Gödel numbering in computability theory",
+      "anchor": {
+        "section": "Generalizations",
+        "snippet": "Any assignment of the elements of a formal language to natural numbers in such a way that the numbers can be manipulated by an algorithm"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Nat.Partrec.Code.instDenumerable",
+        "module": "Mathlib.Computability.PartrecCode",
+        "match_kind": "generalization"
+      },
+      "note": "Mathlib's `Encodable`/`Denumerable` and the explicit `Denumerable` instance on `Nat.Partrec.Code` realize this generalized algorithmic numbering, but no abstract `IsGödelNumbering` predicate is defined.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Gödel sets",
+      "anchor": {
+        "section": "Gödel sets",
+        "snippet": "Gödel sets are sometimes used in set theory to encode formulas"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No set-theoretic Gödel-set encoding of formulas is present in Mathlib.",
+      "provenance": "ai"
+    }
+  ]
+}

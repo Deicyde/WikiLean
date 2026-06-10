@@ -1,0 +1,185 @@
+{
+  "slug": "Linearity",
+  "wikipedia_title": "Linearity",
+  "display_title": "Linearity",
+  "schema_version": 3,
+  "annotation_style": "theorem_article",
+  "annotations": [
+    {
+      "kind": "definition",
+      "label": "Linear map (additivity and homogeneity)",
+      "anchor": {
+        "section": "Linear maps",
+        "snippet": "a linear map or linear function f ( x ) is a function that satisfies the two properties"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "IsLinearMap",
+        "module": "Mathlib.Algebra.Module.LinearMap.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`IsLinearMap` is defined by the two fields `map_add` and `map_smul`, matching the Wikipedia definition.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Additivity implies homogeneity for rationals",
+      "anchor": {
+        "section": "Linear maps",
+        "snippet": "Additivity alone implies homogeneity for rational"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "AddMonoidHom.toRatLinearMap",
+        "module": "Mathlib.Algebra.Module.LinearMap.Rat",
+        "match_kind": "exact"
+      },
+      "note": "Reinterprets any additive homomorphism between ℚ-modules as a ℚ-linear map, exactly encoding ℚ-homogeneity from additivity.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Additive continuous function is linear",
+      "anchor": {
+        "section": "Linear maps",
+        "snippet": "The density of the rational numbers in the reals implies that any additive continuous function is homogeneous"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "AddMonoidHom.toRealLinearMap",
+        "module": "Mathlib.Topology.Instances.RealVectorSpace",
+        "match_kind": "exact"
+      },
+      "note": "`map_real_smul`/`AddMonoidHom.toRealLinearMap` proves a continuous additive map between real topological vector spaces is ℝ-linear via density of ℚ in ℝ.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Linear polynomial",
+      "anchor": {
+        "section": "Linear polynomials",
+        "snippet": "a polynomial of degree 1 is said to be linear, because the graph of a function of that form is a straight line"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Polynomial.natDegree_eq_one",
+        "module": "Mathlib.Algebra.Polynomial.Degree.Lemmas",
+        "match_kind": "invocation"
+      },
+      "note": "Mathlib has no dedicated `IsLinear` predicate on polynomials, but `natDegree_eq_one` characterizes degree-1 polynomials as `C a * X + C b` with `a ≠ 0`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Slope-intercept linear equation",
+      "anchor": {
+        "section": "Linear polynomials",
+        "snippet": "a simple example of a linear equation is given by"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The slope-intercept form `y = mx + b` is illustrative and not formalized as a named declaration in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Linear polynomial satisfies additivity/homogeneity iff constant term is zero",
+      "anchor": {
+        "section": "Linear polynomials",
+        "snippet": "they do so if and only if the constant term"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No Mathlib lemma characterizes when a degree-≤1 polynomial induces a linear (additive+homogeneous) map in terms of vanishing constant term.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Affine function",
+      "anchor": {
+        "section": "Linear polynomials",
+        "snippet": "the function is called an affine function"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "AffineMap",
+        "module": "Mathlib.LinearAlgebra.AffineSpace.AffineMap",
+        "match_kind": "generalization"
+      },
+      "note": "`AffineMap` formalizes affine maps in full generality over affine spaces, subsuming the scalar case `x ↦ ax + b`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Boolean linear function",
+      "anchor": {
+        "section": "Boolean functions",
+        "snippet": "In Boolean algebra , a linear function is a function"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has no dedicated notion of \"linear Boolean function\" as defined in Post's lattice / Boolean algebra context.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Linearity via truth table",
+      "anchor": {
+        "section": "Boolean functions",
+        "snippet": "A Boolean function is linear if one of the following holds for the function's truth table"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No Mathlib declaration characterizes Boolean linearity via truth-table conditions.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Linear Boolean operations",
+      "anchor": {
+        "section": "Boolean functions",
+        "snippet": "Negation , Logical biconditional , exclusive or , tautology , and contradiction are linear functions"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "While xor/not/iff are defined in Mathlib, they are not classified as \"linear Boolean functions\" anywhere.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Linearity of homogeneous differential equations",
+      "anchor": {
+        "section": "Physics",
+        "snippet": "Linearity of a homogeneous differential equation means that if two functions"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib lacks a general statement that solutions of a homogeneous linear ODE form a vector space; no matching lemma was found under `Mathlib/Analysis/ODE`.",
+      "provenance": "ai"
+    }
+  ]
+}

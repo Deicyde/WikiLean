@@ -1,0 +1,377 @@
+{
+  "slug": "Maximum_and_minimum",
+  "wikipedia_title": "Maximum and minimum",
+  "display_title": "Maximum and minimum",
+  "schema_version": 3,
+  "annotation_style": "theorem_article",
+  "annotations": [
+    {
+      "kind": "definition",
+      "label": "Global maximum/minimum point",
+      "anchor": {
+        "section": "Definition",
+        "snippet": "has a global (or absolute ) maximum point at"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "IsMaxOn",
+        "module": "Mathlib.Order.Filter.Extr",
+        "match_kind": "generalization"
+      },
+      "note": "`IsMaxOn f s a` (and dually `IsMinOn`) formalizes a maximum point of `f` on a set; taking `s = univ` gives the global notion.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Local maximum/minimum point",
+      "anchor": {
+        "section": "Definition",
+        "snippet": "then f is said to have a local (or relative ) maximum point"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "IsLocalMax",
+        "module": "Mathlib.Topology.Order.LocalExtr",
+        "match_kind": "exact"
+      },
+      "note": "`IsLocalMax`/`IsLocalMin` are defined as `f x ≤ f a` (resp. `≥`) on a neighborhood of `a`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Strict extremum",
+      "anchor": {
+        "section": "Definition",
+        "snippet": "the concept of a strict extremum can be defined"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Grep finds no `IsStrictMaxOn`/`IsStrictLocalMax` analogue with the strict-inequality variant in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Strict global maximum iff unique",
+      "anchor": {
+        "section": "Definition",
+        "snippet": "a point is a strict global maximum point if and only if it is the unique global maximum point"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No strict-extremum predicate is defined, so this characterization is absent.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Extrema on compact domain",
+      "anchor": {
+        "section": "Definition",
+        "snippet": "A continuous real-valued function with a compact domain always has a maximum point and a minimum point"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "IsCompact.exists_isMaxOn",
+        "module": "Mathlib.Topology.Order.Compact",
+        "match_kind": "exact"
+      },
+      "note": "`IsCompact.exists_isMaxOn` and `IsCompact.exists_isMinOn` give a max/min point of a continuous function on a nonempty compact set.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Extreme value theorem",
+      "anchor": {
+        "section": "Search",
+        "snippet": "If a function is continuous on a closed interval, then by the extreme value theorem"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "IsCompact.exists_isMaxOn",
+        "module": "Mathlib.Topology.Order.Compact",
+        "match_kind": "generalization"
+      },
+      "note": "The extreme value theorem is stated as `IsCompact.exists_isMinOn`/`exists_isMaxOn`, generalizing closed intervals to arbitrary compact sets.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Location of global extrema",
+      "anchor": {
+        "section": "Search",
+        "snippet": "a global maximum (or minimum) either must be a local maximum"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "IsMaxOn.isLocalMax",
+        "module": "Mathlib.Topology.Order.LocalExtr",
+        "match_kind": "invocation"
+      },
+      "note": "`IsMaxOn.isLocalMax` (when the set is a neighborhood) captures part of this, but the boundary-vs-interior trichotomy is not stated as a single proposition.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Fermat's theorem on critical points",
+      "anchor": {
+        "section": "Search",
+        "snippet": "Fermat's theorem states that local extrema in the interior of a domain must occur at critical points"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "IsLocalExtr.deriv_eq_zero",
+        "module": "Mathlib.Analysis.Calculus.LocalExtr.Basic",
+        "match_kind": "exact"
+      },
+      "note": "Fermat's theorem is `IsLocalMin.deriv_eq_zero`, `IsLocalMax.deriv_eq_zero`, and `IsLocalExtr.deriv_eq_zero`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Maximum of piecewise function",
+      "anchor": {
+        "section": "Search",
+        "snippet": "For any function that is defined piecewise , one finds a maximum"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No general lemma about taking the max of a piecewise-defined function over its pieces is present.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Rectangular enclosure fencing",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "assume a situation where someone has"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This is a worked example (maximize area subject to perimeter constraint) and is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Necessary conditions for local maximum (multivariable)",
+      "anchor": {
+        "section": "Functions of more than one variable",
+        "snippet": "the necessary conditions for a local maximum are similar to those of a function with only one variable"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "IsLocalExtr.fderiv_eq_zero",
+        "module": "Mathlib.Analysis.Calculus.LocalExtr.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`IsLocalExtr.fderiv_eq_zero` (and `hasFDerivAt_eq_zero`) gives vanishing of the Fréchet derivative at a local extremum, the multivariable necessary condition.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Single critical point implies global minimum (1D)",
+      "anchor": {
+        "section": "Functions of more than one variable",
+        "snippet": "if a bounded differentiable function f defined on a closed interval in the real line has a single critical point"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "I find no statement equating a unique interior critical point of a bounded differentiable function on a closed interval with a global extremum.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Local but not global minimum in 2D",
+      "anchor": {
+        "section": "Functions of more than one variable",
+        "snippet": "whose only critical point is at (0,0), which is a local minimum"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This specific counterexample (e.g. Peano's surface) is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Extremum of a functional via calculus of variations",
+      "anchor": {
+        "section": "Maxima or minima of a functional",
+        "snippet": "then the extremum is found using the calculus of variations"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Calculus of variations / Euler-Lagrange machinery is absent from Mathlib (grep finds nothing).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Maximal element of a set",
+      "anchor": {
+        "section": "In relation to sets",
+        "snippet": "if an ordered set S has a greatest element m , then m is a maximal element of the set"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Maximal",
+        "module": "Mathlib.Order.Defs.Unbundled",
+        "match_kind": "exact"
+      },
+      "note": "`Maximal P x` (and the dual `Minimal`) define maximal/minimal elements satisfying a predicate.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Least upper bound in a superset",
+      "anchor": {
+        "section": "In relation to sets",
+        "snippet": "then m is a least upper bound of S in T"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "IsLUB",
+        "module": "Mathlib.Order.Bounds.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`IsLUB s a` is defined as `IsLeast (upperBounds s) a`, matching the least-upper-bound definition.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Least vs minimal element in a partial order",
+      "anchor": {
+        "section": "In relation to sets",
+        "snippet": "a least element (i.e., one that is less than all others) should not be confused with the minimal element"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "IsLeast",
+        "module": "Mathlib.Order.Bounds.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`IsLeast` (least element) and `Minimal` (minimal element) are both defined and distinguished in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Greatest and maximal element of a poset",
+      "anchor": {
+        "section": "In relation to sets",
+        "snippet": "a greatest element of a partially ordered set (poset) is an upper bound of the set which is contained within the set"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "IsGreatest",
+        "module": "Mathlib.Order.Bounds.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`IsGreatest s a := a ∈ s ∧ a ∈ upperBounds s` matches the definition; `Maximal` covers the maximal-element notion.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Uniqueness of least/greatest in a poset",
+      "anchor": {
+        "section": "In relation to sets",
+        "snippet": "Any least element or greatest element of a poset is unique"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "IsLeast.unique",
+        "module": "Mathlib.Order.Bounds.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`IsLeast.unique` proves two least elements of a set are equal; the dual `IsGreatest.unique` exists adjacently.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Extrema in a totally ordered set",
+      "anchor": {
+        "section": "In relation to sets",
+        "snippet": "In a totally ordered set, or chain , all elements are mutually comparable"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "IsTotal",
+        "module": "Mathlib.Order.Defs.Unbundled",
+        "match_kind": "invocation"
+      },
+      "note": "Total/linear orders are pervasive (`LinearOrder`, `IsTotal`) and many lemmas about extrema specialize to them, but the article statement isn't itself a single theorem.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Finite chains have max and min",
+      "anchor": {
+        "section": "In relation to sets",
+        "snippet": "If a chain is finite, then it will always have a maximum and a minimum"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Set.Finite.exists_max_image",
+        "module": "Mathlib.Data.Set.Finite.Lemmas",
+        "match_kind": "generalization"
+      },
+      "note": "`Set.Finite.exists_max_image` (and `Finset.exists_max_image`) yield a max element of a nonempty finite set in a linear order.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Natural numbers have no maximum",
+      "anchor": {
+        "section": "In relation to sets",
+        "snippet": "the set of natural numbers has no maximum, though it has a minimum"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "not_bddAbove_univ",
+        "module": "Mathlib.Order.Bounds.Basic",
+        "match_kind": "invocation"
+      },
+      "note": "`Nat` has a `NoMaxOrder` instance, so `not_bddAbove_univ` shows `(univ : Set ℕ)` has no greatest element while `0` is its least.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Argument of the maximum (argmax/argmin)",
+      "anchor": {
+        "section": "Argument of the maximum",
+        "snippet": "the arguments of the maxima (abbreviated arg max or argmax) and arguments of the minima"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Function.argmin",
+        "module": "Mathlib.Order.WellFounded",
+        "match_kind": "exact"
+      },
+      "note": "`Function.argmin`/`argminOn` (over well-founded orders) and `List.argmax`/`argmin` formalize the argmax/argmin operators.",
+      "provenance": "ai"
+    }
+  ]
+}

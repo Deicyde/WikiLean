@@ -1,0 +1,1247 @@
+{
+  "slug": "Convex_set",
+  "wikipedia_title": "Convex set",
+  "display_title": "Convex set",
+  "schema_version": 3,
+  "annotation_style": "theorem_article",
+  "annotations": [
+    {
+      "kind": "definition",
+      "label": "Convex set (informal)",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "a set of points is convex if it contains every line segment between two points in the set"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Convex",
+        "module": "Mathlib.Analysis.Convex.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`Convex` with `convex_iff_segment_subset` states exactly that the segment between any two points of the set lies in the set.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Solid cube vs. crescent",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "a solid cube is a convex set, but anything that is hollow or has an indent"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Informal illustrative example with no corresponding Mathlib declaration.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Boundary is a convex curve",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "The boundary of a convex set in the plane is always a convex curve"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has no theory of convex curves / boundaries of planar convex sets.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Convex hull",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "is called the convex hull of A"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "convexHull",
+        "module": "Mathlib.Analysis.Convex.Hull",
+        "match_kind": "exact"
+      },
+      "note": "`convexHull` is the smallest convex set containing a given set, defined as a closure operator.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Convex function",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "A convex function is a real-valued function defined on an interval"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "ConvexOn",
+        "module": "Mathlib.Analysis.Convex.Function",
+        "match_kind": "exact"
+      },
+      "note": "`ConvexOn` defines convexity of a function on a convex domain via the midpoint inequality.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Convex set (formal)",
+      "anchor": {
+        "section": "Definitions",
+        "snippet": "A subset C of S is convex if, for all x and y in C"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Convex",
+        "module": "Mathlib.Analysis.Convex.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`Convex` is the formal predicate matching the textbook definition (see also `convex_iff_add_mem`).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Affine combination characterization",
+      "anchor": {
+        "section": "Definitions",
+        "snippet": "the affine combination (1 − t ) x + ty belongs to C"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "convex_iff_add_mem",
+        "module": "Mathlib.Analysis.Convex.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`convex_iff_add_mem` characterizes convexity by `a•x + b•y ∈ s` for `a,b ≥ 0`, `a+b = 1`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Invariance under affine transformations",
+      "anchor": {
+        "section": "Definitions",
+        "snippet": "convexity is invariant under affine transformations"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Convex.affine_image",
+        "module": "Mathlib.Analysis.Convex.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`Convex.affine_image` and `Convex.affine_preimage` show convexity is preserved by affine maps.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Convex sets are path-connected",
+      "anchor": {
+        "section": "Definitions",
+        "snippet": "is path-connected (and therefore also connected )"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Convex.isPathConnected",
+        "module": "Mathlib.Analysis.Convex.PathConnected",
+        "match_kind": "exact"
+      },
+      "note": "`Convex.isPathConnected` proves a nonempty convex set is path-connected.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Strictly convex set",
+      "anchor": {
+        "section": "Definitions",
+        "snippet": "A set C is strictly convex if for every x and y in C"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "StrictConvex",
+        "module": "Mathlib.Analysis.Convex.Strict",
+        "match_kind": "exact"
+      },
+      "note": "`StrictConvex` requires open segments between distinct points to lie in the interior.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Strictly convex iff boundary points are extreme",
+      "anchor": {
+        "section": "Definitions",
+        "snippet": "is strictly convex if and only if every one of its boundary points is an extreme point"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "StrictConvex.extremePoints_eq_diff_interior",
+        "module": "Mathlib.Analysis.Convex.Strict.Extreme",
+        "match_kind": null
+      },
+      "note": "Mathlib proves the forward direction (strictly convex ⇒ boundary points are extreme) but not the full iff.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Absolutely convex set",
+      "anchor": {
+        "section": "Definitions",
+        "snippet": "A set C is absolutely convex if it is convex and balanced"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "AbsConvex",
+        "module": "Mathlib.Analysis.LocallyConvex.AbsConvex",
+        "match_kind": "exact"
+      },
+      "note": "`AbsConvex` is defined exactly as `Balanced 𝕜 s ∧ Convex 𝕜 s`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Convex subsets of R",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "The convex subsets of R (the set of real numbers) are the intervals and the points of R"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "convex_iff_ordConnected",
+        "module": "Mathlib.Analysis.Convex.Basic",
+        "match_kind": "generalization"
+      },
+      "note": "`convex_iff_ordConnected` shows convex subsets of a linearly ordered field are exactly the order-connected sets (intervals).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Convex subsets of the plane",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "convex subsets of the Euclidean plane are solid regular polygons"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Specific planar geometric examples (regular polygons, etc.) are not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Convex subsets of 3-space",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "convex subsets of a Euclidean 3-dimensional space are the Archimedean solids and the Platonic solids"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Archimedean and Platonic solids as convex examples are not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Kepler-Poinsot non-convex",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "The Kepler-Poinsot polyhedra are examples of non-convex sets"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Kepler–Poinsot polyhedra are not present in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Non-convex set",
+      "anchor": {
+        "section": "Non-convex set",
+        "snippet": "A set that is not convex is called a non-convex set"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Convex",
+        "module": "Mathlib.Analysis.Convex.Basic",
+        "match_kind": null
+      },
+      "note": "Expressible as `¬ Convex 𝕜 s` but Mathlib has no dedicated non-convex definition.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Concave polygon",
+      "anchor": {
+        "section": "Non-convex set",
+        "snippet": "A polygon that is not a convex polygon is sometimes called a concave polygon"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has no general theory of polygons or concave polygons.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Reverse convex set",
+      "anchor": {
+        "section": "Non-convex set",
+        "snippet": "is sometimes called a reverse convex set"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No notion of reverse convex set (complement convex) is defined in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Convex combinations stay in S",
+      "anchor": {
+        "section": "Properties",
+        "snippet": "Given r points u 1 , ..., u r in a convex set S"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Convex.sum_mem",
+        "module": "Mathlib.Analysis.Convex.Combination",
+        "match_kind": "exact"
+      },
+      "note": "`Convex.sum_mem` shows any finite convex combination of points of a convex set lies in the set.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Properties",
+          "snippet": "Given r points u 1 , ..., u r in a convex set S"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\sum _{k=1}^{r}\\lambda _{k}u_{k}}"
+        }
+      ]
+    },
+    {
+      "kind": "definition",
+      "label": "Convex combination",
+      "anchor": {
+        "section": "Properties",
+        "snippet": "is called a convex combination of u 1 , ..., u r"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Finset.centerMass",
+        "module": "Mathlib.Analysis.Convex.Combination",
+        "match_kind": "generalization"
+      },
+      "note": "`Finset.centerMass` (with nonneg weights summing to 1) is Mathlib's encoding of a convex combination, also used in `convex_iff_sum_mem`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Convex hull (intersection)",
+      "anchor": {
+        "section": "Properties",
+        "snippet": "The convex hull of a subset S of a real vector space is defined as the intersection of all convex sets that contain S"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "convexHull",
+        "module": "Mathlib.Analysis.Convex.Hull",
+        "match_kind": "exact"
+      },
+      "note": "`convexHull` is built from `convex_sInter`, i.e. the intersection of all convex supersets.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Convex polytope",
+      "anchor": {
+        "section": "Properties",
+        "snippet": "A (bounded) convex polytope is the convex hull of a finite subset of some Euclidean space"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "convexHull",
+        "module": "Mathlib.Analysis.Convex.Hull",
+        "match_kind": null
+      },
+      "note": "Expressible as `convexHull` of a finite set, but Mathlib has no dedicated convex-polytope type.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Empty set and whole space convex",
+      "anchor": {
+        "section": "Intersections and unions",
+        "snippet": "The empty set and the whole space are convex"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "convex_empty",
+        "module": "Mathlib.Analysis.Convex.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`convex_empty` and `convex_univ` establish both cases.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Intersection of convex sets is convex",
+      "anchor": {
+        "section": "Intersections and unions",
+        "snippet": "The intersection of any collection of convex sets is convex"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "convex_sInter",
+        "module": "Mathlib.Analysis.Convex.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`convex_sInter` proves the intersection of any family of convex sets is convex.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Union over a chain is convex",
+      "anchor": {
+        "section": "Intersections and unions",
+        "snippet": "The union of a collection of convex sets is convex if those sets form a chain"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "DirectedOn.convex_sUnion",
+        "module": "Mathlib.Analysis.Convex.Basic",
+        "match_kind": "generalization"
+      },
+      "note": "`DirectedOn.convex_sUnion` proves the union is convex for directed families, which generalizes chains.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Closed convex set",
+      "anchor": {
+        "section": "Closed convex sets",
+        "snippet": "Closed convex sets are convex sets that contain all their limit points"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Convex.closure",
+        "module": "Mathlib.Analysis.Convex.Topology",
+        "match_kind": null
+      },
+      "note": "Closed convex sets are expressed as `Convex ∧ IsClosed`; Mathlib has no bundled closed-convex type but `Convex.closure` shows the closure stays convex.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Closed convex = intersection of half-spaces",
+      "anchor": {
+        "section": "Closed convex sets",
+        "snippet": "They can be characterised as the intersections of closed half-spaces"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "geometric_hahn_banach_closed_point",
+        "module": "Mathlib.Analysis.LocallyConvex.Separation",
+        "match_kind": null
+      },
+      "note": "Hahn–Banach separation infrastructure exists, but the explicit characterization as an intersection of closed half-spaces is not stated.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Supporting hyperplane theorem",
+      "anchor": {
+        "section": "Closed convex sets",
+        "snippet": "there is a closed half-space H that contains C and not P"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "geometric_hahn_banach_closed_point",
+        "module": "Mathlib.Analysis.LocallyConvex.Separation",
+        "match_kind": null
+      },
+      "note": "Geometric Hahn–Banach gives separation of a closed convex set from an exterior point, but the supporting-hyperplane-at-a-boundary-point statement is not directly proved.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Face of a convex set",
+      "anchor": {
+        "section": "Face of a convex set",
+        "snippet": "A face of a convex set"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "IsExtreme",
+        "module": "Mathlib.Analysis.Convex.Extreme",
+        "match_kind": "exact"
+      },
+      "note": "Mathlib's `IsExtreme` (extreme subset) matches the article's notion of a face of a convex set.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Extreme point",
+      "anchor": {
+        "section": "Face of a convex set",
+        "snippet": "is a point that is a face of"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Set.extremePoints",
+        "module": "Mathlib.Analysis.Convex.Extreme",
+        "match_kind": "exact"
+      },
+      "note": "`Set.extremePoints` defines points lying in no nontrivial open segment within the set.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Compact convex = hull of extreme points",
+      "anchor": {
+        "section": "Face of a convex set",
+        "snippet": "that is compact (or equivalently, closed and bounded )"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "closure_convexHull_extremePoints",
+        "module": "Mathlib.Analysis.Convex.KreinMilman",
+        "match_kind": null
+      },
+      "note": "Mathlib proves the closed-convex-hull version (Krein–Milman); the finite-dimensional convex-hull-without-closure statement is not separately given.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Krein–Milman theorem",
+      "anchor": {
+        "section": "Face of a convex set",
+        "snippet": "is the closed convex hull of its extreme points (the Krein–Milman theorem )"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "closure_convexHull_extremePoints",
+        "module": "Mathlib.Analysis.Convex.KreinMilman",
+        "match_kind": "exact"
+      },
+      "note": "`closure_convexHull_extremePoints` is precisely the Krein–Milman theorem for compact convex sets.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Faces of a triangle",
+      "anchor": {
+        "section": "Face of a convex set",
+        "snippet": "A triangle in the plane (including the region inside) is a compact convex set"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The specific enumeration of faces of a triangle is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Faces of the closed unit disk",
+      "anchor": {
+        "section": "Face of a convex set",
+        "snippet": "The only nontrivial faces of the closed unit disk"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "StrictConvexSpace.extremePoints_closedBall_eq_sphere",
+        "module": "Mathlib.Analysis.Convex.Strict.Extreme",
+        "match_kind": "generalization"
+      },
+      "note": "`StrictConvexSpace.extremePoints_closedBall_eq_sphere` shows the extreme points of a closed ball are its bounding sphere, generalizing the disk's boundary-point faces.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Convex body",
+      "anchor": {
+        "section": "Convex sets and rectangles",
+        "snippet": "Let C be a convex body in the plane (a convex set whose interior is non-empty)"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "ConvexBody",
+        "module": "Mathlib.Analysis.Convex.Body",
+        "match_kind": null
+      },
+      "note": "`ConvexBody` is convex, compact and nonempty, differing from the article's convex+nonempty-interior definition.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Convex sets and rectangles",
+          "snippet": "Let C be a convex body in the plane (a convex set whose interior is non-empty)"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle {\\tfrac {1}{2}}\\cdot \\operatorname {Area} (R)\\leq \\operatorname {Area} (C)\\leq 2\\cdot \\operatorname {Area} (r)}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Inscribed/circumscribed rectangle",
+      "anchor": {
+        "section": "Convex sets and rectangles",
+        "snippet": "We can inscribe a rectangle r in C such that a homothetic copy R of r is circumscribed about C"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The inscribed/circumscribed rectangle result is not in Mathlib.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Convex sets and rectangles",
+          "snippet": "We can inscribe a rectangle r in C such that a homothetic copy R of r is circumscribed about C"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle {\\tfrac {1}{2}}\\cdot \\operatorname {Area} (R)\\leq \\operatorname {Area} (C)\\leq 2\\cdot \\operatorname {Area} (r)}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Parameterization of planar convex bodies",
+      "anchor": {
+        "section": "Blaschke-Santaló diagrams",
+        "snippet": "can be parameterized in terms of the convex body diameter D"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Parameterization of planar convex bodies via diameter/radius is not formalized.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Blaschke-Santaló diagrams",
+          "snippet": "can be parameterized in terms of the convex body diameter D"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle 2r\\leq D\\leq 2R}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle R\\leq {\\frac {\\sqrt {3}}{3}}D}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle r+R\\leq D}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle D^{2}{\\sqrt {4R^{2}-D^{2}}}\\leq 2R(2R+{\\sqrt {4R^{2}-D^{2}}})}"
+        }
+      ]
+    },
+    {
+      "kind": "definition",
+      "label": "Blaschke–Santaló diagram",
+      "anchor": {
+        "section": "Blaschke-Santaló diagrams",
+        "snippet": "is known a ( r , D , R ) Blachke-Santaló diagram"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Blaschke–Santaló diagrams are not present in Mathlib.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Blaschke-Santaló diagrams",
+          "snippet": "is known a ( r , D , R ) Blachke-Santaló diagram"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle 2r\\leq D\\leq 2R}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle R\\leq {\\frac {\\sqrt {3}}{3}}D}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle r+R\\leq D}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle D^{2}{\\sqrt {4R^{2}-D^{2}}}\\leq 2R(2R+{\\sqrt {4R^{2}-D^{2}}})}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Alternative parametrization (width, perimeter, area)",
+      "anchor": {
+        "section": "Blaschke-Santaló diagrams",
+        "snippet": "can also be parametrized by its width"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Alternative width/perimeter/area parametrizations of convex bodies are not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Closure and interior are convex",
+      "anchor": {
+        "section": "Other properties",
+        "snippet": "are both convex (i.e. the closure and interior of convex sets are convex)"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Convex.closure",
+        "module": "Mathlib.Analysis.Convex.Topology",
+        "match_kind": "exact"
+      },
+      "note": "`Convex.closure` and `Convex.interior` prove both the closure and interior of a convex set are convex.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Sum scaling of convex set",
+      "anchor": {
+        "section": "Other properties",
+        "snippet": "(where"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Convex.add_smul",
+        "module": "Mathlib.Analysis.Convex.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`Convex.add_smul` proves `(a+b)•s = a•s + b•s` for `a,b ≥ 0` on a convex set.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Algebraic interior relations",
+      "anchor": {
+        "section": "Other properties",
+        "snippet": "is the algebraic interior of C"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has no notion of algebraic interior (core) of a convex set.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Smallest containing convex set",
+      "anchor": {
+        "section": "Convex hulls",
+        "snippet": "is contained within a smallest convex set (called the convex hull of A )"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "convexHull_min",
+        "module": "Mathlib.Analysis.Convex.Hull",
+        "match_kind": "exact"
+      },
+      "note": "`subset_convexHull` and `convexHull_min` together show the convex hull is the smallest convex superset.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Conv is a closure operator",
+      "anchor": {
+        "section": "Convex hulls",
+        "snippet": "has the characteristic properties of a closure operator"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "convexHull",
+        "module": "Mathlib.Analysis.Convex.Hull",
+        "match_kind": "exact"
+      },
+      "note": "`convexHull` is literally defined as a `ClosureOperator (Set E)`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Convex sets form a lattice",
+      "anchor": {
+        "section": "Convex hulls",
+        "snippet": "is needed for the set of convex sets to form a lattice"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "convexHull",
+        "module": "Mathlib.Analysis.Convex.Hull",
+        "match_kind": null
+      },
+      "note": "The `ClosureOperator` structure of `convexHull` induces a lattice on convex sets, but no explicit lattice instance is registered.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Convex hulls",
+          "snippet": "is needed for the set of convex sets to form a lattice"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\operatorname {Conv} (S)\\vee \\operatorname {Conv} (T)=\\operatorname {Conv} (S\\cup T)=\\operatorname {Conv} {\\bigl (}\\operatorname {Conv} (S)\\cup \\operatorname {Conv} (T){\\bigr )}.}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Convex subsets form a complete lattice",
+      "anchor": {
+        "section": "Convex hulls",
+        "snippet": "form a complete lattice"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "convexHull",
+        "module": "Mathlib.Analysis.Convex.Hull",
+        "match_kind": null
+      },
+      "note": "Closed elements of the `convexHull` closure operator form a complete lattice, but Mathlib has no dedicated `CompleteLattice` instance on convex sets.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Convex hulls",
+          "snippet": "form a complete lattice"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\operatorname {Conv} (S)\\vee \\operatorname {Conv} (T)=\\operatorname {Conv} (S\\cup T)=\\operatorname {Conv} {\\bigl (}\\operatorname {Conv} (S)\\cup \\operatorname {Conv} (T){\\bigr )}.}"
+        }
+      ]
+    },
+    {
+      "kind": "definition",
+      "label": "Minkowski sum of two sets",
+      "anchor": {
+        "section": "Minkowski addition",
+        "snippet": "the Minkowski sum of two (non-empty) sets"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Set.add",
+        "module": "Mathlib.Algebra.Group.Pointwise.Set.Basic",
+        "match_kind": "exact"
+      },
+      "note": "Pointwise `Set.add` (`s + t = {x+y | x∈s, y∈t}`) is exactly the Minkowski sum.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Minkowski addition",
+          "snippet": "the Minkowski sum of two (non-empty) sets"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle S_{1}+S_{2}=\\{x_{1}+x_{2}:x_{1}\\in S_{1},x_{2}\\in S_{2}\\}.}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\sum _{n}S_{n}=\\left\\{\\sum _{n}x_{n}:x_{n}\\in S_{n}\\right\\}.}"
+        }
+      ]
+    },
+    {
+      "kind": "definition",
+      "label": "Minkowski sum of a finite family",
+      "anchor": {
+        "section": "Minkowski addition",
+        "snippet": "the Minkowski sum of a finite family of (non-empty) sets"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Set.addMonoid",
+        "module": "Mathlib.Algebra.Group.Pointwise.Set.Basic",
+        "match_kind": "generalization"
+      },
+      "note": "The pointwise additive monoid on `Set` lets a finite Minkowski sum be written as `∑ i, s i`.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Minkowski addition",
+          "snippet": "the Minkowski sum of a finite family of (non-empty) sets"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle S_{1}+S_{2}=\\{x_{1}+x_{2}:x_{1}\\in S_{1},x_{2}\\in S_{2}\\}.}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\sum _{n}S_{n}=\\left\\{\\sum _{n}x_{n}:x_{n}\\in S_{n}\\right\\}.}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Zero set is the identity element",
+      "anchor": {
+        "section": "Minkowski addition",
+        "snippet": "is the identity element of Minkowski addition"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Set.addMonoid",
+        "module": "Mathlib.Algebra.Group.Pointwise.Set.Basic",
+        "match_kind": "generalization"
+      },
+      "note": "In the pointwise `Set` additive monoid the identity is `0 = {0}`, giving `zero_add`/`add_zero`.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Minkowski addition",
+          "snippet": "is the identity element of Minkowski addition"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle S+\\{0\\}=S;}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Convex hull of Minkowski sum",
+      "anchor": {
+        "section": "Convex hulls of Minkowski sums",
+        "snippet": "the convex hull of their Minkowski sum is the Minkowski sum of their convex hulls"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "convexHull_add",
+        "module": "Mathlib.Analysis.Convex.Combination",
+        "match_kind": "exact"
+      },
+      "note": "`convexHull_add` proves `convexHull (s + t) = convexHull s + convexHull t`.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Convex hulls of Minkowski sums",
+          "snippet": "the convex hull of their Minkowski sum is the Minkowski sum of their convex hulls"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\operatorname {Conv} (S_{1}+S_{2})=\\operatorname {Conv} (S_{1})+\\operatorname {Conv} (S_{2}).}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Finite-collection version",
+      "anchor": {
+        "section": "Convex hulls of Minkowski sums",
+        "snippet": "This result holds more generally for each finite collection of non-empty sets"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "convexHull_sum",
+        "module": "Mathlib.Analysis.Convex.Combination",
+        "match_kind": "exact"
+      },
+      "note": "`convexHull_sum` extends the commutation to a finite indexed family of sets.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Convex hulls of Minkowski sums",
+          "snippet": "This result holds more generally for each finite collection of non-empty sets"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle {\\text{Conv}}\\left(\\sum _{n}S_{n}\\right)=\\sum _{n}{\\text{Conv}}\\left(S_{n}\\right).}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Minkowski sum and convex hull commute",
+      "anchor": {
+        "section": "Convex hulls of Minkowski sums",
+        "snippet": "the operations of Minkowski summation and of forming convex hulls are commuting operations"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "convexHullAddMonoidHom",
+        "module": "Mathlib.Analysis.Convex.Combination",
+        "match_kind": "exact"
+      },
+      "note": "`convexHullAddMonoidHom` packages `convexHull` as an additive monoid hom, encoding that convex hull and Minkowski addition commute.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Sum of two compact convex sets is compact",
+      "anchor": {
+        "section": "Minkowski sums of convex sets",
+        "snippet": "The Minkowski sum of two compact convex sets is compact"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "IsCompact.add",
+        "module": "Mathlib.Topology.Algebra.Monoid",
+        "match_kind": "generalization"
+      },
+      "note": "`IsCompact.add` proves the Minkowski sum of any two compact sets is compact (no convexity needed).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Compact + closed convex is closed",
+      "anchor": {
+        "section": "Minkowski sums of convex sets",
+        "snippet": "The sum of a compact convex set and a closed convex set is closed"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "IsClosed.add_left_of_isCompact",
+        "module": "Mathlib.Topology.Algebra.Group.Pointwise",
+        "match_kind": "generalization"
+      },
+      "note": "`IsClosed.add_left_of_isCompact` proves the sum of a compact set and a closed set is closed, generalizing the convex case.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Recession cone",
+      "anchor": {
+        "section": "Minkowski sums of convex sets",
+        "snippet": "the concept of a recession cone of a non-empty convex subset S"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "asymptoticCone",
+        "module": "Mathlib.Topology.Algebra.AsymptoticCone",
+        "match_kind": null
+      },
+      "note": "Mathlib's `asymptoticCone` corresponds to the recession cone for closed convex sets but is defined via filters rather than as the textbook recession cone.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Minkowski sums of convex sets",
+          "snippet": "the concept of a recession cone of a non-empty convex subset S"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\operatorname {rec} S=\\left\\{x\\in X\\,:\\,x+S\\subseteq S\\right\\},}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\operatorname {rec} S=\\bigcap _{t&gt;0}t(S-s_{0}).}"
+        }
+      ]
+    },
+    {
+      "kind": "theorem",
+      "label": "Dieudonné's theorem",
+      "anchor": {
+        "section": "Minkowski sums of convex sets",
+        "snippet": "Let A and B be non-empty, closed, and convex subsets of a locally convex topological vector space"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Dieudonné's theorem on closedness of differences of convex sets is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Star-convex set",
+      "anchor": {
+        "section": "Star-convex (star-shaped) sets",
+        "snippet": "C is star convex (star-shaped) if there exists an x 0 in C"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "StarConvex",
+        "module": "Mathlib.Analysis.Convex.Star",
+        "match_kind": "exact"
+      },
+      "note": "`StarConvex 𝕜 x s` states every segment from `x` to a point of `s` stays in `s`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Convex implies star-convex",
+      "anchor": {
+        "section": "Star-convex (star-shaped) sets",
+        "snippet": "a non-empty convex set is always star-convex but a star-convex set is not always convex"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Convex.starConvex",
+        "module": "Mathlib.Analysis.Convex.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`Convex.starConvex` shows a convex set is star-convex at each of its points.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Orthogonally convex set",
+      "anchor": {
+        "section": "Orthogonal convexity",
+        "snippet": "is called orthogonally convex or ortho-convex"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Orthogonal convexity is not defined in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Intersection of orthoconvex sets is orthoconvex",
+      "anchor": {
+        "section": "Orthogonal convexity",
+        "snippet": "an intersection of any collection of orthoconvex sets is orthoconvex"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No orthogonal-convexity theory exists in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Geodesically convex set",
+      "anchor": {
+        "section": "Non-Euclidean geometry",
+        "snippet": "a geodesically convex set to be one that contains the geodesics joining any two points in the set"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has no notion of geodesic convexity in Riemannian/metric geometry.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Convex set in order topology",
+      "anchor": {
+        "section": "Order topology",
+        "snippet": "The subspace Y is a convex set if for each pair of points a , b in Y"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Set.OrdConnected",
+        "module": "Mathlib.Order.Interval.Set.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`Set.OrdConnected` is exactly the order-theoretic convexity: `[a,b] ⊆ s` whenever `a,b ∈ s`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Convex but disconnected subset of Z",
+      "anchor": {
+        "section": "Order topology",
+        "snippet": "a counter-example is given by the subspace {1,2,3} in Z"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This specific order-convex-but-disconnected example in ℤ is not stated as a Mathlib declaration.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Convexity (axioms)",
+      "anchor": {
+        "section": "Convexity spaces",
+        "snippet": "a convexity over X is a collection 𝒞 of subsets of X satisfying the following axioms"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Abstract convexity (a family of subsets closed under intersection and directed union) is not axiomatized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Convexity space",
+      "anchor": {
+        "section": "Convexity spaces",
+        "snippet": "the pair ( X , 𝒞 ) is called a convexity space"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The notion of an abstract convexity space is not present in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Convex space",
+      "anchor": {
+        "section": "Convex spaces",
+        "snippet": "a space is convex if it is possible to take convex combinations of points"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Convexity.ConvexSpace",
+        "module": "Mathlib.Geometry.Convex.ConvexSpace.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`Convexity.ConvexSpace` axiomatizes spaces supporting (finite) convex combinations of points.",
+      "provenance": "ai"
+    }
+  ]
+}

@@ -1,0 +1,681 @@
+{
+  "slug": "Binary_tree",
+  "wikipedia_title": "Binary tree",
+  "display_title": "Binary tree",
+  "schema_version": 3,
+  "annotation_style": "theorem_article",
+  "annotations": [
+    {
+      "kind": "definition",
+      "label": "Binary tree",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "a binary tree is a tree data structure in which each node has at most two children"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Tree",
+        "module": "Mathlib.Data.Tree.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`Tree α` is the inductive type of binary trees with two children at each node, matching the Wikipedia notion.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Recursive set-theoretic definition of binary tree",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "A recursive definition using set theory is that a binary tree is a triple"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Tree",
+        "module": "Mathlib.Data.Tree.Basic",
+        "match_kind": "exact"
+      },
+      "note": "The inductive `Tree.nil | Tree.node a l r` is precisely the recursive constructor presentation of a binary tree.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Full binary tree (recursive)",
+      "anchor": {
+        "section": "Recursive full tree definition",
+        "snippet": "There exists a full tree consisting of a single node"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No definition of `FullBinaryTree` (every node has 0 or 2 children) exists in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Extended binary tree (recursive)",
+      "anchor": {
+        "section": "Recursive extended tree definition",
+        "snippet": "An empty set of nodes is an extended binary tree"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Tree",
+        "module": "Mathlib.Data.Tree.Basic",
+        "match_kind": "exact"
+      },
+      "note": "Mathlib's `Tree` (with `nil` as external/empty node and `node` carrying two children) is precisely the extended binary tree.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Binary tree via graph theory",
+      "anchor": {
+        "section": "Using graph theory concepts",
+        "snippet": "A binary tree is a rooted tree that is also an ordered tree"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has `SimpleGraph` arborescences but no graph-theoretic definition of a binary tree as a rooted ordered tree with branching ≤ 2.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Binary tree as edge-partitioned triplet",
+      "anchor": {
+        "section": "Using graph theory concepts",
+        "snippet": "defining the binary tree as triplet"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No formalization of a binary tree as a triple (V, E_left, E_right) of edge partitions exists in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Rooted binary tree",
+      "anchor": {
+        "section": "Types of binary trees",
+        "snippet": "A rooted binary tree has a root node and every node has at most two children"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Tree",
+        "module": "Mathlib.Data.Tree.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`Tree α` is rooted with at most two children per node, which is the Wikipedia rooted binary tree.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Full binary tree",
+      "anchor": {
+        "section": "Types of binary trees",
+        "snippet": "A full binary tree (sometimes referred to as a proper"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No predicate `IsFull`/`Tree.full` for binary trees with all internal nodes of degree 2 is present.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Perfect binary tree",
+      "anchor": {
+        "section": "Types of binary trees",
+        "snippet": "A perfect binary tree is a binary tree in which all interior nodes have two children"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No definition of a perfect binary tree (all leaves at same depth) exists in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Complete binary tree",
+      "anchor": {
+        "section": "Types of binary trees",
+        "snippet": "A complete binary tree is a binary tree in which every level"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No notion of complete binary tree (filled levels, leaves leftmost on last level) appears in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Infinite complete binary tree",
+      "anchor": {
+        "section": "Types of binary trees",
+        "snippet": "The infinite complete binary tree is a tree with"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No formalization of the infinite complete binary tree (e.g., as `List Bool`) is provided as a named structure in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Balanced binary tree",
+      "anchor": {
+        "section": "Types of binary trees",
+        "snippet": "A balanced binary tree is a binary tree structure in which the left and right subtrees"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No height-balance predicate (AVL-style) on `Tree` is defined in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Degenerate (pathological) tree",
+      "anchor": {
+        "section": "Types of binary trees",
+        "snippet": "A degenerate (or pathological ) tree is where each parent node has only one associated child node"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No predicate for degenerate/path-like binary trees is present in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Bounds on number of nodes in a full binary tree",
+      "anchor": {
+        "section": "Properties of binary trees",
+        "snippet": "The number of nodes n in a full binary tree is at least"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Bounds 2h+1 ≤ n ≤ 2^(h+1)−1 for full binary trees are not stated since `IsFull` itself isn't defined.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Number of leaves in a perfect binary tree",
+      "anchor": {
+        "section": "Properties of binary trees",
+        "snippet": "The number of leaf nodes l in a perfect binary tree is"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Formula l = (n+1)/2 for perfect binary trees is absent (no perfect-tree predicate).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Leaves vs. degree-2 nodes relation",
+      "anchor": {
+        "section": "Properties of binary trees",
+        "snippet": "For any non-empty binary tree with"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Tree.numLeaves_eq_numNodes_succ",
+        "module": "Mathlib.Data.Tree.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`numLeaves = numNodes + 1` is exactly the n0 = n2 + 1 identity under Mathlib's extended-tree convention where every `node` has two children and `nil` is a leaf.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Minimum tree height for n nodes",
+      "anchor": {
+        "section": "Properties of binary trees",
+        "snippet": "With given n nodes, the minimum possible tree height"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Tree.height_le_numNodes",
+        "module": "Mathlib.Data.Tree.Basic",
+        "match_kind": "generalization"
+      },
+      "note": "Only the upper bound `height ≤ numNodes` is provided; no lower bound `height ≥ ⌈log₂(n+1)⌉` is formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Minimum height for l leaves",
+      "anchor": {
+        "section": "Properties of binary trees",
+        "snippet": "A binary tree with l leaves has at least the height"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No statement `height ≥ ⌈log₂ l⌉` (or `≥ l-1` for path trees) for binary trees was found.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Edges versus nodes in a binary tree",
+      "anchor": {
+        "section": "Properties of binary trees",
+        "snippet": "In a non-empty binary tree, if n is the total number of nodes and e is the total number of edges"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib's `Tree` has no explicit edge-counting function, so the relation `e = n − 1` is not stated.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Number of null links",
+      "anchor": {
+        "section": "Properties of binary trees",
+        "snippet": "The number of null links (i.e., absent children of the nodes) in a binary tree of n nodes"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Tree.numLeaves_eq_numNodes_succ",
+        "module": "Mathlib.Data.Tree.Basic",
+        "match_kind": "exact"
+      },
+      "note": "Null links correspond to `nil` leaves in the extended representation, and `numLeaves = numNodes + 1` gives n + 1 null links.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Internal nodes in a complete binary tree",
+      "anchor": {
+        "section": "Properties of binary trees",
+        "snippet": "The number of internal nodes in a complete binary tree of n nodes"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Without a complete-binary-tree definition, the ⌊n/2⌋ internal-node count is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Parenthesizing a string for n = 3",
+      "anchor": {
+        "section": "Combinatorics",
+        "snippet": "For instance for n = 3 one has to parenthesize a string"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No worked example enumerating the five parenthesizations for n = 3 is present in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Counting binary trees yields Catalan numbers",
+      "anchor": {
+        "section": "Combinatorics",
+        "snippet": "There is a unique binary tree of size 0"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Tree.treesOfNumNodesEq_card_eq_catalan",
+        "module": "Mathlib.Combinatorics.Enumerative.Catalan.Tree",
+        "match_kind": "exact"
+      },
+      "note": "`#(treesOfNumNodesEq n) = catalan n` is the precise statement that binary trees with n internal nodes are counted by Catalan numbers.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Dyck words counted by Catalan numbers",
+      "anchor": {
+        "section": "Combinatorics",
+        "snippet": "The above parenthesized strings should not be confused with the set of words of length"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "DyckWord.card_dyckWord_semilength_eq_catalan",
+        "module": "Mathlib.Combinatorics.Enumerative.DyckWord",
+        "match_kind": "exact"
+      },
+      "note": "States that Dyck words of semilength n are counted by `catalan n`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Five Dyck words of length 6",
+      "anchor": {
+        "section": "Combinatorics",
+        "snippet": "So there are also five Dyck words of length 6"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No explicit enumeration of the five length-6 Dyck words is given in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Bijection between Dyck words and binary trees",
+      "anchor": {
+        "section": "Combinatorics",
+        "snippet": "These Dyck words do not correspond to binary trees in the same way"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "DyckWord.equivTree",
+        "module": "Mathlib.Combinatorics.Enumerative.DyckWord",
+        "match_kind": "exact"
+      },
+      "note": "`DyckWord.equivTree : DyckWord ≃ Tree Unit` is exactly this bijection.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Binary trees as free magma on a singleton",
+      "anchor": {
+        "section": "Combinatorics",
+        "snippet": "The ability to represent binary trees as strings of symbols and parentheses implies that binary trees can represent the elements of a free magma on a singleton set"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "FreeMagma",
+        "module": "Mathlib.Algebra.Free",
+        "match_kind": "generalization"
+      },
+      "note": "`FreeMagma α` exists with the comment that it can be viewed as labelled binary trees, but no explicit equivalence `FreeMagma Unit ≃ Tree Unit` (without `nil`) is proved.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Array storage of binary trees",
+      "anchor": {
+        "section": "Arrays",
+        "snippet": "Binary trees can also be stored in breadth-first order as an implicit data structure in arrays"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No array/implicit heap-style representation of `Tree` is formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Succinct binary tree encoding",
+      "anchor": {
+        "section": "Succinct encodings",
+        "snippet": "A succinct data structure is one which occupies close to minimum possible space"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Succinct data structures are not part of Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Information-theoretic bound for binary tree encoding",
+      "anchor": {
+        "section": "Succinct encodings",
+        "snippet": "The number of different binary trees on"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The 2n − Θ(log n) lower bound on bits needed to encode binary trees is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Preorder succinct representation",
+      "anchor": {
+        "section": "Succinct encodings",
+        "snippet": "One simple representation which meets this bound is to visit the nodes of the tree in preorder"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No preorder bitstring encoding of `Tree` is provided in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Left-child right-sibling correspondence",
+      "anchor": {
+        "section": "Encoding ordered trees as binary trees",
+        "snippet": "There is a natural one-to-one correspondence between ordered trees and binary trees"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No left-child/right-sibling bijection between ordered (rose) trees and binary trees is formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Leaf node insertion",
+      "anchor": {
+        "section": "Leaf nodes",
+        "snippet": "To add a new node after leaf node A"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib's `Tree` API has no insertion-at-leaf operation.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Internal node insertion",
+      "anchor": {
+        "section": "Internal nodes",
+        "snippet": "Insertion on internal nodes is slightly more complex than on leaf nodes"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No internal-node insertion operation is provided for `Tree`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Deletion of node with zero or one children",
+      "anchor": {
+        "section": "Node with zero or one children",
+        "snippet": "Suppose that the node to delete is node A"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No deletion operation for `Tree` nodes is defined in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Ambiguity of deleting node with two children",
+      "anchor": {
+        "section": "Node with two children",
+        "snippet": "In a binary tree, a node with two children cannot be deleted unambiguously"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No statement/lemma about ambiguity of deletion in binary trees is in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Pre-order traversal",
+      "anchor": {
+        "section": "Pre-order",
+        "snippet": "In pre-order, we always visit the current node"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Tree.traverse",
+        "module": "Mathlib.Data.Tree.Basic",
+        "match_kind": "generalization"
+      },
+      "note": "`Tree.traverse` visits node, then left, then right subtree (i.e. pre-order applicative traversal), but no named `Tree.preorderList`/`toListPreorder` function exists.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "In-order traversal",
+      "anchor": {
+        "section": "In-order",
+        "snippet": "In in-order, we always recursively traverse the current node's left subtree"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No in-order traversal of `Tree` is defined in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Post-order traversal",
+      "anchor": {
+        "section": "Post-order",
+        "snippet": "In post-order, we always recursively traverse the current node's left subtree"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No post-order traversal of `Tree` is defined in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Depth-first order",
+      "anchor": {
+        "section": "Depth-first order",
+        "snippet": "In depth-first order, we always attempt to visit the node farthest from the root node"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No DFS algorithm on `Tree` is formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Breadth-first order",
+      "anchor": {
+        "section": "Breadth-first order",
+        "snippet": "Contrasting with depth-first order is breadth-first order"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No BFS traversal on `Tree` is formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Breadth-index traversal in complete binary tree",
+      "anchor": {
+        "section": "Breadth-first order",
+        "snippet": "In a complete binary tree, a node's breadth-index"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No relation between breadth-index and traversal directions in a complete binary tree is formalized.",
+      "provenance": "ai"
+    }
+  ]
+}

@@ -1,0 +1,249 @@
+{
+  "slug": "Identity_function",
+  "wikipedia_title": "Identity function",
+  "display_title": "Identity function",
+  "schema_version": 3,
+  "annotation_style": "theorem_article",
+  "annotations": [
+    {
+      "kind": "definition",
+      "label": "Identity function",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "is a function that always returns the value that was used as its argument"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "id",
+        "module": null,
+        "match_kind": "exact"
+      },
+      "note": "The identity function is Lean core `id` (returns its argument unchanged), used pervasively throughout Mathlib (e.g. `Function.bijective_id`).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Formal definition of identity function",
+      "anchor": {
+        "section": "Definition",
+        "snippet": "is defined to be a function with"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "id",
+        "module": null,
+        "match_kind": "exact"
+      },
+      "note": "Lean core `id : α → α` with `id_eq : id a = a` exactly captures f(X)=X with equal domain and codomain.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Identity function is bijective",
+      "anchor": {
+        "section": "Definition",
+        "snippet": "is clearly an injective function as well as a surjective function"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Function.bijective_id",
+        "module": "Mathlib.Logic.Function.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`Function.bijective_id : Bijective (@id α)` (built from `injective_id` and `surjective_id`) states exactly that the identity is bijective.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Notation for identity function",
+      "anchor": {
+        "section": "Definition",
+        "snippet": "is often denoted by"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "id",
+        "module": null,
+        "match_kind": "exact"
+      },
+      "note": "Mathlib uses `id` (and `𝟙` for identity morphisms, `1` in `Function.End`) as notation for the identity function.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Identity function as identity relation",
+      "anchor": {
+        "section": "Definition",
+        "snippet": "is given by the identity relation"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Set.diagonal",
+        "module": "Mathlib.Data.Set.Operations",
+        "match_kind": null
+      },
+      "note": "`Set.diagonal α := {p | p.1 = p.2}` formalizes the identity relation, but no lemma directly equates the graph of `id` with it.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Composition with identity function",
+      "anchor": {
+        "section": "Algebraic properties",
+        "snippet": "denotes function composition"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Function.comp_id",
+        "module": null,
+        "match_kind": "exact"
+      },
+      "note": "`Function.comp_id : f ∘ id = f` and `Function.id_comp : id ∘ f = f` (core, tagged `mfld_simps` in Mathlib) state composition with the identity exactly.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Identity is identity element of function monoid",
+      "anchor": {
+        "section": "Algebraic properties",
+        "snippet": "is the identity element of the monoid of all functions from"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Function.End",
+        "module": "Mathlib.Algebra.Group.End",
+        "match_kind": "exact"
+      },
+      "note": "The `Monoid (Function.End α)` instance defines `one := id` and `mul := (· ∘ ·)`, making `id` the identity element of the endomorphism monoid.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Identity as monoid identity element / identity morphism",
+      "anchor": {
+        "section": "Algebraic properties",
+        "snippet": "one can alternately define the identity function on"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "CategoryTheory.CategoryStruct.id",
+        "module": "Mathlib.CategoryTheory.Category.Basic",
+        "match_kind": "generalization"
+      },
+      "note": "`CategoryTheory.CategoryStruct.id` (notation `𝟙 X`) generalizes the identity function to the identity morphism in any category.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Identity function is a linear operator",
+      "anchor": {
+        "section": "Properties",
+        "snippet": "is a linear operator when applied to vector spaces"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "LinearMap.id",
+        "module": "Mathlib.Algebra.Module.LinearMap.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`LinearMap.id : M →ₗ[R] M` packages the identity function as a linear map, formalizing that it is a linear operator.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Identity function represented by identity matrix",
+      "anchor": {
+        "section": "Properties",
+        "snippet": "is represented by the identity matrix"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "LinearMap.toMatrix_id",
+        "module": "Mathlib.LinearAlgebra.Matrix.ToLin",
+        "match_kind": "exact"
+      },
+      "note": "`LinearMap.toMatrix_id : LinearMap.toMatrix v₁ v₁ id = 1` states the identity map's matrix is the identity matrix.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Identity is completely multiplicative",
+      "anchor": {
+        "section": "Properties",
+        "snippet": "is a completely multiplicative function"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "ArithmeticFunction.isMultiplicative_id",
+        "module": "Mathlib.NumberTheory.ArithmeticFunction.Misc",
+        "match_kind": null
+      },
+      "note": "`isMultiplicative_id` proves the arithmetic function `ArithmeticFunction.id` is multiplicative (coprime version), but Mathlib has no `CompletelyMultiplicative` predicate so the full claim is not directly stated.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Identity function is an isometry",
+      "anchor": {
+        "section": "Properties",
+        "snippet": "is trivially an isometry"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "isometry_id",
+        "module": "Mathlib.Topology.MetricSpace.Isometry",
+        "match_kind": "exact"
+      },
+      "note": "`isometry_id : Isometry (id : α → α)` states the identity function is an isometry.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Identity function is continuous",
+      "anchor": {
+        "section": "Properties",
+        "snippet": "is always continuous"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "continuous_id",
+        "module": "Mathlib.Topology.Continuous",
+        "match_kind": "exact"
+      },
+      "note": "`continuous_id : Continuous (id : X → X)` states the identity function is continuous.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Identity function is idempotent",
+      "anchor": {
+        "section": "Properties",
+        "snippet": "The identity function is idempotent"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "IsIdempotentElem.one",
+        "module": "Mathlib.Algebra.Group.Idempotent",
+        "match_kind": "special_case"
+      },
+      "note": "`IsIdempotentElem.one` shows `1` is idempotent in any monoid, which gives idempotence of `id = 1` in `Function.End`; also `comp_id` trivially gives `id ∘ id = id`, but no decl literally labels `id` idempotent.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Maps from a singleton set",
+      "anchor": {
+        "section": "Properties",
+        "snippet": "Every map from a set of a single element to itself is necessarily the identity map"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Subsingleton.elim",
+        "module": null,
+        "match_kind": null
+      },
+      "note": "`Subsingleton.elim` (with `funext`) makes any self-map on a subsingleton equal to `id`, but there is no dedicated lemma stating this for singleton-type endofunctions.",
+      "provenance": "ai"
+    }
+  ]
+}

@@ -1,0 +1,777 @@
+{
+  "slug": "Discrete_Fourier_transform",
+  "wikipedia_title": "Discrete Fourier transform",
+  "display_title": "Discrete Fourier transform",
+  "schema_version": 3,
+  "annotation_style": "theorem_article",
+  "annotations": [
+    {
+      "kind": "definition",
+      "label": "Discrete Fourier transform",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "the discrete Fourier transform ( DFT ) is a discrete version of the Fourier transform that converts a finite sequence of numbers into another sequence of the same length"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "ZMod.dft",
+        "module": "Mathlib.Analysis.Fourier.ZMod",
+        "match_kind": "exact"
+      },
+      "note": "`ZMod.dft` defines the DFT on functions `ZMod N → E` as a bundled ℂ-linear equivalence.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Inverse DFT",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "The inverse discrete Fourier transform reverses this process and recovers the original sequence."
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "ZMod.dft",
+        "module": "Mathlib.Analysis.Fourier.ZMod",
+        "match_kind": "exact"
+      },
+      "note": "Since `ZMod.dft` is a `LinearEquiv`, its inverse is `LinearEquiv.symm ZMod.dft` (notation `𝓕⁻`) with formula in `ZMod.invDFT_apply`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "DFT formula",
+      "anchor": {
+        "section": "Definition",
+        "snippet": "The discrete Fourier transform transforms a sequence of N complex numbers"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "ZMod.dft_apply",
+        "module": "Mathlib.Analysis.Fourier.ZMod",
+        "match_kind": "exact"
+      },
+      "note": "`ZMod.dft_apply` gives `𝓕 Φ k = ∑ j, stdAddChar (-(j*k)) • Φ j`, matching the standard DFT formula.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Inverse transform formula",
+      "anchor": {
+        "section": "Definition",
+        "snippet": "The inverse transform is given by:"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "ZMod.invDFT_apply",
+        "module": "Mathlib.Analysis.Fourier.ZMod",
+        "match_kind": "exact"
+      },
+      "note": "`ZMod.invDFT_apply` gives `𝓕⁻ Ψ k = N⁻¹ • ∑ j, stdAddChar (j*k) • Ψ j`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "DFT with sampling interval",
+      "anchor": {
+        "section": "DFT including sampling interval",
+        "snippet": "the sampling interval can be included explicitly as"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No version of the DFT with an explicit sampling-interval normalization was found in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Inverse DFT with sampling interval",
+      "anchor": {
+        "section": "DFT including sampling interval",
+        "snippet": "The corresponding inverse transform then becomes:"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No sampling-interval-scaled inverse DFT is present in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "DFT computation example",
+      "anchor": {
+        "section": "Example",
+        "snippet": "This example demonstrates how to apply the DFT to a sequence of length"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No concrete worked DFT example sequence is computed in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Linearity of DFT",
+      "anchor": {
+        "section": "Linearity",
+        "snippet": "The DFT is a linear transform"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "ZMod.dft",
+        "module": "Mathlib.Analysis.Fourier.ZMod",
+        "match_kind": "exact"
+      },
+      "note": "`ZMod.dft` is bundled as a `LinearEquiv ℂ`, so additivity and ℂ-homogeneity hold by construction (and `ZMod.dft_const_smul` records homogeneity over commuting scalars).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Time and frequency reversal",
+      "anchor": {
+        "section": "Time and frequency reversal",
+        "snippet": "Reversing the time"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "ZMod.dft_comp_neg",
+        "module": "Mathlib.Analysis.Fourier.ZMod",
+        "match_kind": "exact"
+      },
+      "note": "`ZMod.dft_comp_neg` states `𝓕 (fun j ↦ Φ (-j)) = fun k ↦ 𝓕 Φ (-k)`, the time/frequency reversal identity.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Conjugation in time",
+      "anchor": {
+        "section": "Conjugation in time",
+        "snippet": "If"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No lemma relating `𝓕 (conj ∘ Φ)` to `conj ∘ 𝓕 Φ ∘ neg` was found for `ZMod.dft`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Orthogonality of DFT basis",
+      "anchor": {
+        "section": "Orthogonality",
+        "snippet": "form an orthogonal basis over the set of N -dimensional complex vectors"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "AddChar.wInner_cWeight_eq_boole",
+        "module": "Mathlib.Analysis.Fourier.FiniteAbelian.Orthogonality",
+        "match_kind": "generalization"
+      },
+      "note": "Mathlib has orthogonality of additive characters on finite abelian groups (`AddChar.wInner_cWeight_eq_boole`), which specializes to the DFT basis, but no direct lemma stated for `ZMod.dft`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Parseval's theorem",
+      "anchor": {
+        "section": "The Plancherel theorem and Parseval's theorem",
+        "snippet": "Parseval's theorem states"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No Parseval-style equality for `ZMod.dft` was found; Mathlib's Parseval theorems are for `AddCircle`/continuous Fourier, not the finite DFT.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Plancherel theorem",
+      "anchor": {
+        "section": "The Plancherel theorem and Parseval's theorem",
+        "snippet": "The Plancherel theorem is a special case of Parseval's theorem and states"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No Plancherel/L² isometry statement is recorded for `ZMod.dft`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Periodicity of DFT",
+      "anchor": {
+        "section": "Periodicity",
+        "snippet": "The periodicity can be shown directly from the definition"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "ZMod.dft",
+        "module": "Mathlib.Analysis.Fourier.ZMod",
+        "match_kind": "generalization"
+      },
+      "note": "`ZMod.dft` outputs are functions on `ZMod N`, so N-periodicity holds by typing; no separately stated lemma exists.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Shift theorem",
+      "anchor": {
+        "section": "Shift theorem",
+        "snippet": "corresponds to a circular shift of the output"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No additive shift theorem `𝓕 (Φ(· - k₀))` is recorded; `ZMod.dft_comp_unitMul` handles multiplicative shifts only.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Circular convolution theorem",
+      "anchor": {
+        "section": "Circular convolution theorem and cross-correlation theorem",
+        "snippet": "which gives rise to the interpretation as a circular convolution"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No convolution theorem for `ZMod.dft` (circular convolution ↔ pointwise product) was found.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Cross-correlation theorem",
+      "anchor": {
+        "section": "Circular convolution theorem and cross-correlation theorem",
+        "snippet": "Similarly, the cross-correlation of"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No cross-correlation/DFT identity for ZMod was found.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Uniqueness of DFT",
+      "anchor": {
+        "section": "Uniqueness of the Discrete Fourier Transform",
+        "snippet": "any linear transform that turns convolution into pointwise product is the DFT up to a permutation of coefficients"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Uniqueness/characterization theorem for the DFT was not found in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Convolution theorem duality",
+      "anchor": {
+        "section": "Convolution theorem duality",
+        "snippet": "It can also be shown that"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No dual convolution theorem for `ZMod.dft` is present.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Trigonometric interpolation polynomial",
+      "anchor": {
+        "section": "Trigonometric interpolation polynomial",
+        "snippet": "satisfies the interpolation property"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No DFT-based trigonometric interpolation result was found in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "DFT matrix",
+      "anchor": {
+        "section": "The unitary DFT",
+        "snippet": "the DFT can be expressed as the DFT matrix , a Vandermonde matrix"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has `Matrix.vandermonde` and `Matrix.circulant`, but no explicit DFT-matrix definition.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Unitary DFT",
+      "anchor": {
+        "section": "The unitary DFT",
+        "snippet": "the DFT becomes a unitary transformation , defined by a unitary matrix"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No unitary/normalized version of `ZMod.dft` (with the `1/√N` factor making it a `LinearIsometryEquiv`) was found.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Orthonormality of unitary DFT",
+      "anchor": {
+        "section": "The unitary DFT",
+        "snippet": "The orthogonality of the DFT is now expressed as an orthonormality condition"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No orthonormality statement for a unitary DFT exists in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "DFT diagonalizes circulant matrices",
+      "anchor": {
+        "section": "The unitary DFT",
+        "snippet": "the DFT matrix F diagonalizes any circulant matrix"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "`Matrix.circulant` is defined but no connection to a DFT diagonalization is established.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Inverse DFT by input reversal",
+      "anchor": {
+        "section": "Expressing the inverse DFT in terms of the DFT",
+        "snippet": "we can compute the inverse DFT by reversing all but one of the inputs"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "ZMod.invDFT_apply'",
+        "module": "Mathlib.Analysis.Fourier.ZMod",
+        "match_kind": "exact"
+      },
+      "note": "`ZMod.invDFT_apply'` states `𝓕⁻ Ψ k = N⁻¹ • 𝓕 Ψ (-k)`, expressing the inverse DFT via the forward DFT and negation.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Inverse DFT by conjugation",
+      "anchor": {
+        "section": "Expressing the inverse DFT in terms of the DFT",
+        "snippet": "one can also conjugate the inputs and outputs"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No conjugate-then-forward-then-conjugate identity for `ZMod.dft` is present.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Inverse DFT by swap real/imaginary",
+      "anchor": {
+        "section": "Expressing the inverse DFT in terms of the DFT",
+        "snippet": "the inverse transform is the same as the forward transform with the real and imaginary parts swapped"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No real/imaginary swap formulation of the inverse DFT is in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "DFT eigenvalues are fourth roots of unity",
+      "anchor": {
+        "section": "Eigenvalues and eigenvectors",
+        "snippet": "the eigenvalues of"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "ZMod.dft_dft",
+        "module": "Mathlib.Analysis.Fourier.ZMod",
+        "match_kind": "generalization"
+      },
+      "note": "`ZMod.dft_dft` gives `𝓕² Φ = N • Φ ∘ neg`, from which `𝓕⁴ = N²·Id` follows; the eigenvalue statement itself is not separately formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Matrix polynomial equation for unitary DFT",
+      "anchor": {
+        "section": "Eigenvalues and eigenvectors",
+        "snippet": "This matrix satisfies the matrix polynomial equation"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "ZMod.dft_dft",
+        "module": "Mathlib.Analysis.Fourier.ZMod",
+        "match_kind": "generalization"
+      },
+      "note": "`ZMod.dft_dft` records `𝓕² = N • (·∘neg)`, which underlies the polynomial relation; no statement on the unitary DFT matrix polynomial exists.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Projection operator eigenvector construction",
+      "anchor": {
+        "section": "Eigenvalues and eigenvectors",
+        "snippet": "One method to construct DFT eigenvectors to an eigenvalue"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Projection-based DFT eigenvector construction is not in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Gaussian DFT eigenvector",
+      "anchor": {
+        "section": "Eigenvalues and eigenvectors",
+        "snippet": "the discretized and periodically summed Gaussian function yields an eigenvector of the discrete transform"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No periodized-Gaussian eigenvector of the DFT is recorded in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Closed-form DFT eigenvectors (odd N)",
+      "anchor": {
+        "section": "Eigenvalues and eigenvectors",
+        "snippet": "For DFT period N = 2 L + 1 = 4 K + 1, where K is an integer, the following is an eigenvector of DFT"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Closed-form DFT eigenvectors for `N=4K+1` are not present in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Closed-form DFT eigenvectors (N=4K)",
+      "anchor": {
+        "section": "Eigenvalues and eigenvectors",
+        "snippet": "For DFT period N = 2 L = 4 K , where K is an integer, the following are eigenvectors of DFT"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Closed-form DFT eigenvectors for `N=4K` are not present in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Closed-form DFT eigenvectors (N=4K-1)",
+      "anchor": {
+        "section": "Eigenvalues and eigenvectors",
+        "snippet": "For DFT period N = 4 K - 1, where K is an integer, the following are eigenvectors of DFT"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Closed-form DFT eigenvectors for `N=4K-1` are not present in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Heisenberg uncertainty principle (continuous)",
+      "anchor": {
+        "section": "Probabilistic uncertainty principle",
+        "snippet": "the Heisenberg uncertainty principle states that"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Searching turned up no Heisenberg-style position/momentum variance inequality in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Hirschman entropic uncertainty principle",
+      "anchor": {
+        "section": "Probabilistic uncertainty principle",
+        "snippet": "the entropic uncertainty principle becomes"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No entropy-based uncertainty principle was found in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Deterministic uncertainty principle",
+      "anchor": {
+        "section": "Deterministic uncertainty principle",
+        "snippet": "There is also a well-known deterministic uncertainty principle that uses signal sparsity"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No sparsity-based (Donoho–Stark) uncertainty principle is in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "DFT of real signals is even symmetric",
+      "anchor": {
+        "section": "DFT of real and purely imaginary signals",
+        "snippet": "is even symmetric"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "`ZMod.dft_even_iff` is about even functions, not the conjugate-symmetry property of DFTs of real inputs; the latter is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "DFT of purely imaginary signals is odd symmetric",
+      "anchor": {
+        "section": "DFT of real and purely imaginary signals",
+        "snippet": "is odd symmetric"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "`ZMod.dft_odd_iff` concerns odd functions, not the conjugate-antisymmetry of DFTs of imaginary inputs; the latter is not in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Generalized DFT",
+      "anchor": {
+        "section": "Generalized DFT (shifted and non-linear phase)",
+        "snippet": "This is sometimes known as a generalized DFT"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No shifted/non-linear-phase generalized DFT was found in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Centered DFT",
+      "anchor": {
+        "section": "Generalized DFT (shifted and non-linear phase)",
+        "snippet": "which is called the centered DFT"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No centered DFT variant is defined in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "DFT as z-transform on unit circle",
+      "anchor": {
+        "section": "Generalized DFT (shifted and non-linear phase)",
+        "snippet": "The discrete Fourier transform can be viewed as a special case of the z-transform"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has no z-transform, so no DFT-as-z-transform specialization exists.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Multidimensional DFT",
+      "anchor": {
+        "section": "Multidimensional DFT",
+        "snippet": "The multidimensional DFT of a multidimensional array"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No multidimensional DFT on a product `∏ ZMod Nᵢ` is defined in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Inverse multidimensional DFT",
+      "anchor": {
+        "section": "Multidimensional DFT",
+        "snippet": "The inverse of the multi-dimensional DFT is, analogous to the one-dimensional case, given by"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No inverse multidimensional DFT is present in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Row-column algorithm",
+      "anchor": {
+        "section": "Multidimensional DFT",
+        "snippet": "The multidimensional DFT can be computed by the composition of a sequence of one-dimensional DFTs along each dimension."
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No row-column decomposition of a multidimensional DFT is in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Conjugate symmetry for real multidim input",
+      "anchor": {
+        "section": "The real-input multidimensional DFT",
+        "snippet": "the DFT outputs have a conjugate symmetry similar to the one-dimensional case above"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No conjugate-symmetry statement for multidimensional DFTs of real inputs is present.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Polynomial multiplication via DFT",
+      "anchor": {
+        "section": "Polynomial multiplication",
+        "snippet": "Suppose we wish to compute the polynomial product"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No formalization of FFT-based polynomial multiplication was found.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "DFT as cyclic-group representation",
+      "anchor": {
+        "section": "Representation theory",
+        "snippet": "The DFT can be interpreted as a complex-valued representation of the finite cyclic group"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "ZMod.dft_eq_fourier",
+        "module": "Mathlib.Analysis.Fourier.ZMod",
+        "match_kind": "generalization"
+      },
+      "note": "`ZMod.dft_eq_fourier` identifies the DFT with the abstract Fourier integral against `toCircle`, exposing the cyclic-character viewpoint, but no explicit representation-theoretic statement is recorded.",
+      "provenance": "ai"
+    }
+  ]
+}

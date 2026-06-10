@@ -1,0 +1,457 @@
+{
+  "slug": "Associative_property",
+  "wikipedia_title": "Associative property",
+  "display_title": "Associative property",
+  "schema_version": 3,
+  "annotation_style": "theorem_article",
+  "annotations": [
+    {
+      "kind": "definition",
+      "label": "Associative property",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "the associative property"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "mul_assoc",
+        "module": "Mathlib.Algebra.Group.Defs",
+        "match_kind": "exact"
+      },
+      "note": "The associative law `(a*b)*c = a*(b*c)` is the field of `Semigroup` and the theorem `mul_assoc`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Associative binary operation",
+      "anchor": {
+        "section": "Definition",
+        "snippet": "is called associative if it satisfies the associative law"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Semigroup",
+        "module": "Mathlib.Algebra.Group.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`Semigroup` bundles a multiplication satisfying associativity (and `Std.Associative` exists as an unbundled predicate).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Generalized associative law",
+      "anchor": {
+        "section": "Generalized associative law",
+        "snippet": "This is called the generalized associative law"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "List.prod",
+        "module": "Mathlib.Algebra.BigOperators.Group.List.Defs",
+        "match_kind": null
+      },
+      "note": "Mathlib does not state a `n`-ary bracketing theorem explicitly, but in any `Semigroup`/`Monoid` it is realized via the well-definedness of `List.prod` and lemmas like `List.prod_append`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Number of bracketings is Catalan number",
+      "anchor": {
+        "section": "Generalized associative law",
+        "snippet": "The number of possible bracketings is just the Catalan number"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "treesOfNumNodesEq_card_eq_catalan",
+        "module": "Mathlib.Combinatorics.Enumerative.Catalan.Tree",
+        "match_kind": "exact"
+      },
+      "note": "The count of binary trees with `n` internal nodes (i.e. bracketings of `n+1` symbols) equals `catalan n`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Biconditional bracketing ambiguity",
+      "anchor": {
+        "section": "Generalized associative law",
+        "snippet": "An example where this does not work is the logical biconditional"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The pragmatic notational ambiguity of chained `↔` (versus its formal associativity) is not a statement Mathlib formalizes.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "String concatenation is associative",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "string concatenation is associative"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No `String.append_assoc` lemma is provided in Mathlib (`String` is a core type and Mathlib provides no `Semigroup String` instance).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Addition and multiplication of real numbers are associative",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "addition and multiplication of real numbers are associative"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Real.instField",
+        "module": "Mathlib.Data.Real.Basic",
+        "match_kind": "invocation"
+      },
+      "note": "`Real` has a `Field ℝ` instance, so `add_assoc` and `mul_assoc` instantiate on the reals.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Trivial projection operations are associative",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "The trivial operation x ∗ y = x"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib does not name the `x ∗ y = x` left-projection semigroup as an instance or example.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Complex numbers, quaternions, octonions",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "Addition and multiplication of complex numbers and quaternions are associative"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Quaternion",
+        "module": "Mathlib.Algebra.Quaternion",
+        "match_kind": "invocation"
+      },
+      "note": "`Complex` is a field and `Quaternion R` is a `Ring`, so associativity is inherited; however, octonions are not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "gcd and lcm are associative",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "The greatest common divisor and least common multiple functions act associatively"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "gcd_assoc",
+        "module": "Mathlib.Algebra.GCDMonoid.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`gcd_assoc` and `lcm_assoc` give associativity of `gcd` and `lcm` in a `NormalizedGCDMonoid`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Intersection and union of sets",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "Taking the intersection or the union of sets"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Set.inter_assoc",
+        "module": "Mathlib.Data.Set.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`Set.inter_assoc` and `Set.union_assoc` give associativity of `∩` and `∪` on `Set α`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Function composition is associative",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "the operation of function composition on S is associative"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Function.comp_assoc",
+        "module": "Mathlib.Logic.Function.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`Function.comp_assoc` (used throughout Mathlib) establishes associativity of `∘`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Composition of maps between sets",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "composition of maps is always associative"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Function.comp_assoc",
+        "module": "Mathlib.Logic.Function.Basic",
+        "match_kind": "exact"
+      },
+      "note": "Same `Function.comp_assoc` covers associativity for arbitrary maps between sets.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Composition of morphisms in a category",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "composition of morphisms is associative by definition"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Category.assoc",
+        "module": "Mathlib.CategoryTheory.Category.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`Category.assoc` is a field of the `Category` typeclass asserting `(f ≫ g) ≫ h = f ≫ (g ≫ h)`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Three-element associative table",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "Consider a set with three elements"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The specific 3-element multiplication table example from the article is not present as a Mathlib declaration.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Matrix multiplication is associative",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "matrix multiplication is associative"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Matrix.mul_assoc",
+        "module": "Mathlib.Data.Matrix.Mul",
+        "match_kind": "exact"
+      },
+      "note": "`Matrix.mul_assoc` proves associativity of matrix multiplication, used to build the semiring instance on square matrices.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Min and max are associative",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "the minimum and maximum operation is associative"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "max_assoc",
+        "module": "Mathlib.Order.MinMax",
+        "match_kind": "exact"
+      },
+      "note": "`min_assoc`/`max_assoc` (from the lattice `inf_assoc`/`sup_assoc`) and `Std.Associative max` give associativity of `min` and `max`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Associativity rule of replacement",
+      "anchor": {
+        "section": "Rule of replacement",
+        "snippet": "are two valid rules of replacement"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib does not formalize proof-system replacement rules as syntactic schemata.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Associative truth-functional connectives",
+      "anchor": {
+        "section": "Truth functional connectives",
+        "snippet": "associativity is a property of particular connectives"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "and_assoc",
+        "module": "Mathlib.Logic.Basic",
+        "match_kind": "special_case"
+      },
+      "note": "Individual associativity lemmas like `and_assoc`, `or_assoc`, `iff_assoc` exist (mostly inherited from core), but there is no general meta-statement about associative connectives.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Joint denial is non-associative",
+      "anchor": {
+        "section": "Truth functional connectives",
+        "snippet": "Joint denial is an example of a truth functional connective that is not associative"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "NOR/joint-denial is not defined in Mathlib, so non-associativity of it is not stated.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Non-associative operation",
+      "anchor": {
+        "section": "Non-associative operation",
+        "snippet": "that does not satisfy the associative law is called non-associative"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Mul",
+        "module": "Mathlib.Algebra.Group.Defs",
+        "match_kind": null
+      },
+      "note": "Mathlib has `Mul` (binary operation without associativity) and `NonUnitalNonAssocSemiring`, but no named predicate `IsNonAssociative`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Infinite sums are not associative",
+      "anchor": {
+        "section": "Non-associative operation",
+        "snippet": "it is not associative inside infinite sums"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No Mathlib theorem demonstrates non-associativity of `tsum` for conditionally convergent series.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Non-associative algebras: octonions and Lie algebras",
+      "anchor": {
+        "section": "Non-associative operation",
+        "snippet": "Examples are the octonions and Lie algebras"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "LieRing",
+        "module": "Mathlib.Algebra.Lie.Basic",
+        "match_kind": "invocation"
+      },
+      "note": "`LieRing`/`LieAlgebra` are formalized as non-associative structures, but octonions are not present in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Floating-point addition is non-associative",
+      "anchor": {
+        "section": "Nonassociativity of floating-point calculation",
+        "snippet": "addition and multiplication of floating point numbers are not associative"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "`Mathlib.Data.FP.Basic` defines floating-point representations but does not prove non-associativity of `+`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Left-associative operation",
+      "anchor": {
+        "section": "Notation for non-associative operations",
+        "snippet": "A left-associative operation is a non-associative operation that is conventionally evaluated from left to right"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Left-associativity is a parser convention (`infixl`) rather than a mathematical definition in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Right-associative operation",
+      "anchor": {
+        "section": "Notation for non-associative operations",
+        "snippet": "a right-associative operation is conventionally evaluated from right to left"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Right-associativity is likewise a notation/parser convention (`infixr`) and not a mathematical statement in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Associativity implies commutativity under continuity and injectivity",
+      "anchor": {
+        "section": "Relationship with commutativity in certain special cases",
+        "snippet": "Associative operators defined on an interval of the real number line are commutative if they are continuous and injective in both arguments"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This theorem of associative+continuous+injective ⇒ commutative on a real interval is not in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Strictly increasing continuous associative operators are commutative",
+      "anchor": {
+        "section": "Relationship with commutativity in certain special cases",
+        "snippet": "every continuous, associative operator on two real inputs that is strictly increasing in each of its inputs is commutative"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No Mathlib statement deduces commutativity from associativity plus continuity and strict monotonicity on the reals.",
+      "provenance": "ai"
+    }
+  ]
+}

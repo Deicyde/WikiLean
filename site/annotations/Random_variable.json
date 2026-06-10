@@ -1,0 +1,703 @@
+{
+  "slug": "Random_variable",
+  "wikipedia_title": "Random variable",
+  "display_title": "Random variable",
+  "schema_version": 3,
+  "annotation_style": "theorem_article",
+  "annotations": [
+    {
+      "kind": "definition",
+      "label": "Random variable (informal)",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "A random variable (also called random quantity"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Informal prose description with no specific Mathlib counterpart.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Random variable (measure-theoretic, lead)",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "In the formal mathematical language of measure theory"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Measurable",
+        "module": "Mathlib.MeasureTheory.MeasurableSpace.Defs",
+        "match_kind": "exact"
+      },
+      "note": "Mathlib models a random variable as a `Measurable` function from a probability space.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Random variate",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "A random variate is a particular outcome or realization of a random variable."
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "A realization `X ω` has no dedicated Mathlib name.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Random variable as measurable function",
+      "anchor": {
+        "section": "Definition",
+        "snippet": "is a measurable function"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Measurable",
+        "module": "Mathlib.MeasureTheory.MeasurableSpace.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`Measurable` is the exact measure-theoretic notion used.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Discrete random variable",
+      "anchor": {
+        "section": "Standard case",
+        "snippet": "the random variable is called a discrete random variable"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "PMF",
+        "module": "Mathlib.Probability.ProbabilityMassFunction.Basic",
+        "match_kind": "generalization"
+      },
+      "note": "Discrete distributions are captured by `PMF`, but `Mathlib` has no class `IsDiscreteRandomVariable`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Continuous random variable",
+      "anchor": {
+        "section": "Standard case",
+        "snippet": "is called a continuous random variable"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "MeasureTheory.HasPDF",
+        "module": "Mathlib.Probability.Density",
+        "match_kind": "generalization"
+      },
+      "note": "Absolutely continuous random variables are formalized via `HasPDF`; the looser \"continuous CDF\" notion is not separately named.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Absolutely continuous random variable",
+      "anchor": {
+        "section": "Standard case",
+        "snippet": "In the special case that it is absolutely continuous"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "MeasureTheory.HasPDF",
+        "module": "Mathlib.Probability.Density",
+        "match_kind": "exact"
+      },
+      "note": "`HasPDF X ℙ μ` says `(map X ℙ) ≪ μ` with a density.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Cumulative distribution function",
+      "anchor": {
+        "section": "Standard case",
+        "snippet": "Any random variable can be described by its cumulative distribution function"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "ProbabilityTheory.cdf",
+        "module": "Mathlib.Probability.CDF",
+        "match_kind": "exact"
+      },
+      "note": "`cdf μ : StieltjesFunction ℝ` is the CDF of a measure on ℝ.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Random element",
+      "anchor": {
+        "section": "Extensions",
+        "snippet": "Thus one can consider random elements of other sets"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Measurable",
+        "module": "Mathlib.MeasureTheory.MeasurableSpace.Defs",
+        "match_kind": "exact"
+      },
+      "note": "Random elements valued in arbitrary measurable spaces are just `Measurable` maps in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Probability distribution of a random variable",
+      "anchor": {
+        "section": "Distribution functions",
+        "snippet": "Recording all these probabilities of outputs of a random variable"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "MeasureTheory.Measure.map",
+        "module": "Mathlib.MeasureTheory.Measure.Map",
+        "match_kind": "exact"
+      },
+      "note": "The law of `X` is `Measure.map X ℙ`, and `ProbabilityTheory.HasLaw` packages this.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Discrete distribution function",
+      "anchor": {
+        "section": "Discrete random variable",
+        "snippet": "is a discrete distribution function"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "PMF",
+        "module": "Mathlib.Probability.ProbabilityMassFunction.Basic",
+        "match_kind": "generalization"
+      },
+      "note": "The step-function CDF of a discrete law is not a named decl; `PMF` is the related object.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Person's height as random variable",
+      "anchor": {
+        "section": "Discrete random variable",
+        "snippet": "An example of a random variable may be the person's height."
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Informal real-world example.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Number of children as discrete random variable",
+      "anchor": {
+        "section": "Discrete random variable",
+        "snippet": "Another random variable may be the person's number of children"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Informal real-world example.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Coin toss random variable",
+      "anchor": {
+        "section": "Coin toss",
+        "snippet": "The possible outcomes for one coin toss can be described by the sample space"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Informal example; no specific Mathlib decl about a coin-toss random variable.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Coin toss",
+          "snippet": "The possible outcomes for one coin toss can be described by the sample space"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle Y(\\omega )={\\begin{cases}1,&amp;{\\text{if }}\\omega ={\\text{heads}},\\\\[6pt]0,&amp;{\\text{if }}\\omega ={\\text{tails}}.\\end{cases}}}"
+        }
+      ]
+    },
+    {
+      "kind": "example",
+      "label": "Dice roll random variable",
+      "anchor": {
+        "section": "Dice roll",
+        "snippet": "A random variable can also be used to describe the process of rolling dice"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Informal example; no specific Mathlib decl.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Dice roll",
+          "snippet": "A random variable can also be used to describe the process of rolling dice"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle X((n_{1},n_{2}))=n_{1}+n_{2}}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle f_{X}(S)={\\frac {\\min(S-1,13-S)}{36}},{\\text{ for }}S\\in \\{2,3,4,5,6,7,8,9,10,11,12\\}}"
+        }
+      ]
+    },
+    {
+      "kind": "definition",
+      "label": "Continuous random variable (formal)",
+      "anchor": {
+        "section": "Continuous random variable",
+        "snippet": "Formally, a continuous random variable is a random variable whose cumulative distribution function is continuous everywhere"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "ProbabilityTheory.cdf",
+        "module": "Mathlib.Probability.CDF",
+        "match_kind": "generalization"
+      },
+      "note": "Mathlib has CDFs but no named class for \"CDF is everywhere continuous\".",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Spinner as continuous random variable",
+      "anchor": {
+        "section": "Continuous random variable",
+        "snippet": "An example of a continuous random variable would be one based on a spinner"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Informal example.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Continuous uniform random variable (CURV)",
+      "anchor": {
+        "section": "Continuous random variable",
+        "snippet": "is called a \" continuous uniform random variable\" (CURV)"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "MeasureTheory.pdf.IsUniform",
+        "module": "Mathlib.Probability.Distributions.Uniform",
+        "match_kind": "exact"
+      },
+      "note": "Uniform distributions are formalized in `Mathlib.Probability.Distributions.Uniform`.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Continuous random variable",
+          "snippet": "is called a \" continuous uniform random variable\" (CURV)"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\Pr \\left(X_{I}\\in [c,d]\\right)={\\frac {d-c}{b-a}}}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle f_{X}(x)={\\begin{cases}\\displaystyle {1 \\over b-a},&amp;a\\leq x\\leq b\\\\0,&amp;{\\text{otherwise}}.\\end{cases}}}"
+        }
+      ]
+    },
+    {
+      "kind": "definition",
+      "label": "Mixed random variable",
+      "anchor": {
+        "section": "Mixed type",
+        "snippet": "A mixed random variable is a random variable whose cumulative distribution function is neither discrete nor everywhere-continuous"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No dedicated \"mixed random variable\" concept in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Coin-and-spinner mixed random variable",
+      "anchor": {
+        "section": "Mixed type",
+        "snippet": "An example of a random variable of mixed type would be based on an experiment where a coin is flipped"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Informal example.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Lebesgue decomposition of distributions on the real line",
+      "anchor": {
+        "section": "Mixed type",
+        "snippet": "every probability distribution on the real line is a mixture of discrete part, singular part, and an absolutely continuous part"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "MeasureTheory.Measure.haveLebesgueDecomposition_of_sigmaFinite",
+        "module": "Mathlib.MeasureTheory.Measure.Decomposition.Lebesgue",
+        "match_kind": "generalization"
+      },
+      "note": "Mathlib's Lebesgue decomposition splits into a.c. and singular parts but does not further decompose the singular part into discrete + singular-continuous.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Measure-theoretic random variable",
+      "anchor": {
+        "section": "Measure-theoretic definition",
+        "snippet": "Then an"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Measurable",
+        "module": "Mathlib.MeasureTheory.MeasurableSpace.Defs",
+        "match_kind": "exact"
+      },
+      "note": "A measurable function between measurable spaces is `Measurable`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "E-valued random variable (Borel)",
+      "anchor": {
+        "section": "Measure-theoretic definition",
+        "snippet": "In such case the"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Measurable",
+        "module": "Mathlib.MeasureTheory.MeasurableSpace.Defs",
+        "match_kind": "exact"
+      },
+      "note": "An `E`-valued random variable is `Measurable X` with `[MeasurableSpace E] [BorelSpace E]`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Real-valued random variable",
+      "anchor": {
+        "section": "Real-valued random variables",
+        "snippet": "the function"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Measurable",
+        "module": "Mathlib.MeasureTheory.MeasurableSpace.Defs",
+        "match_kind": "special_case"
+      },
+      "note": "Real-valued random variables are `Measurable X : Ω → ℝ`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Expected value / first moment",
+      "anchor": {
+        "section": "Moments",
+        "snippet": "This is captured by the mathematical concept of expected value of a random variable"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "MeasureTheory.integral",
+        "module": "Mathlib.MeasureTheory.Integral.Bochner.Basic",
+        "match_kind": "exact"
+      },
+      "note": "Expectation is the Bochner integral `∫ ω, X ω ∂ℙ`; also `ProbabilityTheory.moment X 1 μ`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Generalised problem of moments",
+      "anchor": {
+        "section": "Moments",
+        "snippet": "Mathematically, this is known as the (generalised) problem of moments"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The generalized moment problem is not formalized as such.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Function of a random variable",
+      "anchor": {
+        "section": "Functions of random variables",
+        "snippet": "A new random variable"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Measurable.comp",
+        "module": "Mathlib.MeasureTheory.MeasurableSpace.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`g ∘ X` is realised by `Measurable.comp` when `g` is measurable.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "CDF of g(X) for invertible monotone g",
+      "anchor": {
+        "section": "Functions of random variables",
+        "snippet": "If function"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No named lemma for `F_{g(X)} = F_X ∘ g⁻¹` in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Density transformation under invertible differentiable g",
+      "anchor": {
+        "section": "Functions of random variables",
+        "snippet": "assuming also differentiability , the relation between the probability density functions can be found by differentiating both sides"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "MeasureTheory.integral_image_eq_integral_abs_deriv_smul",
+        "module": "Mathlib.MeasureTheory.Function.Jacobian",
+        "match_kind": "generalization"
+      },
+      "note": "Change-of-variables / Jacobian formulas exist but no named pdf-transformation result for `g(X)`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Density transformation with countably many roots",
+      "anchor": {
+        "section": "Functions of random variables",
+        "snippet": "If there is no invertibility of"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The multi-branch density transformation formula is not in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Composition of measurable function with random variable is a random variable",
+      "anchor": {
+        "section": "Functions of random variables",
+        "snippet": "since the composition of measurable functions is also measurable"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Measurable.comp",
+        "module": "Mathlib.MeasureTheory.MeasurableSpace.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`Measurable.comp` gives composition of measurable functions is measurable.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Example 1: function of a continuous random variable",
+      "anchor": {
+        "section": "Example 1",
+        "snippet": "be a real-valued, continuous random variable"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Worked example with no specific Mathlib decl.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Example 2: exponential distribution via transformation",
+      "anchor": {
+        "section": "Example 2",
+        "snippet": "which is the cumulative distribution function (CDF) of an exponential distribution"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "MeasureTheory.pdf.IsExponential",
+        "module": "Mathlib.Probability.Distributions.Exponential",
+        "match_kind": "invocation"
+      },
+      "note": "Exponential distribution is defined, but this specific transformation example is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Example 3: chi-squared from standard normal",
+      "anchor": {
+        "section": "Example 3",
+        "snippet": "This is a chi-squared distribution with one degree of freedom"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Chi-squared distribution not present as a named distribution in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Example 4: noncentral chi-squared from normal",
+      "anchor": {
+        "section": "Example 4",
+        "snippet": "This is a noncentral chi-squared distribution with one degree of freedom"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Noncentral chi-squared distribution is not in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Distribution of sum of independent random variables is convolution",
+      "anchor": {
+        "section": "Some properties",
+        "snippet": "The probability distribution of the sum of two independent random variables is the convolution of each of their distributions."
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "ProbabilityTheory.IndepFun.map_mul_eq_map_mconv_map",
+        "module": "Mathlib.Probability.Independence.Basic",
+        "match_kind": "exact"
+      },
+      "note": "The additive version follows via `to_additive` from `IndepFun.map_mul_eq_map_mconv_map`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Probability distributions form a convex set",
+      "anchor": {
+        "section": "Some properties",
+        "snippet": "they are closed under convex combination"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No explicit statement that `IsProbabilityMeasure` is closed under convex combinations as a convex space.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Equality in distribution",
+      "anchor": {
+        "section": "Equality in distribution",
+        "snippet": "random variables X and Y are equal in distribution"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "ProbabilityTheory.IdentDistrib",
+        "module": "Mathlib.Probability.IdentDistrib",
+        "match_kind": "exact"
+      },
+      "note": "`IdentDistrib f g μ ν` says `map f μ = map g ν`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Equal MGFs imply same distribution",
+      "anchor": {
+        "section": "Equality in distribution",
+        "snippet": "Two random variables having equal moment generating functions have the same distribution."
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Comments in `Mathlib.Probability.Moments.ComplexMGF` explicitly list this as a TODO.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Almost sure equality",
+      "anchor": {
+        "section": "Almost sure equality",
+        "snippet": "Two random variables X and Y are equal almost surely"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Filter.EventuallyEq",
+        "module": "Mathlib.Order.Filter.Basic",
+        "match_kind": "exact"
+      },
+      "note": "Written `X =ᵐ[μ] Y`, i.e. `Filter.EventuallyEq (ae μ) X Y`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Equality of random variables",
+      "anchor": {
+        "section": "Equality",
+        "snippet": "the two random variables X and Y are equal if they are equal as functions on their measurable space"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Eq",
+        "module": "Init.Prelude",
+        "match_kind": "exact"
+      },
+      "note": "Pointwise equality of `Ω → E` functions is just `Eq` (or `funext`).",
+      "provenance": "ai"
+    }
+  ]
+}

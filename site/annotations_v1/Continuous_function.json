@@ -1,0 +1,449 @@
+{
+  "slug": "Continuous_function",
+  "wikipedia_title": "Continuous function",
+  "display_title": "Continuous function",
+  "schema_version": 1,
+  "source": "claude-agent-sdk/annotate_articles.py",
+  "annotations": [
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\lim _{x\\to c}{f(x)}=f(c).}"
+      },
+      "status": "formalized",
+      "decl": "ContinuousAt",
+      "module": "Mathlib.Topology.Defs.Filter",
+      "note": "Limit-based pointwise continuity matches ContinuousAt defined via Tendsto f (𝓝 x) (𝓝 (f x))."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\forall (x_{n})_{n\\in \\mathbb {N} }\\subset D:\\lim _{n\\to \\infty }x_{n}=c\\Rightarrow \\lim _{n\\to \\infty }f(x_{n})=f(c)\\,.}"
+      },
+      "status": "partial",
+      "decl": "ContinuousAt",
+      "module": "Mathlib.Topology.Defs.Filter",
+      "note": "Sequential continuity is equivalent in first-countable spaces but not the definition itself; ContinuousAt is the closest decl."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle f\\left(x_{0}\\right)-\\varepsilon <f(x)<f(x_{0})+\\varepsilon .}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Proof-internal inequality unfolding the epsilon condition, not a standalone Mathlib decl."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\left|x-x_{0}\\right|<\\delta ~~{\\text{ implies }}~~|f(x)-f(x_{0})|<\\varepsilon .}"
+      },
+      "status": "partial",
+      "decl": "ContinuousAt",
+      "module": "Mathlib.Topology.Defs.Filter",
+      "note": "The epsilon-delta characterization corresponds to ContinuousAt in metric spaces via Metric.continuousAt_iff."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle |f(x)-f(x_{0})|\\leq C\\left(\\left|x-x_{0}\\right|\\right){\\text{ for all }}x\\in D\\cap N(x_{0})}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Modulus-of-continuity formulation; not represented as a standalone decl in the provided list."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle {\\mathcal {C}}_{\\mathrm {Lipschitz} }=\\{C:C(\\delta )=K|\\delta |,\\ K>0\\}}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Family of Lipschitz control functions, ad-hoc set not a Mathlib decl from the list."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle {\\mathcal {C}}_{{\\text{Hölder}}-\\alpha }=\\{C:C(\\delta )=K|\\delta |^{\\alpha },\\ K>0\\}}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Family of Hölder control functions, ad-hoc set not present in provided decls."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle {\\mathcal {C}}_{\\text{uniform cont.}}=\\{C:C(0)=0\\}}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Family of uniform-continuity control functions, ad-hoc set not in provided list."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\lim _{x\\to 0}{\\frac {\\sin x}{x}}=1.}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Specific limit identity (sin x / x → 1), not in the provided decl list."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle H(x)={\\begin{cases}1&{\\text{ if }}x\\geq 0\\\\0&{\\text{ if }}x<0\\end{cases}}}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Heaviside step function as an example; not represented in provided decl list."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\operatorname {sgn}(x)={\\begin{cases}\\;\\;\\ 1&{\\text{ if }}x>0\\\\\\;\\;\\ 0&{\\text{ if }}x=0\\\\-1&{\\text{ if }}x<0\\end{cases}}}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Signum function example; not present in the provided decl list."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle f(x)={\\begin{cases}\\sin \\left(x^{-2}\\right)&{\\text{ if }}x\\neq 0\\\\0&{\\text{ if }}x=0\\end{cases}}}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Pathological piecewise example function, not a standalone Mathlib decl in the list."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle f(x)={\\begin{cases}1&{\\text{ if }}x=0\\\\{\\frac {1}{q}}&{\\text{ if }}x={\\frac {p}{q}}{\\text{(in lowest terms) is a rational number}}\\\\0&{\\text{ if }}x{\\text{ is irrational}}.\\end{cases}}}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Thomae's function example; not represented in the provided decl list."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle D(x)={\\begin{cases}0&{\\text{ if }}x{\\text{  is irrational }}(\\in \\mathbb {R} \\setminus \\mathbb {Q} )\\\\1&{\\text{ if }}x{\\text{ is rational }}(\\in \\mathbb {Q} )\\end{cases}}}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Dirichlet function example; not present in the provided decl list."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\left|f(x)-f(x_{0})\\right|<{\\frac {\\left|y_{0}-f(x_{0})\\right|}{2}}\\quad {\\text{ whenever }}\\quad |x-x_{0}|<\\delta }"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Proof-internal lemma inequality, not a standalone Mathlib decl."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\left|f(x_{0})-y_{0}\\right|<{\\frac {\\left|f(x_{0})-y_{0}\\right|}{2}}.}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Contradiction inequality in lemma proof, not a Mathlib decl."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle f:(a,b)\\to \\mathbb {R} }"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Function signature only, no associated statement in the provided list."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle f:\\Omega \\to \\mathbb {R} }"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Function signature only, no associated statement in the provided list."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle f:[a,b]\\to \\mathbb {R} }"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Function signature only, no associated statement in the provided list."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle f_{1},f_{2},\\dotsc :I\\to \\mathbb {R} }"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Sequence-of-functions signature, not a Mathlib decl from the list."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle f(x):=\\lim _{n\\to \\infty }f_{n}(x)}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Pointwise-limit definition formula, not represented in the provided decl list."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle |f(x)-f(c)|<\\varepsilon }"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Fragment of directional continuity condition, not a standalone decl in the list."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle f(x)\\geq f(c)-\\varepsilon .}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Semicontinuity inequality (lower); LowerSemicontinuous decl is not in the provided list."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle d_{X}:X\\times X\\to \\mathbb {R} }"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Metric function signature; PseudoMetricSpace/dist not in the provided list."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle f:X\\to Y}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Plain function signature, no associated statement in the provided list."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle T:V\\to W}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Linear-operator signature, not a Mathlib decl from the provided list."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\|T(x)\\|\\leq K\\|x\\|}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Bounded-linear-operator inequality; relevant decl not present in the provided list."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle d_{Y}(f(b),f(c))\\leq K\\cdot (d_{X}(b,c))^{\\alpha }}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Hölder continuity inequality; HolderWith decl not in the provided list."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle d_{Y}(f(b),f(c))\\leq K\\cdot d_{X}(b,c)}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Lipschitz continuity inequality; LipschitzWith decl not in the provided list."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle f:X\\to Y}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Plain function signature, no associated statement in the provided list."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle f^{-1}(V)=\\{x\\in X\\;|\\;f(x)\\in V\\}}"
+      },
+      "status": "partial",
+      "decl": "Continuous",
+      "module": "Mathlib.Topology.Defs.Basic",
+      "note": "Inverse image definition; Continuous is defined via preimages of open sets in Mathlib."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle f:X\\to T}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Plain function signature, no associated statement in the provided list."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\forall \\varepsilon >0\\,\\exists \\delta _{\\varepsilon }>0:0<|x-x_{0}|<\\delta _{\\varepsilon }\\implies |f(x)-f(x_{0})|<\\varepsilon .\\quad (*)}"
+      },
+      "status": "partial",
+      "decl": "ContinuousAt",
+      "module": "Mathlib.Topology.Defs.Filter",
+      "note": "Epsilon-delta condition for continuity at a point; corresponds to ContinuousAt in metric spaces."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle |x_{n}-x_{0}|<\\delta _{\\varepsilon },}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Proof-internal inequality fragment, not a standalone Mathlib decl."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\forall \\varepsilon >0\\,\\exists \\nu _{\\varepsilon }>0:\\forall n>\\nu _{\\varepsilon }\\quad |f(x_{n})-f(x_{0})|<\\varepsilon .}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Sequential-limit condition step inside the proof, not a standalone decl."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\exists \\varepsilon >0:\\forall \\delta _{\\varepsilon }>0,\\,\\exists x_{\\delta _{\\varepsilon }}:0<|x_{\\delta _{\\varepsilon }}-x_{0}|<\\delta _{\\varepsilon }\\implies |f(x_{\\delta _{\\varepsilon }})-f(x_{0})|>\\varepsilon }"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Negation of continuity used in proof contradiction; not a standalone Mathlib decl."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\forall n>0\\quad |x_{n}-x_{0}|<{\\frac {1}{n}},\\quad |f(x_{n})-f(x_{0})|>\\varepsilon }"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Constructed witnessing sequence in proof, not a standalone Mathlib decl."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\operatorname {id} _{X}:\\left(X,\\tau _{2}\\right)\\to \\left(X,\\tau _{1}\\right)}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Identity map between topologies; statement about continuous_id w.r.t. finer topology not in the list."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\left(X,\\tau _{X}\\right)\\to \\left(Y,\\tau _{Y}\\right)}"
+      },
+      "status": "formalized",
+      "decl": "Continuous",
+      "module": "Mathlib.Topology.Defs.Basic",
+      "note": "Continuous map between topological spaces is exactly the Mathlib Continuous predicate."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle f:X\\to S,}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Function signature for induced/coinduced topology context; no associated decl in the list."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle F:{\\mathcal {C}}\\to {\\mathcal {D}}}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Functor signature in category theory; relevant decls not in the provided list."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\varprojlim _{i\\in I}F(C_{i})\\cong F\\left(\\varprojlim _{i\\in I}C_{i}\\right)}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Continuous functor (preserves limits) definition; relevant category-theoretic decls not in the list."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "Theorem — A function f : A &#x2286; R &#x2192; R {\\displayst"
+      },
+      "status": "partial",
+      "decl": "ContinuousAt",
+      "module": "Mathlib.Topology.Defs.Filter",
+      "note": "Equivalence of continuity and sequential continuity; ContinuousAt is the relevant Mathlib decl in the list."
+    },
+    {
+      "anchor": {
+        "type": "theorem_box",
+        "value": "Theorem — Let f : X &#x2192; Y {\\displaystyle f:X\\to Y} be a"
+      },
+      "status": "partial",
+      "decl": "Continuous",
+      "module": "Mathlib.Topology.Defs.Basic",
+      "note": "Closure/interior characterizations of continuity; Continuous is the underlying Mathlib decl from the list."
+    }
+  ]
+}

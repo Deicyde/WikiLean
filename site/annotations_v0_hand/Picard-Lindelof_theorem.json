@@ -1,0 +1,134 @@
+{
+  "slug": "Picard-Lindelof_theorem",
+  "wikipedia_title": "Picard–Lindelöf theorem",
+  "display_title": "Picard–Lindelöf theorem",
+  "schema_version": 1,
+  "annotations": [
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle y'(t)=f(t,y(t)),\\qquad y(t_{0})=y_{0}}"
+      },
+      "status": "formalized",
+      "decl": "IsPicardLindelof.exists_eq_forall_mem_Icc_hasDerivWithinAt",
+      "module": "Mathlib.Analysis.ODE.PicardLindelof",
+      "note": "The main existence theorem. Mathlib's statement gives a C¹ solution α on [tmin, tmax] with α(t₀) = x and α'(t) = f(t, α(t))."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle |f(t,y)-f(t_{0},y_{0})|\\leq |f(t,y)-f(t,y_{0})|+|f(t,y_{0})-f(t_{0},y_{0})|<\\epsilon ,}"
+      },
+      "status": "partial",
+      "decl": "IsPicardLindelof",
+      "module": "Mathlib.Analysis.ODE.PicardLindelof",
+      "note": "Continuity of f near (t₀, y₀) is one field of the IsPicardLindelof hypothesis bundle (`continuousOn`); this exact ε-δ decomposition is internal to the proof, not a standalone decl."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle C_{a,b}=I_{a}(t_{0})\\times B_{b}(y_{0})}"
+      },
+      "status": "partial",
+      "decl": "IsPicardLindelof",
+      "module": "Mathlib.Analysis.ODE.PicardLindelof",
+      "note": "The cylinder C_{a,b} corresponds to Mathlib's hypothesis parameters `a` (radius around x₀) and the time interval `Icc tmin tmax` — packaged inside IsPicardLindelof but not given its own name."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle {\\begin{aligned}I_{a}(t_{0})&=[t_{0}-a,t_{0}+a]\\\\B_{b}(y_{0})&=[y_{0}-b,y_{0}+b].\\end{aligned}}}"
+      },
+      "status": "not_formalized",
+      "note": "An explicit interval-decomposition; no dedicated decl. Mathlib uses `Set.Icc` and `Metric.closedBall` directly inside the proof without naming these projections."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\|\\varphi \\|_{\\infty }=\\sup _{t\\in I_{a}}\\|\\varphi (t)\\|.}"
+      },
+      "status": "partial",
+      "decl": "ContinuousMap.norm_def",
+      "module": "Mathlib.Topology.ContinuousMap.Bounded",
+      "note": "The sup-norm on continuous functions exists in Mathlib via `BoundedContinuousFunction.norm`; the article's restriction to C(I_a, B_b) is implicit inside the Picard-Lindelöf proof, not its own decl."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\Gamma :{\\mathcal {C}}{\\big (}I_{a}(t_{0}),B_{b}(y_{0}){\\big )}\\to {\\mathcal {C}}{\\big (}I_{a}(t_{0}),B_{b}(y_{0}){\\big )}}"
+      },
+      "status": "partial",
+      "decl": "ODE.picard",
+      "module": "Mathlib.Analysis.ODE.PicardLindelof",
+      "note": "The signature of the Picard operator. Mathlib's `ODE.picard` is defined as a function ℝ → E rather than as an endomorphism of a function space, but the role is identical."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\Gamma \\varphi (t)=y_{0}+\\int _{t_{0}}^{t}f(s,\\varphi (s))\\,ds\\quad \\forall t\\in I_{a}(t_{0}).}"
+      },
+      "status": "formalized",
+      "decl": "ODE.picard",
+      "module": "Mathlib.Analysis.ODE.PicardLindelof",
+      "note": "The Picard iteration map. Mathlib defines this exact integral as `ODE.picard f t₀ x₀ t = x₀ + ∫ τ in t₀..t, f τ (φ τ)`."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\|\\varphi -y_{0}\\|_{\\infty }\\leq b}"
+      },
+      "status": "not_formalized",
+      "note": "An invariant on the iteration domain; proof step, not its own decl."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\left\\|\\Gamma \\varphi (t)-y_{0}\\right\\|=\\left\\|\\int _{t_{0}}^{t}f(s,\\varphi (s))\\,ds\\right\\|\\leq \\int _{t_{0}}^{t'}\\left\\|f(s,\\varphi (s))\\right\\|ds\\leq \\int _{t_{0}}^{t'}M\\,ds=M\\left|t'-t_{0}\\right|\\leq Ma\\leq b}"
+      },
+      "status": "not_formalized",
+      "note": "Proof step showing Γ maps the iteration domain to itself. Internal to Mathlib's proof of `IsPicardLindelof.exists_eq_forall_mem_Icc_hasDerivWithinAt`."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\left\\|\\Gamma \\varphi _{1}-\\Gamma \\varphi _{2}\\right\\|_{\\infty }\\leq q\\left\\|\\varphi _{1}-\\varphi _{2}\\right\\|_{\\infty }}"
+      },
+      "status": "not_formalized",
+      "note": "Banach-contraction estimate for Γ. Internal to Mathlib's proof; relies on the Lipschitz hypothesis `IsPicardLindelof.lipschitzOnWith`."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\Gamma \\varphi =\\varphi .}"
+      },
+      "status": "partial",
+      "decl": "IsPicardLindelof.exists_eq_forall_mem_Icc_eq_picard",
+      "module": "Mathlib.Analysis.ODE.PicardLindelof",
+      "note": "The fixed-point equation Γφ = φ. Mathlib's variant states that the solution φ equals (an iteration of) Γφ on the interval — capturing the same Banach-fixed-point fact."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle {\\begin{aligned}\\left\\|\\Gamma ^{m}\\varphi _{1}(t)-\\Gamma ^{m}\\varphi _{2}(t)\\right\\|&=\\left\\|\\Gamma \\Gamma ^{m-1}\\varphi _{1}(t)-\\Gamma \\Gamma ^{m-1}\\varphi _{2}(t)\\right\\|\\\\&\\leq \\left|\\int _{t_{0}}^{t}\\left\\|f\\left(s,\\Gamma ^{m-1}\\varphi _{1}(s)\\right)-f\\left(s,\\Gamma ^{m-1}\\varphi _{2}(s)\\right)\\right\\|ds\\right|\\\\&\\leq L\\left|\\int _{t_{0}}^{t}\\left\\|\\Gamma ^{m-1}\\varphi _{1}(s)-\\Gamma ^{m-1}\\varphi _{2}(s)\\right\\|ds\\right|\\\\&\\leq L\\left|\\int _{t_{0}}^{t}{\\frac {L^{m-1}|s-t_{0}|^{m-1}}{(m-1)!}}\\left\\|\\varphi _{1}-\\varphi _{2}\\right\\|ds\\right|\\\\&\\leq {\\frac {L^{m}|t-t_{0}|^{m}}{m!}}\\left\\|\\varphi _{1}-\\varphi _{2}\\right\\|.\\end{aligned}}}"
+      },
+      "status": "not_formalized",
+      "note": "The inductive Γᵐ contraction estimate (factorial decay). Mathlib's proof iterates the contraction internally and uses Banach's fixed-point theorem on a complete metric space; this exact factorial bound is not a standalone decl."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle {\\frac {L^{m}\\alpha ^{m}}{m!}}<1,}"
+      },
+      "status": "not_formalized",
+      "note": "Choosing m large enough that Γᵐ becomes a contraction on an arbitrary subinterval. Implicit inside Mathlib's interval-optimisation step."
+    },
+    {
+      "anchor": {
+        "type": "theorem_box",
+        "value": "Lemma"
+      },
+      "status": "not_formalized",
+      "note": "Lemma stating Γᵐ contraction with factorial bound L^m|t−t₀|^m/m! · ‖φ₁−φ₂‖ on the closed interval [t₀−α, t₀+α]. Not a standalone Mathlib decl — the proof of `IsPicardLindelof.exists_eq_forall_mem_Icc_hasDerivWithinAt` applies Banach's fixed-point theorem to the m-th iterate of `ODE.picard` internally, without naming this intermediate bound."
+    }
+  ]
+}

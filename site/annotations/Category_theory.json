@@ -1,0 +1,169 @@
+{
+  "slug": "Category_theory",
+  "wikipedia_title": "Category theory",
+  "display_title": "Category theory",
+  "schema_version": 3,
+  "annotation_style": "theorem_article",
+  "annotations": [
+    {
+      "kind": "definition",
+      "label": "Category",
+      "anchor": {
+        "section": "Categories",
+        "snippet": "consists of the following three mathematical entities"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "CategoryTheory.Category",
+        "module": "Mathlib.CategoryTheory.Category.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`class Category` bundles a `CategoryStruct` (objects, hom-sets, identities, composition) together with the associativity and unit axioms.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Category of sets",
+      "anchor": {
+        "section": "Example",
+        "snippet": "A prototypical example of a category is Set"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "CategoryTheory.types",
+        "module": "Mathlib.CategoryTheory.Types.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`instance CategoryTheory.types : Category.{u} (Type u)` equips `Type u` with the category whose morphisms are functions.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Monomorphism, epimorphism, and related morphism properties",
+      "anchor": {
+        "section": "Morphisms",
+        "snippet": "Morphisms can have any of the following properties"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "CategoryTheory.Mono",
+        "module": "Mathlib.CategoryTheory.Category.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`Mono` and `Epi` are defined in `Category.Basic`, with `IsIso` (Iso.lean) and `SplitMono`/`SplitEpi`/`IsSplitMono`/`IsSplitEpi` (EpiMono.lean) covering sections and retractions.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Equivalent characterizations of isomorphisms",
+      "anchor": {
+        "section": "Morphisms",
+        "snippet": "Every retraction is an epimorphism, and every section is a monomorphism"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "CategoryTheory.SplitEpi.epi",
+        "module": "Mathlib.CategoryTheory.EpiMono",
+        "match_kind": "exact"
+      },
+      "note": "`SplitEpi.epi`/`IsSplitEpi.epi` (and the dual `SplitMono.mono`) in `EpiMono.lean` give the stated facts that retractions are epi and sections are mono.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Covariant functor",
+      "anchor": {
+        "section": "Functors",
+        "snippet": "covariant ) functor F from a category C to a category D"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "CategoryTheory.Functor",
+        "module": "Mathlib.CategoryTheory.Functor.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`structure Functor (C) [Category C] (D) [Category D]` packages object/morphism maps with `map_id` and `map_comp`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Contravariant functor",
+      "anchor": {
+        "section": "Functors",
+        "snippet": "A contravariant functor F : C → D is like a covariant functor"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "CategoryTheory.Functor.op",
+        "module": "Mathlib.CategoryTheory.Opposites",
+        "match_kind": "generalization"
+      },
+      "note": "Mathlib models contravariant functors as covariant functors `Cᵒᵖ ⥤ D`, with `Functor.op`/`leftOp`/`rightOp` in `Opposites.lean` providing the conversions.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Natural transformation",
+      "anchor": {
+        "section": "Natural transformations",
+        "snippet": "then a natural transformation η from F to G associates to every object"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "CategoryTheory.NatTrans",
+        "module": "Mathlib.CategoryTheory.NatTrans",
+        "match_kind": "exact"
+      },
+      "note": "`structure NatTrans (F G : C ⥤ D)` provides components `app` and the naturality square `naturality`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Naturally isomorphic functors",
+      "anchor": {
+        "section": "Natural transformations",
+        "snippet": "The two functors F and G are called naturally isomorphic"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "CategoryTheory.NatIso",
+        "module": "Mathlib.CategoryTheory.NatIso",
+        "match_kind": "exact"
+      },
+      "note": "Natural isomorphisms are `Iso` in the functor category; the `NatIso` namespace collects the API including componentwise `IsIso` characterizations.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Functor category",
+      "anchor": {
+        "section": "Further concepts and results",
+        "snippet": "The functor category D C has as objects the functors from C to D"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "CategoryTheory.Functor.category",
+        "module": "Mathlib.CategoryTheory.Functor.Category",
+        "match_kind": "exact"
+      },
+      "note": "`instance Functor.category : Category (C ⥤ D)` gives the category whose objects are functors and morphisms are natural transformations.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Strict 2-category",
+      "anchor": {
+        "section": "Higher-dimensional categories",
+        "snippet": "a (strict) 2-category is a category together with \"morphisms between morphisms\""
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "CategoryTheory.Bicategory.Strict",
+        "module": "Mathlib.CategoryTheory.Bicategory.Strict.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`class Bicategory.Strict` asserts the associators/unitors of a `Bicategory` are identities, yielding a strict 2-category.",
+      "provenance": "ai"
+    }
+  ]
+}

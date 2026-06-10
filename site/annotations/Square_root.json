@@ -1,0 +1,751 @@
+{
+  "slug": "Square_root",
+  "wikipedia_title": "Square root",
+  "display_title": "Square root",
+  "schema_version": 3,
+  "annotation_style": "theorem_article",
+  "annotations": [
+    {
+      "kind": "definition",
+      "label": "Square root",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "a square root of a number x is a number y such that"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "IsSquare",
+        "module": "Mathlib.Algebra.Group.Even",
+        "match_kind": "generalization"
+      },
+      "note": "`IsSquare a` is defined as `∃ r, a = r * r`, capturing the abstract notion that `a` has a square root.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Square roots of 16",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "For example, 4 and −4 are square roots of 16"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No specific worked example computing the square roots of 16 is present in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Principal square root",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "Every nonnegative real number x has a unique nonnegative square root, called the principal square root"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Real.sqrt",
+        "module": "Mathlib.Data.Real.Sqrt",
+        "match_kind": "exact"
+      },
+      "note": "`Real.sqrt` (with `Real.sqrt_nonneg` and `Real.sq_sqrt`) realizes the principal nonnegative square root.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Principal square root of 9",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "to express the fact that the principal square root of 9 is 3"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "There is no dedicated lemma stating `√9 = 3` (though `norm_num` can evaluate it).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Two square roots of a positive number",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "Every positive number x has two square roots"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "sq_eq_sq_iff_eq_or_eq_neg",
+        "module": "Mathlib.Algebra.Ring.Commute",
+        "match_kind": "generalization"
+      },
+      "note": "`sq_eq_sq_iff_eq_or_eq_neg` shows in any domain that `a² = b²` iff `a = ±b`, so each positive real has exactly two real square roots.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Square root function",
+      "anchor": {
+        "section": "Properties and uses",
+        "snippet": "is a function that maps the set of nonnegative real numbers onto itself"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Real.sqrt",
+        "module": "Mathlib.Data.Real.Sqrt",
+        "match_kind": "exact"
+      },
+      "note": "`Real.sqrt : ℝ → ℝ` (with `Real.sqrt_nonneg`) is the principal-branch square root function.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Rationality of square roots",
+      "anchor": {
+        "section": "Properties and uses",
+        "snippet": "The square root of x is rational if and only if x is a rational number that can be represented as a ratio of two perfect squares"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "irrational_sqrt_ratCast_iff_of_nonneg",
+        "module": "Mathlib.NumberTheory.Real.Irrational",
+        "match_kind": "exact"
+      },
+      "note": "`irrational_sqrt_ratCast_iff_of_nonneg` (and its `IsSquare`-based variants) characterizes when `√q` is rational.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Square root of x squared equals absolute value",
+      "anchor": {
+        "section": "Properties and uses",
+        "snippet": "For all real numbers x"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Real.sqrt_sq_eq_abs",
+        "module": "Mathlib.Data.Real.Sqrt",
+        "match_kind": "exact"
+      },
+      "note": "`Real.sqrt_sq_eq_abs` states `√(x^2) = |x|` for all real `x`.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Properties and uses",
+          "snippet": "For all real numbers x"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle {\\sqrt {x^{2}}}=\\left|x\\right|={\\begin{cases}x,&amp;{\\text{if }}x\\geq 0\\\\-x,&amp;{\\text{if }}x&lt;0.\\end{cases}}}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Multiplicativity of square roots",
+      "anchor": {
+        "section": "Properties and uses",
+        "snippet": "For all nonnegative real numbers x and y"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Real.sqrt_mul",
+        "module": "Mathlib.Data.Real.Sqrt",
+        "match_kind": "exact"
+      },
+      "note": "`Real.sqrt_mul` (and `NNReal.sqrt_mul`) gives `√(xy) = √x · √y` for `0 ≤ x`.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Properties and uses",
+          "snippet": "For all nonnegative real numbers x and y"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle {\\sqrt {xy}}={\\sqrt {x}}{\\sqrt {y}}}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle {\\sqrt {x}}=x^{1/2}.}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Continuity and differentiability of square root",
+      "anchor": {
+        "section": "Properties and uses",
+        "snippet": "The square root function is continuous for all nonnegative x , and differentiable for all positive x"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Real.continuous_sqrt",
+        "module": "Mathlib.Data.Real.Sqrt",
+        "match_kind": "exact"
+      },
+      "note": "`Real.continuous_sqrt` gives global continuity and `HasDerivAt.sqrt` (Mathlib.Analysis.SpecialFunctions.Sqrt) handles differentiability where the argument is nonzero.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Properties and uses",
+          "snippet": "The square root function is continuous for all nonnegative x , and differentiable for all positive x"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle f'(x)={\\frac {1}{2{\\sqrt {x}}}}.}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Taylor series of square root",
+      "anchor": {
+        "section": "Properties and uses",
+        "snippet": "converges for | x | ≤ 1"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No explicit power-series expansion of `√(1+x)` with its radius of convergence is recorded in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Square roots of positive integers are quadratic integers",
+      "anchor": {
+        "section": "Square roots of positive integers",
+        "snippet": "The square roots of an integer are algebraic integers"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "IsIntegral",
+        "module": "Mathlib.RingTheory.IntegralClosure.IsIntegral.Defs",
+        "match_kind": null
+      },
+      "note": "Mathlib has the general framework of `IsIntegral`/algebraic integers, but no specific lemma stating that `√n` (for `n : ℤ`) is an algebraic/quadratic integer.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Square root of a prime factorization",
+      "anchor": {
+        "section": "Square roots of positive integers",
+        "snippet": "the square root of a positive integer is the product of the roots of its prime factors"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No lemma expresses `√n` as the product of square roots over the prime factorization of `n`.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Square roots of positive integers",
+          "snippet": "the square root of a positive integer is the product of the roots of its prime factors"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle {\\sqrt {p_{1}^{2e_{1}+1}\\cdots p_{k}^{2e_{k}+1}p_{k+1}^{2e_{k+1}}\\dots p_{n}^{2e_{n}}}}=p_{1}^{e_{1}}\\dots p_{n}^{e_{n}}{\\sqrt {p_{1}\\dots p_{k}}}.}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Perfect squares have integer square roots",
+      "anchor": {
+        "section": "As decimal expansions",
+        "snippet": "The square roots of the perfect squares (e.g., 0, 1, 4, 9, 16) are integers"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Nat.sqrt_eq",
+        "module": "Mathlib.Data.Nat.Sqrt",
+        "match_kind": "exact"
+      },
+      "note": "`Nat.sqrt_eq` gives `Nat.sqrt (n*n) = n`, and `IsSquare` characterizes perfect squares whose `Real.sqrt` is a natural number.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Non-perfect-square positive integers have irrational square roots",
+      "anchor": {
+        "section": "As expansions in other numeral systems",
+        "snippet": "the square roots of positive integers are irrational numbers , and therefore have non-repeating digits"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "irrational_sqrt_natCast_iff",
+        "module": "Mathlib.NumberTheory.Real.Irrational",
+        "match_kind": "exact"
+      },
+      "note": "`irrational_sqrt_natCast_iff` states `Irrational (√n) ↔ ¬IsSquare n`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Lagrange's theorem on periodic continued fractions",
+      "anchor": {
+        "section": "As periodic continued fractions",
+        "snippet": "Lagrange found that the representation of the square root of any non-square positive integer as a continued fraction is periodic"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has a general `ContinuedFractions` framework but does not contain Lagrange's periodicity theorem for square-root continued fractions.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Continued fraction of square root of 11",
+      "anchor": {
+        "section": "As periodic continued fractions",
+        "snippet": "the simple continued fraction for the square root of 11"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No concrete computation of the continued fraction of √11 appears in Mathlib.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "As periodic continued fractions",
+          "snippet": "the simple continued fraction for the square root of 11"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle {\\sqrt {11}}=3+{\\cfrac {1}{3+{\\cfrac {1}{6+{\\cfrac {1}{3+{\\cfrac {1}{6+{\\cfrac {1}{3+\\ddots }}}}}}}}}}}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Babylonian/Heron's method",
+      "anchor": {
+        "section": "Computation",
+        "snippet": "The most common iterative method of square root calculation by hand is known as the \" Babylonian method \""
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "`Nat.sqrt` uses a Newton-style iteration internally, but the Babylonian/Heron real-valued recurrence is not formalized as a numerical algorithm with proved properties.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Quadratic convergence of Babylonian method",
+      "anchor": {
+        "section": "Computation",
+        "snippet": "If a is positive, the convergence is quadratic"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No analysis of the Babylonian iteration's quadratic order of convergence is present.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Imaginary unit",
+      "anchor": {
+        "section": "Square roots of negative and complex numbers",
+        "snippet": "called the imaginary unit , which is defined such that"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Complex.I",
+        "module": "Mathlib.Data.Complex.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`Complex.I` is the imaginary unit with `Complex.I_sq : I^2 = -1`.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Square roots of negative and complex numbers",
+          "snippet": "called the imaginary unit , which is defined such that"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle {\\sqrt {-x}}=i{\\sqrt {x}}.}"
+        }
+      ]
+    },
+    {
+      "kind": "definition",
+      "label": "Principal square root of a negative number",
+      "anchor": {
+        "section": "Square roots of negative and complex numbers",
+        "snippet": "if x is any nonnegative number, then the principal square root of − x is"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Complex.sqrt_neg_of_nonneg",
+        "module": "Mathlib.Analysis.RCLike.Sqrt",
+        "match_kind": "exact"
+      },
+      "note": "`Complex.sqrt_neg_of_nonneg` evaluates `Complex.sqrt (-a) = I * √a.re` for nonneg `a`.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Square roots of negative and complex numbers",
+          "snippet": "if x is any nonnegative number, then the principal square root of − x is"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle {\\sqrt {-x}}=i{\\sqrt {x}}.}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Two square roots of a nonzero complex number",
+      "anchor": {
+        "section": "Square roots of negative and complex numbers",
+        "snippet": "For every non-zero complex number z there exist precisely two numbers w such that"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "sq_eq_sq_iff_eq_or_eq_neg",
+        "module": "Mathlib.Algebra.Ring.Commute",
+        "match_kind": "generalization"
+      },
+      "note": "Over a domain (in particular `ℂ`), `w² = z` has solutions `±w₀`, so a nonzero complex number has exactly two square roots.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Principal square root of a complex number",
+      "anchor": {
+        "section": "Principal square root of a complex number",
+        "snippet": "then the principal square root of"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Complex.sqrt",
+        "module": "Mathlib.Analysis.RCLike.Sqrt",
+        "match_kind": "exact"
+      },
+      "note": "`Complex.sqrt a := a ^ (2⁻¹ : ℂ)` defines the principal complex square root.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Principal square root of a complex number",
+          "snippet": "then the principal square root of"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle z=re^{i\\varphi }{\\text{ with }}-\\pi &lt;\\varphi \\leq \\pi ,}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle {\\sqrt {z}}={\\sqrt {r}}e^{i\\varphi /2}.}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle {\\sqrt {-2i}}={\\sqrt {2e^{i\\varphi }}}={\\sqrt {2}}e^{i\\varphi /2}={\\sqrt {2}}e^{i(-\\pi /4)}=1-i}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Holomorphy of principal square root",
+      "anchor": {
+        "section": "Principal square root of a complex number",
+        "snippet": "The principal square root function is holomorphic everywhere except on the set of non-positive real numbers"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Complex.differentiableOn_sqrt",
+        "module": "Mathlib.Analysis.Complex.SqrtDeriv",
+        "match_kind": "exact"
+      },
+      "note": "`Complex.differentiableOn_sqrt` proves `Complex.sqrt` is differentiable on the slit plane (the complement of the non-positive reals).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Algebraic formula for principal square root",
+      "anchor": {
+        "section": "Algebraic formula",
+        "snippet": "the following formula can be used for the principal square root"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Complex.sqrt_eq_real_add_ite",
+        "module": "Mathlib.Analysis.RCLike.Sqrt",
+        "match_kind": "exact"
+      },
+      "note": "`Complex.sqrt_eq_real_add_ite` expresses `Complex.sqrt a` as `√((‖a‖+a.re)/2) ± I·√((‖a‖-a.re)/2)`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Principal square roots of ±i",
+      "anchor": {
+        "section": "Algebraic formula",
+        "snippet": "the principal square roots of ± i are given by"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Complex.sqrt_I",
+        "module": "Mathlib.Analysis.RCLike.Sqrt",
+        "match_kind": "exact"
+      },
+      "note": "`Complex.sqrt_I` and `Complex.sqrt_neg_I` evaluate `sqrt I` and `sqrt (-I)`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Cube root",
+      "anchor": {
+        "section": "n th roots and polynomial roots",
+        "snippet": "A cube root of"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No dedicated `cbrt` definition is present; `Real.rpow x (1/3)` is used ad hoc when needed.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "n-th root",
+      "anchor": {
+        "section": "n th roots and polynomial roots",
+        "snippet": "If n is an integer greater than two, a n -th root of"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "NNReal.rpow",
+        "module": "Mathlib.Analysis.SpecialFunctions.Pow.NNReal",
+        "match_kind": null
+      },
+      "note": "There is no general `nthRoot` function; nonneg n-th roots are realized via `rpow (1/n)` and roots of unity are formalized as `rootsOfUnity`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Root of a polynomial",
+      "anchor": {
+        "section": "n th roots and polynomial roots",
+        "snippet": "Given any polynomial p , a root of p is a number y such that"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Polynomial.IsRoot",
+        "module": "Mathlib.Algebra.Polynomial.Eval.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`Polynomial.IsRoot p a` is defined as `p.eval a = 0`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Abel–Ruffini theorem",
+      "anchor": {
+        "section": "n th roots and polynomial roots",
+        "snippet": "Abel–Ruffini theorem states that, in general, the roots of a polynomial of degree five or higher cannot be expressed in terms of n th roots"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Polynomial.solvableByRad.isSolvable",
+        "module": "Mathlib.FieldTheory.AbelRuffini",
+        "match_kind": null
+      },
+      "note": "Mathlib formalizes one direction (solvable-by-radicals ⇒ solvable Galois group); the explicit `Equation.quintic` example/witness needed for the full Abel–Ruffini statement is not present.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Unique positive-definite square root",
+      "anchor": {
+        "section": "Square roots of matrices and operators",
+        "snippet": "If A is a positive-definite matrix or operator, then there exists precisely one positive definite matrix or operator B"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "CFC.sqrt_unique",
+        "module": "Mathlib.Analysis.SpecialFunctions.ContinuousFunctionalCalculus.Rpow.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`CFC.sqrt` together with `CFC.sqrt_unique` (and `Matrix.PosSemidef.sqrt` for matrices) provides the unique nonnegative operator square root.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Infinitely many square roots of the identity matrix",
+      "anchor": {
+        "section": "Square roots of matrices and operators",
+        "snippet": "the 2 × 2 identity matrix has an infinity of square roots"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No example exhibiting the infinitely many involutory square roots of the 2×2 identity is present.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "At most two square roots in an integral domain",
+      "anchor": {
+        "section": "In integral domains, including fields",
+        "snippet": "Each element of an integral domain has no more than 2 square roots"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "sq_eq_sq_iff_eq_or_eq_neg",
+        "module": "Mathlib.Algebra.Ring.Commute",
+        "match_kind": "exact"
+      },
+      "note": "`sq_eq_sq_iff_eq_or_eq_neg` (in a no-zero-divisors ring) shows `a² = b²` iff `a = ±b`, so at most two square roots.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Square roots in fields of characteristic 2",
+      "anchor": {
+        "section": "In integral domains, including fields",
+        "snippet": "In a field of characteristic 2, an element either has one square root or does not have any at all"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "frobenius_inj",
+        "module": "Mathlib.Algebra.CharP.Reduced",
+        "match_kind": "generalization"
+      },
+      "note": "Injectivity of Frobenius (`frobenius_inj`) implies in characteristic 2 the squaring map is injective, so square roots are unique when they exist; `isSquare_of_char_two` covers finite fields.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Quadratic residue",
+      "anchor": {
+        "section": "In integral domains, including fields",
+        "snippet": "A non-zero element of the field"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "IsSquare",
+        "module": "Mathlib.Algebra.Group.Even",
+        "match_kind": "generalization"
+      },
+      "note": "Mathlib uses `IsSquare` for quadratic-residue-style statements (e.g. `ZMod.isSquare_neg_one_iff`); there is no dedicated `QuadraticResidue` predicate.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Square roots of 1 modulo 8",
+      "anchor": {
+        "section": "In rings in general",
+        "snippet": "the element 1 has four distinct square roots"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No specific enumeration of the four square roots of 1 in `ZMod 8` is recorded.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Square roots of −1 in the quaternions",
+      "anchor": {
+        "section": "In rings in general",
+        "snippet": "the element −1 has infinitely many square roots"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Although `Quaternion` is formalized, the sphere of square roots of `-1` is not characterized explicitly.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "In rings in general",
+          "snippet": "the element −1 has infinitely many square roots"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\{ai+bj+ck\\mid a^{2}+b^{2}+c^{2}=1\\}.}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Square root of 0 in a ring",
+      "anchor": {
+        "section": "In rings in general",
+        "snippet": "A square root of 0 is either 0 or a zero divisor"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "mul_self_eq_zero",
+        "module": "Mathlib.Algebra.GroupWithZero.Defs",
+        "match_kind": null
+      },
+      "note": "`mul_self_eq_zero` says `x*x = 0 ↔ x = 0` in a no-zero-divisors ring; the exact phrasing 'either 0 or a zero divisor' for general rings is not stated as a single lemma.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Geometric construction via similar triangles",
+      "anchor": {
+        "section": "Geometric construction of the square root",
+        "snippet": "Euclid's second proof in Book VI depends on the theory of similar triangles"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No Euclidean construction of the geometric mean/square root via similar triangles is formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Iterative right-triangle construction (Spiral of Theodorus)",
+      "anchor": {
+        "section": "Geometric construction of the square root",
+        "snippet": "Another method of geometric construction uses right triangles and induction"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Spiral of Theodorus construction has no formalization in Mathlib.",
+      "provenance": "ai"
+    }
+  ]
+}

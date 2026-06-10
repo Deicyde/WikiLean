@@ -1,0 +1,537 @@
+{
+  "slug": "Information_theory",
+  "wikipedia_title": "Information theory",
+  "display_title": "Information theory",
+  "schema_version": 3,
+  "annotation_style": "theorem_article",
+  "annotations": [
+    {
+      "kind": "example",
+      "label": "Fair coin flip information",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "if one flips a fair coin and does not yet know the outcome"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Real.binEntropy_two_inv",
+        "module": "Mathlib.Analysis.SpecialFunctions.BinaryEntropy",
+        "match_kind": "special_case"
+      },
+      "note": "The fair-coin entropy is the special case `binEntropy 2⁻¹ = log 2` (one bit in nats), but the general information/uncertainty concept of the example is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Nyquist's line-speed relation",
+      "anchor": {
+        "section": "Historical background",
+        "snippet": "W is the speed of transmission of intelligence"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Nyquist's W = K log m line-speed relation has no counterpart in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Hartley's measure of information",
+      "anchor": {
+        "section": "Historical background",
+        "snippet": "where S was the number of possible symbols, and n the number of symbols in a transmission"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Hartley information H = n log S is not defined in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "p log p convention at zero",
+      "anchor": {
+        "section": "Quantities of information",
+        "snippet": "an expression of the form p log p is considered by convention to be equal to zero"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Real.negMulLog_zero",
+        "module": "Mathlib.Analysis.SpecialFunctions.Log.NegMulLog",
+        "match_kind": "exact"
+      },
+      "note": "`negMulLog_zero : negMulLog 0 = 0` encodes exactly the convention that p·log p vanishes at p = 0 (via Mathlib's `Real.log 0 = 0`).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Shannon entropy",
+      "anchor": {
+        "section": "Entropy of an information source",
+        "snippet": "is defined as the expected value of the information content of the symbols"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Real.negMulLog",
+        "module": "Mathlib.Analysis.SpecialFunctions.Log.NegMulLog",
+        "match_kind": null
+      },
+      "note": "The summand `negMulLog` and special cases `binEntropy`/`qaryEntropy` exist, but the general Shannon entropy −∑ pᵢ log pᵢ of an arbitrary distribution is not defined.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Self-information (surprisal)",
+      "anchor": {
+        "section": "Entropy of an information source",
+        "snippet": "is known as its self-information or surprisal"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "There is no named self-information/surprisal `−log p(x)` definition in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Less probable symbol has larger surprisal",
+      "anchor": {
+        "section": "Entropy of an information source",
+        "snippet": "A less probable symbol has a larger surprisal"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Real.log_lt_log",
+        "module": "Mathlib.Analysis.SpecialFunctions.Log.Basic",
+        "match_kind": "invocation"
+      },
+      "note": "Strict monotonicity of `Real.log` gives that smaller probability yields larger −log p, but surprisal itself is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "1000-bit transmission",
+      "anchor": {
+        "section": "Entropy of an information source",
+        "snippet": "if one transmits 1000 bits"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This is an informal illustrative example with no Mathlib statement.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Maximum entropy at equiprobability",
+      "anchor": {
+        "section": "Properties",
+        "snippet": "it is maximized when all the messages in the message space are equiprobable"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Real.binEntropy_le_log_two",
+        "module": "Mathlib.Analysis.SpecialFunctions.BinaryEntropy",
+        "match_kind": "special_case"
+      },
+      "note": "Only the binary case (`binEntropy ≤ log 2`, maximal at the equiprobable p = ½) is formalized, not the general uniform-maximizes-entropy theorem.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Total entropy of i.i.d. source",
+      "anchor": {
+        "section": "Properties",
+        "snippet": "the total entropy of the message is"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Additivity of entropy over an i.i.d. source is not formalized since general entropy is absent.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Binary entropy function",
+      "anchor": {
+        "section": "Binary Entropy Function",
+        "snippet": "is the binary entropy function"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Real.binEntropy",
+        "module": "Mathlib.Analysis.SpecialFunctions.BinaryEntropy",
+        "match_kind": "exact"
+      },
+      "note": "`Real.binEntropy p = p·log p⁻¹ + (1−p)·log (1−p)⁻¹` is exactly the binary entropy function.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Binary entropy maximum at p=0.5",
+      "anchor": {
+        "section": "Binary Entropy Function",
+        "snippet": "reaching its maximum of 1 bit when p = 0.5"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Real.binEntropy_le_log_two",
+        "module": "Mathlib.Analysis.SpecialFunctions.BinaryEntropy",
+        "match_kind": "exact"
+      },
+      "note": "`binEntropy_le_log_two` plus `binEntropy_eq_log_two ↔ p = 2⁻¹` give the maximum log 2 (= 1 bit) attained uniquely at p = ½.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Joint entropy",
+      "anchor": {
+        "section": "Joint entropy",
+        "snippet": "is merely the entropy of their pairing"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Joint entropy H(X,Y) is not defined in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Joint entropy of independent variables",
+      "anchor": {
+        "section": "Joint entropy",
+        "snippet": "then their joint entropy is the sum of their individual entropies"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Additivity of joint entropy under independence is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Chess piece position",
+      "anchor": {
+        "section": "Joint entropy",
+        "snippet": "represents the position of a chess piece"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This is an informal illustrative example with no Mathlib statement.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Joint entropy as subcase of entropy",
+      "anchor": {
+        "section": "Joint entropy",
+        "snippet": "joint entropy is just a subcase of entropy where the random variable is a vector"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Neither entropy nor joint entropy of random variables is defined in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Conditional entropy",
+      "anchor": {
+        "section": "Conditional entropy (equivocation)",
+        "snippet": "is the average conditional entropy over"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Conditional entropy H(X|Y) is not defined in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Chain rule property of conditional entropy",
+      "anchor": {
+        "section": "Conditional entropy (equivocation)",
+        "snippet": "A basic property of this form of conditional entropy is that"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The entropy chain rule H(X|Y) = H(X,Y) − H(Y) is not formalized; the existing `KullbackLeibler.ChainRule` concerns KL divergence, not entropy.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Mutual information",
+      "anchor": {
+        "section": "Mutual information (transinformation)",
+        "snippet": "measures the amount of information that can be obtained about one random variable by observing another"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mutual information I(X;Y) is not defined in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Basic property of mutual information",
+      "anchor": {
+        "section": "Mutual information (transinformation)",
+        "snippet": "A basic property of the mutual information is that"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Identities like I(X;Y) = H(X) − H(X|Y) are not formalized since mutual information and entropy are absent.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Mutual information is symmetric",
+      "anchor": {
+        "section": "Mutual information (transinformation)",
+        "snippet": "Mutual information is symmetric"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Symmetry of mutual information is not formalized since mutual information itself is undefined.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Mutual information as KL divergence",
+      "anchor": {
+        "section": "Mutual information (transinformation)",
+        "snippet": "Mutual information can be expressed as the average Kullback–Leibler divergence"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "InformationTheory.klDiv",
+        "module": "Mathlib.InformationTheory.KullbackLeibler.Basic",
+        "match_kind": null
+      },
+      "note": "`klDiv` (the RHS building block) exists, but mutual information and its identity as a KL divergence between joint and product measures are not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Kullback–Leibler divergence",
+      "anchor": {
+        "section": "Kullback–Leibler divergence (information gain)",
+        "snippet": "is a way of comparing two distributions"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "InformationTheory.klDiv",
+        "module": "Mathlib.InformationTheory.KullbackLeibler.Basic",
+        "match_kind": "generalization"
+      },
+      "note": "`InformationTheory.klDiv μ ν` defines KL divergence for general finite measures, generalizing the discrete ∑ p log(p/q).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "KL divergence is not a metric",
+      "anchor": {
+        "section": "Kullback–Leibler divergence (information gain)",
+        "snippet": "KL divergence is not a true metric since it is not symmetric"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has `klDiv` and `klDiv_eq_zero_iff`, but the negative claim that it is asymmetric / not a metric is not stated.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Directed information",
+      "anchor": {
+        "section": "Directed Information",
+        "snippet": "is an information theory measure that quantifies the information flow"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Directed information is not defined in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Directed information is not symmetric",
+      "anchor": {
+        "section": "Directed Information",
+        "snippet": "directed information is not symmetric"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Asymmetry of directed information is not formalized since the measure itself is undefined.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Information rate",
+      "anchor": {
+        "section": "Rate",
+        "snippet": "Information rate is the average entropy per symbol"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Information (entropy) rate is not defined in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Channel capacity",
+      "anchor": {
+        "section": "Channel capacity",
+        "snippet": "this maximum mutual information is called the channel capacity"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Channel capacity (sup of mutual information) is not defined in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Noisy-channel coding theorem",
+      "anchor": {
+        "section": "Channel capacity",
+        "snippet": "there exists a code of length N and rate ≥ R and a decoding algorithm"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Shannon's noisy-channel coding theorem is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Capacity of the binary symmetric channel",
+      "anchor": {
+        "section": "Capacity of particular channel models",
+        "snippet": "The BSC has a capacity of"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Real.binEntropy",
+        "module": "Mathlib.Analysis.SpecialFunctions.BinaryEntropy",
+        "match_kind": null
+      },
+      "note": "The binary entropy term in C = 1 − H_b(p) exists as `binEntropy`, but channel capacity is not defined so the BSC capacity is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Capacity of the binary erasure channel",
+      "anchor": {
+        "section": "Capacity of particular channel models",
+        "snippet": "The capacity of the BEC is"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The BEC capacity C = 1 − p is not formalized since channel capacity is undefined in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Capacity of channels with memory",
+      "anchor": {
+        "section": "Channels with memory and directed information",
+        "snippet": "the capacity is given by the mutual information rate when there is no feedback available"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Capacity of channels with memory via mutual information rate is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Fungible information",
+      "anchor": {
+        "section": "Fungible information",
+        "snippet": "Fungible information is the information for which the means of encoding is not important"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Fungible information has no definition in Mathlib.",
+      "provenance": "ai"
+    }
+  ]
+}

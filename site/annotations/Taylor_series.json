@@ -1,0 +1,1361 @@
+{
+  "slug": "Taylor_series",
+  "wikipedia_title": "Taylor series",
+  "display_title": "Taylor series",
+  "schema_version": 3,
+  "annotation_style": "theorem_article",
+  "annotations": [
+    {
+      "kind": "definition",
+      "label": "Taylor series",
+      "anchor": {
+        "section": "Definition",
+        "snippet": "The Taylor series of a real or complex-valued function"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "taylorWithin",
+        "module": "Mathlib.Analysis.Calculus.Taylor",
+        "match_kind": "generalization"
+      },
+      "note": "Mathlib defines the Taylor polynomial via `taylorWithin` and uses the iterated-derivative sum representation (e.g. `Complex.taylorSeries_eq_on_ball`).",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Definition",
+          "snippet": "The Taylor series of a real or complex-valued function"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle f(a)+{\\frac {f'(a)}{1!}}(x-a)+{\\frac {f''(a)}{2!}}(x-a)^{2}+\\cdots =\\sum _{n=0}^{\\infty }{\\frac {f^{(n)}(a)}{n!}}(x-a)^{n}.}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle T_{n}(x)=\\sum _{k=0}^{n}{\\frac {f^{(k)}(a)}{k!}}(x-a)^{k}.}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle f(0)+{\\frac {f'(0)}{1!}}x+{\\frac {f''(0)}{2!}}x^{2}+\\cdots =\\sum _{n=0}^{\\infty }{\\frac {f^{(n)}(0)}{n!}}x^{n}.}"
+        }
+      ]
+    },
+    {
+      "kind": "definition",
+      "label": "Taylor polynomial of degree n",
+      "anchor": {
+        "section": "Definition",
+        "snippet": "The corresponding Taylor polynomial of degree"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "taylorWithin",
+        "module": "Mathlib.Analysis.Calculus.Taylor",
+        "match_kind": "exact"
+      },
+      "note": "`taylorWithin f n s x₀` is the order-`n` Taylor polynomial using `iteratedDerivWithin`.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Definition",
+          "snippet": "The corresponding Taylor polynomial of degree"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle f(a)+{\\frac {f'(a)}{1!}}(x-a)+{\\frac {f''(a)}{2!}}(x-a)^{2}+\\cdots =\\sum _{n=0}^{\\infty }{\\frac {f^{(n)}(a)}{n!}}(x-a)^{n}.}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle T_{n}(x)=\\sum _{k=0}^{n}{\\frac {f^{(k)}(a)}{k!}}(x-a)^{k}.}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle f(0)+{\\frac {f'(0)}{1!}}x+{\\frac {f''(0)}{2!}}x^{2}+\\cdots =\\sum _{n=0}^{\\infty }{\\frac {f^{(n)}(0)}{n!}}x^{n}.}"
+        }
+      ]
+    },
+    {
+      "kind": "definition",
+      "label": "Maclaurin series",
+      "anchor": {
+        "section": "Definition",
+        "snippet": "the Maclaurin series takes the form"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "taylorWithin",
+        "module": "Mathlib.Analysis.Calculus.Taylor",
+        "match_kind": "special_case"
+      },
+      "note": "No dedicated Maclaurin definition; obtained as the `x₀ = 0` instance of `taylorWithin` / Complex `taylorSeries_eq_on_ball`.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Definition",
+          "snippet": "the Maclaurin series takes the form"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle f(a)+{\\frac {f'(a)}{1!}}(x-a)+{\\frac {f''(a)}{2!}}(x-a)^{2}+\\cdots =\\sum _{n=0}^{\\infty }{\\frac {f^{(n)}(a)}{n!}}(x-a)^{n}.}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle T_{n}(x)=\\sum _{k=0}^{n}{\\frac {f^{(k)}(a)}{k!}}(x-a)^{k}.}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle f(0)+{\\frac {f'(0)}{1!}}x+{\\frac {f''(0)}{2!}}x^{2}+\\cdots =\\sum _{n=0}^{\\infty }{\\frac {f^{(n)}(0)}{n!}}x^{n}.}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Taylor series of a product is the Cauchy product",
+      "anchor": {
+        "section": "Basic properties",
+        "snippet": "is the Cauchy product of the Taylor series"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "AnalyticAt.mul",
+        "module": "Mathlib.Analysis.Analytic.Constructions",
+        "match_kind": "generalization"
+      },
+      "note": "`AnalyticAt.mul` shows products of analytic functions are analytic, and `tsum_mul_tsum_of_summable_norm` gives the Cauchy product formula, but the combined coefficient identity for Taylor series isn't stated directly.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Composition of Taylor series",
+      "anchor": {
+        "section": "Basic properties",
+        "snippet": "Compositions of functions having Taylor series likewise have Taylor series"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "HasFPowerSeriesAt.comp",
+        "module": "Mathlib.Analysis.Analytic.Composition",
+        "match_kind": "exact"
+      },
+      "note": "`HasFPowerSeriesAt.comp` and `AnalyticAt.comp` give composition of power series / analytic functions.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Term-by-term differentiation and integration",
+      "anchor": {
+        "section": "Basic properties",
+        "snippet": "A Taylor series may be differentiated and integrated term by term"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "HasFPowerSeriesOnBall.fderiv",
+        "module": "Mathlib.Analysis.Calculus.FDeriv.Analytic",
+        "match_kind": "generalization"
+      },
+      "note": "Term-by-term differentiation is `HasFPowerSeriesOnBall.fderiv` (via `derivSeries`); a corresponding term-by-term integration result isn't explicitly stated.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Basic properties",
+          "snippet": "A Taylor series may be differentiated and integrated term by term"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle {\\frac {d}{dx}}\\sum _{n=0}^{\\infty }c_{n}(x-a)^{n}=\\sum _{n=1}^{\\infty }nc_{n}(x-a)^{n-1},}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\int \\sum _{n=0}^{\\infty }c_{n}(x-a)^{n}\\,dx=C+\\sum _{n=0}^{\\infty }{\\frac {c_{n}}{n+1}}(x-a)^{n+1}.}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Radius of convergence preserved under differentiation/integration",
+      "anchor": {
+        "section": "Basic properties",
+        "snippet": "The differentiated and integrated series have the same radius of convergence"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "FormalMultilinearSeries.radius_le_radius_derivSeries",
+        "module": "Mathlib.Analysis.Analytic.ChangeOrigin",
+        "match_kind": "generalization"
+      },
+      "note": "`radius_le_radius_derivSeries` shows the derived series has at least the same radius of convergence.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Basic properties",
+          "snippet": "The differentiated and integrated series have the same radius of convergence"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle {\\frac {d}{dx}}\\sum _{n=0}^{\\infty }c_{n}(x-a)^{n}=\\sum _{n=1}^{\\infty }nc_{n}(x-a)^{n-1},}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\int \\sum _{n=0}^{\\infty }c_{n}(x-a)^{n}\\,dx=C+\\sum _{n=0}^{\\infty }{\\frac {c_{n}}{n+1}}(x-a)^{n+1}.}"
+        }
+      ]
+    },
+    {
+      "kind": "example",
+      "label": "Term-by-term differentiation of geometric series",
+      "anchor": {
+        "section": "Term-by-term differentiation",
+        "snippet": "differentiating the geometric series"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This specific worked example is not present, though the underlying geometric series sum is in `hasSum_geometric_of_norm_lt_one`.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Term-by-term differentiation",
+          "snippet": "differentiating the geometric series"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle {\\frac {1}{1-x}}=1+x+x^{2}+x^{3}+\\cdots ,\\quad |x|&lt;1,}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle {\\frac {d}{dx}}{\\frac {1}{1-x}}={\\frac {1}{(1-x)^{2}}}=0+1+2x+3x^{2}+\\cdots ,\\quad |x|&lt;1.}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle {\\frac {1}{(1-x)^{2}}}=\\sum _{n=1}^{\\infty }nx^{n-1},\\quad |x|&lt;1.}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle {\\frac {1}{(1-x)^{3}}}=\\sum _{n=2}^{\\infty }n(n-1)x^{n-2},\\quad |x|&lt;1.}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle {\\frac {1}{(1-x)^{4}}}=\\sum _{n=3}^{\\infty }n(n-1)(n-2)x^{n-3},\\quad |x|&lt;1.}"
+        }
+      ]
+    },
+    {
+      "kind": "example",
+      "label": "Term-by-term integration of geometric series",
+      "anchor": {
+        "section": "Term-by-term integration",
+        "snippet": "integrating the geometric series"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Not present as a worked example; the resulting log series exists as `hasSum_pow_div_log_of_abs_lt_one`.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Term-by-term integration",
+          "snippet": "integrating the geometric series"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle {\\frac {1}{1-t}}=1+t+t^{2}+t^{3}+\\cdots ,\\quad |t|&lt;1,}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle -\\log(1-x)=\\int _{0}^{x}{\\frac {dt}{1-t}}=x+{\\frac {x^{2}}{2}}+{\\frac {x^{3}}{3}}+{\\frac {x^{4}}{4}}+\\cdots ,\\quad |x|&lt;1.}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\log(1-x)=-\\sum _{n=1}^{\\infty }{\\frac {x^{n}}{n}},}"
+        }
+      ]
+    },
+    {
+      "kind": "example",
+      "label": "Substitution into geometric series",
+      "anchor": {
+        "section": "Substitution",
+        "snippet": "the geometric series"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No direct formalization of this specific substitution example.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Substitution",
+          "snippet": "the geometric series"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle {\\frac {1}{1+x^{2}}}=1-x^{2}+x^{4}-x^{6}+\\cdots =\\sum _{n=0}^{\\infty }(-1)^{n}x^{2n}.}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\arctan x=\\int _{0}^{x}{\\frac {dt}{1+t^{2}}}=\\sum _{n=0}^{\\infty }{\\frac {(-1)^{n}}{2n+1}}x^{2n+1},}"
+        }
+      ]
+    },
+    {
+      "kind": "example",
+      "label": "7th-degree Maclaurin polynomial via composition",
+      "anchor": {
+        "section": "Composition",
+        "snippet": "In order to compute the 7th-degree Maclaurin polynomial"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This specific composition computation is not formalized.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Composition",
+          "snippet": "In order to compute the 7th-degree Maclaurin polynomial"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle f(x)=\\ln(\\cos x),\\quad x\\in {\\bigl (}{-{\\tfrac {\\pi }{2}}},{\\tfrac {\\pi }{2}}{\\bigr )},}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle f(x)={\\ln }{\\bigl (}1+(\\cos x-1){\\bigr )},}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\ln(1+x)=x-{\\frac {x^{2}}{2}}+{\\frac {x^{3}}{3}}+O{\\left(x^{4}\\right)}}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\cos x-1=-{\\frac {x^{2}}{2}}+{\\frac {x^{4}}{24}}-{\\frac {x^{6}}{720}}+O{\\left(x^{8}\\right)}.}"
+        }
+      ]
+    },
+    {
+      "kind": "example",
+      "label": "Taylor series of e^x / cos x via division",
+      "anchor": {
+        "section": "Division",
+        "snippet": "Given that the Taylor series at 0 of the function"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This worked division example is not formalized.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Division",
+          "snippet": "Given that the Taylor series at 0 of the function"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle e^{x}=1+x+{\\frac {x^{2}}{2!}}+{\\frac {x^{3}}{3!}}+{\\frac {x^{4}}{4!}}+\\cdots ,}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\cos x=1-{\\frac {x^{2}}{2!}}+{\\frac {x^{4}}{4!}}-\\cdots .}"
+        }
+      ]
+    },
+    {
+      "kind": "example",
+      "label": "Maclaurin series of the Fresnel integral",
+      "anchor": {
+        "section": "Non-elementary integrals",
+        "snippet": "the Fresnel integral"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Fresnel integrals are not in Mathlib.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Non-elementary integrals",
+          "snippet": "the Fresnel integral"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle S(x)=\\int _{0}^{x}\\sin(t^{2})\\,dt}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\sin(t^{2})=\\sum _{n=0}^{\\infty }{\\frac {(-1)^{n}}{(2n+1)!}}t^{4n+2},}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle S(x)=\\sum _{n=0}^{\\infty }{\\frac {(-1)^{n}}{(4n+3)(2n+1)!}}x^{4n+3}.}"
+        }
+      ]
+    },
+    {
+      "kind": "example",
+      "label": "Solving an ODE via Taylor series",
+      "anchor": {
+        "section": "Differential equations",
+        "snippet": "to solve"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This worked ODE example is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Taylor's theorem with remainder",
+      "anchor": {
+        "section": "Approximation error and Taylor's theorem",
+        "snippet": "Taylor's theorem writes a function"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "taylor_mean_remainder_lagrange",
+        "module": "Mathlib.Analysis.Calculus.Taylor",
+        "match_kind": "exact"
+      },
+      "note": "Multiple remainder forms exist: `taylor_mean_remainder_lagrange`, `taylor_mean_remainder_cauchy`, `taylor_integral_remainder`, etc.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Approximation error and Taylor's theorem",
+          "snippet": "Taylor's theorem writes a function"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle f(x)=\\sum _{k=0}^{n}{\\frac {f^{(k)}(a)}{k!}}(x-a)^{k}+R_{n}(x).}"
+        }
+      ]
+    },
+    {
+      "kind": "definition",
+      "label": "Gregory–Newton interpolation formula",
+      "anchor": {
+        "section": "Generalization in finite differences",
+        "snippet": "One form of the Gregory–Newton interpolation formula"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "shift_eq_sum_fwdDiff_iter",
+        "module": "Mathlib.Algebra.Group.ForwardDiff",
+        "match_kind": "exact"
+      },
+      "note": "`shift_eq_sum_fwdDiff_iter` is explicitly identified as the Gregory–Newton formula.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Generalization in finite differences",
+          "snippet": "One form of the Gregory–Newton interpolation formula"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle f(x)=\\sum _{k=0}^{\\infty }{\\frac {\\Delta ^{k}[f](a)}{k!}}\\,(x-a)_{k}}"
+        }
+      ]
+    },
+    {
+      "kind": "theorem",
+      "label": "Hille's theorem (finite-difference generalization)",
+      "anchor": {
+        "section": "Generalization in finite differences",
+        "snippet": "the following theorem, due to Einar Hille"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Hille's finite-difference Taylor-type theorem is not in Mathlib.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Generalization in finite differences",
+          "snippet": "the following theorem, due to Einar Hille"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\lim _{h\\to 0^{+}}\\sum _{n=0}^{\\infty }{\\frac {t^{n}}{n!}}{\\frac {\\Delta _{h}^{n}f(a)}{h^{n}}}=f(a+t).}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Power series identity for sequences",
+      "anchor": {
+        "section": "Generalization in finite differences",
+        "snippet": "the following power series identity holds"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This identity from the finite-differences section is not formalized.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Generalization in finite differences",
+          "snippet": "the following power series identity holds"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\sum _{n=0}^{\\infty }{\\frac {u^{n}}{n!}}\\Delta ^{n}a_{i}=e^{-u}\\sum _{j=0}^{\\infty }{\\frac {u^{j}}{j!}}a_{i+j}.}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle f(a+t)=\\lim _{h\\to 0^{+}}e^{-t/h}\\sum _{j=0}^{\\infty }f(a+jh){\\frac {(t/h)^{j}}{j!}}.}"
+        }
+      ]
+    },
+    {
+      "kind": "example",
+      "label": "Non-analytic smooth function",
+      "anchor": {
+        "section": "Convergence and analyticity",
+        "snippet": "This gives a standard example of a non-analytic smooth function"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "expNegInvGlue",
+        "module": "Mathlib.Analysis.SpecialFunctions.SmoothTransition",
+        "match_kind": "exact"
+      },
+      "note": "`expNegInvGlue` defines the classic `exp(-1/x)` smooth-but-non-analytic example.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Convergence and analyticity",
+          "snippet": "This gives a standard example of a non-analytic smooth function"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle f(x)={\\begin{cases}e^{-1/x^{2}}&amp;{\\text{if }}x\\neq 0,\\\\[3mu]0&amp;{\\text{if }}x=0\\end{cases}}}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Taylor series convergence via remainder",
+      "anchor": {
+        "section": "Convergence and analyticity",
+        "snippet": "the Taylor series of a function represents the function at a point"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "taylor_tendsto",
+        "module": "Mathlib.Analysis.Calculus.Taylor",
+        "match_kind": "generalization"
+      },
+      "note": "`taylor_tendsto` and `taylor_isLittleO` express that the Taylor polynomial converges to `f` when the remainder vanishes.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Convergence and analyticity",
+          "snippet": "the Taylor series of a function represents the function at a point"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle f(x)=\\sum _{k=0}^{n}{\\frac {f^{(k)}(a)}{k!}}(x-a)^{k}+R_{n}(x),}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\lim _{n\\to \\infty }R_{n}(x)=0.}"
+        }
+      ]
+    },
+    {
+      "kind": "definition",
+      "label": "Analytic function",
+      "anchor": {
+        "section": "Convergence and analyticity",
+        "snippet": "A function is called analytic at a point"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "AnalyticAt",
+        "module": "Mathlib.Analysis.Analytic.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`AnalyticAt` and `AnalyticOnNhd`/`AnalyticOn` are defined via local power-series expansions.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Convergence and analyticity",
+          "snippet": "A function is called analytic at a point"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle f(x)=\\sum _{n=0}^{\\infty }a_{n}(x-b)^{n}}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle a_{n}={\\frac {f^{(n)}(b)}{n!}}.}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Power series expansion equals Taylor series",
+      "anchor": {
+        "section": "Convergence and analyticity",
+        "snippet": "Thus the power series expansion of an analytic function is its Taylor series"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Complex.taylorSeries_eq_on_ball",
+        "module": "Mathlib.Analysis.Complex.TaylorSeries",
+        "match_kind": "special_case"
+      },
+      "note": "For holomorphic `f`, `Complex.taylorSeries_eq_on_ball` shows the power series sum equals `f`, with coefficients given by the iterated derivative.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Convergence and analyticity",
+          "snippet": "Thus the power series expansion of an analytic function is its Taylor series"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle f(x)=\\sum _{n=0}^{\\infty }a_{n}(x-b)^{n}}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle a_{n}={\\frac {f^{(n)}(b)}{n!}}.}"
+        }
+      ]
+    },
+    {
+      "kind": "theorem",
+      "label": "Borel's lemma",
+      "anchor": {
+        "section": "Convergence and analyticity",
+        "snippet": "Borel's lemma implies that every power series is the Taylor series of some smooth function"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Borel's lemma (every formal power series arises as a Taylor series of a smooth function) is not in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Holomorphic implies analytic",
+      "anchor": {
+        "section": "Convergence and analyticity",
+        "snippet": "every holomorphic function is analytic"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "DifferentiableOn.analyticAt",
+        "module": "Mathlib.Analysis.Complex.CauchyIntegral",
+        "match_kind": "exact"
+      },
+      "note": "`DifferentiableOn.analyticAt` (and `Differentiable.analyticAt`) give the holomorphic ⇒ analytic implication.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Entire function",
+      "anchor": {
+        "section": "Convergence and analyticity",
+        "snippet": "is called an entire function"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No dedicated `Entire` predicate; entire functions are expressed as `Differentiable ℂ f` or `AnalyticOnNhd ℂ f Set.univ`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Radius of convergence (Cauchy–Hadamard)",
+      "anchor": {
+        "section": "Radius of convergence",
+        "snippet": "called the radius of convergence"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "FormalMultilinearSeries.radius_eq_liminf",
+        "module": "Mathlib.Analysis.Analytic.RadiusLiminf",
+        "match_kind": "exact"
+      },
+      "note": "`radius_eq_liminf` is the Cauchy–Hadamard formula; `FormalMultilinearSeries.radius` is the defined radius.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Radius of convergence",
+          "snippet": "called the radius of convergence"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\sum _{n=0}^{\\infty }c_{n}(x-a)^{n},}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle {\\frac {1}{R}}=\\limsup _{n\\to \\infty }|c_{n}|^{1/n},}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle R=\\lim _{n\\to \\infty }\\left|{\\frac {c_{n}}{c_{n+1}}}\\right|.}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Radius of convergence equals distance to nearest singularity",
+      "anchor": {
+        "section": "Radius of convergence",
+        "snippet": "the radius of convergence of the Taylor series at"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The general statement that the radius of convergence equals the distance to the nearest singularity isn't formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Smooth real function with finite radius from complex singularities",
+      "anchor": {
+        "section": "Radius of convergence",
+        "snippet": "Complex singularities can determine the radius of convergence"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This specific motivating example (e.g., `1/(1+x^2)`) is not formalized.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Radius of convergence",
+          "snippet": "Complex singularities can determine the radius of convergence"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle {\\frac {1}{1+x^{2}}}}"
+        }
+      ]
+    },
+    {
+      "kind": "definition",
+      "label": "Laurent series at a pole",
+      "anchor": {
+        "section": "Generalizations near singularities",
+        "snippet": "has a Laurent series of the form"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "LaurentSeries",
+        "module": "Mathlib.RingTheory.LaurentSeries",
+        "match_kind": "generalization"
+      },
+      "note": "Formal Laurent series exist in `RingTheory.LaurentSeries`, but a Laurent expansion attached to a meromorphic function's pole isn't directly stated.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Generalizations near singularities",
+          "snippet": "has a Laurent series of the form"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\sum _{n=-k}^{\\infty }a_{n}(z-a)^{n}.}"
+        }
+      ]
+    },
+    {
+      "kind": "definition",
+      "label": "Meromorphic function",
+      "anchor": {
+        "section": "Generalizations near singularities",
+        "snippet": "A meromorphic function is a function which is analytic except at isolated poles"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "MeromorphicAt",
+        "module": "Mathlib.Analysis.Meromorphic.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`MeromorphicAt` / `MeromorphicOn` define meromorphic functions.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Generalizations near singularities",
+          "snippet": "A meromorphic function is a function which is analytic except at isolated poles"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\sum _{n=-k}^{\\infty }a_{n}(z-a)^{n}.}"
+        }
+      ]
+    },
+    {
+      "kind": "theorem",
+      "label": "Laurent expansion in an annulus",
+      "anchor": {
+        "section": "Generalizations near singularities",
+        "snippet": "a function analytic in an annulus"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Laurent expansion of a function analytic in an annulus isn't formalized in Mathlib.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Generalizations near singularities",
+          "snippet": "a function analytic in an annulus"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle r&lt;|z-a|&lt;R}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\sum _{n=-\\infty }^{\\infty }a_{n}(z-a)^{n}}"
+        }
+      ]
+    },
+    {
+      "kind": "definition",
+      "label": "Puiseux series",
+      "anchor": {
+        "section": "Generalizations near singularities",
+        "snippet": "is known as a Puiseux series"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Puiseux series are not present in Mathlib.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Generalizations near singularities",
+          "snippet": "is known as a Puiseux series"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle z-a=t^{e},}"
+        }
+      ]
+    },
+    {
+      "kind": "definition",
+      "label": "Multivariate Taylor series",
+      "anchor": {
+        "section": "Taylor series in multiple variables",
+        "snippet": "The Taylor series may also be generalized to functions of more than one variable"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "HasFTaylorSeriesUpTo",
+        "module": "Mathlib.Analysis.Calculus.ContDiff.FTaylorSeries",
+        "match_kind": "generalization"
+      },
+      "note": "`HasFTaylorSeriesUpTo` (multilinear-series machinery) covers the underlying framework, but a multivariate Taylor polynomial of `iteratedFDeriv` evaluated on `(x-a)` isn't packaged as a named definition.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Taylor series in multiple variables",
+          "snippet": "The Taylor series may also be generalized to functions of more than one variable"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle {\\begin{aligned}T(x_{1},\\ldots ,x_{d})&amp;=\\sum _{n_{1}=0}^{\\infty }\\cdots \\sum _{n_{d}=0}^{\\infty }{\\frac {(x_{1}-a_{1})^{n_{1}}\\cdots (x_{d}-a_{d})^{n_{d}}}{n_{1}!\\cdots n_{d}!}}\\,\\left({\\frac {\\partial ^{n_{1}+\\cdots +n_{d}}f}{\\partial x_{1}^{n_{1}}\\cdots \\partial x_{d}^{n_{d}}}}\\right)(a_{1},\\ldots ,a_{d})\\\\&amp;=f(a_{1},\\ldots ,a_{d})+\\sum _{j=1}^{d}{\\frac {\\partial f(a_{1},\\ldots ,a_{d})}{\\partial x_{j}}}(x_{j}-a_{j})+{\\frac {1}{2!}}\\sum _{j=1}^{d}\\sum _{k=1}^{d}{\\frac {\\partial ^{2}f(a_{1},\\ldots ,a_{d})}{\\partial x_{j}\\partial x_{k}}}(x_{j}-a_{j})(x_{k}-a_{k})\\\\&amp;\\qquad \\qquad +{\\frac {1}{3!}}\\sum _{j=1}^{d}\\sum _{k=1}^{d}\\sum _{l=1}^{d}{\\frac {\\partial ^{3}f(a_{1},\\ldots ,a_{d})}{\\partial x_{j}\\partial x_{k}\\partial x_{l}}}(x_{j}-a_{j})(x_{k}-a_{k})(x_{l}-a_{l})+\\cdots ,\\\\&amp;=\\sum _{|\\alpha |\\geq 0}{\\frac {(\\mathbf {x} -\\mathbf {a} )^{\\alpha }}{\\alpha !}}\\left({\\mathrm {\\partial } ^{\\alpha }}f\\right)(\\mathbf {a} ).\\end{aligned}}}"
+        }
+      ]
+    },
+    {
+      "kind": "example",
+      "label": "Two-variable second-order Taylor expansion",
+      "anchor": {
+        "section": "Taylor series in multiple variables",
+        "snippet": "the Taylor series to second order about the point"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This worked two-variable example is not formalized.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Taylor series in multiple variables",
+          "snippet": "the Taylor series to second order about the point"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle f(a,b)+(x-a)f_{x}(a,b)+(y-b)f_{y}(a,b)+{\\frac {1}{2!}}{\\Big (}(x-a)^{2}f_{xx}(a,b)+2(x-a)(y-b)f_{xy}(a,b)+(y-b)^{2}f_{yy}(a,b){\\Big )}}"
+        }
+      ]
+    },
+    {
+      "kind": "definition",
+      "label": "Second-order Taylor series (gradient and Hessian form)",
+      "anchor": {
+        "section": "Second-order Taylor series in several variables",
+        "snippet": "A second-order Taylor series expansion of a scalar-valued function"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The closed-form expression `f(a) + ∇f·(x-a) + ½(x-a)ᵀH(x-a)` isn't given as a named statement.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Second-order Taylor series in several variables",
+          "snippet": "A second-order Taylor series expansion of a scalar-valued function"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle T(\\mathbf {x} )=f(\\mathbf {a} )+(\\mathbf {x} -\\mathbf {a} )^{\\mathsf {T}}Df(\\mathbf {a} )+{\\frac {1}{2!}}(\\mathbf {x} -\\mathbf {a} )^{\\mathsf {T}}\\left\\{D^{2}f(\\mathbf {a} )\\right\\}(\\mathbf {x} -\\mathbf {a} )+\\cdots ,}"
+        }
+      ]
+    },
+    {
+      "kind": "example",
+      "label": "Second-order Taylor expansion at the origin",
+      "anchor": {
+        "section": "Example",
+        "snippet": "In order to compute a second-order Taylor series expansion around the point"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This worked example is not formalized.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Example",
+          "snippet": "In order to compute a second-order Taylor series expansion around the point"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle f(x,y)=e^{x}\\ln(1+y),}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle {\\begin{aligned}f_{x}&amp;=e^{x}\\ln(1+y),&amp;f_{y}&amp;={\\frac {e^{x}}{1+y}},\\\\f_{xx}&amp;=e^{x}\\ln(1+y),&amp;f_{yy}&amp;=-{\\frac {e^{x}}{(1+y)^{2}}},\\\\f_{xy}&amp;=f_{yx}={\\frac {e^{x}}{1+y}}.\\end{aligned}}}"
+        }
+      ]
+    },
+    {
+      "kind": "example",
+      "label": "Small-angle approximation",
+      "anchor": {
+        "section": "Applications",
+        "snippet": "the small-angle approximation"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No dedicated `sin x ≈ x` small-angle approximation lemma; bounds on `sin` exist but not as a named approximation.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Applications",
+          "snippet": "the small-angle approximation"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\sin x\\approx x}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Maclaurin series of the exponential function",
+      "anchor": {
+        "section": "Exponential function",
+        "snippet": "The exponential function"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "NormedSpace.exp_eq_tsum",
+        "module": "Mathlib.Analysis.Normed.Algebra.Exponential",
+        "match_kind": "exact"
+      },
+      "note": "`exp_eq_tsum` (and `exp_eq_tsum_div`) state `exp x = ∑ xⁿ / n!`.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Exponential function",
+          "snippet": "The exponential function"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle e^{x}=\\sum _{n=0}^{\\infty }{\\frac {x^{n}}{n!}}=1+x+{\\frac {x^{2}}{2!}}+{\\frac {x^{3}}{3!}}+\\cdots .}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Exponential generating function of Bell numbers",
+      "anchor": {
+        "section": "Exponential function",
+        "snippet": "The exponential generating function of the Bell numbers"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "An EGF identity `∑ B_n x^n / n! = exp(exp x - 1)` is not formalized.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Exponential function",
+          "snippet": "The exponential generating function of the Bell numbers"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\exp(\\exp {x}-1)=\\sum _{n=0}^{\\infty }{\\frac {B_{n}}{n!}}x^{n}}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Maclaurin series of the natural logarithm",
+      "anchor": {
+        "section": "Natural logarithm",
+        "snippet": "The natural logarithm (with base"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "hasSum_pow_div_log_of_abs_lt_one",
+        "module": "Mathlib.Analysis.SpecialFunctions.Log.Deriv",
+        "match_kind": "exact"
+      },
+      "note": "`hasSum_pow_div_log_of_abs_lt_one` expresses `log(1-x)` (and via `add` `log(1+x)`) as its Maclaurin series.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Natural logarithm",
+          "snippet": "The natural logarithm (with base"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle {\\begin{aligned}\\ln(1-x)&amp;=-\\sum _{n=1}^{\\infty }{\\frac {x^{n}}{n}}=-x-{\\frac {x^{2}}{2}}-{\\frac {x^{3}}{3}}-\\cdots ,\\\\\\ln(1+x)&amp;=\\sum _{n=1}^{\\infty }(-1)^{n+1}{\\frac {x^{n}}{n}}=x-{\\frac {x^{2}}{2}}+{\\frac {x^{3}}{3}}-\\cdots .\\end{aligned}}}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Mercator series",
+      "anchor": {
+        "section": "Natural logarithm",
+        "snippet": "The last series is known as Mercator series"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "hasSum_pow_div_log_of_abs_lt_one",
+        "module": "Mathlib.Analysis.SpecialFunctions.Log.Deriv",
+        "match_kind": "exact"
+      },
+      "note": "The Mercator series `log(1+x) = ∑ (-1)^(n+1) x^n / n` follows from `hasSum_pow_div_log_of_abs_lt_one`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Maclaurin series of the geometric series",
+      "anchor": {
+        "section": "Geometric series",
+        "snippet": "The geometric series and its derivatives have Maclaurin series"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "hasSum_geometric_of_norm_lt_one",
+        "module": "Mathlib.Analysis.SpecificLimits.Normed",
+        "match_kind": "exact"
+      },
+      "note": "`hasSum_geometric_of_norm_lt_one` gives `∑ xⁿ = (1-x)⁻¹` for `‖x‖<1`.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Geometric series",
+          "snippet": "The geometric series and its derivatives have Maclaurin series"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle {\\begin{aligned}{\\frac {1}{1-x}}&amp;=\\sum _{n=0}^{\\infty }x^{n}\\\\{\\frac {1}{(1-x)^{2}}}&amp;=\\sum _{n=1}^{\\infty }nx^{n-1}\\\\{\\frac {1}{(1-x)^{3}}}&amp;=\\sum _{n=2}^{\\infty }{\\frac {(n-1)n}{2}}x^{n-2}.\\end{aligned}}}"
+        }
+      ]
+    },
+    {
+      "kind": "definition",
+      "label": "Binomial series",
+      "anchor": {
+        "section": "Binomial series",
+        "snippet": "The binomial series is the power series"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "binomialSeries",
+        "module": "Mathlib.Analysis.Analytic.Binomial",
+        "match_kind": "exact"
+      },
+      "note": "`binomialSeries` is the formal multilinear series with coefficients `Ring.choose a k`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Binomial series for square root and its inverse",
+      "anchor": {
+        "section": "Binomial series",
+        "snippet": "give the square root function and its inverse"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The `a=±1/2` specializations as series for `√(1+x)` and `1/√(1+x)` aren't stated explicitly.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Binomial series",
+          "snippet": "give the square root function and its inverse"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle {\\begin{aligned}(1+x)^{\\frac {1}{2}}&amp;=1+{\\frac {1}{2}}x-{\\frac {1}{8}}x^{2}+{\\frac {1}{16}}x^{3}-{\\frac {5}{128}}x^{4}+{\\frac {7}{256}}x^{5}-\\cdots &amp;=\\sum _{n=0}^{\\infty }{\\frac {(-1)^{n-1}(2n)!}{4^{n}(n!)^{2}(2n-1)}}x^{n},\\\\(1+x)^{-{\\frac {1}{2}}}&amp;=1-{\\frac {1}{2}}x+{\\frac {3}{8}}x^{2}-{\\frac {5}{16}}x^{3}+{\\frac {35}{128}}x^{4}-{\\frac {63}{256}}x^{5}+\\cdots &amp;=\\sum _{n=0}^{\\infty }{\\frac {(-1)^{n}(2n)!}{4^{n}(n!)^{2}}}x^{n}.\\end{aligned}}}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Maclaurin series of trigonometric functions",
+      "anchor": {
+        "section": "Trigonometric functions",
+        "snippet": "The usual trigonometric functions and their inverses have the following Maclaurin series"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Complex.cos_eq_tsum",
+        "module": "Mathlib.Analysis.SpecialFunctions.Trigonometric.Series",
+        "match_kind": "exact"
+      },
+      "note": "`Complex/Real.cos_eq_tsum`, `sin_eq_tsum`, and `Complex.hasSum_arctan` cover sin, cos and arctan; series for tan/arcsin/arccos aren't explicitly stated.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Trigonometric functions",
+          "snippet": "The usual trigonometric functions and their inverses have the following Maclaurin series"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle {\\begin{aligned}\\sin x&amp;=\\sum _{n=0}^{\\infty }{\\frac {(-1)^{n}}{(2n+1)!}}x^{2n+1}&amp;&amp;=x-{\\frac {x^{3}}{3!}}+{\\frac {x^{5}}{5!}}-\\cdots &amp;&amp;{\\text{for all }}x\\\\[6pt]\\cos x&amp;=\\sum _{n=0}^{\\infty }{\\frac {(-1)^{n}}{(2n)!}}x^{2n}&amp;&amp;=1-{\\frac {x^{2}}{2!}}+{\\frac {x^{4}}{4!}}-\\cdots &amp;&amp;{\\text{for all }}x\\\\[6pt]\\tan x&amp;=\\sum _{n=1}^{\\infty }{\\frac {B_{2n}(-4)^{n}\\left(1-4^{n}\\right)}{(2n)!}}x^{2n-1}&amp;&amp;=x+{\\frac {x^{3}}{3}}+{\\frac {2x^{5}}{15}}+\\cdots &amp;&amp;{\\text{for }}|x|&lt;{\\frac {\\pi }{2}}\\\\[6pt]\\sec x&amp;=\\sum _{n=0}^{\\infty }{\\frac {(-1)^{n}E_{2n}}{(2n)!}}x^{2n}&amp;&amp;=1+{\\frac {x^{2}}{2}}+{\\frac {5x^{4}}{24}}+\\cdots &amp;&amp;{\\text{for }}|x|&lt;{\\frac {\\pi }{2}}\\\\[6pt]\\arcsin x&amp;=\\sum _{n=0}^{\\infty }{\\frac {(2n)!}{4^{n}(n!)^{2}(2n+1)}}x^{2n+1}&amp;&amp;=x+{\\frac {x^{3}}{6}}+{\\frac {3x^{5}}{40}}+\\cdots &amp;&amp;{\\text{for }}|x|\\leq 1\\\\[6pt]\\arccos x&amp;={\\frac {\\pi }{2}}-\\arcsin x&amp;&amp;={\\frac {\\pi }{2}}-x-{\\frac {x^{3}}{6}}-{\\frac {3x^{5}}{40}}-\\cdots &amp;&amp;{\\text{for }}|x|\\leq 1\\\\[6pt]\\arctan x&amp;=\\sum _{n=0}^{\\infty }{\\frac {(-1)^{n}}{2n+1}}x^{2n+1}&amp;&amp;=x-{\\frac {x^{3}}{3}}+{\\frac {x^{5}}{5}}-\\cdots &amp;&amp;{\\text{for }}|x|\\leq 1,\\ x\\neq \\pm i\\end{aligned}}}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Maclaurin series of hyperbolic functions",
+      "anchor": {
+        "section": "Hyperbolic functions",
+        "snippet": "The hyperbolic functions have Maclaurin series"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Complex.cosh_eq_tsum",
+        "module": "Mathlib.Analysis.SpecialFunctions.Trigonometric.Series",
+        "match_kind": "exact"
+      },
+      "note": "`Complex/Real.cosh_eq_tsum` and `sinh_eq_tsum` express cosh and sinh as their Maclaurin series.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Hyperbolic functions",
+          "snippet": "The hyperbolic functions have Maclaurin series"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle {\\begin{aligned}\\sinh x&amp;=\\sum _{n=0}^{\\infty }{\\frac {x^{2n+1}}{(2n+1)!}}&amp;&amp;=x+{\\frac {x^{3}}{3!}}+{\\frac {x^{5}}{5!}}+\\cdots &amp;&amp;{\\text{for all }}x\\\\[6pt]\\cosh x&amp;=\\sum _{n=0}^{\\infty }{\\frac {x^{2n}}{(2n)!}}&amp;&amp;=1+{\\frac {x^{2}}{2!}}+{\\frac {x^{4}}{4!}}+\\cdots &amp;&amp;{\\text{for all }}x\\\\[6pt]\\tanh x&amp;=\\sum _{n=1}^{\\infty }{\\frac {B_{2n}4^{n}\\left(4^{n}-1\\right)}{(2n)!}}x^{2n-1}&amp;&amp;=x-{\\frac {x^{3}}{3}}+{\\frac {2x^{5}}{15}}-{\\frac {17x^{7}}{315}}+\\cdots &amp;&amp;{\\text{for }}|x|&lt;{\\frac {\\pi }{2}}\\\\[6pt]\\operatorname {arsinh} x&amp;=\\sum _{n=0}^{\\infty }{\\frac {(-1)^{n}(2n)!}{4^{n}(n!)^{2}(2n+1)}}x^{2n+1}&amp;&amp;=x-{\\frac {x^{3}}{6}}+{\\frac {3x^{5}}{40}}-\\cdots &amp;&amp;{\\text{for }}|x|\\leq 1\\\\[6pt]\\operatorname {artanh} x&amp;=\\sum _{n=0}^{\\infty }{\\frac {x^{2n+1}}{2n+1}}&amp;&amp;=x+{\\frac {x^{3}}{3}}+{\\frac {x^{5}}{5}}+\\cdots &amp;&amp;{\\text{for }}|x|\\leq 1,\\ x\\neq \\pm 1\\end{aligned}}}"
+        }
+      ]
+    },
+    {
+      "kind": "definition",
+      "label": "Polylogarithm defining identities",
+      "anchor": {
+        "section": "Polylogarithmic functions",
+        "snippet": "The polylogarithms have these defining identities"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The polylogarithm function isn't defined in Mathlib.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Polylogarithmic functions",
+          "snippet": "The polylogarithms have these defining identities"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle {\\begin{aligned}{\\text{Li}}_{2}(x)&amp;=\\sum _{n=1}^{\\infty }{\\frac {1}{n^{2}}}x^{n}\\\\{\\text{Li}}_{3}(x)&amp;=\\sum _{n=1}^{\\infty }{\\frac {1}{n^{3}}}x^{n}\\end{aligned}}}"
+        }
+      ]
+    },
+    {
+      "kind": "definition",
+      "label": "Legendre chi functions",
+      "anchor": {
+        "section": "Polylogarithmic functions",
+        "snippet": "The Legendre chi functions are defined as follows"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Legendre chi functions are not in Mathlib.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Polylogarithmic functions",
+          "snippet": "The Legendre chi functions are defined as follows"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle {\\begin{aligned}\\chi _{2}(x)&amp;=\\sum _{n=0}^{\\infty }{\\frac {1}{(2n+1)^{2}}}x^{2n+1}\\\\\\chi _{3}(x)&amp;=\\sum _{n=0}^{\\infty }{\\frac {1}{(2n+1)^{3}}}x^{2n+1}\\end{aligned}}}"
+        }
+      ]
+    },
+    {
+      "kind": "definition",
+      "label": "Inverse tangent integrals",
+      "anchor": {
+        "section": "Polylogarithmic functions",
+        "snippet": "are called inverse tangent integrals"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The inverse tangent integral `Ti_s` isn't defined in Mathlib.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Polylogarithmic functions",
+          "snippet": "are called inverse tangent integrals"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle {\\begin{aligned}{\\text{Ti}}_{2}(x)&amp;=\\sum _{n=0}^{\\infty }{\\frac {(-1)^{n}}{(2n+1)^{2}}}x^{2n+1}\\\\{\\text{Ti}}_{3}(x)&amp;=\\sum _{n=0}^{\\infty }{\\frac {(-1)^{n}}{(2n+1)^{3}}}x^{2n+1}\\end{aligned}}}"
+        }
+      ]
+    },
+    {
+      "kind": "definition",
+      "label": "Complete elliptic integrals K and E",
+      "anchor": {
+        "section": "Elliptic functions",
+        "snippet": "The complete elliptic integrals of first kind"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Complete elliptic integrals K and E are not defined in Mathlib.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Elliptic functions",
+          "snippet": "The complete elliptic integrals of first kind"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle {\\begin{aligned}{\\frac {2}{\\pi }}K(x)&amp;=\\sum _{n=0}^{\\infty }{\\frac {[(2n)!]^{2}}{16^{n}(n!)^{4}}}x^{2n}\\\\{\\frac {2}{\\pi }}E(x)&amp;=\\sum _{n=0}^{\\infty }{\\frac {[(2n)!]^{2}}{(1-2n)16^{n}(n!)^{4}}}x^{2n}\\end{aligned}}}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Taylor series of Jacobi theta functions",
+      "anchor": {
+        "section": "Elliptic functions",
+        "snippet": "The Jacobi theta functions describe the world of the elliptic modular functions"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "jacobiTheta_eq_tsum_nat",
+        "module": "Mathlib.NumberTheory.ModularForms.JacobiTheta.OneVariable",
+        "match_kind": "generalization"
+      },
+      "note": "`jacobiTheta_eq_tsum_nat` gives a q-series representation of `jacobiTheta`, but the article's specific Taylor series in z aren't formalized.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Elliptic functions",
+          "snippet": "The Jacobi theta functions describe the world of the elliptic modular functions"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle {\\begin{aligned}\\vartheta _{00}(x)&amp;=1+2\\sum _{n=1}^{\\infty }x^{n^{2}}\\\\\\vartheta _{01}(x)&amp;=1+2\\sum _{n=1}^{\\infty }(-1)^{n}x^{n^{2}}\\end{aligned}}}"
+        }
+      ]
+    }
+  ]
+}

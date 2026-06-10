@@ -1,0 +1,553 @@
+{
+  "slug": "Least_common_multiple",
+  "wikipedia_title": "Least common multiple",
+  "display_title": "Least common multiple",
+  "schema_version": 3,
+  "annotation_style": "theorem_article",
+  "annotations": [
+    {
+      "kind": "definition",
+      "label": "Least common multiple of two integers",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "is the smallest positive integer that is divisible by both a and b"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Int.lcm",
+        "module": "Mathlib.Data.Int.GCD",
+        "match_kind": "exact"
+      },
+      "note": "Int.lcm (with Int.lcm_def = Nat.lcm of natAbs) is exactly the least common multiple function for integers, characterized as the least element in the divisibility order via dvd_lcm/lcm_dvd.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Convention lcm(a,0)=0",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "some authors define lcm( a , 0) as 0 for all a"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "lcm_zero_right",
+        "module": "Mathlib.Algebra.GCDMonoid.Basic",
+        "match_kind": "exact"
+      },
+      "note": "lcm_zero_right/lcm_zero_left (and Nat.lcm_zero_right) encode exactly the convention lcm(a,0)=0=lcm(0,a).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Lowest common denominator",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "The least common multiple of the denominators of two fractions"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has no named 'lowest common denominator' definition; Rat arithmetic does not expose the lcm of denominators as a concept.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "LCM of more than two integers",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "is defined as the smallest positive integer that is divisible by each of"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Finset.lcm",
+        "module": "Mathlib.Algebra.GCDMonoid.Finset",
+        "match_kind": "generalization"
+      },
+      "note": "Finset.lcm (and Multiset.lcm) generalize lcm to finitely many elements with Finset.lcm_dvd characterizing the least common multiple of the family.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Multiple of a number",
+      "anchor": {
+        "section": "Overview",
+        "snippet": "A multiple of a number is the product of that number and an integer."
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "dvd_def",
+        "module": "Mathlib.Algebra.Divisibility.Basic",
+        "match_kind": "exact"
+      },
+      "note": "dvd_def states a ∣ b ↔ ∃ c, b = a * c, i.e. b is a multiple of a exactly when it is a's product with another element.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "lcm(5,2)=10",
+      "anchor": {
+        "section": "Overview",
+        "snippet": "it is the least common multiple of 5 and 2"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This specific numeric evaluation is decidable (norm_num/decide) but is not stated as a named declaration in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Notation lcm(a,b)",
+      "anchor": {
+        "section": "Notation",
+        "snippet": "The least common multiple of two integers a and b is denoted as lcm"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "GCDMonoid.lcm",
+        "module": "Mathlib.Algebra.GCDMonoid.Basic",
+        "match_kind": "exact"
+      },
+      "note": "Mathlib denotes the least common multiple by the function lcm a b (GCDMonoid.lcm), matching the article's notation.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "lcm(4,6)=12",
+      "anchor": {
+        "section": "Example",
+        "snippet": "the smallest number is 12. Hence, the least common multiple is 12"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "A concrete computation provable by decide/norm_num, not present as a Mathlib lemma.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "LCM as lowest common denominator",
+      "anchor": {
+        "section": "Applications",
+        "snippet": "the least common multiple of the denominators (often called the lowest common denominator ) is used"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib's fraction addition does not use a formalized lowest-common-denominator construction.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Gears problem",
+      "anchor": {
+        "section": "Gears problem",
+        "snippet": "Suppose there are two meshing gears in a machine"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "An applied word problem with no corresponding Mathlib declaration.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Planetary alignment",
+      "anchor": {
+        "section": "Planetary alignment",
+        "snippet": "Suppose there are three planets revolving around a star"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "An applied word problem with no corresponding Mathlib declaration.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "LCM from GCD formula",
+      "anchor": {
+        "section": "Using the greatest common divisor",
+        "snippet": "The least common multiple can be computed from the greatest common divisor"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "gcd_mul_lcm",
+        "module": "Mathlib.Algebra.GCDMonoid.Basic",
+        "match_kind": "generalization"
+      },
+      "note": "gcd_mul_lcm gives gcd a b * lcm a b ~ a * b (equality Nat.gcd_mul_lcm for ℕ), which is the lcm = ab/gcd relation.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Equivalent LCM-GCD formulas",
+      "anchor": {
+        "section": "Using the greatest common divisor",
+        "snippet": "it is convenient to use the equivalent formulas"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "gcd_mul_lcm",
+        "module": "Mathlib.Algebra.GCDMonoid.Basic",
+        "match_kind": "generalization"
+      },
+      "note": "The various equivalent forms are algebraic rearrangements of gcd_mul_lcm (gcd·lcm = product), which is in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "LCM-GCD formula with zero arguments",
+      "anchor": {
+        "section": "Using the greatest common divisor",
+        "snippet": "These formulas are also valid when exactly one of a and b is 0"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "gcd_mul_lcm",
+        "module": "Mathlib.Algebra.GCDMonoid.Basic",
+        "match_kind": "generalization"
+      },
+      "note": "gcd_mul_lcm holds unconditionally including zero arguments, and lcm_zero_left/right handle the zero cases directly.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Unique factorization theorem",
+      "anchor": {
+        "section": "Using prime factorization",
+        "snippet": "every positive integer greater than 1 can be written in only one way as a product of prime numbers"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Nat.primeFactorsList_unique",
+        "module": "Mathlib.Data.Nat.Factors",
+        "match_kind": "exact"
+      },
+      "note": "Nat.primeFactorsList_unique gives uniqueness and Nat.prod_primeFactorsList gives existence of the prime factorization of a positive integer.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "lcm(8,9,21)",
+      "anchor": {
+        "section": "Using prime factorization",
+        "snippet": "Example: lcm(8,9,21)"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "A concrete numeric example, not stated as a Mathlib declaration.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "LCM via highest prime powers",
+      "anchor": {
+        "section": "Using prime factorization",
+        "snippet": "The lcm will be the product of multiplying the highest power of each prime number together."
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Nat.factorization_lcm",
+        "module": "Mathlib.Data.Nat.Factorization.Basic",
+        "match_kind": "exact"
+      },
+      "note": "Nat.factorization_lcm shows (lcm a b).factorization = a.factorization ⊔ b.factorization, i.e. the lcm takes the maximum (highest) exponent of each prime.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Venn diagram lcm(48,180)=720",
+      "anchor": {
+        "section": "Using prime factorization",
+        "snippet": "Least common multiple = 2 × 2 × 2 × 2 × 3 × 3 × 5 = 720"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "A concrete numeric illustration, not present as a Mathlib lemma.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Fundamental theorem of arithmetic",
+      "anchor": {
+        "section": "Fundamental theorem of arithmetic",
+        "snippet": "every integer greater than 1 can be represented uniquely as a product of prime numbers"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Nat.primeFactorsList_unique",
+        "module": "Mathlib.Data.Nat.Factors",
+        "match_kind": "exact"
+      },
+      "note": "The fundamental theorem of arithmetic is Nat.primeFactorsList_unique (uniqueness) together with Nat.prod_primeFactorsList, generalized abstractly by UniqueFactorizationMonoid.factors_unique.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "GCD and LCM from prime exponents",
+      "anchor": {
+        "section": "Fundamental theorem of arithmetic",
+        "snippet": "their greatest common divisor and least common multiple are given by the formulas"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Nat.factorization_lcm",
+        "module": "Mathlib.Data.Nat.Factorization.Basic",
+        "match_kind": "exact"
+      },
+      "note": "Nat.factorization_lcm (sup/max of exponents) and Nat.factorization_gcd (inf/min of exponents) give gcd and lcm via prime exponents.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Prime factorization of rationals",
+      "anchor": {
+        "section": "Fundamental theorem of arithmetic",
+        "snippet": "every rational number can be written uniquely as the product of primes, if negative exponents are allowed"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has no factorization of rationals into primes with integer (negative-allowed) exponents.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Divisibility partial order",
+      "anchor": {
+        "section": "Lattice-theoretic",
+        "snippet": "The positive integers may be partially ordered by divisibility"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Associates.instPartialOrder",
+        "module": "Mathlib.RingTheory.UniqueFactorizationDomain.FactorSet",
+        "match_kind": "generalization"
+      },
+      "note": "The divisibility partial order is formalized as Associates.instPartialOrder (≤ is divisibility), with antisymmetry on ℕ also available via Nat.dvd_antisymm.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Positive integers form a lattice",
+      "anchor": {
+        "section": "Lattice-theoretic",
+        "snippet": "the positive integers become a lattice , with meet given by the gcd and join given by the lcm"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Associates.instLattice",
+        "module": "Mathlib.RingTheory.UniqueFactorizationDomain.FactorSet",
+        "match_kind": "generalization"
+      },
+      "note": "The Lattice (Associates α) instance makes elements of a UFM (e.g. ℕ up to units) a lattice with inf = gcd and sup = lcm (cf. Associates.sup_mul_inf).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "GCD-LCM duality principle",
+      "anchor": {
+        "section": "Lattice-theoretic",
+        "snippet": "If a formula involving integer variables, gcd, lcm, ≤ and ≥ is true"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This meta-mathematical order-duality principle is not formalized as a theorem in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Dual lattice-theoretic identities",
+      "anchor": {
+        "section": "Lattice-theoretic",
+        "snippet": "The following pairs of dual formulas are special cases of general lattice-theoretic identities."
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Associates.instLattice",
+        "module": "Mathlib.RingTheory.UniqueFactorizationDomain.FactorSet",
+        "match_kind": null
+      },
+      "note": "General lattice identities (absorption, associativity, etc.) live in Mathlib.Order.Lattice and apply to the Associates gcd/lcm lattice, but the specific dual gcd/lcm formula pairs are not individually stated.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Distributivity of lcm and gcd",
+      "anchor": {
+        "section": "Lattice-theoretic",
+        "snippet": "this lattice is distributive ; that is, lcm distributes over gcd and gcd distributes over lcm"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Associates.instLattice",
+        "module": "Mathlib.RingTheory.UniqueFactorizationDomain.FactorSet",
+        "match_kind": null
+      },
+      "note": "The Associates gcd/lcm structure is only registered as a Lattice (not DistribLattice), and no gcd-over-lcm distributivity lemma was found, so distributivity itself is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Self-dual distributive identity",
+      "anchor": {
+        "section": "Lattice-theoretic",
+        "snippet": "This identity is self-dual"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The self-dual median identity relating triple gcds and lcms is not present in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "LCM over squarefree D",
+      "anchor": {
+        "section": "Other",
+        "snippet": "Let D be the product of"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This specialized number-theoretic identity for squarefree D is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "LCM identity for nonzero arguments",
+      "anchor": {
+        "section": "Other",
+        "snippet": "is zero, then"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "gcd_mul_lcm",
+        "module": "Mathlib.Algebra.GCDMonoid.Basic",
+        "match_kind": null
+      },
+      "note": "The two-variable nonzero relation lcm·gcd = product is gcd_mul_lcm, but the multi-argument lcm-gcd identity in this section is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Common multiple in a commutative ring",
+      "anchor": {
+        "section": "In commutative rings",
+        "snippet": "A common multiple of a and b is an element m of R such that both a and b divide m"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "dvd_def",
+        "module": "Mathlib.Algebra.Divisibility.Basic",
+        "match_kind": null
+      },
+      "note": "The divisibility relation (Dvd/dvd_def) is fully available so 'a ∣ m ∧ b ∣ m' is expressible, but Mathlib has no standalone 'common multiple' definition.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Least common multiple in a commutative ring",
+      "anchor": {
+        "section": "In commutative rings",
+        "snippet": "A least common multiple of a and b is a common multiple that is minimal"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "lcm_dvd_iff",
+        "module": "Mathlib.Algebra.GCDMonoid.Basic",
+        "match_kind": "generalization"
+      },
+      "note": "lcm_dvd_iff (lcm a b ∣ c ↔ a ∣ c ∧ b ∣ c) captures the minimal-common-multiple characterization, but only in a GCDMonoid rather than an arbitrary commutative ring.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Least common multiples are associates",
+      "anchor": {
+        "section": "In commutative rings",
+        "snippet": "any two least common multiples of the same pair of elements are associates"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "associated_of_dvd_dvd",
+        "module": "Mathlib.Algebra.GroupWithZero.Associated",
+        "match_kind": "generalization"
+      },
+      "note": "associated_of_dvd_dvd yields that mutually-dividing elements are associates (so two minimal common multiples are associated), though Mathlib has no explicit 'is a least common multiple' predicate.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "LCM exists in a UFD",
+      "anchor": {
+        "section": "In commutative rings",
+        "snippet": "In a unique factorization domain , any two elements have a least common multiple"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "UniqueFactorizationMonoid.toGCDMonoid",
+        "module": "Mathlib.RingTheory.UniqueFactorizationDomain.GCDMonoid",
+        "match_kind": "generalization"
+      },
+      "note": "UniqueFactorizationMonoid.toGCDMonoid endows any UFM with a GCDMonoid structure, providing an lcm (and gcd) for every pair of elements.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "LCM as ideal intersection generator in a PID",
+      "anchor": {
+        "section": "In commutative rings",
+        "snippet": "the least common multiple of a and b can be characterised as a generator of the intersection of the ideals generated by a and b"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "span_singleton_inf_span_singleton",
+        "module": "Mathlib.RingTheory.PrincipalIdealDomain",
+        "match_kind": "special_case"
+      },
+      "note": "span_singleton_inf_span_singleton proves span{n} ⊓ span{m} = span{lcm n m} for a EuclideanDomain GCDMonoid, a special case of the PID characterization.",
+      "provenance": "ai"
+    }
+  ]
+}

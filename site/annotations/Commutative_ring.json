@@ -1,0 +1,2083 @@
+{
+  "slug": "Commutative_ring",
+  "wikipedia_title": "Commutative ring",
+  "display_title": "Commutative ring",
+  "schema_version": 3,
+  "annotation_style": "theorem_article",
+  "annotations": [
+    {
+      "kind": "definition",
+      "label": "Ring",
+      "anchor": {
+        "section": "Definition",
+        "snippet": "equipped with two binary operations"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Ring",
+        "module": "Mathlib.Algebra.Ring.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`Ring` is defined as a `Semiring` with negation making it an additive group.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Commutative ring",
+      "anchor": {
+        "section": "Definition",
+        "snippet": "is called commutative"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "CommRing",
+        "module": "Mathlib.Algebra.Ring.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`CommRing` extends `Ring` with commutative multiplication.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Definition",
+          "snippet": "is called commutative"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle a\\cdot b=b\\cdot a,}"
+        }
+      ]
+    },
+    {
+      "kind": "example",
+      "label": "Ring of integers",
+      "anchor": {
+        "section": "First examples",
+        "snippet": "is the ring of integers"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Int.instCommRing",
+        "module": "Mathlib.Algebra.Ring.Int.Defs",
+        "match_kind": "invocation"
+      },
+      "note": "`Int.instCommRing : CommRing ℤ` provides the commutative-ring structure on the integers.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Field",
+      "anchor": {
+        "section": "First examples",
+        "snippet": "A field is a commutative ring where"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Field",
+        "module": "Mathlib.Algebra.Field.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`Field` is a `CommRing` that is also a `DivisionRing` (inverses for nonzero elements).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Polynomial ring",
+      "anchor": {
+        "section": "First examples",
+        "snippet": "the set of all polynomials in the variable"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Polynomial",
+        "module": "Mathlib.Algebra.Polynomial.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`Polynomial R` is the univariate polynomial ring over `R` (multivariate is `MvPolynomial`).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Ring of continuous functions",
+      "anchor": {
+        "section": "First examples",
+        "snippet": "complex-valued continuous functions on"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "ContinuousMap.instCommRing",
+        "module": "Mathlib.Topology.ContinuousMap.Algebra",
+        "match_kind": "invocation"
+      },
+      "note": "`CommRing C(α, β)` gives the ring of continuous maps; taking `β = ℂ` yields complex-valued continuous functions.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Unit",
+      "anchor": {
+        "section": "Divisibility",
+        "snippet": "is called a unit if it possesses a multiplicative inverse"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "IsUnit",
+        "module": "Mathlib.Algebra.Group.Units.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`IsUnit a` states `a` equals some bundled unit `u : Mˣ`; `Units` (`Mˣ`) is the data version.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Zero divisor",
+      "anchor": {
+        "section": "Divisibility",
+        "snippet": "Another particular type of element is the zero divisors"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "NoZeroDivisors",
+        "module": "Mathlib.Algebra.GroupWithZero.Defs",
+        "match_kind": "generalization"
+      },
+      "note": "There is no standalone `IsZeroDivisor` predicate; Mathlib has the class `NoZeroDivisors` and the `nonZeroDivisors` submonoid capturing absence/membership of zero divisors.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Integral domain",
+      "anchor": {
+        "section": "Divisibility",
+        "snippet": "it is called an integral domain (or domain)"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "IsDomain",
+        "module": "Mathlib.Algebra.Ring.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`IsDomain` is a mixin extending `IsCancelMulZero` and `Nontrivial`; an integral domain is `[CommRing α] [IsDomain α]`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Nilpotent element",
+      "anchor": {
+        "section": "Divisibility",
+        "snippet": "is called nilpotent"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "IsNilpotent",
+        "module": "Mathlib.Algebra.GroupWithZero.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`IsNilpotent x` is defined as `∃ n : ℕ, x ^ n = 0`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Localization",
+      "anchor": {
+        "section": "Localizations",
+        "snippet": "The localization of a ring is a process in which some elements are rendered invertible"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "IsLocalization",
+        "module": "Mathlib.RingTheory.Localization.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`IsLocalization M S` says `S` is the localization of `R` at submonoid `M`; the concrete construction is `Localization M`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Quotient field",
+      "anchor": {
+        "section": "Localizations",
+        "snippet": "is a field, called the quotient field of"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "IsFractionRing",
+        "module": "Mathlib.RingTheory.Localization.FractionRing",
+        "match_kind": "exact"
+      },
+      "note": "`IsFractionRing R K` abbreviates `IsLocalization (nonZeroDivisors R) K`; the concrete field is `FractionRing R`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Ideals are two-sided",
+      "anchor": {
+        "section": "Ideals and modules",
+        "snippet": "all ideals in a commutative ring are automatically two-sided"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Ideal.instIsTwoSided",
+        "module": "Mathlib.RingTheory.Ideal.Defs",
+        "match_kind": "exact"
+      },
+      "note": "An instance gives every `Ideal α` over a CommSemiring/CommRing the `IsTwoSided` property, since `Ideal R := Submodule R R`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Module",
+      "anchor": {
+        "section": "Modules",
+        "snippet": "is like what a vector space is to a field"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Module",
+        "module": "Mathlib.Algebra.Module.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`Module R M` extends `DistribMulAction R M` with `add_smul` and `zero_smul`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Free module",
+      "anchor": {
+        "section": "Modules",
+        "snippet": "is called a free module"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Module.Free",
+        "module": "Mathlib.LinearAlgebra.FreeModule.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`Module.Free R M` is the class stating the `R`-module `M` admits a basis.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Submodule of free module need not be free",
+      "anchor": {
+        "section": "Modules",
+        "snippet": "a submodule of a free module needs not to be free"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No declaration stating this counterexample (a non-free submodule of a free module) was found in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Module of finite type",
+      "anchor": {
+        "section": "Modules",
+        "snippet": "A module of finite type is a module that has a finite spanning set"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Module.Finite",
+        "module": "Mathlib.RingTheory.Finiteness.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`Module.Finite R M` requires `(⊤ : Submodule R M).FG`, i.e. a finite spanning set.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Noetherian characterization via finite type",
+      "anchor": {
+        "section": "Modules",
+        "snippet": "every submodule of a module of finite type is also of finite type"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "isNoetherian_of_isNoetherianRing_of_finite",
+        "module": "Mathlib.RingTheory.Noetherian.Basic",
+        "match_kind": "special_case"
+      },
+      "note": "Both directions exist (`isNoetherian_of_isNoetherianRing_of_finite`, `IsNoetherian.finite`, `isNoetherian_def`), but the exact biconditional is not a single named theorem.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Ideal",
+      "anchor": {
+        "section": "Ideals",
+        "snippet": "are the submodules of"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Ideal",
+        "module": "Mathlib.RingTheory.Ideal.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`Ideal R` is defined as the abbreviation `Submodule R R`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Only ideals are zero and whole ring iff field",
+      "anchor": {
+        "section": "Ideals",
+        "snippet": "These two ideals are the only ones precisely if"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Ring.isField_iff_isSimpleOrder_ideal",
+        "module": "Mathlib.RingTheory.Ideal.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`Ring.isField_iff_isSimpleOrder_ideal : IsField R ↔ IsSimpleOrder (Ideal R)` says `R` is a field iff `⊥` and `⊤` are the only ideals.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Ideals",
+          "snippet": "These two ideals are the only ones precisely if"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle r_{1}f_{1}+r_{2}f_{2}+\\dots +r_{n}f_{n}.}"
+        }
+      ]
+    },
+    {
+      "kind": "definition",
+      "label": "Ideal generated by a set",
+      "anchor": {
+        "section": "Ideals",
+        "snippet": "is the smallest ideal that contains"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Ideal.span",
+        "module": "Mathlib.RingTheory.Ideal.Span",
+        "match_kind": "exact"
+      },
+      "note": "`Ideal.span s := Submodule.span α s` is the smallest ideal containing the set `s`.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Ideals",
+          "snippet": "is the smallest ideal that contains"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle r_{1}f_{1}+r_{2}f_{2}+\\dots +r_{n}f_{n}.}"
+        }
+      ]
+    },
+    {
+      "kind": "definition",
+      "label": "Principal ideal",
+      "anchor": {
+        "section": "Principal ideal domains",
+        "snippet": "Such an ideal is called a principal ideal"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Submodule.IsPrincipal",
+        "module": "Mathlib.LinearAlgebra.Span.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`Submodule.IsPrincipal S` is `∃ a, S = span R {a}`; applied to `Ideal R` it gives principal ideals.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Principal ideal ring",
+      "anchor": {
+        "section": "Principal ideal domains",
+        "snippet": "is called a principal ideal ring"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "IsPrincipalIdealRing",
+        "module": "Mathlib.RingTheory.Ideal.Span",
+        "match_kind": "exact"
+      },
+      "note": "`IsPrincipalIdealRing R` requires every ideal `S` to satisfy `S.IsPrincipal`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Principal ideal domain",
+      "anchor": {
+        "section": "Principal ideal domains",
+        "snippet": "they are called principal ideal domains"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "IsPrincipalIdealRing",
+        "module": "Mathlib.RingTheory.PrincipalIdealDomain",
+        "match_kind": "invocation"
+      },
+      "note": "Mathlib has no dedicated PID class; a PID is expressed by combining `[IsDomain R]` and `[IsPrincipalIdealRing R]`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "PID is a UFD",
+      "anchor": {
+        "section": "Principal ideal domains",
+        "snippet": "is a unique factorization domain (UFD) which means that any element is a product of irreducible elements"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "PrincipalIdealRing.to_uniqueFactorizationMonoid",
+        "module": "Mathlib.RingTheory.PrincipalIdealDomain",
+        "match_kind": "exact"
+      },
+      "note": "Instance `PrincipalIdealRing.to_uniqueFactorizationMonoid` provides `UniqueFactorizationMonoid R` for a PID.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Principal ideal domains",
+          "snippet": "is a unique factorization domain (UFD) which means that any element is a product of irreducible elements"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle a=bc,}"
+        }
+      ]
+    },
+    {
+      "kind": "definition",
+      "label": "Irreducible element",
+      "anchor": {
+        "section": "Principal ideal domains",
+        "snippet": "in a domain is called irreducible if the only way of expressing it as a product"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Irreducible",
+        "module": "Mathlib.Algebra.Group.Irreducible.Defs",
+        "match_kind": "generalization"
+      },
+      "note": "`Irreducible` is defined for elements of any monoid, generalizing the domain case.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Principal ideal domains",
+          "snippet": "in a domain is called irreducible if the only way of expressing it as a product"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle a=bc,}"
+        }
+      ]
+    },
+    {
+      "kind": "example",
+      "label": "Irreducible polynomials",
+      "anchor": {
+        "section": "Principal ideal domains",
+        "snippet": "are irreducible polynomials"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Irreducible",
+        "module": "Mathlib.Algebra.Group.Irreducible.Defs",
+        "match_kind": "invocation"
+      },
+      "note": "Irreducible polynomials are `Irreducible (p : Polynomial R)`, an invocation of the general predicate; there is no dedicated `Polynomial.Irreducible`.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Principal ideal domains",
+          "snippet": "are irreducible polynomials"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle a=bc,}"
+        }
+      ]
+    },
+    {
+      "kind": "theorem",
+      "label": "Fundamental theorem of arithmetic",
+      "anchor": {
+        "section": "Principal ideal domains",
+        "snippet": "It is also known as the fundamental theorem of arithmetic"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Nat.primeFactorsList_unique",
+        "module": "Mathlib.Data.Nat.Factors",
+        "match_kind": "exact"
+      },
+      "note": "`Nat.primeFactorsList_unique` proves uniqueness of prime factorization on ℕ; existence is `Nat.prod_primeFactorsList`.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Principal ideal domains",
+          "snippet": "It is also known as the fundamental theorem of arithmetic"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle a=bc,}"
+        }
+      ]
+    },
+    {
+      "kind": "definition",
+      "label": "Prime element",
+      "anchor": {
+        "section": "Principal ideal domains",
+        "snippet": "is a prime element if whenever"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Prime",
+        "module": "Mathlib.Algebra.Prime.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`Prime p` is nonzero, non-unit, and dividing a product implies dividing a factor.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Prime implies irreducible in a domain",
+      "anchor": {
+        "section": "Principal ideal domains",
+        "snippet": "being prime implies being irreducible"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Prime.irreducible",
+        "module": "Mathlib.Algebra.Prime.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`Prime.irreducible` shows a prime element is irreducible over a `CommMonoidWithZero` with `IsCancelMulZero` (covering domains).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Factor ring",
+      "anchor": {
+        "section": "Factor ring",
+        "snippet": "it is the set of cosets of"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Ideal.Quotient.commRing",
+        "module": "Mathlib.RingTheory.Ideal.Quotient.Defs",
+        "match_kind": "exact"
+      },
+      "note": "The quotient ring `R ⧸ I` carries a ring structure from `Ideal.Quotient.commRing`/`ring` instances.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Factor ring",
+          "snippet": "it is the set of cosets of"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\left(a+I\\right)+\\left(b+I\\right)=\\left(a+b\\right)+I}"
+        }
+      ]
+    },
+    {
+      "kind": "example",
+      "label": "Integers modulo n",
+      "anchor": {
+        "section": "Factor ring",
+        "snippet": "is the ring of integers modulo"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "ZMod",
+        "module": "Mathlib.Data.ZMod.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`ZMod n` is the integers modulo `n` (ℤ for 0, `Fin (n+1)` otherwise).",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Factor ring",
+          "snippet": "is the ring of integers modulo"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\left(a+I\\right)+\\left(b+I\\right)=\\left(a+b\\right)+I}"
+        }
+      ]
+    },
+    {
+      "kind": "definition",
+      "label": "Proper ideal",
+      "anchor": {
+        "section": "Factor ring",
+        "snippet": "An ideal is proper if it is strictly smaller than the whole ring"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Ideal.IsMaximal.ne_top",
+        "module": "Mathlib.RingTheory.Ideal.Maximal",
+        "match_kind": "invocation"
+      },
+      "note": "There is no `Ideal.IsProper` definition; properness is expressed inline as `I ≠ ⊤`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Maximal ideal",
+      "anchor": {
+        "section": "Factor ring",
+        "snippet": "is not strictly contained in any proper ideal is called maximal"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Ideal.IsMaximal",
+        "module": "Mathlib.RingTheory.Ideal.Maximal",
+        "match_kind": "exact"
+      },
+      "note": "`Ideal.IsMaximal I` is defined as `IsCoatom I`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Maximal ideal iff quotient is a field",
+      "anchor": {
+        "section": "Factor ring",
+        "snippet": "is maximal if and only if"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Ideal.Quotient.maximal_ideal_iff_isField_quotient",
+        "module": "Mathlib.RingTheory.Ideal.Quotient.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`Ideal.Quotient.maximal_ideal_iff_isField_quotient` states `I.IsMaximal ↔ IsField (R ⧸ I)`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Existence of maximal ideals",
+      "anchor": {
+        "section": "Factor ring",
+        "snippet": "any ring (with identity) possesses at least one maximal ideal"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Ideal.exists_maximal",
+        "module": "Mathlib.RingTheory.Ideal.Maximal",
+        "match_kind": "exact"
+      },
+      "note": "`Ideal.exists_maximal` (Krull) gives `∃ M : Ideal α, M.IsMaximal` for any nontrivial (semi)ring.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Noetherian ring",
+      "anchor": {
+        "section": "Noetherian rings",
+        "snippet": "A ring is called Noetherian"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "IsNoetherianRing",
+        "module": "Mathlib.RingTheory.Noetherian.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`IsNoetherianRing R := IsNoetherian R R`, i.e. all ideals are finitely generated.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Noetherian rings",
+          "snippet": "A ring is called Noetherian"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle 0\\subseteq I_{0}\\subseteq I_{1}\\subseteq \\dots \\subseteq I_{n}\\subseteq I_{n+1}\\dots }"
+        }
+      ]
+    },
+    {
+      "kind": "theorem",
+      "label": "Hilbert basis theorem",
+      "anchor": {
+        "section": "Noetherian rings",
+        "snippet": "then so is the polynomial ring"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Polynomial.isNoetherianRing",
+        "module": "Mathlib.RingTheory.Polynomial.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`Polynomial.isNoetherianRing` states `R[X]` is Noetherian when `R` is; `MvPolynomial.isNoetherianRing` covers finitely many variables.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Noetherian approximation",
+      "anchor": {
+        "section": "Noetherian rings",
+        "snippet": "is the union of its Noetherian subrings"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Only the building block (closure of a finite set is a Noetherian subring) exists; the union/colimit statement is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Artinian ring",
+      "anchor": {
+        "section": "Artinian rings",
+        "snippet": "A ring is called Artinian"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "IsArtinianRing",
+        "module": "Mathlib.RingTheory.Artinian.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`IsArtinianRing R := IsArtinian R R`, the descending chain condition on ideals.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Artinian rings",
+          "snippet": "A ring is called Artinian"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle R\\supseteq I_{0}\\supseteq I_{1}\\supseteq \\dots \\supseteq I_{n}\\supseteq I_{n+1}\\dots }"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\mathbb {Z} \\supsetneq 2\\mathbb {Z} \\supsetneq 4\\mathbb {Z} \\supsetneq 8\\mathbb {Z} \\dots }"
+        }
+      ]
+    },
+    {
+      "kind": "theorem",
+      "label": "Hopkins–Levitzki theorem",
+      "anchor": {
+        "section": "Artinian rings",
+        "snippet": "every Artinian ring is Noetherian"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "IsSemiprimaryRing.isNoetherian_iff_isArtinian",
+        "module": "Mathlib.RingTheory.HopkinsLevitzki",
+        "match_kind": "generalization"
+      },
+      "note": "The general Hopkins–Levitzki theorem; the consequence 'Artinian ⇒ Noetherian' is an instance `[IsArtinianRing R] : IsNoetherianRing R` in the same file.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Artinian rings",
+          "snippet": "every Artinian ring is Noetherian"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle R\\supseteq I_{0}\\supseteq I_{1}\\supseteq \\dots \\supseteq I_{n}\\supseteq I_{n+1}\\dots }"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\mathbb {Z} \\supsetneq 2\\mathbb {Z} \\supsetneq 4\\mathbb {Z} \\supsetneq 8\\mathbb {Z} \\dots }"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Artinian as zero-dimensional Noetherian",
+      "anchor": {
+        "section": "Artinian rings",
+        "snippet": "Artinian rings can be characterized as the Noetherian rings whose Krull dimension is zero"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "isArtinianRing_iff_isNoetherianRing_krullDimLE_zero",
+        "module": "Mathlib.RingTheory.HopkinsLevitzki",
+        "match_kind": "exact"
+      },
+      "note": "`IsArtinianRing R ↔ IsNoetherianRing R ∧ Ring.KrullDimLE 0 R` for a commutative ring.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Artinian rings",
+          "snippet": "Artinian rings can be characterized as the Noetherian rings whose Krull dimension is zero"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle R\\supseteq I_{0}\\supseteq I_{1}\\supseteq \\dots \\supseteq I_{n}\\supseteq I_{n+1}\\dots }"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\mathbb {Z} \\supsetneq 2\\mathbb {Z} \\supsetneq 4\\mathbb {Z} \\supsetneq 8\\mathbb {Z} \\dots }"
+        }
+      ]
+    },
+    {
+      "kind": "definition",
+      "label": "Prime ideal",
+      "anchor": {
+        "section": "Prime ideals",
+        "snippet": "A prime ideal is a proper"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Ideal.IsPrime",
+        "module": "Mathlib.RingTheory.Ideal.Prime",
+        "match_kind": "exact"
+      },
+      "note": "`Ideal.IsPrime I` is a proper ideal with `ab ∈ I → a ∈ I ∨ b ∈ I`.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Prime ideals",
+          "snippet": "A prime ideal is a proper"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\mathbb {Z} \\left[{\\sqrt {-5}}\\right]}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle 6=2\\cdot 3=\\left(1+{\\sqrt {-5}}\\right)\\left(1-{\\sqrt {-5}}\\right).}"
+        }
+      ]
+    },
+    {
+      "kind": "theorem",
+      "label": "Factorization into prime ideals in Dedekind rings",
+      "anchor": {
+        "section": "Prime ideals",
+        "snippet": "decomposes uniquely as a product of prime ideals"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Ideal.uniqueFactorizationMonoid",
+        "module": "Mathlib.RingTheory.DedekindDomain.Ideal.Basic",
+        "match_kind": "exact"
+      },
+      "note": "Instance `Ideal.uniqueFactorizationMonoid : UniqueFactorizationMonoid (Ideal A)` for a Dedekind domain gives unique factorization of ideals into primes.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Prime ideals",
+          "snippet": "decomposes uniquely as a product of prime ideals"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\mathbb {Z} \\left[{\\sqrt {-5}}\\right]}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle 6=2\\cdot 3=\\left(1+{\\sqrt {-5}}\\right)\\left(1-{\\sqrt {-5}}\\right).}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Maximal ideals are prime",
+      "anchor": {
+        "section": "Prime ideals",
+        "snippet": "Any maximal ideal is a prime ideal"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Ideal.IsMaximal.isPrime",
+        "module": "Mathlib.RingTheory.Ideal.Maximal",
+        "match_kind": "exact"
+      },
+      "note": "`Ideal.IsMaximal.isPrime` turns a maximal ideal into a prime ideal.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Prime ideal iff quotient is a domain",
+      "anchor": {
+        "section": "Prime ideals",
+        "snippet": "is prime if and only if the factor ring"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Ideal.Quotient.isDomain_iff_prime",
+        "module": "Mathlib.RingTheory.Ideal.Quotient.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`isDomain_iff_prime : IsDomain (R ⧸ I) ↔ I.IsPrime`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Local ring",
+      "anchor": {
+        "section": "Prime ideals",
+        "snippet": "Such rings are called local"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "IsLocalRing",
+        "module": "Mathlib.RingTheory.LocalRing.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`IsLocalRing` (nontrivial, `a` or `1-a` is a unit) is equivalent to having a unique maximal ideal.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Spectrum of a ring",
+      "anchor": {
+        "section": "Spectrum",
+        "snippet": "is the set of all prime ideals of"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "PrimeSpectrum",
+        "module": "Mathlib.RingTheory.Spectrum.Prime.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`PrimeSpectrum` bundles an ideal together with a proof it is prime.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Spectrum",
+          "snippet": "is the set of all prime ideals of"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle D\\left(f\\right)=\\left\\{p\\in {\\text{Spec}}\\ R,f\\not \\in p\\right\\},}"
+        }
+      ]
+    },
+    {
+      "kind": "theorem",
+      "label": "Maximal spectrum bijection (Nullstellensatz)",
+      "anchor": {
+        "section": "Spectrum",
+        "snippet": "is in bijection with the set"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "MvPolynomial.isMaximal_iff_eq_vanishingIdeal_singleton",
+        "module": "Mathlib.RingTheory.Nullstellensatz",
+        "match_kind": "special_case"
+      },
+      "note": "Over an algebraically closed field with finitely many variables, maximal ideals correspond to singleton points, giving the bijection's content but no packaged `Equiv`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Minimal primes and irreducible components",
+      "anchor": {
+        "section": "Spectrum",
+        "snippet": "correspond to the irreducible components of"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "minimalPrimes.equivIrreducibleComponents",
+        "module": "Mathlib.RingTheory.Spectrum.Prime.Topology",
+        "match_kind": "exact"
+      },
+      "note": "`minimalPrimes R ≃o (irreducibleComponents (PrimeSpectrum R))ᵒᵈ`, an order isomorphism.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Finitely many irreducible components for Noetherian Spec",
+      "anchor": {
+        "section": "Spectrum",
+        "snippet": "has only finitely many irreducible components"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "TopologicalSpace.NoetherianSpace.finite_irreducibleComponents",
+        "module": "Mathlib.Topology.NoetherianSpace",
+        "match_kind": "generalization"
+      },
+      "note": "A Noetherian topological space has finitely many irreducible components; `PrimeSpectrum` of a Noetherian ring is such a space.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Primary decomposition",
+      "anchor": {
+        "section": "Spectrum",
+        "snippet": "any ideal can be decomposed as a product of finitely many primary ideals"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Submodule.isLasker",
+        "module": "Mathlib.RingTheory.Lasker",
+        "match_kind": "generalization"
+      },
+      "note": "Lasker–Noether: every submodule of a Noetherian module is a finite intersection of primary submodules; specializes to ideals (intersection, not product).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Affine scheme",
+      "anchor": {
+        "section": "Affine schemes",
+        "snippet": "is called an affine scheme"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "AlgebraicGeometry.AffineScheme",
+        "module": "Mathlib.AlgebraicGeometry.AffineScheme",
+        "match_kind": "exact"
+      },
+      "note": "`AffineScheme` is the essential image of the `Spec` functor, with `IsAffine X` characterizing affine schemes.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Ring recovered as global sections",
+      "anchor": {
+        "section": "Affine schemes",
+        "snippet": "the underlying ring R can be recovered as the global sections"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "AlgebraicGeometry.Scheme.ΓSpecIso",
+        "module": "Mathlib.AlgebraicGeometry.Scheme",
+        "match_kind": "exact"
+      },
+      "note": "`ΓSpecIso` gives the isomorphism `Γ(Spec R, ⊤) ≅ R`, recovering `R` as global sections.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Krull dimension",
+      "anchor": {
+        "section": "Dimension",
+        "snippet": "The Krull dimension (or dimension)"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "ringKrullDim",
+        "module": "Mathlib.RingTheory.KrullDimension.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`ringKrullDim R` is the Krull dimension of `PrimeSpectrum R`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Dimension as supremum of prime chains",
+      "anchor": {
+        "section": "Dimension",
+        "snippet": "as the supremum of lengths n of chains of prime ideals"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "ringKrullDim",
+        "module": "Mathlib.RingTheory.KrullDimension.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`ringKrullDim` is `krullDim (PrimeSpectrum R)`, where `Order.krullDim` is the supremum of lengths of chains of primes.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "A field is zero-dimensional",
+      "anchor": {
+        "section": "Dimension",
+        "snippet": "a field is zero-dimensional"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "ringKrullDim_eq_zero_of_field",
+        "module": "Mathlib.RingTheory.KrullDimension.Field",
+        "match_kind": "exact"
+      },
+      "note": "`ringKrullDim_eq_zero_of_field` states `ringKrullDim F = 0` for a field `F`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Noetherian local rings have finite dimension",
+      "anchor": {
+        "section": "Dimension",
+        "snippet": "Noetherian local rings have finite dimension"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "AlgebraicGeometry.instFiniteRingKrullDim",
+        "module": "Mathlib.RingTheory.Ideal.KrullsHeightTheorem",
+        "match_kind": "exact"
+      },
+      "note": "Under `[CommRing R] [IsNoetherianRing R] [IsLocalRing R]`, an instance provides `FiniteRingKrullDim R`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Ring homomorphism",
+      "anchor": {
+        "section": "Ring homomorphisms",
+        "snippet": "A ring homomorphism or, more colloquially, simply a map"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "RingHom",
+        "module": "Mathlib.Algebra.Ring.Hom.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`RingHom` (notation `→+*`) bundles `MonoidHom` and `AddMonoidHom` data of ring homomorphisms.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Kernel and image",
+      "anchor": {
+        "section": "Ring homomorphisms",
+        "snippet": "The kernel and image of f are defined by"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "RingHom.ker",
+        "module": "Mathlib.RingTheory.Ideal.Maps",
+        "match_kind": "exact"
+      },
+      "note": "`RingHom.ker` is `Ideal.comap f ⊥`; `RingHom.range` is the image as a `Subring`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Kernel is ideal, image is subring",
+      "anchor": {
+        "section": "Ring homomorphisms",
+        "snippet": "The kernel is an ideal of R , and the image is a subring of S"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "RingHom.ker",
+        "module": "Mathlib.RingTheory.Ideal.Maps",
+        "match_kind": "exact"
+      },
+      "note": "`RingHom.ker` has type `Ideal R` and `RingHom.range` has type `Subring S` by definition, so this holds at the type level.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Ring isomorphism",
+      "anchor": {
+        "section": "Ring homomorphisms",
+        "snippet": "is called an isomorphism if it is bijective"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "RingEquiv",
+        "module": "Mathlib.Algebra.Ring.Equiv",
+        "match_kind": "exact"
+      },
+      "note": "`RingEquiv` (notation `≃+*`) is the structure of bijective ring homomorphisms.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Ring homomorphisms",
+          "snippet": "is called an isomorphism if it is bijective"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\mathbf {Z} /n=\\bigoplus _{i=0}^{k}\\mathbf {Z} /p_{i},}"
+        }
+      ]
+    },
+    {
+      "kind": "theorem",
+      "label": "Chinese remainder theorem",
+      "anchor": {
+        "section": "Ring homomorphisms",
+        "snippet": "known as the Chinese remainder theorem"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Ideal.quotientInfRingEquivPiQuotient",
+        "module": "Mathlib.RingTheory.Ideal.Quotient.Operations",
+        "match_kind": "exact"
+      },
+      "note": "`quotientInfRingEquivPiQuotient` is the CRT ring isomorphism `(R ⧸ ⨅ i, f i) ≃+* ∀ i, R ⧸ f i` for pairwise coprime ideals.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Ring homomorphisms",
+          "snippet": "known as the Chinese remainder theorem"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\mathbf {Z} /n=\\bigoplus _{i=0}^{k}\\mathbf {Z} /p_{i},}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Z is the initial commutative ring",
+      "anchor": {
+        "section": "Ring homomorphisms",
+        "snippet": "The ring Z is the initial object in this category"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "CommRingCat.zIsInitial",
+        "module": "Mathlib.Algebra.Category.Ring.Constructions",
+        "match_kind": "exact"
+      },
+      "note": "`zIsInitial` proves `IsInitial (CommRingCat.of ℤ)` via the unique `Int.castRingHom`.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Ring homomorphisms",
+          "snippet": "The ring Z is the initial object in this category"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle (a+b)^{n}=\\sum _{k=0}^{n}{\\binom {n}{k}}a^{k}b^{n-k}}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Binomial formula in commutative rings",
+      "anchor": {
+        "section": "Ring homomorphisms",
+        "snippet": "which is valid for any two elements a and b in any commutative ring"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "add_pow",
+        "module": "Mathlib.Data.Nat.Choose.Sum",
+        "match_kind": "exact"
+      },
+      "note": "`add_pow` is the binomial theorem over a `CommSemiring`; `Commute.add_pow` generalizes to commuting elements.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Ring homomorphisms",
+          "snippet": "which is valid for any two elements a and b in any commutative ring"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle (a+b)^{n}=\\sum _{k=0}^{n}{\\binom {n}{k}}a^{k}b^{n-k}}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Tensor product of R-algebras",
+      "anchor": {
+        "section": "Ring homomorphisms",
+        "snippet": "is again a commutative R -algebra"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Algebra.TensorProduct.instCommRing",
+        "module": "Mathlib.RingTheory.TensorProduct.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`instCommRing` gives `CommRing (A ⊗[R] B)` and `instAlgebra` the R-algebra structure, so the tensor product is a commutative R-algebra.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Finitely generated algebra",
+      "anchor": {
+        "section": "Finite generation",
+        "snippet": "is called finitely generated (as an algebra) if"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Algebra.FiniteType",
+        "module": "Mathlib.RingTheory.FiniteType",
+        "match_kind": "exact"
+      },
+      "note": "`Algebra.FiniteType` asserts `(⊤ : Subalgebra R A).FG`, i.e. `A` is finitely generated as an R-algebra.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Finitely generated module",
+      "anchor": {
+        "section": "Finite generation",
+        "snippet": "S is finitely generated as an R -module"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Module.Finite",
+        "module": "Mathlib.RingTheory.Finiteness.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`Module.Finite` asserts `(⊤ : Submodule R M).FG`, i.e. the module is finitely generated.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Local ring",
+      "anchor": {
+        "section": "Local rings",
+        "snippet": "A ring is called local if it has only a single maximal ideal"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "IsLocalRing",
+        "module": "Mathlib.RingTheory.LocalRing.Defs",
+        "match_kind": "generalization"
+      },
+      "note": "`IsLocalRing` is defined via the unit condition; the unique-maximal-ideal characterization is `IsLocalRing.maximalIdeal`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Localization at a prime is local",
+      "anchor": {
+        "section": "Local rings",
+        "snippet": "at a prime ideal p is local"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "IsLocalization.AtPrime.isLocalRing",
+        "module": "Mathlib.RingTheory.Localization.AtPrime.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`IsLocalization.AtPrime.isLocalRing` states a localization at a prime is a local ring.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Residue field",
+      "anchor": {
+        "section": "Local rings",
+        "snippet": "The residue field of R is defined as"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "IsLocalRing.ResidueField",
+        "module": "Mathlib.RingTheory.LocalRing.ResidueField.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`IsLocalRing.ResidueField` is `R ⧸ maximalIdeal R` with a `Field` instance.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Nakayama's lemma",
+      "anchor": {
+        "section": "Local rings",
+        "snippet": "Nakayama's lemma shows this passage is preserving important information"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Submodule.eq_smul_of_le_smul_of_le_jacobson",
+        "module": "Mathlib.RingTheory.Nakayama",
+        "match_kind": "generalization"
+      },
+      "note": "Nakayama's lemma appears in several forms, e.g. `Submodule.eq_smul_of_le_smul_of_le_jacobson` and `exists_sub_one_mem_and_smul_eq_zero_of_fg_of_le_smul`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Cotangent space m/m^2",
+      "anchor": {
+        "section": "Regular local rings",
+        "snippet": "is an algebraic incarnation of the cotangent space"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "IsLocalRing.CotangentSpace",
+        "module": "Mathlib.RingTheory.Ideal.Cotangent",
+        "match_kind": "exact"
+      },
+      "note": "`IsLocalRing.CotangentSpace` is `(maximalIdeal R).Cotangent`, i.e. m/m² as a residue-field vector space.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Dimension inequality for Noetherian local rings",
+      "anchor": {
+        "section": "Regular local rings",
+        "snippet": "For any Noetherian local ring R , the inequality"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "IsLocalRing.ringKrullDim_le_spanFinrank_maximalIdeal",
+        "module": "Mathlib.RingTheory.Ideal.KrullsHeightTheorem",
+        "match_kind": "exact"
+      },
+      "note": "`ringKrullDim_le_spanFinrank_maximalIdeal` gives dim R ≤ minimal generators of m, equal to finrank of the cotangent space.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Regular local ring",
+      "anchor": {
+        "section": "Regular local rings",
+        "snippet": "R is called a regular local ring"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "IsRegularLocalRing",
+        "module": "Mathlib.RingTheory.RegularLocalRing.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`IsRegularLocalRing` requires `(maximalIdeal R).spanFinrank = ringKrullDim R`, with an m/m² characterization.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Regular local rings",
+          "snippet": "R is called a regular local ring"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\bigoplus _{n}m^{n}/m^{n+1}}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Regularity iff associated graded is polynomial ring",
+      "anchor": {
+        "section": "Regular local rings",
+        "snippet": "A Noetherian local ring is regular if and only if the ring"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No formalization of the associated graded ring gr_m(R) being a polynomial ring as a regularity criterion was found.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Regular local rings",
+          "snippet": "A Noetherian local ring is regular if and only if the ring"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\bigoplus _{n}m^{n}/m^{n+1}}"
+        }
+      ]
+    },
+    {
+      "kind": "theorem",
+      "label": "Regular local rings are UFDs",
+      "anchor": {
+        "section": "Regular local rings",
+        "snippet": "Regular local rings are UFD's"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No Auslander–Buchsbaum-type theorem (`IsRegularLocalRing` implies `UniqueFactorizationMonoid`) was found in Mathlib.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Regular local rings",
+          "snippet": "Regular local rings are UFD's"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\bigoplus _{n}m^{n}/m^{n+1}}"
+        }
+      ]
+    },
+    {
+      "kind": "definition",
+      "label": "Discrete valuation ring",
+      "anchor": {
+        "section": "Regular local rings",
+        "snippet": "Discrete valuation rings are equipped with a function"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "IsDiscreteValuationRing",
+        "module": "Mathlib.RingTheory.DiscreteValuationRing.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`IsDiscreteValuationRing` is a local PID domain that is not a field; the additive valuation `addVal R` is defined in the same file.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "DVRs are one-dimensional regular local rings",
+      "anchor": {
+        "section": "Regular local rings",
+        "snippet": "Discrete valuation rings are precisely the one-dimensional regular local rings"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "IsLocalRing.finrank_CotangentSpace_eq_one_iff",
+        "module": "Mathlib.RingTheory.DiscreteValuationRing.TFAE",
+        "match_kind": "special_case"
+      },
+      "note": "`finrank_CotangentSpace_eq_one_iff` equates DVR with finrank(m/m²)=1 for a Noetherian local domain, but no lemma states DVR iff (regular ∧ dim 1) directly.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Germs of holomorphic functions on a Riemann surface",
+      "anchor": {
+        "section": "Regular local rings",
+        "snippet": "the ring of germs of holomorphic functions on a Riemann surface is a discrete valuation ring"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No formalization of the ring of germs of holomorphic functions on a Riemann surface being a DVR was found.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Krull's principal ideal theorem dimension bound",
+      "anchor": {
+        "section": "Complete intersections",
+        "snippet": "is at least r − n"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Ideal.height_le_spanRank_toENat_of_mem_minimalPrimes",
+        "module": "Mathlib.RingTheory.Ideal.KrullsHeightTheorem",
+        "match_kind": "exact"
+      },
+      "note": "Krull's height theorem (`height ≤ n` for a prime minimal over n generators), with `height_le_one_of_isPrincipal...` as the Hauptidealsatz, is the ring-theoretic form of the codimension bound.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Complete intersection ring",
+      "anchor": {
+        "section": "Complete intersections",
+        "snippet": "A ring R is called a complete intersection ring if"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Grep for 'CompleteIntersection' returned no matches in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Regular local rings are complete intersections",
+      "anchor": {
+        "section": "Complete intersections",
+        "snippet": "Any regular local ring is a complete intersection ring, but not conversely"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No complete-intersection notion exists in Mathlib, so this implication is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Set-theoretic complete intersection",
+      "anchor": {
+        "section": "Complete intersections",
+        "snippet": "A ring R is a set-theoretic complete intersection if"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No notion of set-theoretic complete intersection was found in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Depth of a local ring",
+      "anchor": {
+        "section": "Cohen–Macaulay rings",
+        "snippet": "The depth of a local ring R is the number of elements in some"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "`Mathlib/RingTheory/Regular/RegularSequence.lean` has regular sequences but lists depth as a TODO; no depth definition exists.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Depth-dimension inequality",
+      "anchor": {
+        "section": "Cohen–Macaulay rings",
+        "snippet": "For any local Noetherian ring, the inequality"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Depth is not defined in Mathlib, so the inequality depth ≤ dim cannot be stated.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Cohen–Macaulay ring",
+      "anchor": {
+        "section": "Cohen–Macaulay rings",
+        "snippet": "is called a Cohen–Macaulay ring"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Grep for 'CohenMacaulay' across Mathlib returns no results.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Regular local rings are Cohen–Macaulay",
+      "anchor": {
+        "section": "Cohen–Macaulay rings",
+        "snippet": "regular local rings are Cohen–Macaulay, but not conversely"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Cohen–Macaulay rings are not defined in Mathlib, so this implication is absent.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Normal ring",
+      "anchor": {
+        "section": "Constructing commutative rings",
+        "snippet": "integrally closed in its field of fractions is called normal"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "IsIntegrallyClosed",
+        "module": "Mathlib.RingTheory.IntegralClosure.IntegrallyClosed",
+        "match_kind": "exact"
+      },
+      "note": "`IsIntegrallyClosed R` is defined as `IsIntegrallyClosedIn R (FractionRing R)`, i.e. integrally closed in its fraction field.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Normal one-dimensional rings are regular",
+      "anchor": {
+        "section": "Constructing commutative rings",
+        "snippet": "any normal one-dimensional ring is necessarily regular"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "IsLocalization.AtPrime.isDiscreteValuationRing_of_dedekind_domain",
+        "module": "Mathlib.RingTheory.DedekindDomain.Dvr",
+        "match_kind": "special_case"
+      },
+      "note": "Mathlib proves a Noetherian integrally closed domain of dim ≤ 1 is Dedekind with DVR localizations (and DVRs are regular), but no single 'normal dim-1 ⇒ regular' statement exists.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "I-adic topology",
+      "anchor": {
+        "section": "Completions",
+        "snippet": "This topology is called the I -adic topology"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Ideal.adicTopology",
+        "module": "Mathlib.Topology.Algebra.Nonarchimedean.AdicTopology",
+        "match_kind": "exact"
+      },
+      "note": "`Ideal.adicTopology` is the topology with powers of `I` as a basis of neighborhoods of zero.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "I-adic completion",
+      "anchor": {
+        "section": "Completions",
+        "snippet": "the I -adic completion is the inverse limit of the rings"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "AdicCompletion",
+        "module": "Mathlib.RingTheory.AdicCompletion.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`AdicCompletion I M` is the inverse limit of the quotients `M ⧸ (I^n • ⊤)`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Complete ring",
+      "anchor": {
+        "section": "Completions",
+        "snippet": "is isomorphic to its own completion, is called complete"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "IsAdicComplete",
+        "module": "Mathlib.RingTheory.AdicCompletion.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`IsAdicComplete I M` asserts `M` is Hausdorff and precomplete with respect to `I`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Hensel's lemma",
+      "anchor": {
+        "section": "Completions",
+        "snippet": "Complete local rings satisfy Hensel's lemma"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "IsAdicComplete.henselianRing",
+        "module": "Mathlib.RingTheory.Henselian",
+        "match_kind": "exact"
+      },
+      "note": "`IsAdicComplete.henselianRing` gives `HenselianRing R I` (Hensel's lemma) for I-adically complete rings.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Projective module",
+      "anchor": {
+        "section": "Projective modules and Ext functors",
+        "snippet": "Projective modules can be defined to be the direct summands of free modules"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Module.Projective",
+        "module": "Mathlib.Algebra.Module.Projective",
+        "match_kind": "exact"
+      },
+      "note": "`Module.Projective R P` is the standard projectivity predicate; equivalence with 'direct summand of free' is provided via `of_free` and `projective_def`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Finitely generated projective over local ring is free",
+      "anchor": {
+        "section": "Projective modules and Ext functors",
+        "snippet": "any finitely generated projective module is actually free"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Module.free_of_flat_of_isLocalRing",
+        "module": "Mathlib.RingTheory.LocalRing.Module",
+        "match_kind": "generalization"
+      },
+      "note": "`free_of_flat_of_isLocalRing` proves a finite flat module over a local ring is free; finite projective modules are flat, generalizing the projective case.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Quillen–Suslin theorem",
+      "anchor": {
+        "section": "Projective modules and Ext functors",
+        "snippet": "The Quillen–Suslin theorem asserts that any finitely generated projective module over"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Grep for 'Quillen' only finds Quillen model-category material; no Quillen–Suslin theorem exists.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Regularity iff finite global dimension",
+      "anchor": {
+        "section": "Projective modules and Ext functors",
+        "snippet": "A local Noetherian ring is regular if and only if its global dimension is finite"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No global dimension definition exists in Mathlib, so Serre's characterization is absent.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Ext functor",
+      "anchor": {
+        "section": "Projective modules and Ext functors",
+        "snippet": "This functor is the derived functor of the functor"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Ext",
+        "module": "Mathlib.CategoryTheory.Abelian.Ext",
+        "match_kind": "exact"
+      },
+      "note": "`Ext R C n` is defined as the derived functor of the Hom bifunctor in an abelian category.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Regularity iff vanishing Ext",
+      "anchor": {
+        "section": "Projective modules and Ext functors",
+        "snippet": "with residue field k is regular if and only if"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No characterization of regularity via vanishing of Ext groups with the residue field is present in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Betti numbers and complete intersections",
+      "anchor": {
+        "section": "Projective modules and Ext functors",
+        "snippet": "known as Betti numbers , grow polynomially in n if and only if"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Grep for 'Betti' in this commutative-algebra sense finds nothing; no polynomial-growth/complete-intersection result exists.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Flat module",
+      "anchor": {
+        "section": "Flatness",
+        "snippet": "If it is exact, M is called flat"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Module.Flat",
+        "module": "Mathlib.RingTheory.Flat.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`Module.Flat` is the class of flat modules, defined via injectivity of `rTensor` on finitely generated submodules.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Finitely presented flat over local ring is free",
+      "anchor": {
+        "section": "Flatness",
+        "snippet": "any finitely presented flat module is free of finite rank"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Module.free_of_flat_of_isLocalRing",
+        "module": "Mathlib.RingTheory.LocalRing.Module",
+        "match_kind": "exact"
+      },
+      "note": "`free_of_flat_of_isLocalRing` states a finite flat module over a local ring is free.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Fiber dimension of flat algebras",
+      "anchor": {
+        "section": "Flatness",
+        "snippet": "if an R -algebra S is flat, the dimensions of the fibers"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No dimension formula dim S = dim R + dim(fiber) for flat algebras was found in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Wedderburn's little theorem",
+      "anchor": {
+        "section": "Properties",
+        "snippet": "every finite division ring is commutative"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "littleWedderburn",
+        "module": "Mathlib.RingTheory.LittleWedderburn",
+        "match_kind": "exact"
+      },
+      "note": "`littleWedderburn` is an instance showing every finite `DivisionRing` is a `Field`, hence commutative.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Jacobson's commutativity condition",
+      "anchor": {
+        "section": "Properties",
+        "snippet": "Another condition ensuring commutativity of a ring, due to Jacobson"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No theorem deriving commutativity from `x^n(x) = x` (Jacobson's condition) was found in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Boolean ring",
+      "anchor": {
+        "section": "Properties",
+        "snippet": "the ring is called Boolean ring"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "BooleanRing",
+        "module": "Mathlib.Algebra.Ring.BooleanRing",
+        "match_kind": "exact"
+      },
+      "note": "`BooleanRing` is the class of rings where every element is idempotent.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Graded-commutative ring",
+      "anchor": {
+        "section": "Graded-commutative rings",
+        "snippet": "is called graded-commutative if, for all homogeneous elements"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No general graded-commutative ring class with the sign rule was found; `GradedRing` exists but graded-commutativity appears only ad hoc.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Commutative differential graded algebra",
+      "anchor": {
+        "section": "Graded-commutative rings",
+        "snippet": "R is called a commutative differential graded algebra (cdga)"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No cdga or differential graded algebra definition was found in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Differential forms as a cdga",
+      "anchor": {
+        "section": "Graded-commutative rings",
+        "snippet": "the complex of differential forms on a manifold"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No de Rham complex of differential forms structured as a cdga was found in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Cohomology of a cdga is graded-commutative",
+      "anchor": {
+        "section": "Graded-commutative rings",
+        "snippet": "The cohomology of a cdga is a graded-commutative ring"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Neither cdga nor graded-commutative ring is formalized, so this proposition is absent.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Superalgebra",
+      "anchor": {
+        "section": "Graded-commutative rings",
+        "snippet": "is called a superalgebra"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No `Superalgebra` definition exists; the term appears only as a comment in `CliffordAlgebra.Grading`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Almost commutative ring",
+      "anchor": {
+        "section": "Graded-commutative rings",
+        "snippet": "A related notion is an almost commutative ring"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No almost commutative ring definition was found in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Simplicial commutative ring",
+      "anchor": {
+        "section": "Simplicial commutative rings",
+        "snippet": "A simplicial commutative ring is a simplicial object in the category of commutative rings"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "CategoryTheory.SimplicialObject",
+        "module": "Mathlib.AlgebraicTopology.SimplicialObject.Basic",
+        "match_kind": "invocation"
+      },
+      "note": "`SimplicialObject C` is defined so `SimplicialObject CommRingCat` is expressible, but no dedicated 'simplicial commutative ring' definition exists.",
+      "provenance": "ai"
+    }
+  ]
+}

@@ -1,0 +1,1321 @@
+{
+  "slug": "Function_mathematics",
+  "wikipedia_title": "Function (mathematics)",
+  "display_title": "Function (mathematics)",
+  "schema_version": 3,
+  "annotation_style": "theorem_article",
+  "annotations": [
+    {
+      "kind": "definition",
+      "label": "Function (informal)",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "a function from a set X to a set Y assigns to each element of X exactly one element of Y"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": "exact"
+      },
+      "note": "Functions are the built-in type `α → β` in Lean's type theory; there is no Mathlib `def` because the notion is primitive.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Graph of a function",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "a function is uniquely represented by the set of all pairs"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Function.graph",
+        "module": "Mathlib.Data.Rel",
+        "match_kind": "exact"
+      },
+      "note": "`Function.graph f = {(a, b) | f a = b}` matches the graph definition, and `graph_injective` shows the representation is unique.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Function, domain and codomain",
+      "anchor": {
+        "section": "Definition",
+        "snippet": "A function f from a set X to a set Y is an assignment of one element of Y to each element of X"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": "exact"
+      },
+      "note": "Lean's primitive arrow type `α → β` provides domain `α` and codomain `β` directly.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Image of a function (range)",
+      "anchor": {
+        "section": "Definition",
+        "snippet": "The image of a function , sometimes called its range , is the set of the images of all elements in the domain"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Set.range",
+        "module": "Mathlib.Data.Set.Image",
+        "match_kind": "exact"
+      },
+      "note": "`Set.range f` is the set of images of all elements of the domain.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Partial function (informal)",
+      "anchor": {
+        "section": "Definition",
+        "snippet": "Such a function is then called a partial function"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "PFun",
+        "module": "Mathlib.Data.PFun",
+        "match_kind": "exact"
+      },
+      "note": "`PFun α β` (notation `α →. β`) is the type of partial functions defined as `α → Part β`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Function on a set S",
+      "anchor": {
+        "section": "Definition",
+        "snippet": "A function f on a set S means a function from the domain S , without specifying a codomain"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Lean's type system always requires both a domain and codomain, so this informal usage is not separately formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Binary relation",
+      "anchor": {
+        "section": "Formal definition",
+        "snippet": "a binary relation between two sets X and Y is a subset of the set of all ordered pairs"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Rel",
+        "module": "Mathlib.Data.Rel",
+        "match_kind": "exact"
+      },
+      "note": "`Rel α β := α → β → Prop` formalizes a binary relation between `α` and `β`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Function as functional relation (set-theoretic)",
+      "anchor": {
+        "section": "Formal definition",
+        "snippet": "A function with domain X and codomain Y is a binary relation R between X and Y that satisfies the two following conditions"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "SetRel.exists_graph_eq_iff",
+        "module": "Mathlib.Data.Rel",
+        "match_kind": "exact"
+      },
+      "note": "`SetRel.exists_graph_eq_iff` characterizes which relations come from functions (`∀ a, ∃! b, a ~[R] b`), giving the set-theoretic functional-relation criterion.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Functional relation",
+      "anchor": {
+        "section": "Formal definition",
+        "snippet": "A relation satisfying these conditions is called a functional relation"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "SetRel.exists_graph_eq_iff",
+        "module": "Mathlib.Data.Rel",
+        "match_kind": "exact"
+      },
+      "note": "The condition `∀ a, ∃! b, a ~[R] b` in `SetRel.exists_graph_eq_iff` captures the functional-relation predicate.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Partial function (formal)",
+      "anchor": {
+        "section": "Partial functions",
+        "snippet": "Partial functions are defined similarly to ordinary functions, with the \"total\" condition removed"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "PFun",
+        "module": "Mathlib.Data.PFun",
+        "match_kind": "exact"
+      },
+      "note": "`PFun α β` is exactly a partial function from `α` to `β`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Domain of definition; total function",
+      "anchor": {
+        "section": "Partial functions",
+        "snippet": "is called the domain of definition of the function"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "PFun.Dom",
+        "module": "Mathlib.Data.PFun",
+        "match_kind": "exact"
+      },
+      "note": "`PFun.Dom` gives the domain of definition of a partial function.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Real function (real-valued function of a real variable)",
+      "anchor": {
+        "section": "Partial functions",
+        "snippet": "a real-valued function of a real variable or real function is a partial function from the set"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "PFun",
+        "module": "Mathlib.Data.PFun",
+        "match_kind": "special_case"
+      },
+      "note": "Mathlib uses plain `ℝ → ℝ` for total real functions; a partial real function would be `PFun ℝ ℝ`, but there is no named alias.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Function of a complex variable",
+      "anchor": {
+        "section": "Partial functions",
+        "snippet": "a function of a complex variable is generally a partial function whose domain of definition is a subset of the complex numbers"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib uses `ℂ → ℂ` (or restrictions to opens) without a named partial-function alias.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "General recursive function",
+      "anchor": {
+        "section": "Partial functions",
+        "snippet": "a general recursive function is a partial function from the integers to the integers whose values can be computed by an algorithm"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Nat.Partrec",
+        "module": "Mathlib.Computability.Partrec",
+        "match_kind": "exact"
+      },
+      "note": "`Nat.Partrec : (ℕ →. ℕ) → Prop` is the inductive definition of partial recursive (general recursive) functions.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Undecidability of recursive-function membership (Halting problem)",
+      "anchor": {
+        "section": "Partial functions",
+        "snippet": "A fundamental theorem of computability theory is that there cannot exist an algorithm that takes an arbitrary general recursive function as input"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Computability.halting_problem",
+        "module": "Mathlib.Computability.Halting",
+        "match_kind": "exact"
+      },
+      "note": "`halting_problem` proves `¬ComputablePred fun c => (eval c n).Dom`, the undecidability of the halting predicate.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Multivariate function",
+      "anchor": {
+        "section": "Multivariate functions",
+        "snippet": "A multivariate function , multivariable function , or function of several variables is a function that depends on several arguments"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": "exact"
+      },
+      "note": "Multivariate functions are simply curried/uncurried Lean functions; `Function.uncurry`/`Function.curry` (in core/Mathlib) provide the conversion.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Function of n variables",
+      "anchor": {
+        "section": "Multivariate functions",
+        "snippet": "a function of n variables is a function whose domain is a set of n -tuples"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": "exact"
+      },
+      "note": "Functions of n variables are expressed in Lean as `(Fin n → α) → β` or as iterated arrows; not a separate Mathlib `def`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Multiplication of integers as bivariate function",
+      "anchor": {
+        "section": "Multivariate functions",
+        "snippet": "multiplication of integers is a function of two variables, or bivariate function"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Int.mul",
+        "module": "Mathlib.Data.Int.Defs",
+        "match_kind": "exact"
+      },
+      "note": "Integer multiplication is realized as a binary function via the `Mul ℤ` instance.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Cartesian product of n sets",
+      "anchor": {
+        "section": "Multivariate functions",
+        "snippet": "is called the Cartesian product of"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Set.prod",
+        "module": "Mathlib.Data.Set.Prod",
+        "match_kind": "exact"
+      },
+      "note": "`Set.prod` provides binary Cartesian product of sets; `Set.pi` provides the n-ary version.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Functional notation",
+      "anchor": {
+        "section": "Functional notation",
+        "snippet": "The functional notation requires that a name is given to the function"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Functional notation is a metamathematical convention, not a Mathlib definition.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Arrow notation",
+      "anchor": {
+        "section": "Arrow notation",
+        "snippet": "Arrow notation defines the rule of a function inline, without requiring a name to be given to the function"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": "exact"
+      },
+      "note": "Lean's `fun x => ...` (lambda) syntax realizes arrow/anonymous-function notation.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Index notation; sequence",
+      "anchor": {
+        "section": "Index notation",
+        "snippet": "Such a function is called a sequence"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": "exact"
+      },
+      "note": "Sequences in Lean/Mathlib are simply functions `ℕ → α`; no named `def` because the type itself suffices.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Placeholder notation",
+      "anchor": {
+        "section": "Placeholder notation",
+        "snippet": "the symbol x does not represent any value; it is simply a placeholder"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Placeholder notation is a notational convention with no Mathlib definition.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Function of two variables: sum of squares",
+      "anchor": {
+        "section": "Functions of more than one variable",
+        "snippet": "a function f can be defined as mapping any pair of real numbers"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Specific illustrative example; not a named declaration in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Map / mapping",
+      "anchor": {
+        "section": "Other terms",
+        "snippet": "A function may also be called a map or a mapping"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Terminological remark; no separate Mathlib declaration.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Function defined by listing values on a finite set",
+      "anchor": {
+        "section": "By listing function values",
+        "snippet": "On a finite set a function may be defined by listing the elements of the codomain that are associated to the elements of the domain"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Function.update",
+        "module": "Mathlib.Logic.Function.Basic",
+        "match_kind": "generalization"
+      },
+      "note": "`Function.update` plus pattern-matching on finite domains realize functions specified by listing values.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Quadratic function",
+      "anchor": {
+        "section": "By a formula",
+        "snippet": "A quadratic function is a function that may be written"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has `Polynomial` and `QuadraticForm` but no general `def QuadraticFunction` for ax²+bx+c on a single variable.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Polynomial function",
+      "anchor": {
+        "section": "By a formula",
+        "snippet": "a polynomial function is a function that can be defined by a formula involving only additions, subtractions, multiplications, and exponentiation to nonnegative integer powers"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Polynomial",
+        "module": "Mathlib.Algebra.Polynomial.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`Polynomial R` represents polynomials and `Polynomial.eval` gives the associated polynomial function.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Rational function",
+      "anchor": {
+        "section": "By a formula",
+        "snippet": "A rational function is the same, with divisions also allowed"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "RatFunc",
+        "module": "Mathlib.FieldTheory.RatFunc.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`RatFunc K` is Mathlib's formalization of the field of rational functions over `K`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Algebraic function",
+      "anchor": {
+        "section": "By a formula",
+        "snippet": "An algebraic function is the same, with n th roots and roots of polynomials also allowed"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No general `def AlgebraicFunction` in Mathlib; only related notions like `IsAlgebraic` for elements of an extension.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Elementary function",
+      "anchor": {
+        "section": "By a formula",
+        "snippet": "An elementary function [ note 4 ] is the same, with logarithms and exponential functions allowed"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has no formal definition of the class of elementary functions.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Bijective function and inverse function",
+      "anchor": {
+        "section": "Inverse and implicit functions",
+        "snippet": "is bijective , if for every y in Y , there is one and only one element x in X such that y = f ( x )"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Function.Bijective",
+        "module": "Mathlib.Logic.Function.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`Function.Bijective f := Injective f ∧ Surjective f`, with `Equiv.ofBijective` building the inverse function.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Implicit function (from a relation)",
+      "anchor": {
+        "section": "Inverse and implicit functions",
+        "snippet": "called an implicit function , because it is implicitly defined by the relation R"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "HasStrictFDerivAt.implicitFunction",
+        "module": "Mathlib.Analysis.Calculus.Implicit",
+        "match_kind": "special_case"
+      },
+      "note": "`HasStrictFDerivAt.implicitFunction` realizes implicit functions in the analytic setting; there is no general Mathlib `def` for implicit functions from arbitrary relations.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Implicit functions defined by the unit circle",
+      "anchor": {
+        "section": "Inverse and implicit functions",
+        "snippet": "For example, the equation of the unit circle"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Specific illustrative example; not a named Mathlib declaration.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Bring radical as an implicit function",
+      "anchor": {
+        "section": "Inverse and implicit functions",
+        "snippet": "called the Bring radical"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Bring radical is not defined in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Implicit function theorem",
+      "anchor": {
+        "section": "Inverse and implicit functions",
+        "snippet": "The implicit function theorem provides mild differentiability conditions for existence and uniqueness of an implicit function in the neighborhood of a point"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "HasStrictFDerivAt.implicitFunction",
+        "module": "Mathlib.Analysis.Calculus.Implicit",
+        "match_kind": "exact"
+      },
+      "note": "`HasStrictFDerivAt.implicitFunction` and its `prodFun_implicitFunction` equation provide the implicit function theorem in Banach spaces.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Function defined as an antiderivative",
+      "anchor": {
+        "section": "Using differential calculus",
+        "snippet": "Many functions can be defined as the antiderivative of another function"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "intervalIntegral",
+        "module": "Mathlib.MeasureTheory.Integral.IntervalIntegral",
+        "match_kind": "generalization"
+      },
+      "note": "Antiderivatives are not packaged as a named operator, but `intervalIntegral` and `FTC` lemmas realize the antiderivative construction.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Exponential function as solution of a differential equation",
+      "anchor": {
+        "section": "Using differential calculus",
+        "snippet": "the exponential function , which can be defined as the unique function that is equal to its derivative and takes the value 1 for x = 0"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Real.exp",
+        "module": "Mathlib.Analysis.SpecialFunctions.Exp",
+        "match_kind": "special_case"
+      },
+      "note": "`Real.exp` is defined via its power series (not as ODE solution), but its derivative property `Real.hasDerivAt_exp` is proved.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Function defined by a power series",
+      "anchor": {
+        "section": "Using differential calculus",
+        "snippet": "Power series can be used to define functions on the domain in which they converge"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "HasFPowerSeriesAt",
+        "module": "Mathlib.Analysis.Analytic.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`HasFPowerSeriesAt f p x` and `HasFPowerSeriesOnBall` express that `f` is given by a power series on a neighborhood.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Definition by recurrence",
+      "anchor": {
+        "section": "By recurrence",
+        "snippet": "Functions whose domain are the nonnegative integers, known as sequences , are sometimes defined by recurrence relations"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": "exact"
+      },
+      "note": "Lean's built-in `Nat.rec`/`Nat.recOn` and `def` by pattern matching directly support recurrence-defined functions.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Factorial function by recurrence",
+      "anchor": {
+        "section": "By recurrence",
+        "snippet": "The factorial function on the nonnegative integers"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Nat.factorial",
+        "module": "Mathlib.Data.Nat.Factorial.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`Nat.factorial` is defined by primitive recursion: `0! = 1`, `(n+1)! = (n+1) * n!`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Graph of a function (formal)",
+      "anchor": {
+        "section": "Graphs and plots",
+        "snippet": "its graph is, formally, the set"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Function.graph",
+        "module": "Mathlib.Data.Rel",
+        "match_kind": "exact"
+      },
+      "note": "`Function.graph f := {(a, b) | f a = b}` is exactly the formal set-of-pairs definition.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Graph of the square function: parabola / Fermat's spiral",
+      "anchor": {
+        "section": "Graphs and plots",
+        "snippet": "the graph of the square function"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Specific illustrative example; no Mathlib declaration for the parabola/Fermat-spiral pictures.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Function represented by a table of values",
+      "anchor": {
+        "section": "Tables",
+        "snippet": "A function can be represented as a table of values"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Tabular representation is a presentational device, not a Mathlib definition.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Bar chart representation of a function",
+      "anchor": {
+        "section": "Bar chart",
+        "snippet": "A bar chart can represent a function whose domain is a finite set, the natural numbers , or the integers"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Bar charts are graphical, not a Mathlib formalization target.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Empty function",
+      "anchor": {
+        "section": "Standard functions",
+        "snippet": "there is a unique function, called the empty function , or empty map , from the empty set to X"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "isEmptyElim",
+        "module": "Mathlib.Logic.IsEmpty.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`isEmptyElim` produces a unique function out of any empty type; `isEmpty_fun` characterizes when `α → β` is empty.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Canonical surjection onto image",
+      "anchor": {
+        "section": "Standard functions",
+        "snippet": "the canonical surjection of f onto its image"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Set.rangeFactorization",
+        "module": "Mathlib.Data.Set.Image",
+        "match_kind": "exact"
+      },
+      "note": "`Set.rangeFactorization f : α → range f` is the canonical surjection onto the image; `coe_comp_rangeFactorization` shows it factors `f`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Inclusion map",
+      "anchor": {
+        "section": "Standard functions",
+        "snippet": "the inclusion map of A into X is the injective (see below) function that maps every element of A to itself"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Set.inclusion",
+        "module": "Mathlib.Data.Set.Inclusion",
+        "match_kind": "exact"
+      },
+      "note": "`Set.inclusion (h : s ⊆ t) : s → t := fun x ↦ ⟨x, h x.prop⟩` is exactly the inclusion map.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Identity function",
+      "anchor": {
+        "section": "Standard functions",
+        "snippet": "The identity function on a set X , often denoted by id X , is the inclusion of X into itself"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "id",
+        "module": null,
+        "match_kind": "exact"
+      },
+      "note": "`id : α → α` is the Lean core identity function used throughout Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Function composition",
+      "anchor": {
+        "section": "Function composition",
+        "snippet": "such that the domain of g is the codomain of f , their composition is the function"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Function.comp",
+        "module": null,
+        "match_kind": "exact"
+      },
+      "note": "`Function.comp` (notation `∘`) is Lean's primitive composition `(f ∘ g) x = f (g x)`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Non-commutativity of composition",
+      "anchor": {
+        "section": "Function composition",
+        "snippet": "the composition is not necessarily commutative"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Non-commutativity is not stated as a theorem in Mathlib; only specific counterexamples appear.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Associativity of function composition",
+      "anchor": {
+        "section": "Function composition",
+        "snippet": "The function composition is associative in the sense that"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Function.comp_assoc",
+        "module": "Mathlib.Logic.Function.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`Function.comp_assoc` proves `(f ∘ g) ∘ h = f ∘ g ∘ h`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Identity functions are left/right identities",
+      "anchor": {
+        "section": "Function composition",
+        "snippet": "are respectively a right identity and a left identity for functions from X to Y"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Function.id_comp",
+        "module": "Mathlib.Logic.Function.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`Function.id_comp` and `Function.comp_id` express that `id` is a two-sided identity for composition.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Image of a subset under a function",
+      "anchor": {
+        "section": "Image and preimage",
+        "snippet": "the image of A under f , denoted f ( A ) , is the subset of the codomain Y consisting of all images of elements of A"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Set.image",
+        "module": "Mathlib.Data.Set.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`Set.image f s = {f a | a ∈ s}`, with notation `f '' s`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Preimage of an element",
+      "anchor": {
+        "section": "Image and preimage",
+        "snippet": "the inverse image or preimage under f of an element y of the codomain Y is the set of all elements of the domain X whose images under f equal y"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Set.preimage",
+        "module": "Mathlib.Data.Set.Operations",
+        "match_kind": "generalization"
+      },
+      "note": "The preimage of a single element is `f ⁻¹' {y}`, a special case of `Set.preimage`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Preimage of a subset",
+      "anchor": {
+        "section": "Image and preimage",
+        "snippet": "the preimage of a subset B of the codomain Y is the set of the preimages of the elements of B"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Set.preimage",
+        "module": "Mathlib.Data.Set.Operations",
+        "match_kind": "exact"
+      },
+      "note": "`Set.preimage f s = {x | f x ∈ s}`, notation `f ⁻¹' s`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Fiber of a point",
+      "anchor": {
+        "section": "Image and preimage",
+        "snippet": "is sometimes called, in some contexts, the fiber of y under f"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Set.preimage",
+        "module": "Mathlib.Data.Set.Operations",
+        "match_kind": "exact"
+      },
+      "note": "The fiber of `y` under `f` is `f ⁻¹' {y}`; `Function.fiber` in Mathlib.Logic.Function.FiberPartition packages this for partitioning.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Injective function",
+      "anchor": {
+        "section": "Injective, surjective and bijective functions",
+        "snippet": "The function f is injective (or one-to-one , or is an injection ) if f ( a ) ≠ f ( b ) for every two different elements a and b of X"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Function.Injective",
+        "module": null,
+        "match_kind": "exact"
+      },
+      "note": "`Function.Injective f := ∀ ⦃a b⦄, f a = f b → a = b` is in Lean core and used throughout Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Injective iff has a left inverse",
+      "anchor": {
+        "section": "Injective, surjective and bijective functions",
+        "snippet": "f is injective if and only if there exists a function"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Function.injective_iff_hasLeftInverse",
+        "module": "Mathlib.Logic.Function.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`Function.injective_iff_hasLeftInverse` proves `Injective f ↔ HasLeftInverse f`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Surjective function",
+      "anchor": {
+        "section": "Injective, surjective and bijective functions",
+        "snippet": "The function f is surjective (or onto , or is a surjection ) if its range"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Function.Surjective",
+        "module": null,
+        "match_kind": "exact"
+      },
+      "note": "`Function.Surjective f := ∀ b, ∃ a, f a = b` is in Lean core.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Surjective iff has a right inverse (uses choice)",
+      "anchor": {
+        "section": "Injective, surjective and bijective functions",
+        "snippet": "f is surjective if and only if there exists a function"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Function.surjective_iff_hasRightInverse",
+        "module": "Mathlib.Logic.Function.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`Function.surjective_iff_hasRightInverse` proves `Surjective f ↔ HasRightInverse f`, using classical choice via `surjInv`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Bijective function",
+      "anchor": {
+        "section": "Injective, surjective and bijective functions",
+        "snippet": "The function f is bijective (or is a bijection or a one-to-one correspondence ) if it is both injective and surjective"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Function.Bijective",
+        "module": "Mathlib.Logic.Function.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`Function.Bijective f := Injective f ∧ Surjective f`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Bijective iff admits an inverse function",
+      "anchor": {
+        "section": "Injective, surjective and bijective functions",
+        "snippet": "The function f is bijective if and only if it admits an inverse function"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Function.bijective_iff_has_inverse",
+        "module": "Mathlib.Logic.Function.Basic",
+        "match_kind": "exact"
+      },
+      "note": "Mathlib proves bijective is equivalent to having a two-sided inverse (`leftInverse_surjInv`/`rightInverse_surjInv`), and `Equiv.ofBijective` packages the inverse.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Canonical factorization of a function",
+      "anchor": {
+        "section": "Injective, surjective and bijective functions",
+        "snippet": "may be factorized as the composition"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Set.rangeFactorization",
+        "module": "Mathlib.Data.Set.Image",
+        "match_kind": "special_case"
+      },
+      "note": "`Set.rangeFactorization` and `coe_comp_rangeFactorization` give the surjection-injection factorization through the image, but the full quotient/image/inclusion three-factor decomposition is not packaged as a single theorem.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Restriction of a function",
+      "anchor": {
+        "section": "Restriction and extension",
+        "snippet": "then the restriction of"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Set.restrict",
+        "module": "Mathlib.Data.Set.Restrict",
+        "match_kind": "exact"
+      },
+      "note": "`Set.restrict s f : ↥s → _` restricts `f` to a subset `s`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Extension of a function",
+      "anchor": {
+        "section": "Restriction and extension",
+        "snippet": "An extension of a function f is a function g such that f is a restriction of g"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Function.extend",
+        "module": "Mathlib.Logic.Function.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`Function.extend f g g₀` extends `g` along an injection `f` (with default `g₀`).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Homography of the real line",
+      "anchor": {
+        "section": "Restriction and extension",
+        "snippet": "A homography is a function"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No `def Homography` for the real-line Möbius transformation in Mathlib; only projective-geometry homographies in different contexts.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Real function (calculus section)",
+      "anchor": {
+        "section": "Real function",
+        "snippet": "A real function is a real-valued function of a real variable , that is, a function whose codomain is the field of real numbers and whose domain is a set of real numbers that contains an interval"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": "exact"
+      },
+      "note": "A real function is just `ℝ → ℝ` (or `s → ℝ` for `s : Set ℝ`); no separate Mathlib alias.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Pointwise operations on real functions",
+      "anchor": {
+        "section": "Real function",
+        "snippet": "Functions enjoy pointwise operations"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Pi.instAdd",
+        "module": "Mathlib.Algebra.Group.Pi.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`Pi.instAdd`/`Pi.instMul`/etc. equip function spaces with pointwise algebraic operations.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Polynomial / rational real functions",
+      "anchor": {
+        "section": "Real function",
+        "snippet": "The polynomial functions are defined by polynomials , and their domain is the whole set of real numbers"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Polynomial",
+        "module": "Mathlib.Algebra.Polynomial.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`Polynomial ℝ` and `RatFunc ℝ` provide polynomial and rational real functions via `eval`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Antiderivative; the natural logarithm",
+      "anchor": {
+        "section": "Real function",
+        "snippet": "An antiderivative of a continuous real function is a real function that has the original function as a derivative"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Real.log",
+        "module": "Mathlib.Analysis.SpecialFunctions.Log.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`Real.log` is defined in Mathlib (via `Complex.log`), with antiderivative property `Real.deriv_log` available.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Monotonic real function",
+      "anchor": {
+        "section": "Real function",
+        "snippet": "A real function f is monotonic in an interval if the sign of"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Monotone",
+        "module": "Mathlib.Order.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`Monotone`, `StrictMono`, `MonotoneOn`, `StrictMonoOn` formalize various notions of monotonicity.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Monotonic function has an inverse",
+      "anchor": {
+        "section": "Real function",
+        "snippet": "If a real function f is monotonic in an interval I , it has an inverse function"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "StrictMonoOn.orderIso",
+        "module": "Mathlib.Order.Hom.Set",
+        "match_kind": "exact"
+      },
+      "note": "`StrictMonoOn.orderIso` builds an order isomorphism between a set and its image for a strictly monotone function on that set.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Vector-valued function",
+      "anchor": {
+        "section": "Vector-valued function",
+        "snippet": "the function is said to be a vector-valued function"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": "exact"
+      },
+      "note": "Vector-valued functions are functions into a vector space (e.g. `α → E` with `Module 𝕜 E`); not a named alias.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Vector field",
+      "anchor": {
+        "section": "Vector-valued function",
+        "snippet": "These vector-valued functions are given the name vector fields"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "ContMDiffSection",
+        "module": "Mathlib.Geometry.Manifold.VectorBundle.ContMDiffSection",
+        "match_kind": "generalization"
+      },
+      "note": "Smooth vector fields on manifolds are realized as smooth sections of the tangent bundle; Mathlib also has `Analysis/Calculus/VectorField.lean` for the Euclidean setting.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Function space",
+      "anchor": {
+        "section": "Function space",
+        "snippet": "a function space is a set of scalar-valued or vector-valued functions , which share a specific property and form a topological vector space"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "ContinuousMap",
+        "module": "Mathlib.Topology.ContinuousMap.Basic",
+        "match_kind": "special_case"
+      },
+      "note": "Mathlib has many specific function spaces (`ContinuousMap`, `Lp`, `BoundedContinuousFunction`, `Schwartz`, …) but no overarching `def FunctionSpace`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Square root as a multi-valued function",
+      "anchor": {
+        "section": "Multi-valued functions",
+        "snippet": "in defining the square root as the inverse function of the square function"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib's `Real.sqrt`/`Complex.sqrt` are principal-branch single-valued; the multi-valued square root is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Multi-valued function; branch cut; principal value; monodromy",
+      "anchor": {
+        "section": "Multi-valued functions",
+        "snippet": "One may define a function that is not continuous along some curve, called a branch cut"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Multi-valued functions, branch cuts, principal values, and monodromy are not formalized as a general framework in Mathlib (only specific monodromy notions appear in homotopy lifting).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Replacement axiom (NBG set theory)",
+      "anchor": {
+        "section": "In the foundations of mathematics",
+        "snippet": "This theory includes the replacement axiom , which may be stated as: If X is a set and F is a function, then F [ X ] is a set"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Lean/Mathlib is founded on type theory (CIC), not NBG; the replacement axiom is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "General recursive functions (operators)",
+      "anchor": {
+        "section": "In computer science",
+        "snippet": "General recursive functions are partial functions from integers to integers that can be defined from"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Nat.Partrec",
+        "module": "Mathlib.Computability.Partrec",
+        "match_kind": "exact"
+      },
+      "note": "`Nat.Partrec` inductively defines partial recursive functions via zero, successor, projection, pairing, composition, primitive recursion, and `rfind`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Equivalence of models of computation; Church–Turing thesis",
+      "anchor": {
+        "section": "In computer science",
+        "snippet": "The fundamental theorem of computability theory is that these three models of computation define the same set of computable functions"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Turing.Partrec.to_TM2",
+        "module": "Mathlib.Computability.TuringMachine.ToPartrec",
+        "match_kind": "special_case"
+      },
+      "note": "Mathlib formalizes equivalences between partial-recursive functions and Turing machine models in `Computability/TuringMachine/ToPartrec`, but a comprehensive Church-Turing equivalence covering all standard models is not packaged.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Lambda calculus",
+      "anchor": {
+        "section": "In computer science",
+        "snippet": "Lambda calculus is a theory that defines computable functions without using set theory"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The untyped lambda calculus is not formalized as a standalone theory in Mathlib (though Lean itself is based on a typed λ-calculus).",
+      "provenance": "ai"
+    }
+  ]
+}

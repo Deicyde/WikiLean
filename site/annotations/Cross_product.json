@@ -1,0 +1,809 @@
+{
+  "slug": "Cross_product",
+  "wikipedia_title": "Cross product",
+  "display_title": "Cross product",
+  "schema_version": 3,
+  "annotation_style": "theorem_article",
+  "annotations": [
+    {
+      "kind": "definition",
+      "label": "Cross product (binary operation)",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "the cross product or vector product (occasionally directed area product"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "crossProduct",
+        "module": "Mathlib.LinearAlgebra.CrossProduct",
+        "match_kind": "exact"
+      },
+      "note": "`crossProduct` is the bilinear cross product on `Fin 3 → R` for a commutative ring `R`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Magnitude equals parallelogram area",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "The magnitude of the cross product equals the area of a parallelogram with the vectors for sides"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "InnerProductGeometry.norm_ofLp_crossProduct",
+        "module": "Mathlib.Geometry.Euclidean.Angle.Unoriented.CrossProduct",
+        "match_kind": "exact"
+      },
+      "note": "Proves ‖a ⨯₃ b‖ = ‖a‖·‖b‖·sin(angle a b), which is the parallelogram-area formula.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Anticommutativity and distributivity",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "The cross product is anticommutative"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "cross_anticomm",
+        "module": "Mathlib.LinearAlgebra.CrossProduct",
+        "match_kind": "exact"
+      },
+      "note": "`cross_anticomm` gives anticommutativity; distributivity is built into `crossProduct` as a `LinearMap`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Pseudovector property",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "Therefore, the cross product is a pseudovector"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No formalization of the pseudovector/improper-rotation behaviour of the cross product was found.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Binary cross product exists only in 3 and 7 dimensions",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "But if the product is limited to non-trivial binary products with vector results, it exists only in three and seven dimensions."
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No Mathlib result classifying dimensions admitting a nontrivial bilinear vector-valued cross product.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Cross product defined",
+      "anchor": {
+        "section": "Definition",
+        "snippet": "The cross product a × b is defined as a vector c that is perpendicular (orthogonal) to both a and b"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "dot_self_cross",
+        "module": "Mathlib.LinearAlgebra.CrossProduct",
+        "match_kind": "exact"
+      },
+      "note": "`crossProduct` is defined directly; orthogonality to both factors is `dot_self_cross` and `dot_cross_self`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Cross product of parallel vectors is zero",
+      "anchor": {
+        "section": "Definition",
+        "snippet": "If the vectors a and b are parallel"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "crossProduct_ne_zero_iff_linearIndependent",
+        "module": "Mathlib.LinearAlgebra.CrossProduct",
+        "match_kind": "exact"
+      },
+      "note": "`crossProduct v w ≠ 0 ↔ LinearIndependent F ![v, w]` characterises vanishing as parallelism over a field.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Right-hand rule direction",
+      "anchor": {
+        "section": "Direction",
+        "snippet": "Conventionally, it is given by the right-hand rule"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No explicit right-hand-rule/orientation statement for the cross product is present.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Basis vector cross product equalities",
+      "anchor": {
+        "section": "Coordinate notation",
+        "snippet": "is a positively oriented orthonormal basis , the basis vectors satisfy the following equalities"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "cross_apply",
+        "module": "Mathlib.LinearAlgebra.CrossProduct",
+        "match_kind": "generalization"
+      },
+      "note": "The relations e₁×e₂=e₃ etc. follow immediately from `cross_apply` but no named lemmas state them.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Self cross product is zero",
+      "anchor": {
+        "section": "Coordinate notation",
+        "snippet": "The anticommutativity of the cross product (and the obvious lack of linear independence) also implies that"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "cross_self",
+        "module": "Mathlib.LinearAlgebra.CrossProduct",
+        "match_kind": "exact"
+      },
+      "note": "`cross_self : v ⨯₃ v = 0` matches exactly.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Component formula via distributivity",
+      "anchor": {
+        "section": "Coordinate notation",
+        "snippet": "meaning that the three scalar components of the resulting vector"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "cross_apply",
+        "module": "Mathlib.LinearAlgebra.CrossProduct",
+        "match_kind": "exact"
+      },
+      "note": "`cross_apply` gives the explicit component formula `![a₁b₂−a₂b₁, …]`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Determinant formula for cross product",
+      "anchor": {
+        "section": "Matrix notation",
+        "snippet": "The cross product can also be expressed as the formal determinant"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "triple_product_eq_det",
+        "module": "Mathlib.LinearAlgebra.CrossProduct",
+        "match_kind": "invocation"
+      },
+      "note": "The scalar triple product is identified with a determinant, but the formal-determinant expansion of the cross product itself is not stated as a lemma.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Tensorial formula via Levi-Civita tensor",
+      "anchor": {
+        "section": "Using Levi-Civita tensors",
+        "snippet": "is given by the tensorial formula"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No Levi-Civita tensor or tensorial cross-product formula was found in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Pseudo-tensorial formula in orthonormal basis",
+      "anchor": {
+        "section": "Using Levi-Civita tensors",
+        "snippet": "In an orthonormal basis having the same orientation as the space"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No formalization of the orthonormal-basis Levi-Civita formula was found.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Magnitude equals parallelogram area (geometric)",
+      "anchor": {
+        "section": "Geometric meaning",
+        "snippet": "The magnitude of the cross product can be interpreted as the positive area of the parallelogram"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "InnerProductGeometry.norm_ofLp_crossProduct",
+        "module": "Mathlib.Geometry.Euclidean.Angle.Unoriented.CrossProduct",
+        "match_kind": "exact"
+      },
+      "note": "‖a ⨯₃ b‖ = ‖a‖·‖b‖·sin(angle a b) is the parallelogram-area identity.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Parallelepiped volume via scalar triple product",
+      "anchor": {
+        "section": "Geometric meaning",
+        "snippet": "Indeed, one can also compute the volume V of a parallelepiped"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "triple_product_eq_det",
+        "module": "Mathlib.LinearAlgebra.CrossProduct",
+        "match_kind": "exact"
+      },
+      "note": "`u ⬝ᵥ v ⨯₃ w = Matrix.det ![u, v, w]` is the algebraic content of the parallelepiped-volume formula.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Zero cross product characterization",
+      "anchor": {
+        "section": "Algebraic properties",
+        "snippet": "If the cross product of two vectors is the zero vector"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "crossProduct_ne_zero_iff_linearIndependent",
+        "module": "Mathlib.LinearAlgebra.CrossProduct",
+        "match_kind": "exact"
+      },
+      "note": "Vanishing iff linear dependence is proved over a field.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Anticommutativity, distributivity, scalar compatibility",
+      "anchor": {
+        "section": "Algebraic properties",
+        "snippet": "The cross product is anticommutative ,"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "cross_anticomm",
+        "module": "Mathlib.LinearAlgebra.CrossProduct",
+        "match_kind": "exact"
+      },
+      "note": "`cross_anticomm` plus the bilinear `crossProduct : … →ₗ[R] … →ₗ[R] …` give all three properties.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Jacobi identity for cross product",
+      "anchor": {
+        "section": "Algebraic properties",
+        "snippet": "It is not associative , but satisfies the Jacobi identity"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "jacobi_cross",
+        "module": "Mathlib.LinearAlgebra.CrossProduct",
+        "match_kind": "exact"
+      },
+      "note": "`jacobi_cross` is the named Jacobi identity for the cross product.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Failure of cancellation law",
+      "anchor": {
+        "section": "Algebraic properties",
+        "snippet": "The cross product does not obey the cancellation law"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No explicit non-cancellation statement found.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Rotation invariance of cross product",
+      "anchor": {
+        "section": "Algebraic properties",
+        "snippet": "From the geometrical definition, the cross product is invariant under proper rotations"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No SO(3)-invariance lemma for the cross product is present.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Cross product under matrix transformation",
+      "anchor": {
+        "section": "Algebraic properties",
+        "snippet": "More generally, the cross product obeys the following identity under matrix transformations"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The identity (Ma)×(Mb) = (det M)·M⁻ᵀ(a×b) is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Product rule for cross product differentiation",
+      "anchor": {
+        "section": "Differentiation",
+        "snippet": "The product rule of differential calculus applies to any bilinear operation"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Generic bilinear product rules exist in Mathlib's calculus library but no dedicated lemma for `d(a × b)/dt` was found.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Scalar triple product",
+      "anchor": {
+        "section": "Triple product expansion",
+        "snippet": "The scalar triple product of three vectors is defined as"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "triple_product_eq_det",
+        "module": "Mathlib.LinearAlgebra.CrossProduct",
+        "match_kind": "exact"
+      },
+      "note": "Treated via `u ⬝ᵥ v ⨯₃ w` with `triple_product_eq_det` and `triple_product_permutation`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Vector triple product (BAC-CAB)",
+      "anchor": {
+        "section": "Triple product expansion",
+        "snippet": "The vector triple product is the cross product of a vector with the result of another cross product"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "cross_cross_eq_smul_sub_smul'",
+        "module": "Mathlib.LinearAlgebra.CrossProduct",
+        "match_kind": "exact"
+      },
+      "note": "`cross_cross_eq_smul_sub_smul'` proves u ⨯₃ (v ⨯₃ w) = (u·w)v − (v·u)w, the BAC-CAB rule.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Gram determinant relation",
+      "anchor": {
+        "section": "Alternative formulation",
+        "snippet": "The right-hand side is the Gram determinant of a and b"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "cross_dot_cross",
+        "module": "Mathlib.LinearAlgebra.CrossProduct",
+        "match_kind": "exact"
+      },
+      "note": "`cross_dot_cross` specialised to u=w, v=x yields ‖a×b‖² = (a·a)(b·b) − (a·b)².",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Cross product inverse solvability",
+      "anchor": {
+        "section": "Cross product inverse",
+        "snippet": "Given two vectors a and c with a ≠ 0 , the equation a × b = c admits solutions"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No solvability/inverse statement for a×b = c was found.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Lagrange's identity",
+      "anchor": {
+        "section": "Lagrange's identity",
+        "snippet": "can be compared with another relation involving the right-hand side, namely Lagrange's identity"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "cross_dot_cross",
+        "module": "Mathlib.LinearAlgebra.CrossProduct",
+        "match_kind": "special_case"
+      },
+      "note": "`cross_dot_cross` with u=w, v=x is Lagrange's identity ‖a×b‖² = ‖a‖²‖b‖² − (a·b)².",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Binet–Cauchy identity",
+      "anchor": {
+        "section": "Lagrange's identity",
+        "snippet": "which is the three dimensional case of the Binet–Cauchy identity"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "cross_dot_cross",
+        "module": "Mathlib.LinearAlgebra.CrossProduct",
+        "match_kind": "special_case"
+      },
+      "note": "`cross_dot_cross` is documented as the scalar quadruple product, the 3-D Binet–Cauchy identity.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Cross product as skew-symmetric matrix product",
+      "anchor": {
+        "section": "Conversion to matrix multiplication",
+        "snippet": "The vector cross product also can be expressed as the product of a skew-symmetric matrix and a vector"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No `[a]_× · b = a × b` formalization in Mathlib was found.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Isomorphism between R^3 and so(3)",
+      "anchor": {
+        "section": "Conversion to matrix multiplication",
+        "snippet": "the Lie algebra R 3 with cross product is isomorphic to the Lie algebra so(3)"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Cross.lieRing",
+        "module": "Mathlib.LinearAlgebra.CrossProduct",
+        "match_kind": "generalization"
+      },
+      "note": "`Cross.lieRing` makes (Fin 3 → R, ⨯₃) a Lie ring, but no isomorphism with so(3) is constructed.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Orthogonal projection matrix formula",
+      "anchor": {
+        "section": "Conversion to matrix multiplication",
+        "snippet": "The orthogonal projection matrix of a vector"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No projection-via-skew-symmetric-square identity tied to the cross product was found.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Cross product via Levi-Civita tensor",
+      "anchor": {
+        "section": "Index notation for tensors",
+        "snippet": "The cross product can alternatively be defined in terms of the Levi-Civita tensor"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has no Levi-Civita symbol/tensor and no such definition of the cross product.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "xyzzy mnemonic",
+      "anchor": {
+        "section": "Mnemonic",
+        "snippet": "The word \"xyzzy\" can be used to remember the definition of the cross product."
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mnemonic device, not a mathematical statement to formalize.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Distance between skew lines",
+      "anchor": {
+        "section": "Computational geometry",
+        "snippet": "The cross product appears in the calculation of the distance of two skew lines"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No skew-line distance formula via cross product was located.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Sign of acute angle from three points",
+      "anchor": {
+        "section": "Computational geometry",
+        "snippet": "the cross product is used to determine the sign of the acute angle defined by three points"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No formalization of this computational-geometry use of the cross product was found.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Angular momentum",
+      "anchor": {
+        "section": "Angular momentum and torque",
+        "snippet": "The angular momentum L of a particle about a given origin is defined as:"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No angular momentum definition exists in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Moment of force (torque)",
+      "anchor": {
+        "section": "Angular momentum and torque",
+        "snippet": "the moment M of a force F B applied at point B around point A is given as:"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No definition of torque/moment of force in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Rigid body velocity relation",
+      "anchor": {
+        "section": "Rigid body",
+        "snippet": "Two points P and Q on a rigid body can be related by:"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Rigid-body kinematics is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Lorentz force",
+      "anchor": {
+        "section": "Lorentz force",
+        "snippet": "The cross product is used to describe the Lorentz force experienced by a moving electric charge"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No Lorentz force definition was found in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Cross product as Hodge star of bivector",
+      "anchor": {
+        "section": "As an external product",
+        "snippet": "The cross product is then obtained by taking the Hodge star of the bivector"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has exterior algebra but no Hodge star and no such identification with the cross product.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Heisenberg algebra",
+      "anchor": {
+        "section": "Lie algebra",
+        "snippet": "the Heisenberg algebra gives another Lie algebra structure"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No Heisenberg algebra appears in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Cross product via quaternions",
+      "anchor": {
+        "section": "Quaternions",
+        "snippet": "the cross product of two vectors can be obtained by taking their product as quaternions and deleting the real part of the result"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib defines quaternions but does not relate their product to the 3-D cross product.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Hurwitz nonexistence for other dimensions",
+      "anchor": {
+        "section": "Octonions",
+        "snippet": "The nonexistence of nontrivial vector-valued cross products of two vectors in other dimensions is related to the result from Hurwitz's theorem"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Hurwitz's normed-division-algebra theorem is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Exterior product generalization",
+      "anchor": {
+        "section": "Exterior product",
+        "snippet": "The Hodge dual of the exterior product yields an"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "ExteriorAlgebra",
+        "module": "Mathlib.LinearAlgebra.ExteriorAlgebra.Basic",
+        "match_kind": "generalization"
+      },
+      "note": "Mathlib has the exterior algebra and exterior powers but no Hodge dual realising the cross product.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "External product",
+      "anchor": {
+        "section": "External product",
+        "snippet": "This generalization is called external product"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No 'external product' generalisation of the cross product was located.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Commutator product",
+      "anchor": {
+        "section": "Commutator product",
+        "snippet": "The commutator product is defined for 2-vectors"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Geometric-algebra commutator product on bivectors is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Generalized n-ary cross product",
+      "anchor": {
+        "section": "Multilinear algebra",
+        "snippet": "given"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No n-ary cross product on n−1 vectors in Rⁿ was found.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Coordinate formula for n-ary cross product",
+      "anchor": {
+        "section": "Multilinear algebra",
+        "snippet": "In coordinates, one can give a formula for this"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No determinant/minor coordinate formula for the n-ary cross product is present.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Filippov identity / n-Lie algebra structure",
+      "anchor": {
+        "section": "Multilinear algebra",
+        "snippet": "satisfies the Filippov identity"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No Filippov identity or n-Lie algebra structure in Mathlib.",
+      "provenance": "ai"
+    }
+  ]
+}

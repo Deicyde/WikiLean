@@ -1,0 +1,1093 @@
+{
+  "slug": "Lattice_order",
+  "wikipedia_title": "Lattice (order)",
+  "display_title": "Lattice (order)",
+  "schema_version": 3,
+  "annotation_style": "theorem_article",
+  "annotations": [
+    {
+      "kind": "definition",
+      "label": "Lattice (informal)",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "It consists of a partially ordered set in which every pair of elements has a unique supremum"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Lattice",
+        "module": "Mathlib.Order.Lattice",
+        "match_kind": "exact"
+      },
+      "note": "Mathlib's `Lattice` class extends `SemilatticeSup` and `SemilatticeInf`, giving every pair a supremum and infimum.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Power set lattice",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "An example is given by the power set of a set, partially ordered by inclusion"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Set.instBooleanAlgebra",
+        "module": "Mathlib.Order.BooleanAlgebra.Set",
+        "match_kind": "special_case"
+      },
+      "note": "`Set α` has a `BooleanAlgebra` instance, hence a (complete) lattice instance under inclusion.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Naturals under divisibility",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "Another example is given by the natural numbers , partially ordered by divisibility"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Nat.instGCDMonoid",
+        "module": "Mathlib.Algebra.GCDMonoid.Nat",
+        "match_kind": "invocation"
+      },
+      "note": "Mathlib has `Nat.gcd`/`Nat.lcm` as a `GCDMonoid`, and `GCDMonoid` gives a lattice on associates, but there is no direct `Lattice ℕ` instance using divisibility as the order.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Lattice as poset",
+      "anchor": {
+        "section": "As partially ordered set",
+        "snippet": "is called a lattice if it is both a join- and a meet- semilattice"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Lattice",
+        "module": "Mathlib.Order.Lattice",
+        "match_kind": "exact"
+      },
+      "note": "`class Lattice extends SemilatticeSup α, SemilatticeInf α` is exactly this definition.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Finite subsets have lub/glb",
+      "anchor": {
+        "section": "As partially ordered set",
+        "snippet": "It follows by an induction argument that every non-empty finite subset of a lattice has a least upper bound and a greatest lower bound"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Finset.sup'",
+        "module": "Mathlib.Order.Lattice",
+        "match_kind": "exact"
+      },
+      "note": "`Finset.sup'`/`Finset.inf'` provide the supremum/infimum of a nonempty finite subset in any semilattice.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Partial lattice",
+      "anchor": {
+        "section": "As partially ordered set",
+        "snippet": "The resulting structure on"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has no notion of a partial lattice with partially defined sup/inf operations.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Lattice as algebraic structure",
+      "anchor": {
+        "section": "As algebraic structure",
+        "snippet": "A lattice is an algebraic structure"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Lattice.mk'",
+        "module": "Mathlib.Order.Lattice",
+        "match_kind": "exact"
+      },
+      "note": "`Lattice.mk'` constructs a `Lattice` from commutative, associative `⊔`, `⊓` satisfying the two absorption laws.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "As algebraic structure",
+          "snippet": "A lattice is an algebraic structure"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle a\\vee (a\\wedge b)=a}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle a\\wedge (a\\vee b)=a}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Idempotent laws follow from absorption",
+      "anchor": {
+        "section": "As algebraic structure",
+        "snippet": "The following two identities are also usually regarded as axioms, even though they follow from the two absorption laws taken together"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Lattice.mk'",
+        "module": "Mathlib.Order.Lattice",
+        "match_kind": "invocation"
+      },
+      "note": "Idempotence is derived inside `Lattice.mk'` from `sup_inf_self` and `inf_sup_self`, but there is no standalone named lemma.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "As algebraic structure",
+          "snippet": "The following two identities are also usually regarded as axioms, even though they follow from the two absorption laws taken together"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle a\\vee a=a}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle a\\wedge a=a}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Order lattice yields algebraic lattice",
+      "anchor": {
+        "section": "Connection between the two definitions",
+        "snippet": "An order-theoretic lattice gives rise to the two binary operations"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Lattice",
+        "module": "Mathlib.Order.Lattice",
+        "match_kind": "exact"
+      },
+      "note": "The `Lattice` class bundles `Max`/`Min` and proves commutativity, associativity, and absorption (e.g. `sup_assoc`, `sup_inf_self`).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Algebraic lattice yields order",
+      "anchor": {
+        "section": "Connection between the two definitions",
+        "snippet": "The converse is also true"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Lattice.mk'",
+        "module": "Mathlib.Order.Lattice",
+        "match_kind": "exact"
+      },
+      "note": "`Lattice.mk'` takes the algebraic axioms and constructs the induced partial order `a ≤ b ↔ a ⊔ b = b`.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Connection between the two definitions",
+          "snippet": "The converse is also true"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle a\\leq b{\\text{ if }}a=a\\wedge b,{\\text{ or }}}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle a\\leq b{\\text{ if }}b=a\\vee b,}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle a=a\\wedge b{\\text{ implies }}b=b\\vee (b\\wedge a)=(a\\wedge b)\\vee b=a\\vee b}"
+        }
+      ]
+    },
+    {
+      "kind": "definition",
+      "label": "Bounded lattice",
+      "anchor": {
+        "section": "Bounded lattice",
+        "snippet": "A bounded lattice is a lattice that additionally has a greatest element"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "BoundedOrder",
+        "module": "Mathlib.Order.BoundedOrder.Basic",
+        "match_kind": "exact"
+      },
+      "note": "A bounded lattice is encoded by `[Lattice α] [BoundedOrder α]`, where `BoundedOrder` extends `OrderTop` and `OrderBot`.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Bounded lattice",
+          "snippet": "A bounded lattice is a lattice that additionally has a greatest element"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle 0\\leq x\\leq 1\\;{\\text{ for every }}x\\in L.}"
+        }
+      ]
+    },
+    {
+      "kind": "definition",
+      "label": "Bounded lattice (algebraic)",
+      "anchor": {
+        "section": "Bounded lattice",
+        "snippet": "A bounded lattice may also be defined as an algebraic structure of the form"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "BoundedOrder",
+        "module": "Mathlib.Order.BoundedOrder.Basic",
+        "match_kind": "invocation"
+      },
+      "note": "Mathlib axiomatizes bounded lattices via `[Lattice α] [BoundedOrder α]` rather than as a single algebraic signature with `⊥`/`⊤` constants.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Bounded lattice",
+          "snippet": "A bounded lattice may also be defined as an algebraic structure of the form"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle a\\vee 0=a}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle a\\wedge 1=a}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Bounded lattice characterization",
+      "anchor": {
+        "section": "Bounded lattice",
+        "snippet": "It can be shown that a partially ordered set is a bounded lattice if and only if every finite set of elements (including the empty set) has a join and a meet"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No explicit Mathlib lemma states the equivalence between bounded-lattice structure and the existence of joins/meets of all finite sets including the empty set.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Embedding into bounded lattice",
+      "anchor": {
+        "section": "Bounded lattice",
+        "snippet": "Every lattice can be embedded into a bounded lattice by adding a greatest and a least element"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "WithTop.lattice",
+        "module": "Mathlib.Order.WithBot",
+        "match_kind": "invocation"
+      },
+      "note": "`WithTop`/`WithBot` adjoin a top/bottom giving lattice instances, but there is no single packaged theorem stating that every lattice embeds into a bounded one.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Power set lattice",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "the collection of all subsets of"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Set.instBooleanAlgebra",
+        "module": "Mathlib.Order.BooleanAlgebra.Set",
+        "match_kind": "special_case"
+      },
+      "note": "`Set α` carries a Boolean algebra (hence lattice) structure under union and intersection.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Finite subsets lattice",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "the collection of all finite subsets of"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Finset.instLattice",
+        "module": "Mathlib.Data.Finset.Lattice.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`Finset α` has a `Lattice` instance with `∪` and `∩` as join and meet.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Partition lattice",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "the collection of all partitions of"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Setoid.completeLattice",
+        "module": "Mathlib.Data.Setoid.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`Setoid α` (equivalent to partitions) has a `CompleteLattice` instance refining the partition lattice.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Positive integers lattice",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "The positive integers in their usual order form an unbounded lattice"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Nat.instLattice",
+        "module": "Mathlib.Data.Nat.Lattice",
+        "match_kind": "special_case"
+      },
+      "note": "Mathlib's `Lattice ℕ` instance comes from the linear order; restriction to positive integers is immediate.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Cartesian square of naturals",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "The Cartesian square of the natural numbers"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Prod.instLattice",
+        "module": "Mathlib.Order.Lattice",
+        "match_kind": "exact"
+      },
+      "note": "`Prod.instLattice` gives `α × β` a lattice structure componentwise, applicable to `ℕ × ℕ`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Naturals under gcd/lcm",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "The natural numbers also form a lattice under the operations of taking the greatest common divisor and least common multiple"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Nat.instGCDMonoid",
+        "module": "Mathlib.Algebra.GCDMonoid.Nat",
+        "match_kind": "invocation"
+      },
+      "note": "`GCDMonoid ℕ` provides `gcd`/`lcm`; the comment in `Mathlib.Algebra.GCDMonoid.Basic` notes gcd/lcm form a lattice on associates but no direct `Lattice ℕ`-by-divisibility instance is provided.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Complete lattices are bounded",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "Every complete lattice (also see below ) is a (rather specific) bounded lattice"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "CompleteLattice.toBoundedOrder",
+        "module": "Mathlib.Order.CompleteLattice.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`CompleteLattice` extends `Lattice` and provides `⊤`/`⊥` via `sSup`/`sInf` of the empty/full set, yielding a `BoundedOrder`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Compact elements of arithmetic lattice",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "The set of compact elements of an arithmetic complete lattice is a lattice with a least element"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "CompleteLattice.IsCompactElement",
+        "module": "Mathlib.Order.CompactlyGenerated.Basic",
+        "match_kind": "invocation"
+      },
+      "note": "`IsCompactElement` is defined and `isCompactElement_finsetSup` exists, but the lattice structure on the set of compact elements in arithmetic lattices is not packaged as a single declaration.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Discrete poset non-lattice",
+      "anchor": {
+        "section": "Examples of non-lattices",
+        "snippet": "A discrete poset, meaning a poset such that"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This is a counterexample (a discrete poset of >1 element is not a lattice); no specific Mathlib declaration.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Divisibility non-lattice",
+      "anchor": {
+        "section": "Examples of non-lattices",
+        "snippet": "so ordered is not a lattice because the pair 2, 3 lacks a join"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Counterexample about a finite divisibility poset; not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Three-bound non-lattice",
+      "anchor": {
+        "section": "Examples of non-lattices",
+        "snippet": "Every pair of elements has an upper bound and a lower bound, but the pair 2, 3 has three upper bounds"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "A specific counterexample poset; not present in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Lattice homomorphism",
+      "anchor": {
+        "section": "Morphisms of lattices",
+        "snippet": "a lattice homomorphism from L to M is a function"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "LatticeHom",
+        "module": "Mathlib.Order.Hom.Lattice",
+        "match_kind": "exact"
+      },
+      "note": "`LatticeHom` is defined as a map extending `SupHom` and `InfHom`, i.e. preserving `⊔` and `⊓`.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Morphisms of lattices",
+          "snippet": "a lattice homomorphism from L to M is a function"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle f\\left(a\\vee _{L}b\\right)=f(a)\\vee _{M}f(b),{\\text{ and }}}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle f\\left(a\\wedge _{L}b\\right)=f(a)\\wedge _{M}f(b).}"
+        }
+      ]
+    },
+    {
+      "kind": "definition",
+      "label": "Bounded-lattice homomorphism",
+      "anchor": {
+        "section": "Morphisms of lattices",
+        "snippet": "a bounded-lattice homomorphism (usually called just \"lattice homomorphism\")"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "BoundedLatticeHom",
+        "module": "Mathlib.Order.Hom.BoundedLattice",
+        "match_kind": "exact"
+      },
+      "note": "`BoundedLatticeHom` is the type of maps preserving `⊤`, `⊥`, `⊔`, and `⊓`.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Morphisms of lattices",
+          "snippet": "a bounded-lattice homomorphism (usually called just \"lattice homomorphism\")"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle f\\left(0_{L}\\right)=0_{M},{\\text{ and }}}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle f\\left(1_{L}\\right)=1_{M}.}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Homomorphisms are monotone",
+      "anchor": {
+        "section": "Morphisms of lattices",
+        "snippet": "Any homomorphism of lattices is necessarily monotone with respect to the associated ordering relation"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "SupHomClass.toOrderHomClass",
+        "module": "Mathlib.Order.Hom.Lattice",
+        "match_kind": "exact"
+      },
+      "note": "Mathlib derives `OrderHomClass` from `SupHomClass`, so any lattice homomorphism is automatically monotone.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Lattice isomorphism/endomorphism/automorphism",
+      "anchor": {
+        "section": "Morphisms of lattices",
+        "snippet": "a lattice isomorphism is just a bijective lattice homomorphism"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "OrderIso",
+        "module": "Mathlib.Order.Hom.Basic",
+        "match_kind": "invocation"
+      },
+      "note": "Lattice isomorphisms can be represented by `OrderIso` (which induces a `LatticeHomClass` via `OrderIsoClass.toLatticeHomClass`), but there is no dedicated `LatticeIso`/endomorphism/automorphism type.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "0,1-separating homomorphism",
+      "anchor": {
+        "section": "Morphisms of lattices",
+        "snippet": "is called 0 , 1 - separating if and only if"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib does not define a notion of 0,1-separating lattice homomorphism.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Sublattice",
+      "anchor": {
+        "section": "Sublattices",
+        "snippet": "A sublattice of a lattice"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Sublattice",
+        "module": "Mathlib.Order.Sublattice",
+        "match_kind": "exact"
+      },
+      "note": "`structure Sublattice` is defined as a subset closed under `⊔` and `⊓`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Convex sublattice",
+      "anchor": {
+        "section": "Sublattices",
+        "snippet": "is a convex sublattice of"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No `Sublattice.IsConvex`/convex sublattice predicate; `Set.OrdConnected` exists but is on sets, not specifically sublattices.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Complete lattice",
+      "anchor": {
+        "section": "Completeness",
+        "snippet": "A poset is called a complete lattice if all its subsets have both a join and a meet"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "CompleteLattice",
+        "module": "Mathlib.Order.CompleteLattice.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`class CompleteLattice` extends `Lattice` together with `CompleteSemilatticeSup`/`CompleteSemilatticeInf`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Complete semilattice is complete lattice",
+      "anchor": {
+        "section": "Completeness",
+        "snippet": "Every poset that is a complete semilattice is also a complete lattice"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "completeLatticeOfCompleteSemilatticeSup",
+        "module": "Mathlib.Order.CompleteLattice.Defs",
+        "match_kind": "exact"
+      },
+      "note": "Mathlib promotes a `CompleteSemilatticeSup` to a `CompleteLattice` via `completeLatticeOfCompleteSemilatticeSup`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Conditionally complete lattice",
+      "anchor": {
+        "section": "Conditional completeness",
+        "snippet": "A conditionally complete lattice is a lattice in which every nonempty subset that has an upper bound has a join"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "ConditionallyCompleteLattice",
+        "module": "Mathlib.Order.ConditionallyCompleteLattice.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`class ConditionallyCompleteLattice` extends `Lattice` with `SupSet`/`InfSet` operations valid on nonempty bounded sets.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Distributive lattice",
+      "anchor": {
+        "section": "Distributivity",
+        "snippet": "A lattice that satisfies the first or, equivalently (as it turns out), the second axiom, is called a distributive lattice"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "DistribLattice",
+        "module": "Mathlib.Order.Lattice",
+        "match_kind": "exact"
+      },
+      "note": "`class DistribLattice` extends `Lattice` with the `le_sup_inf` axiom, equivalent to either distributive identity.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "M3-N5 characterization of distributivity",
+      "anchor": {
+        "section": "Distributivity",
+        "snippet": "A lattice is distributive if and only if it does not have a sublattice isomorphic to M 3 or N 5"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib does not formalize the M3/N5 forbidden-sublattice characterization of distributive lattices.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Birkhoff representation",
+      "anchor": {
+        "section": "Distributivity",
+        "snippet": "Each distributive lattice is isomorphic to a lattice of sets"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "exists_birkhoff_representation",
+        "module": "Mathlib.Order.Birkhoff",
+        "match_kind": "special_case"
+      },
+      "note": "Mathlib's `Order.Birkhoff` proves Birkhoff representation for finite distributive lattices (as a lattice of sets).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Modular lattice",
+      "anchor": {
+        "section": "Modularity",
+        "snippet": "is modular if, for all elements"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "IsModularLattice",
+        "module": "Mathlib.Order.ModularLattice",
+        "match_kind": "exact"
+      },
+      "note": "`class IsModularLattice` asserts `(x ⊔ y) ⊓ z ≤ x ⊔ y ⊓ z` whenever `x ≤ z`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Modular inequality holds generally",
+      "anchor": {
+        "section": "Modularity",
+        "snippet": "In fact, the inequality"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "sup_inf_le",
+        "module": "Mathlib.Order.Lattice",
+        "match_kind": "invocation"
+      },
+      "note": "Mathlib proves `sup_inf_le : a ⊔ b ⊓ c ≤ (a ⊔ b) ⊓ (a ⊔ c)` in any lattice; the precise modular-inequality form `x ≤ z → x ⊔ (y ⊓ z) ≤ (x ⊔ y) ⊓ z` for any lattice has no standalone name.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "N5 characterization of modularity",
+      "anchor": {
+        "section": "Modularity",
+        "snippet": "A lattice is modular if and only if it does not have a sublattice isomorphic to N 5"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The N5 forbidden-sublattice characterization of modular lattices is not in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Examples of modular lattices",
+      "anchor": {
+        "section": "Modularity",
+        "snippet": "examples of modular lattices are the lattice of submodules of a module"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Submodule.instIsModularLattice",
+        "module": "Mathlib.LinearAlgebra.Span.Basic",
+        "match_kind": "exact"
+      },
+      "note": "Mathlib has `instance : IsModularLattice (Submodule R M)` (and a similar instance for `LieSubmodule`).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Semimodular characterization",
+      "anchor": {
+        "section": "Semimodularity",
+        "snippet": "A finite lattice is modular if and only if it is both upper and lower semimodular"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib defines `IsUpperModularLattice`/`IsLowerModularLattice` but does not prove the finite-lattice modular ↔ upper+lower semimodular equivalence.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Lower semimodular lattice",
+      "anchor": {
+        "section": "Semimodularity",
+        "snippet": "A lattice is called lower semimodular if its dual is semimodular"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "IsLowerModularLattice",
+        "module": "Mathlib.Order.ModularLattice",
+        "match_kind": "exact"
+      },
+      "note": "`class IsLowerModularLattice` captures lower semimodularity via the covering relation.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Continuous and algebraic lattice",
+      "anchor": {
+        "section": "Continuity and algebraicity",
+        "snippet": "A continuous lattice is a complete lattice that is continuous as a poset"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib does not have continuous-lattice or algebraic-lattice classes (only `IsCompactlyGenerated`, a related but distinct notion).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Complement",
+      "anchor": {
+        "section": "Complements and pseudo-complements",
+        "snippet": "are complements of each other if and only if"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "IsCompl",
+        "module": "Mathlib.Order.Disjoint",
+        "match_kind": "exact"
+      },
+      "note": "`structure IsCompl x y` records that `x ⊓ y = ⊥` and `x ⊔ y = ⊤`.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Complements and pseudo-complements",
+          "snippet": "are complements of each other if and only if"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle x\\vee y=1\\quad {\\text{ and }}\\quad x\\wedge y=0.}"
+        }
+      ]
+    },
+    {
+      "kind": "definition",
+      "label": "Complemented lattice",
+      "anchor": {
+        "section": "Complements and pseudo-complements",
+        "snippet": "A bounded lattice for which every element has a complement is called a complemented lattice"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "ComplementedLattice",
+        "module": "Mathlib.Order.Disjoint",
+        "match_kind": "exact"
+      },
+      "note": "`class ComplementedLattice` asserts every element has some `IsCompl` partner.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Boolean algebra characterization",
+      "anchor": {
+        "section": "Complements and pseudo-complements",
+        "snippet": "A complemented lattice that is also distributive is a Boolean algebra"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "BooleanAlgebra",
+        "module": "Mathlib.Order.BooleanAlgebra.Defs",
+        "match_kind": "invocation"
+      },
+      "note": "Mathlib defines `BooleanAlgebra` as a distributive bounded lattice with complement operation, but does not state \"complemented distributive lattice ⇒ Boolean algebra\" as a constructive promotion.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Uniqueness of complement in distributive lattice",
+      "anchor": {
+        "section": "Complements and pseudo-complements",
+        "snippet": "For a distributive lattice, the complement of"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "An explicit comment in `Mathlib.Order.BooleanAlgebra.Basic` flags this as TODO; no general uniqueness-of-complement lemma exists in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Pseudo-complement",
+      "anchor": {
+        "section": "Complements and pseudo-complements",
+        "snippet": "has, on the other hand, a pseudo-complement"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "HeytingAlgebra",
+        "module": null,
+        "match_kind": "invocation"
+      },
+      "note": "Mathlib has `HeytingAlgebra` (with `compl` as relative-bot-complement) which captures pseudo-complements in that setting, but no dedicated `PseudoComplement` definition for general meet-semilattices.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Chain and length",
+      "anchor": {
+        "section": "Jordan–Dedekind chain condition",
+        "snippet": "A chain from"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Set.chainHeight",
+        "module": "Mathlib.Order.Height",
+        "match_kind": "invocation"
+      },
+      "note": "Mathlib defines `Set.chainHeight` (maximal length of a chain) and `RelSeries.length`; the article's specific definition of chain length between two elements is not packaged separately.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Jordan–Dedekind chain condition",
+      "anchor": {
+        "section": "Jordan–Dedekind chain condition",
+        "snippet": "all maximal chains from"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Jordan–Dedekind chain condition is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Graded lattice",
+      "anchor": {
+        "section": "Graded/ranked",
+        "snippet": "is called graded , sometimes ranked"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "GradeOrder",
+        "module": "Mathlib.Order.Grade",
+        "match_kind": "exact"
+      },
+      "note": "`class GradeOrder` provides a grade function preserving the covering relation, matching the graded/ranked-lattice notion.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Covers relation",
+      "anchor": {
+        "section": "Graded/ranked",
+        "snippet": "is said to cover another element"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "CovBy",
+        "module": "Mathlib.Order.Defs.PartialOrder",
+        "match_kind": "exact"
+      },
+      "note": "`def CovBy a b` says `a < b` with nothing strictly between, exactly the covering relation.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Free semilattice",
+      "anchor": {
+        "section": "Free lattices",
+        "snippet": "The free semilattice is defined to consist of all of the finite subsets of"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has no `FreeSemilattice`/`FreeLattice` construction.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Flat lattice",
+      "anchor": {
+        "section": "Flat lattices",
+        "snippet": "may also be used to define a flat lattice"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib does not define a flat lattice (the construction `WithBot (WithTop α)` of a discrete set exists implicitly but is not named).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Join irreducible",
+      "anchor": {
+        "section": "Important lattice-theoretic notions",
+        "snippet": "Join irreducible if"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "SupIrred",
+        "module": "Mathlib.Order.Irreducible",
+        "match_kind": "exact"
+      },
+      "note": "`def SupIrred a` captures sup-irreducibility: `a` is not minimal and `a = b ⊔ c → a = b ∨ a = c`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Join prime",
+      "anchor": {
+        "section": "Important lattice-theoretic notions",
+        "snippet": "Join prime if"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "SupPrime",
+        "module": "Mathlib.Order.Irreducible",
+        "match_kind": "exact"
+      },
+      "note": "`def SupPrime a` captures sup-primality: `a` is not minimal and `a ≤ b ⊔ c → a ≤ b ∨ a ≤ c`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Join-prime implies join-irreducible",
+      "anchor": {
+        "section": "Important lattice-theoretic notions",
+        "snippet": "Every join-prime element is also join irreducible"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "SupPrime.supIrred",
+        "module": "Mathlib.Order.Irreducible",
+        "match_kind": "exact"
+      },
+      "note": "`SupPrime.supIrred` proves sup-primality implies sup-irreducibility.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Atom",
+      "anchor": {
+        "section": "Important lattice-theoretic notions",
+        "snippet": "is an atom if"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "IsAtom",
+        "module": "Mathlib.Order.Atoms",
+        "match_kind": "exact"
+      },
+      "note": "`def IsAtom a` defines an atom as a minimal nonzero element.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Atomic and atomistic lattices",
+      "anchor": {
+        "section": "Important lattice-theoretic notions",
+        "snippet": "Atomic if for every nonzero element"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "IsAtomic",
+        "module": "Mathlib.Order.Atoms",
+        "match_kind": "exact"
+      },
+      "note": "`class IsAtomic` and `class IsAtomistic` formalize atomicity and atomisticity for `OrderBot`s.",
+      "provenance": "ai"
+    }
+  ]
+}

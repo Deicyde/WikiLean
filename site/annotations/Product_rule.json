@@ -1,0 +1,457 @@
+{
+  "slug": "Product_rule",
+  "wikipedia_title": "Product rule",
+  "display_title": "Product rule",
+  "schema_version": 3,
+  "annotation_style": "theorem_article",
+  "annotations": [
+    {
+      "kind": "definition",
+      "label": "Product rule (Leibniz rule)",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "the product rule (or Leibniz rule"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "deriv_mul",
+        "module": "Mathlib.Analysis.Calculus.Deriv.Mul",
+        "match_kind": "exact"
+      },
+      "note": "The classical product rule for `deriv` is `deriv_mul` in `Mathlib.Analysis.Calculus.Deriv.Mul`, with `HasDerivAt`/`HasStrictDerivAt`/`fderiv` variants alongside.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Leibniz's infinitesimal derivation",
+      "anchor": {
+        "section": "Discovery",
+        "snippet": "Let u and v be functions. Then d(uv) is the same thing as the difference between two successive uv"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This is a historical motivational sketch using infinitesimal differences, not a formal Mathlib statement.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Differential form via negligible du·dv",
+      "anchor": {
+        "section": "Discovery",
+        "snippet": "Since the term du · dv is \"negligible\""
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Heuristic Leibnizian derivation discarding second-order infinitesimals; no Mathlib decl corresponds to this informal manipulation.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Differentiating a product example",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "Suppose we want to differentiate"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "A worked numerical example rather than a theorem; no specific Mathlib decl.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Constant multiple rule",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "One special case of the product rule is the constant multiple rule"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "deriv_const_mul",
+        "module": "Mathlib.Analysis.Calculus.Deriv.Mul",
+        "match_kind": "exact"
+      },
+      "note": "Mathlib provides `deriv_const_mul` (and `HasDerivAt.const_mul`, `deriv_mul_const`) for the constant-multiple special case.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Derivation of integration by parts and quotient rule",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "The rule for integration by parts is derived from the product rule"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "AbsolutelyContinuousOnInterval.integral_mul_deriv_eq_deriv_mul",
+        "module": "Mathlib.MeasureTheory.Integral.IntervalIntegral.AbsolutelyContinuousFun",
+        "match_kind": "invocation"
+      },
+      "note": "The downstream consequences (integration by parts, `deriv_div` in `Deriv.Inv`) are formalized, but the meta-derivation linking them to the product rule is not.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Proof via limit definition",
+      "anchor": {
+        "section": "Limit definition of derivative",
+        "snippet": "suppose that f and g are each differentiable at x . We want to prove that h is differentiable at x"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This describes a proof strategy for the product rule; Mathlib's proof of `HasDerivAt.mul` uses bilinear-map machinery rather than this textbook limit argument.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Proof via linear approximations",
+      "anchor": {
+        "section": "Linear approximations",
+        "snippet": "if [MATH] are differentiable at"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "An alternative proof technique, not itself a Mathlib statement.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Proof via quarter squares",
+      "anchor": {
+        "section": "Quarter squares",
+        "snippet": "This proof uses the chain rule and the quarter square function"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Quarter-square identity proof; no corresponding Mathlib derivation.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Product rule as case of multivariable chain rule",
+      "anchor": {
+        "section": "Multivariable chain rule",
+        "snippet": "The product rule can be considered a special case of the chain rule for several variables"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "An expository remark about derivation; no explicit Mathlib lemma asserts product rule as a chain-rule corollary.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Non-standard analysis proof",
+      "anchor": {
+        "section": "Non-standard analysis",
+        "snippet": "Let u and v be continuous functions in x"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Hyperreal-style proof; not present as a Mathlib derivation.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Smooth infinitesimal analysis proof",
+      "anchor": {
+        "section": "Smooth infinitesimal analysis",
+        "snippet": "In the context of Lawvere's approach to infinitesimals, let"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Synthetic differential geometry approach; Mathlib has no SIA framework.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Logarithmic differentiation proof",
+      "anchor": {
+        "section": "Logarithmic differentiation",
+        "snippet": "Taking the absolute value of each function and the natural log of both sides"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "A proof technique; the related identity `logDeriv_mul` exists in `Mathlib.Analysis.Calculus.LogDeriv` but the proof itself is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Product rule for three factors",
+      "anchor": {
+        "section": "Product of more than two factors",
+        "snippet": "The product rule can be generalized to products of more than two factors"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "iteratedDeriv_mul",
+        "module": "Mathlib.Analysis.Calculus.IteratedDeriv.Lemmas",
+        "match_kind": "generalization"
+      },
+      "note": "No three-factor lemma is stated explicitly, but it follows trivially from iterating `deriv_mul`; the n-fold case is via `iteratedDeriv_mul`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Logarithmic derivative of a product",
+      "anchor": {
+        "section": "Product of more than two factors",
+        "snippet": "The logarithmic derivative provides a simpler expression of the last form"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "logDeriv_mul",
+        "module": "Mathlib.Analysis.Calculus.LogDeriv",
+        "match_kind": "exact"
+      },
+      "note": "`logDeriv_mul` in `Mathlib.Analysis.Calculus.LogDeriv` gives `logDeriv (f*g) = logDeriv f + logDeriv g`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "General Leibniz rule (n-th derivative)",
+      "anchor": {
+        "section": "Higher derivatives",
+        "snippet": "It can also be generalized to the general Leibniz rule for the n th derivative of a product of two factors"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "iteratedDeriv_mul",
+        "module": "Mathlib.Analysis.Calculus.IteratedDeriv.Lemmas",
+        "match_kind": "exact"
+      },
+      "note": "`iteratedDeriv_mul` states the binomial-coefficient Leibniz formula for the n-th derivative of a product.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "n-th derivative at a specific point",
+      "anchor": {
+        "section": "Higher derivatives",
+        "snippet": "Applied at a specific point x , the above formula gives"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "iteratedDeriv_mul",
+        "module": "Mathlib.Analysis.Calculus.IteratedDeriv.Lemmas",
+        "match_kind": "exact"
+      },
+      "note": "Mathlib's `iteratedDeriv_mul` is already pointwise at `x`, matching the article's pointwise restatement.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "n-th derivative of arbitrary number of factors",
+      "anchor": {
+        "section": "Higher derivatives",
+        "snippet": "for the n th derivative of an arbitrary number of factors"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No multinomial Leibniz formula for the n-th derivative of a finite product of factors was found in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Higher partial derivatives formula",
+      "anchor": {
+        "section": "Higher partial derivatives",
+        "snippet": "For partial derivatives , we have"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Multi-index Leibniz formula for mixed higher partial derivatives is not present as a dedicated lemma in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Product rule for continuous bilinear operator on Banach spaces",
+      "anchor": {
+        "section": "Banach space",
+        "snippet": "Suppose X , Y , and Z are Banach spaces"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "IsBoundedBilinearMap.hasFDerivAt",
+        "module": "Mathlib.Analysis.Calculus.FDeriv.Bilinear",
+        "match_kind": "exact"
+      },
+      "note": "`IsBoundedBilinearMap.hasFDerivAt` (and `.fderiv`) give the derivative of any bounded bilinear map between Banach spaces.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Product rule for scalar multiplication of vector functions",
+      "anchor": {
+        "section": "In vector calculus",
+        "snippet": "For scalar multiplication"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "HasDerivAt.smul",
+        "module": "Mathlib.Analysis.Calculus.Deriv.Mul",
+        "match_kind": "exact"
+      },
+      "note": "`HasDerivAt.smul`/`deriv_smul` in `Deriv.Mul` (and `HasFDerivAt.smul` in `FDeriv.Mul`) give the product rule for scalar multiplication.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Product rule for dot product",
+      "anchor": {
+        "section": "In vector calculus",
+        "snippet": "For dot product"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "HasFDerivAt.inner",
+        "module": "Mathlib.Analysis.InnerProductSpace.Calculus",
+        "match_kind": "exact"
+      },
+      "note": "`HasFDerivAt.inner`, `HasDerivAt.inner`, and `fderiv_inner_apply` provide the product rule for inner/dot products.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Product rule for cross product",
+      "anchor": {
+        "section": "In vector calculus",
+        "snippet": "For cross product of vector functions"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No derivative-of-cross-product lemma was found; `Mathlib.LinearAlgebra.CrossProduct` defines the operation but no calculus-side product rule.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Product rule with the gradient",
+      "anchor": {
+        "section": "In vector calculus",
+        "snippet": "if f and g are scalar fields then there is a product rule with the gradient"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "fderiv_mul",
+        "module": "Mathlib.Analysis.Calculus.FDeriv.Mul",
+        "match_kind": "generalization"
+      },
+      "note": "`fderiv_mul` gives the Fréchet-derivative product rule, which specializes to ∇(fg) = f∇g + g∇f, but no dedicated `gradient_mul` lemma was found in `Mathlib.Analysis.Calculus.Gradient.Basic`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Product rule for continuous bilinear operations",
+      "anchor": {
+        "section": "In vector calculus",
+        "snippet": "Such a rule will hold for any continuous bilinear product operation"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "IsBoundedBilinearMap.hasFDerivAt",
+        "module": "Mathlib.Analysis.Calculus.FDeriv.Bilinear",
+        "match_kind": "exact"
+      },
+      "note": "Same `IsBoundedBilinearMap.hasFDerivAt` covers the general continuous-bilinear case.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Derivation (abstract algebra)",
+      "anchor": {
+        "section": "Derivations in abstract algebra and differential geometry",
+        "snippet": "the product rule is the defining property of a derivation"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Derivation",
+        "module": "Mathlib.RingTheory.Derivation.Basic",
+        "match_kind": "exact"
+      },
+      "note": "The `Derivation` structure in `Mathlib.RingTheory.Derivation.Basic` axiomatises Leibniz via `leibniz' : D (a*b) = a • D b + b • D a`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Tangent vector as derivation; graded Leibniz rule",
+      "anchor": {
+        "section": "Derivations in abstract algebra and differential geometry",
+        "snippet": "a tangent vector to a manifold M at a point p may be defined abstractly as an operator"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "PointDerivation",
+        "module": "Mathlib.Geometry.Manifold.DerivationBundle",
+        "match_kind": "exact"
+      },
+      "note": "`PointDerivation` formalizes tangent vectors as derivations on smooth functions, but the graded-Leibniz rule for differential forms is not directly captured by this declaration.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Power rule for positive integer n",
+      "anchor": {
+        "section": "Applications",
+        "snippet": "Among the applications of the product rule is a proof that"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "deriv_pow",
+        "module": "Mathlib.Analysis.Calculus.Deriv.Pow",
+        "match_kind": "exact"
+      },
+      "note": "`deriv_pow` and `HasDerivAt.pow` in `Mathlib.Analysis.Calculus.Deriv.Pow` give d/dx xⁿ = n·xⁿ⁻¹ for positive integer n.",
+      "provenance": "ai"
+    }
+  ]
+}

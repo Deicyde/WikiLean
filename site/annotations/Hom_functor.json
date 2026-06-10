@@ -1,0 +1,329 @@
+{
+  "slug": "Hom_functor",
+  "wikipedia_title": "Hom functor",
+  "display_title": "Hom functor",
+  "schema_version": 3,
+  "annotation_style": "theorem_article",
+  "annotations": [
+    {
+      "kind": "definition",
+      "label": "Locally small category",
+      "anchor": {
+        "section": "Formal definition",
+        "snippet": "Let C be a locally small category"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "CategoryTheory.LocallySmall",
+        "module": "Mathlib.CategoryTheory.EssentiallySmall",
+        "match_kind": "generalization"
+      },
+      "note": "Mathlib's `Category` typeclass already makes hom-classes types (locally small); `LocallySmall.{w}` is the relative w-small generalization with `hom_small : ∀ X Y, Small.{w} (X ⟶ Y)`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Covariant Hom functor Hom(A,–)",
+      "anchor": {
+        "section": "Formal definition",
+        "snippet": "This is a covariant functor given by"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "CategoryTheory.coyoneda",
+        "module": "Mathlib.CategoryTheory.Yoneda",
+        "match_kind": "invocation"
+      },
+      "note": "`coyoneda.obj (op A) : C ⥤ Type` is exactly the covariant hom functor Hom(A,–).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Contravariant Hom functor Hom(–,B)",
+      "anchor": {
+        "section": "Formal definition",
+        "snippet": "Hom(–, B ) maps each object X in C to the set of morphisms"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "CategoryTheory.yoneda",
+        "module": "Mathlib.CategoryTheory.Yoneda",
+        "match_kind": "invocation"
+      },
+      "note": "`yoneda.obj B : Cᵒᵖ ⥤ Type` is exactly the contravariant hom functor Hom(–,B).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Functor of points",
+      "anchor": {
+        "section": "Formal definition",
+        "snippet": "also called the functor of points of the object"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "CategoryTheory.yoneda",
+        "module": "Mathlib.CategoryTheory.Yoneda",
+        "match_kind": "invocation"
+      },
+      "note": "The functor of points of an object A is the representable presheaf `yoneda.obj A = Hom(–,A)`, though Mathlib has no dedicated 'functor of points' name.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Naturality of Hom functor pair",
+      "anchor": {
+        "section": "Formal definition",
+        "snippet": "are related in a natural manner"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "CategoryTheory.Functor.hom",
+        "module": "Mathlib.CategoryTheory.Functor.Hom",
+        "match_kind": "exact"
+      },
+      "note": "The compatible naturality of Hom(A,–) and Hom(–,B) is precisely the functoriality witnessed by the single bifunctor `Functor.hom : Cᵒᵖ × C ⥤ Type`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Hom(–,–) is a bifunctor",
+      "anchor": {
+        "section": "Formal definition",
+        "snippet": "implies that Hom(–, –) is a bifunctor from"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "CategoryTheory.Functor.hom",
+        "module": "Mathlib.CategoryTheory.Functor.Hom",
+        "match_kind": "exact"
+      },
+      "note": "`Functor.hom : Cᵒᵖ × C ⥤ Type v` is the hom bifunctor, contravariant in the first and covariant in the second argument.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Yoneda's lemma",
+      "anchor": {
+        "section": "Yoneda's lemma",
+        "snippet": "every natural transformation between Hom functors is of this form"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "CategoryTheory.yonedaEquiv",
+        "module": "Mathlib.CategoryTheory.Yoneda",
+        "match_kind": "exact"
+      },
+      "note": "`yonedaEquiv : (yoneda.obj X ⟶ F) ≃ F.obj (op X)` is the Yoneda lemma, with its naturality packaged as `yonedaLemma`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Internal Hom functor",
+      "anchor": {
+        "section": "Internal Hom functor",
+        "snippet": "Such a functor is referred to as the internal Hom functor"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "CategoryTheory.MonoidalClosed.internalHom",
+        "module": "Mathlib.CategoryTheory.Monoidal.Closed.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`internalHom : Cᵒᵖ ⥤ C ⥤ C` (built from `ihom`) is the internal hom bifunctor of a monoidal closed category.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Closed category",
+      "anchor": {
+        "section": "Internal Hom functor",
+        "snippet": "are referred to as closed categories"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "CategoryTheory.MonoidalClosed",
+        "module": "Mathlib.CategoryTheory.Monoidal.Closed.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`MonoidalClosed C` is the closed (monoidal) category structure the article refers to as a closed category.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Currying / internal Hom adjunction",
+      "anchor": {
+        "section": "Internal Hom functor",
+        "snippet": "this extends to the notion of currying"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "CategoryTheory.ihom.adjunction",
+        "module": "Mathlib.CategoryTheory.Monoidal.Closed.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`ihom.adjunction A : tensorLeft A ⊣ ihom A` together with `MonoidalClosed.curry`/`uncurry` formalizes currying as the internal hom adjunction.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Internal Hom object",
+      "anchor": {
+        "section": "Internal Hom functor",
+        "snippet": "is called the internal Hom"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "CategoryTheory.ihom",
+        "module": "Mathlib.CategoryTheory.Monoidal.Closed.Basic",
+        "match_kind": "invocation"
+      },
+      "note": "The internal hom object is `(ihom A).obj X`, with notation `A ⟶[C] X`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Exponential object",
+      "anchor": {
+        "section": "Internal Hom functor",
+        "snippet": "is called the exponential object"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "CategoryTheory.ihom",
+        "module": "Mathlib.CategoryTheory.Monoidal.Closed.Basic",
+        "match_kind": "invocation"
+      },
+      "note": "In the cartesian closed case the exponential object is `(ihom A).obj B` with `CartesianClosed` notations `A ⟹ B` and `B ^^ A`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Internal language of a category",
+      "anchor": {
+        "section": "Internal Hom functor",
+        "snippet": "form a language, called the internal language of the category"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib does not formalize the internal language / type theory of a (closed) category.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Presheaf and copresheaf",
+      "anchor": {
+        "section": "Properties",
+        "snippet": "is a presheaf ; likewise, Hom( A , –) is a copresheaf"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "CategoryTheory.yoneda",
+        "module": "Mathlib.CategoryTheory.Yoneda",
+        "match_kind": "invocation"
+      },
+      "note": "Mathlib represents (co)presheaves on a general category as the literal types `Cᵒᵖ ⥤ Type`/`C ⥤ Type` (e.g. the codomain of `yoneda`) without a dedicated `Presheaf C` abbreviation.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Representable functor",
+      "anchor": {
+        "section": "Properties",
+        "snippet": "is called a representable functor"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "CategoryTheory.Functor.IsRepresentable",
+        "module": "Mathlib.CategoryTheory.Yoneda",
+        "match_kind": "exact"
+      },
+      "note": "`Functor.IsRepresentable` (with `Functor.RepresentableBy`) defines a functor isomorphic to a hom functor.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Hom is the identity profunctor",
+      "anchor": {
+        "section": "Properties",
+        "snippet": "is a profunctor , and, specifically, it is the identity profunctor"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "CategoryTheory.Profunctor.id",
+        "module": "Mathlib.CategoryTheory.Profunctor.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`Profunctor.id C` is defined to be the Yoneda/hom bifunctor, exactly the identity profunctor on C.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Internal Hom preserves limits",
+      "anchor": {
+        "section": "Properties",
+        "snippet": "The internal hom functor preserves limits"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "CategoryTheory.Adjunction.rightAdjoint_preservesLimits",
+        "module": "Mathlib.CategoryTheory.Adjunction.Limits",
+        "match_kind": "invocation"
+      },
+      "note": "`ihom A` is a right adjoint (`(ihom A).IsRightAdjoint` via `ihom.adjunction`), so it preserves limits by `Adjunction.rightAdjoint_preservesLimits`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Reader (environment) monad",
+      "anchor": {
+        "section": "Properties",
+        "snippet": "can be given the structure of a monad"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The reader/environment monad (`ReaderT`/`ReaderM`) lives in Lean core, and the categorical statement that Hom(A,–) carries a monad structure is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Hom left-exact, exact iff projective",
+      "anchor": {
+        "section": "Other properties",
+        "snippet": "is a covariant left-exact functor from"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "CategoryTheory.projective_iff_preservesEpimorphisms_coyoneda_obj",
+        "module": "Mathlib.CategoryTheory.Preadditive.Projective.Basic",
+        "match_kind": "generalization"
+      },
+      "note": "`coyoneda.obj (op P)` always preserves limits (`coyoneda_preservesLimits`, i.e. left-exactness), and `projective_iff_preservesEpimorphisms_coyoneda_obj` gives `Projective P ↔ Hom(P,–) preserves epis` for general categories.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Hom adjoint to tensor product",
+      "anchor": {
+        "section": "Other properties",
+        "snippet": "is adjoint to the tensor product functor"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "TensorProduct.lift.equiv",
+        "module": "Mathlib.LinearAlgebra.TensorProduct.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`TensorProduct.lift.equiv : (M →ₗ N →ₗ P) ≃ₗ (M ⊗ N →ₗ P)` is the tensor–hom adjunction, also packaged categorically via `MonoidalClosed (ModuleCat R)`.",
+      "provenance": "ai"
+    }
+  ]
+}

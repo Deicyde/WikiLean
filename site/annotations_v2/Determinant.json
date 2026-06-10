@@ -1,0 +1,109 @@
+{
+  "slug": "Determinant",
+  "wikipedia_title": "Determinant",
+  "display_title": "Determinant",
+  "schema_version": 1,
+  "source": "claude-agent-sdk/annotate_articles.py",
+  "annotations": [
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\det(cA)=c^{n}\\det(A)}"
+      },
+      "status": "formalized",
+      "decl": "Matrix.det_smul",
+      "module": "Mathlib.LinearAlgebra.Matrix.Determinant.Basic",
+      "note": "det_smul states det (c • A) = c ^ Fintype.card n * det A, exactly the homogeneity equation."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle |a_{1},\\dots ,a_{j},\\dots a_{i},\\dots ,a_{n}|=-|a_{1},\\dots ,a_{i},\\dots ,a_{j},\\dots ,a_{n}|.}"
+      },
+      "status": "partial",
+      "decl": "Matrix.det_permute",
+      "module": "Mathlib.LinearAlgebra.Matrix.Determinant.Basic",
+      "note": "det_permute gives sign change under any column permutation; specialising to a transposition yields the swap-negates-det rule."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle |a_{3},a_{1},a_{2},a_{4}\\dots ,a_{n}|=-|a_{1},a_{3},a_{2},a_{4},\\dots ,a_{n}|=|a_{1},a_{2},a_{3},a_{4},\\dots ,a_{n}|.}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Illustrative iterated-swap example; not a standalone Mathlib statement."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\det(A)=a_{11}a_{22}\\cdots a_{nn}=\\prod _{i=1}^{n}a_{ii}.}"
+      },
+      "status": "formalized",
+      "decl": "Matrix.det_of_upperTriangular",
+      "module": "Mathlib.LinearAlgebra.Matrix.Block",
+      "note": "det_of_upperTriangular states the determinant of a (block-)upper-triangular matrix equals the product of its diagonal entries."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle {\\begin{vmatrix}1&1&1&\\cdots &1\\\\x_{1}&x_{2}&x_{3}&\\cdots &x_{n}\\\\x_{1}^{2}&x_{2}^{2}&x_{3}^{2}&\\cdots &x_{n}^{2}\\\\\\vdots &\\vdots &\\vdots &\\ddots &\\vdots \\\\x_{1}^{n-1}&x_{2}^{n-1}&x_{3}^{n-1}&\\cdots &x_{n}^{n-1}\\end{vmatrix}}=\\prod _{1\\leq i<j\\leq n}\\left(x_{j}-x_{i}\\right).}"
+      },
+      "status": "formalized",
+      "decl": "Matrix.det_vandermonde",
+      "module": "Mathlib.LinearAlgebra.Vandermonde",
+      "note": "det_vandermonde gives the Vandermonde determinant as the product of (v j - v i) over i < j."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\det(A+B+C)+\\det(C)\\geq \\det(A+C)+\\det(B+C){\\text{,}}}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Supermodularity of the determinant on positive semidefinite matrices is not a Mathlib lemma."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\det(A+B)\\geq \\det(A)+\\det(B){\\text{.}}}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Sub-additivity corollary det(A+B) ≥ det(A)+det(B) for PSD matrices is not formalised in Mathlib."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle {\\sqrt[{n}]{\\det(A+B)}}\\geq {\\sqrt[{n}]{\\det(A)}}+{\\sqrt[{n}]{\\det(B)}},}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Minkowski's determinant inequality on the nth root is not present in Mathlib."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\mathbf {a\\times b} =\\det {\\begin{pmatrix}\\mathbf {i} &\\mathbf {j} &\\mathbf {k} \\\\a_{1}&a_{2}&a_{3}\\\\b_{1}&b_{2}&b_{3}\\\\\\end{pmatrix}}}"
+      },
+      "status": "partial",
+      "decl": "triple_product_eq_det",
+      "module": "Mathlib.LinearAlgebra.CrossProduct",
+      "note": "Mathlib formalises the related triple-product = det identity u · (v×w) = det ![u,v,w]; the symbolic i,j,k mnemonic itself is not a separate lemma."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle {\\begin{aligned}ab&=ab{\\begin{vmatrix}1&0\\\\0&1\\end{vmatrix}}=a{\\begin{vmatrix}1&0\\\\0&b\\end{vmatrix}}\\\\[5mu]&={\\begin{vmatrix}a&0\\\\0&b\\end{vmatrix}}=b{\\begin{vmatrix}a&0\\\\0&1\\end{vmatrix}}=ba{\\begin{vmatrix}1&0\\\\0&1\\end{vmatrix}}=ba,\\end{aligned}}}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Footnote demonstrating non-commutative incompatibility; not a stand-alone Mathlib result."
+    }
+  ]
+}

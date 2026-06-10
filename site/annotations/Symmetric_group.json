@@ -1,0 +1,1603 @@
+{
+  "slug": "Symmetric_group",
+  "wikipedia_title": "Symmetric group",
+  "display_title": "Symmetric group",
+  "schema_version": 3,
+  "annotation_style": "theorem_article",
+  "annotations": [
+    {
+      "kind": "definition",
+      "label": "Symmetric group (lead)",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "the symmetric group defined over any set is the group whose elements are all the bijections from the set to itself"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Equiv.Perm",
+        "module": "Mathlib.Logic.Equiv.Defs",
+        "match_kind": "exact"
+      },
+      "note": "Equiv.Perm α is the group of bijections (equivalences) of a type to itself, with group structure Equiv.Perm.permGroup.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Order of symmetric group is n!",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "the order (number of elements) of the symmetric group"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Fintype.card_perm",
+        "module": "Mathlib.Data.Fintype.Perm",
+        "match_kind": "exact"
+      },
+      "note": "Fintype.card_perm states card (Perm α) = (card α)!.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Cayley's theorem (lead)",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "Cayley's theorem states that every group"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Equiv.Perm.subgroupOfMulAction",
+        "module": "Mathlib.GroupTheory.Perm.Subgroup",
+        "match_kind": "exact"
+      },
+      "note": "subgroupOfMulAction gives the MulEquiv of any group with a subgroup of the symmetric group on itself.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Symmetric group on a finite set",
+      "anchor": {
+        "section": "Definition and first properties",
+        "snippet": "is the group whose elements are all bijective functions from"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Equiv.Perm",
+        "module": "Mathlib.Logic.Equiv.Defs",
+        "match_kind": "exact"
+      },
+      "note": "Equiv.Perm α is precisely the group of bijections from α to itself.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Symmetric group of degree n",
+      "anchor": {
+        "section": "Definition and first properties",
+        "snippet": "The symmetric group of degree"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Equiv.Perm",
+        "module": "Mathlib.Logic.Equiv.Defs",
+        "match_kind": "special_case"
+      },
+      "note": "S_n is realized as Equiv.Perm (Fin n).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Order is n!",
+      "anchor": {
+        "section": "Definition and first properties",
+        "snippet": "elements has order"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Fintype.card_perm",
+        "module": "Mathlib.Data.Fintype.Perm",
+        "match_kind": "exact"
+      },
+      "note": "Fintype.card_perm gives card (Perm α) = (card α)!.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Abelian iff n ≤ 2",
+      "anchor": {
+        "section": "Definition and first properties",
+        "snippet": "It is abelian if and only if"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No theorem characterizing commutativity of Equiv.Perm by card ≤ 2 was found.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Trivial for empty/singleton set",
+      "anchor": {
+        "section": "Definition and first properties",
+        "snippet": "the empty set and the singleton set ), the symmetric groups are trivial"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Equiv.permUnique",
+        "module": "Mathlib.Logic.Equiv.Defs",
+        "match_kind": "exact"
+      },
+      "note": "Equiv.permUnique shows Perm α is a unique (trivial) group when α is a subsingleton.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Solvable iff n ≤ 4",
+      "anchor": {
+        "section": "Definition and first properties",
+        "snippet": "The group S n is solvable if and only if"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Equiv.Perm.not_solvable",
+        "module": "Mathlib.GroupTheory.Solvable",
+        "match_kind": "special_case"
+      },
+      "note": "Only the n ≥ 5 direction (not solvable) is formalized via Equiv.Perm.not_solvable; solvability for n ≤ 4 is not stated.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Abel–Ruffini consequence",
+      "anchor": {
+        "section": "Definition and first properties",
+        "snippet": "This is an essential part of the proof of the"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Equiv.Perm.not_solvable",
+        "module": "Mathlib.GroupTheory.Solvable",
+        "match_kind": "special_case"
+      },
+      "note": "The key non-solvability ingredient exists and a concrete unsolvable quintic is proved in the Archive (Wiedijk100Theorems.AbelRuffini), but not within Mathlib/.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Galois group of general polynomial",
+      "anchor": {
+        "section": "Applications",
+        "snippet": "is the Galois group of the general polynomial of degree n"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Polynomial.Gal.galActionHom_bijective_of_prime_degree",
+        "module": "Mathlib.FieldTheory.PolynomialGaloisGroup",
+        "match_kind": "special_case"
+      },
+      "note": "Mathlib proves an irreducible prime-degree polynomial with two non-real roots has full symmetric Galois group, not the general statement for the generic polynomial.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Coxeter group of type A_n",
+      "anchor": {
+        "section": "Applications",
+        "snippet": "the symmetric group is the Coxeter group of type A n and occurs as the Weyl group"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "CoxeterMatrix.A",
+        "module": "Mathlib.GroupTheory.Coxeter.Matrix",
+        "match_kind": null
+      },
+      "note": "The Coxeter matrix of type Aₙ is defined, but the identification of Equiv.Perm with its Coxeter group is not established in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Elements are permutations",
+      "anchor": {
+        "section": "Group properties and special elements",
+        "snippet": "are the permutations of X"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Equiv.Perm",
+        "module": "Mathlib.Logic.Equiv.Defs",
+        "match_kind": "exact"
+      },
+      "note": "Elements of Equiv.Perm X are exactly the permutations (self-equivalences) of X.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Group operation is composition",
+      "anchor": {
+        "section": "Multiplication",
+        "snippet": "The group operation in a symmetric group is function composition"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Equiv.Perm.permGroup",
+        "module": "Mathlib.Algebra.Group.End",
+        "match_kind": "exact"
+      },
+      "note": "Equiv.Perm.permGroup defines multiplication as composition (trans) of equivalences.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Multiplication",
+          "snippet": "The group operation in a symmetric group is function composition"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle f=(1~3)(2)(4~5)={\\begin{pmatrix}1&amp;2&amp;3&amp;4&amp;5\\\\3&amp;2&amp;1&amp;5&amp;4\\end{pmatrix}},}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle g=(1~2~5)(3~4)={\\begin{pmatrix}1&amp;2&amp;3&amp;4&amp;5\\\\2&amp;5&amp;4&amp;3&amp;1\\end{pmatrix}}.}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle fg=f\\circ g=(1\\ 2\\ 4)(3\\ 5)={\\begin{pmatrix}1&amp;2&amp;3&amp;4&amp;5\\\\2&amp;4&amp;5&amp;1&amp;3\\end{pmatrix}}.}"
+        }
+      ]
+    },
+    {
+      "kind": "example",
+      "label": "Composition of f and g",
+      "anchor": {
+        "section": "Multiplication",
+        "snippet": "Applying f after g maps 1 first to 2 and then 2 to itself"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Equiv.Perm.mul_apply",
+        "module": "Mathlib.GroupTheory.Perm.Basic",
+        "match_kind": "invocation"
+      },
+      "note": "Equiv.Perm.mul_apply gives the value of a composite permutation, instantiating such concrete computations.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Multiplication",
+          "snippet": "Applying f after g maps 1 first to 2 and then 2 to itself"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle f=(1~3)(2)(4~5)={\\begin{pmatrix}1&amp;2&amp;3&amp;4&amp;5\\\\3&amp;2&amp;1&amp;5&amp;4\\end{pmatrix}},}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle g=(1~2~5)(3~4)={\\begin{pmatrix}1&amp;2&amp;3&amp;4&amp;5\\\\2&amp;5&amp;4&amp;3&amp;1\\end{pmatrix}}.}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle fg=f\\circ g=(1\\ 2\\ 4)(3\\ 5)={\\begin{pmatrix}1&amp;2&amp;3&amp;4&amp;5\\\\2&amp;4&amp;5&amp;1&amp;3\\end{pmatrix}}.}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Cycle taken to k-th power",
+      "anchor": {
+        "section": "Multiplication",
+        "snippet": "taken to the k th power, will decompose into k cycles of length m"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Equiv.Perm.IsCycle.isCycle_pow_iff",
+        "module": "Mathlib.GroupTheory.Perm.Cycle.Basic",
+        "match_kind": null
+      },
+      "note": "Mathlib characterizes when a power of a cycle is again a cycle (coprimality), but the full gcd-cycle decomposition of a cycle's power is not stated.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Multiplication",
+          "snippet": "taken to the k th power, will decompose into k cycles of length m"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle (1~2~3~4~5~6)^{2}=(1~3~5)(2~4~6).}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Closure of composition",
+      "anchor": {
+        "section": "Verification of group axioms",
+        "snippet": "The operation of function composition is closed in the set of permutations"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Equiv.Perm.permGroup",
+        "module": "Mathlib.Algebra.Group.End",
+        "match_kind": "invocation"
+      },
+      "note": "Closure under composition is part of the group structure Equiv.Perm.permGroup.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Associativity of composition",
+      "anchor": {
+        "section": "Verification of group axioms",
+        "snippet": "Function composition is always associative."
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Equiv.Perm.permGroup",
+        "module": "Mathlib.Algebra.Group.End",
+        "match_kind": "invocation"
+      },
+      "note": "Associativity is an axiom of the group instance Equiv.Perm.permGroup (mul_assoc).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Identity element",
+      "anchor": {
+        "section": "Verification of group axioms",
+        "snippet": "serves as an identity for the group"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Equiv.Perm.permGroup",
+        "module": "Mathlib.Algebra.Group.End",
+        "match_kind": "invocation"
+      },
+      "note": "The identity (Equiv.refl, 1) is provided by the group structure Equiv.Perm.permGroup.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Existence of inverses",
+      "anchor": {
+        "section": "Verification of group axioms",
+        "snippet": "Every bijection has an inverse function that undoes its action"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Equiv.Perm.permGroup",
+        "module": "Mathlib.Algebra.Group.End",
+        "match_kind": "invocation"
+      },
+      "note": "Inverses are given by Equiv.symm and the group inverse in Equiv.Perm.permGroup.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Transposition",
+      "anchor": {
+        "section": "Transpositions, sign, and the alternating group",
+        "snippet": "A transposition is a permutation which exchanges two elements and keeps all others fixed"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Equiv.Perm.IsSwap",
+        "module": "Mathlib.GroupTheory.Perm.Support",
+        "match_kind": "exact"
+      },
+      "note": "Equiv.Perm.IsSwap (via Equiv.swap) is exactly a transposition swapping two elements and fixing the rest.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Every permutation is a product of transpositions",
+      "anchor": {
+        "section": "Transpositions, sign, and the alternating group",
+        "snippet": "Every permutation can be written as a product of transpositions"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Equiv.Perm.closure_isSwap",
+        "module": "Mathlib.GroupTheory.Perm.Sign",
+        "match_kind": "exact"
+      },
+      "note": "closure_isSwap shows the swaps generate the whole permutation group (truncSwapFactors gives an explicit factorization).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Odd and even permutations",
+      "anchor": {
+        "section": "Transpositions, sign, and the alternating group",
+        "snippet": "it is then called an odd permutation , whereas f is an even permutation"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Equiv.Perm.sign",
+        "module": "Mathlib.GroupTheory.Perm.Sign",
+        "match_kind": "exact"
+      },
+      "note": "Even/odd are captured by sign f = 1 / sign f = -1 (membership in alternatingGroup = sign.ker).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Invariance of parity",
+      "anchor": {
+        "section": "Transpositions, sign, and the alternating group",
+        "snippet": "the number of transpositions needed to represent a given permutation is either always even or always odd"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Equiv.Perm.sign_prod_list_swap",
+        "module": "Mathlib.GroupTheory.Perm.Sign",
+        "match_kind": "exact"
+      },
+      "note": "sign_prod_list_swap gives sign of a product of swaps = (-1)^length, so parity is well-defined (invariant).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Parity of products",
+      "anchor": {
+        "section": "Transpositions, sign, and the alternating group",
+        "snippet": "The product of two even permutations is even, the product of two odd permutations is even"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Equiv.Perm.sign_mul",
+        "module": "Mathlib.GroupTheory.Perm.Sign",
+        "match_kind": "exact"
+      },
+      "note": "sign_mul (sign is multiplicative) encodes the parity rules for products.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Sign of a permutation",
+      "anchor": {
+        "section": "Transpositions, sign, and the alternating group",
+        "snippet": "Thus we can define the sign of a permutation"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Equiv.Perm.sign",
+        "module": "Mathlib.GroupTheory.Perm.Sign",
+        "match_kind": "exact"
+      },
+      "note": "Equiv.Perm.sign is the sign homomorphism into ℤˣ.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Sign is a homomorphism",
+      "anchor": {
+        "section": "Transpositions, sign, and the alternating group",
+        "snippet": "is a group homomorphism"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Equiv.Perm.sign",
+        "module": "Mathlib.GroupTheory.Perm.Sign",
+        "match_kind": "exact"
+      },
+      "note": "Equiv.Perm.sign is defined as a MonoidHom Perm α →* ℤˣ.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Alternating group A_n",
+      "anchor": {
+        "section": "Transpositions, sign, and the alternating group",
+        "snippet": "is called the alternating group A n"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "alternatingGroup",
+        "module": "Mathlib.GroupTheory.SpecificGroups.Alternating",
+        "match_kind": "exact"
+      },
+      "note": "alternatingGroup α := sign.ker is the alternating group.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "A_n normal of index 2",
+      "anchor": {
+        "section": "Transpositions, sign, and the alternating group",
+        "snippet": "It is a normal subgroup of S n , and for n ≥ 2 it has"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Equiv.Perm.alternatingGroup.index_eq_two",
+        "module": "Mathlib.GroupTheory.SpecificGroups.Alternating",
+        "match_kind": "exact"
+      },
+      "note": "alternatingGroup.normal gives normality and alternatingGroup.index_eq_two gives index 2 for nontrivial α.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "S_n as semidirect product",
+      "anchor": {
+        "section": "Transpositions, sign, and the alternating group",
+        "snippet": "The group S n is the semidirect product of A n and any subgroup generated by a single transposition"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No semidirect-product decomposition of Equiv.Perm as A_n ⋊ ⟨transposition⟩ is formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Product of adjacent transpositions",
+      "anchor": {
+        "section": "Transpositions, sign, and the alternating group",
+        "snippet": "every permutation can be written as a product of adjacent transpositions"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Equiv.Perm.mclosure_swap_castSucc_succ",
+        "module": "Mathlib.GroupTheory.Perm.Sign",
+        "match_kind": "exact"
+      },
+      "note": "mclosure_swap_castSucc_succ shows adjacent transpositions generate Perm (Fin n).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Cycle of length k",
+      "anchor": {
+        "section": "Cycles",
+        "snippet": "A cycle of length k is a permutation f for which there exists an element x"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Equiv.Perm.IsCycle",
+        "module": "Mathlib.GroupTheory.Perm.Cycle.Basic",
+        "match_kind": "exact"
+      },
+      "note": "Equiv.Perm.IsCycle defines a cycle; its length is the cardinality of its support.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Order of a cycle",
+      "anchor": {
+        "section": "Cycles",
+        "snippet": "The order of a cycle is equal to its length."
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Equiv.Perm.IsCycle.orderOf",
+        "module": "Mathlib.GroupTheory.Perm.Cycle.Basic",
+        "match_kind": "exact"
+      },
+      "note": "IsCycle.orderOf gives orderOf f = #f.support (its length).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Length-two cycles are transpositions",
+      "anchor": {
+        "section": "Cycles",
+        "snippet": "Cycles of length two are transpositions."
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Equiv.Perm.card_support_eq_two",
+        "module": "Mathlib.GroupTheory.Perm.Support",
+        "match_kind": "exact"
+      },
+      "note": "card_support_eq_two states #f.support = 2 ↔ IsSwap f.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Disjoint cycles",
+      "anchor": {
+        "section": "Cycles",
+        "snippet": "Two cycles are disjoint if they have disjoint subsets of elements."
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Equiv.Perm.Disjoint",
+        "module": "Mathlib.GroupTheory.Perm.Support",
+        "match_kind": "exact"
+      },
+      "note": "Equiv.Perm.Disjoint is the disjointness predicate for permutations (disjoint supports).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Disjoint cycles commute",
+      "anchor": {
+        "section": "Cycles",
+        "snippet": "Disjoint cycles commute"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Equiv.Perm.Disjoint.commute",
+        "module": "Mathlib.GroupTheory.Perm.Support",
+        "match_kind": "generalization"
+      },
+      "note": "Disjoint.commute shows any two disjoint permutations (in particular disjoint cycles) commute.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Disjoint cycle decomposition",
+      "anchor": {
+        "section": "Cycles",
+        "snippet": "Every element of S n can be written as a product of disjoint cycles"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Equiv.Perm.truncCycleFactors",
+        "module": "Mathlib.GroupTheory.Perm.Cycle.Factors",
+        "match_kind": "exact"
+      },
+      "note": "truncCycleFactors (and cycleFactorsFinset) express every permutation as a product of disjoint cycles.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Cycle conjugation property",
+      "anchor": {
+        "section": "Cycles",
+        "snippet": "Cycles admit the following conjugation property with any permutation"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Equiv.Perm.IsCycle.conj",
+        "module": "Mathlib.GroupTheory.Perm.Cycle.Basic",
+        "match_kind": null
+      },
+      "note": "IsCycle.conj/support_conj and the swap-conjugation lemma Equiv.symm_trans_swap_trans exist, but the explicit elementwise relabeling formula for a general cycle is not a single named lemma.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Order reversing permutation",
+      "anchor": {
+        "section": "Special elements",
+        "snippet": "The order reversing permutation is the one given by:"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Fin.revPerm",
+        "module": "Mathlib.Order.Fin.Basic",
+        "match_kind": "exact"
+      },
+      "note": "Fin.revPerm is the order-reversing permutation i ↦ n-1-i of Fin n.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Longest element / Bruhat order",
+      "anchor": {
+        "section": "Special elements",
+        "snippet": "This is the unique maximal element with respect to the Bruhat order and the longest element"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Bruhat order and the longest element of the symmetric group as a Coxeter group are not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Reversal is an involution",
+      "anchor": {
+        "section": "Special elements",
+        "snippet": "This is an involution, and consists of"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Fin.rev_rev",
+        "module": "Mathlib.Order.Fin.Basic",
+        "match_kind": "exact"
+      },
+      "note": "Fin.rev_rev shows the reversal map is an involution (rev (rev i) = i).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Perfect shuffle",
+      "anchor": {
+        "section": "Special elements",
+        "snippet": "the perfect shuffle is the permutation that splits the set into 2 piles and interleaves them"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No perfect-shuffle / riffle permutation is defined in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Conjugacy classes are cycle types",
+      "anchor": {
+        "section": "Conjugacy classes",
+        "snippet": "The conjugacy classes of S n correspond to the cycle types of permutations"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Equiv.Perm.isConj_iff_cycleType_eq",
+        "module": "Mathlib.GroupTheory.Perm.Cycle.Type",
+        "match_kind": "exact"
+      },
+      "note": "isConj_iff_cycleType_eq states two permutations are conjugate iff they have the same cycleType.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Conjugacy classes",
+          "snippet": "The conjugacy classes of S n correspond to the cycle types of permutations"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle k={\\begin{pmatrix}1&amp;2&amp;3&amp;4&amp;5\\\\1&amp;4&amp;3&amp;2&amp;5\\end{pmatrix}},}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle (2~4)\\circ (1~2~3)(4~5)\\circ (2~4)=(1~4~3)(2~5).}"
+        }
+      ]
+    },
+    {
+      "kind": "example",
+      "label": "Conjugacy in S_5",
+      "anchor": {
+        "section": "Conjugacy classes",
+        "snippet": "For instance, in S 5 , (1 2 3)(4 5) and (1 4 3)(2 5) are conjugate"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Equiv.Perm.isConj_iff_cycleType_eq",
+        "module": "Mathlib.GroupTheory.Perm.Cycle.Type",
+        "match_kind": "invocation"
+      },
+      "note": "Such concrete conjugacy facts follow from isConj_iff_cycleType_eq (equal cycle types).",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Conjugacy classes",
+          "snippet": "For instance, in S 5 , (1 2 3)(4 5) and (1 4 3)(2 5) are conjugate"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle k={\\begin{pmatrix}1&amp;2&amp;3&amp;4&amp;5\\\\1&amp;4&amp;3&amp;2&amp;5\\end{pmatrix}},}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle (2~4)\\circ (1~2~3)(4~5)\\circ (2~4)=(1~4~3)(2~5).}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Classes correspond to partitions",
+      "anchor": {
+        "section": "Conjugacy classes",
+        "snippet": "Conjugacy classes of S n correspond to integer partitions of n"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Equiv.Perm.partition",
+        "module": "Mathlib.GroupTheory.Perm.Cycle.Type",
+        "match_kind": "exact"
+      },
+      "note": "Equiv.Perm.partition assigns each permutation a partition of card α with partition_eq_of_isConj characterizing conjugacy.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "S_0 and S_1 are trivial",
+      "anchor": {
+        "section": "Low degree groups",
+        "snippet": "The symmetric groups on the empty set and the singleton set are trivial"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Equiv.permUnique",
+        "module": "Mathlib.Logic.Equiv.Defs",
+        "match_kind": "special_case"
+      },
+      "note": "Equiv.permUnique makes Perm α trivial for subsingleton α (Fin 0, Fin 1).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Structure of S_2",
+      "anchor": {
+        "section": "Low degree groups",
+        "snippet": "This group consists of exactly two elements: the identity and the permutation swapping the two points"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Fintype.card_perm",
+        "module": "Mathlib.Data.Fintype.Perm",
+        "match_kind": "special_case"
+      },
+      "note": "Fintype.card_perm gives card (Perm (Fin 2)) = 2, the identity and the swap.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "S_3 is first nonabelian",
+      "anchor": {
+        "section": "Low degree groups",
+        "snippet": "S 3 is the first nonabelian symmetric group."
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No theorem stating S_3 is the smallest nonabelian symmetric group is present.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "S_4 and rotations of the cube",
+      "anchor": {
+        "section": "Low degree groups",
+        "snippet": "The group S 4 is isomorphic to the group of proper rotations"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No isomorphism between S_4 and the rotation group of the cube is formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Klein four-group in S_4",
+      "anchor": {
+        "section": "Low degree groups",
+        "snippet": "S 4 has a Klein four-group V as a proper normal subgroup"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Equiv.Perm.alternatingGroup.kleinFour",
+        "module": "Mathlib.GroupTheory.SpecificGroups.Alternating.KleinFour",
+        "match_kind": null
+      },
+      "note": "Mathlib defines the Klein four subgroup V and proves it normal/characteristic inside alternatingGroup (Fin 4), not directly as a normal subgroup of S_4.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "S_5 is first non-solvable",
+      "anchor": {
+        "section": "Low degree groups",
+        "snippet": "S 5 is the first non-solvable symmetric group."
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Equiv.Perm.fin_5_not_solvable",
+        "module": "Mathlib.GroupTheory.Solvable",
+        "match_kind": "special_case"
+      },
+      "note": "fin_5_not_solvable proves S_5 is not solvable (the smallest such).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "S_6 has outer automorphism",
+      "anchor": {
+        "section": "Low degree groups",
+        "snippet": "Unlike all other symmetric groups, S 6 , has an outer automorphism ."
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The exceptional outer automorphism of S_6 is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Triple covers of A_6 and A_7",
+      "anchor": {
+        "section": "Low degree groups",
+        "snippet": "Note that while A 6 and A 7 have an exceptional Schur multiplier"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Exceptional Schur multipliers / triple covers of A_6 and A_7 are not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Notable homomorphisms between symmetric groups",
+      "anchor": {
+        "section": "Maps between symmetric groups",
+        "snippet": "the most notable homomorphisms between symmetric groups, in order of relative dimension"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "These exceptional homomorphisms between symmetric groups are not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "A_n simple for n ≥ 5",
+      "anchor": {
+        "section": "Relation with alternating group",
+        "snippet": "the alternating group A n is simple , and the induced quotient is the sign map"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Equiv.Perm.alternatingGroup.isSimpleGroup",
+        "module": "Mathlib.GroupTheory.SpecificGroups.Alternating.Simple",
+        "match_kind": "exact"
+      },
+      "note": "alternatingGroup.isSimpleGroup proves A_n is simple when 5 ≤ card α.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "S_n semidirect product of A_n and S_2",
+      "anchor": {
+        "section": "Relation with alternating group",
+        "snippet": "Thus S n is the semidirect product A n"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No semidirect product decomposition S_n = A_n ⋊ S_2 is formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Aut(A_n) ≅ S_n for n ≠ 6",
+      "anchor": {
+        "section": "Relation with alternating group",
+        "snippet": "S n is the full automorphism group of A n"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The computation Aut(A_n) ≅ S_n (n ≠ 6) is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "S_n is a complete group",
+      "anchor": {
+        "section": "Relation with alternating group",
+        "snippet": "so for n ≠ 2, 6 it is a complete group"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Completeness (trivial center and outer automorphism group) of S_n is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "S_n almost simple for n ≥ 5",
+      "anchor": {
+        "section": "Relation with alternating group",
+        "snippet": "S n is an almost simple group"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Almost-simplicity of S_n is not formalized (no AlmostSimple predicate for S_n).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Embedding of S_n into A_{n+2}",
+      "anchor": {
+        "section": "Relation with alternating group",
+        "snippet": "S n can be embedded into A n +2 by appending the transposition"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The embedding of S_n into A_{n+2} is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Generated by adjacent transpositions",
+      "anchor": {
+        "section": "Generators and relations",
+        "snippet": "The symmetric group on n letters is generated by the adjacent transpositions"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Equiv.Perm.mclosure_swap_castSucc_succ",
+        "module": "Mathlib.GroupTheory.Perm.Sign",
+        "match_kind": "exact"
+      },
+      "note": "mclosure_swap_castSucc_succ shows the adjacent transpositions generate Perm (Fin n).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Coxeter group structure",
+      "anchor": {
+        "section": "Generators and relations",
+        "snippet": "This representation endows the symmetric group with the structure of a Coxeter group"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "CoxeterMatrix.A",
+        "module": "Mathlib.GroupTheory.Coxeter.Matrix",
+        "match_kind": null
+      },
+      "note": "Coxeter groups and the type-A matrix exist, and adjacent transpositions generate S_n, but the braid presentation / Coxeter system on Perm is not established.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Other generating sets",
+      "anchor": {
+        "section": "Generators and relations",
+        "snippet": "Other possible generating sets include the set of transpositions that swap 1 and i"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Equiv.Perm.closure_isSwap",
+        "module": "Mathlib.GroupTheory.Perm.Sign",
+        "match_kind": null
+      },
+      "note": "It is proved that all transpositions generate S_n, but the specific alternative generating sets (star transpositions, or a transposition plus an n-cycle) are not individually formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Permutation group",
+      "anchor": {
+        "section": "Subgroup structure",
+        "snippet": "A subgroup of a symmetric group is called a permutation group ."
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Subgroup",
+        "module": "Mathlib.Algebra.Group.Subgroup.Defs",
+        "match_kind": "exact"
+      },
+      "note": "A permutation group is exactly a Subgroup (Equiv.Perm α), directly expressible though without a dedicated name.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Normal subgroups of finite S_n",
+      "anchor": {
+        "section": "Normal subgroups",
+        "snippet": "The alternating group of degree n is always a normal subgroup"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Equiv.Perm.alternatingGroup.normal",
+        "module": "Mathlib.GroupTheory.SpecificGroups.Alternating",
+        "match_kind": null
+      },
+      "note": "A_n is proved normal in S_n, but the full classification of all normal subgroups of finite S_n is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "No index-2 subgroup on infinite set",
+      "anchor": {
+        "section": "Normal subgroups",
+        "snippet": "The symmetric group on an infinite set does not have a subgroup of index 2"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No result about index-2 subgroups of the symmetric group on an infinite set is formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Schreier–Ulam theorem",
+      "anchor": {
+        "section": "Normal subgroups",
+        "snippet": "The groups A and S are the only nontrivial proper normal subgroups of the symmetric group on a countably infinite set"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Schreier–Ulam classification of normal subgroups of the infinite symmetric group is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Three classes of maximal subgroups",
+      "anchor": {
+        "section": "Maximal subgroups",
+        "snippet": "The maximal subgroups of S n fall into three classes"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Equiv.Perm.isCoatom_stabilizer",
+        "module": "Mathlib.GroupTheory.Perm.MaximalSubgroups",
+        "match_kind": null
+      },
+      "note": "Only the intransitive case of the O'Nan–Scott classification (stabilizer of a set is maximal) is formalized; the imprimitive and primitive cases are TODO.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Intransitive maximal subgroups",
+      "anchor": {
+        "section": "Maximal subgroups",
+        "snippet": "The intransitive maximal subgroups are exactly those of the form"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Equiv.Perm.isCoatom_stabilizer",
+        "module": "Mathlib.GroupTheory.Perm.MaximalSubgroups",
+        "match_kind": "exact"
+      },
+      "note": "isCoatom_stabilizer proves the set-stabilizers (the intransitive maximal subgroups Sym(s)×Sym(sᶜ)) are maximal.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Imprimitive maximal subgroups",
+      "anchor": {
+        "section": "Maximal subgroups",
+        "snippet": "The imprimitive maximal subgroups are exactly those of the form"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The imprimitive case (wreath products as maximal subgroups) is explicitly left as TODO.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Sylow subgroups are p-groups",
+      "anchor": {
+        "section": "Sylow subgroups",
+        "snippet": "The Sylow subgroups of the symmetric groups are important examples of p -groups"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Sylow.isPGroup'",
+        "module": "Mathlib.GroupTheory.Sylow",
+        "match_kind": "generalization"
+      },
+      "note": "Every Sylow subgroup is a p-group by definition (Sylow.isPGroup'), in particular those of symmetric groups.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Sylow p-subgroups of degree p",
+      "anchor": {
+        "section": "Sylow subgroups",
+        "snippet": "The Sylow p -subgroups of the symmetric group of degree p are just the cyclic subgroups generated by p -cycles"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Sylow.mulEquivIteratedWreathProduct",
+        "module": "Mathlib.GroupTheory.RegularWreathProduct",
+        "match_kind": "special_case"
+      },
+      "note": "The n=1 case of mulEquivIteratedWreathProduct gives the Sylow p-subgroup of Perm (card p) as the cyclic group of order p, though the explicit p-cycle generation is not stated separately.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Sylow p-subgroups of degree p^2",
+      "anchor": {
+        "section": "Sylow subgroups",
+        "snippet": "The Sylow p -subgroups of the symmetric group of degree p 2 are the wreath product of two cyclic groups of order p"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Sylow.mulEquivIteratedWreathProduct",
+        "module": "Mathlib.GroupTheory.RegularWreathProduct",
+        "match_kind": "special_case"
+      },
+      "note": "The n=2 case of mulEquivIteratedWreathProduct gives the Sylow p-subgroup of Perm (card p²) as the (iterated) wreath product of two cyclic groups of order p.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Iterated wreath product W_p(n)",
+      "anchor": {
+        "section": "Sylow subgroups",
+        "snippet": "are sometimes denoted W p ( n )"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "IteratedWreathProduct",
+        "module": "Mathlib.GroupTheory.RegularWreathProduct",
+        "match_kind": "exact"
+      },
+      "note": "IteratedWreathProduct G n is the n-fold iterated (regular) wreath product.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Sylow p-subgroups of degree n",
+      "anchor": {
+        "section": "Sylow subgroups",
+        "snippet": "the Sylow p -subgroups of the symmetric group of degree n are a direct product of a i copies of W p ( i )"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Sylow.mulEquivIteratedWreathProduct",
+        "module": "Mathlib.GroupTheory.RegularWreathProduct",
+        "match_kind": "special_case"
+      },
+      "note": "Mathlib only handles card α = p^n (a single iterated wreath product), not the general degree n as a direct product indexed by the base-p digits.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Transitive subgroup",
+      "anchor": {
+        "section": "Transitive subgroups",
+        "snippet": "A transitive subgroup of S n is a subgroup whose action on"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "MulAction.IsPretransitive",
+        "module": "Mathlib.GroupTheory.GroupAction.Defs",
+        "match_kind": "generalization"
+      },
+      "note": "A transitive subgroup is a subgroup whose induced action satisfies MulAction.IsPretransitive.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Galois group as transitive subgroup",
+      "anchor": {
+        "section": "Transitive subgroups",
+        "snippet": "the Galois group of a ( finite ) Galois extension is a transitive subgroup of S n"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Polynomial.Gal.galAction_isPretransitive",
+        "module": "Mathlib.FieldTheory.PolynomialGaloisGroup",
+        "match_kind": "exact"
+      },
+      "note": "galAction_isPretransitive shows the Galois group of an irreducible polynomial acts transitively on its roots.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Young subgroup",
+      "anchor": {
+        "section": "Young subgroups",
+        "snippet": "A subgroup of S n that is generated by transpositions is called a Young subgroup ."
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Young subgroups (products of smaller symmetric groups) are not defined in Mathlib (only Young diagrams/tableaux in combinatorics).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Young subgroups are parabolic",
+      "anchor": {
+        "section": "Young subgroups",
+        "snippet": "These groups may also be characterized as the parabolic subgroups of S n"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The characterization of Young subgroups as parabolic subgroups is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Cayley's theorem",
+      "anchor": {
+        "section": "Cayley's theorem",
+        "snippet": "Cayley's theorem states that every group G is isomorphic to a subgroup of some symmetric group"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Equiv.Perm.subgroupOfMulAction",
+        "module": "Mathlib.GroupTheory.Perm.Subgroup",
+        "match_kind": "exact"
+      },
+      "note": "subgroupOfMulAction is Cayley's theorem: G ≃* a subgroup of the symmetric group acting on G.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Cyclic subgroup of a symmetric group",
+      "anchor": {
+        "section": "Cyclic subgroups",
+        "snippet": "Cyclic groups are those that are generated by a single permutation."
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Subgroup.zpowers",
+        "module": "Mathlib.GroupTheory.Subgroup.ZPowers",
+        "match_kind": "generalization"
+      },
+      "note": "Subgroup.zpowers g is the cyclic subgroup generated by a single element (e.g. a permutation).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Order is lcm of cycle lengths",
+      "anchor": {
+        "section": "Cyclic subgroups",
+        "snippet": "the order of the cyclic subgroup that it generates is the least common multiple of the lengths of its cycles"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Equiv.Perm.lcm_cycleType",
+        "module": "Mathlib.GroupTheory.Perm.Cycle.Type",
+        "match_kind": "exact"
+      },
+      "note": "lcm_cycleType states σ.cycleType.lcm = orderOf σ.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Largest element order is Landau's function",
+      "anchor": {
+        "section": "Cyclic subgroups",
+        "snippet": "The largest possible order of a cyclic subgroup"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Landau's function g(n) (largest element order in S_n) is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "S_n complete for n ≠ 2, 6",
+      "anchor": {
+        "section": "Automorphism group",
+        "snippet": "For n ≠ 2, 6 , S n is a complete group : its center and outer automorphism group are both trivial."
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Completeness of S_n (trivial center and outer automorphisms) is not formalized; only the center of A_n is treated.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Automorphism group for n = 2",
+      "anchor": {
+        "section": "Automorphism group",
+        "snippet": "For n = 2 , the automorphism group is trivial, but S 2 is not trivial"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The automorphism group of S_2 is not computed in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Outer automorphism for n = 6",
+      "anchor": {
+        "section": "Automorphism group",
+        "snippet": "For n = 6 , it has an outer automorphism of order 2"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The order-2 outer automorphism of S_6 is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Automorphisms inner except n = 6",
+      "anchor": {
+        "section": "Automorphism group",
+        "snippet": "every automorphism of the symmetric group on X is inner"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The theorem that all automorphisms of S_n are inner (except n=6) is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "First homology of S_n",
+      "anchor": {
+        "section": "Homology",
+        "snippet": "the first homology (concretely, the abelianization ) is:"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "alternatingGroup.commutator_perm_le",
+        "module": "Mathlib.GroupTheory.SpecificGroups.Alternating.Centralizer",
+        "match_kind": null
+      },
+      "note": "commutator (Perm α) ≤ alternatingGroup is proved (one inclusion toward abelianization ℤ/2), but the abelianization/first homology of S_n is not explicitly computed.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Second homology (Schur multiplier)",
+      "anchor": {
+        "section": "Homology",
+        "snippet": "The second homology (concretely, the Schur multiplier ) is:"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Schur multiplier (second homology) of S_n is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Homological stability",
+      "anchor": {
+        "section": "Homology",
+        "snippet": "in the sense of stable homotopy theory: there is an inclusion map"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Homological stability for symmetric groups is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Homology of infinite symmetric group",
+      "anchor": {
+        "section": "Homology",
+        "snippet": "The homology of the infinite symmetric group is computed in"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The homology of the infinite symmetric group is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Number of irreducibles equals partitions",
+      "anchor": {
+        "section": "Representation theory",
+        "snippet": "the number of inequivalent irreducible representations , over the complex numbers , is equal to the number of partitions of n"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The count of irreducible representations of S_n as the number of partitions of n is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Irreducibles realized over the integers",
+      "anchor": {
+        "section": "Representation theory",
+        "snippet": "Each such irreducible representation can be realized over the integers"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Rationality/integrality of S_n irreducible representations is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Maschke semisimplicity",
+      "anchor": {
+        "section": "Representation theory",
+        "snippet": "by Maschke's theorem the group algebra K S n is semisimple"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "MonoidAlgebra.instIsSemisimpleModule (Maschke)",
+        "module": "Mathlib.RepresentationTheory.Maschke",
+        "match_kind": "generalization"
+      },
+      "note": "Maschke's theorem is formalized as IsSemisimpleModule k[G] (and IsSemisimpleRing k[G]) for any finite group whose order is invertible, including S_n.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Specht modules",
+      "anchor": {
+        "section": "Representation theory",
+        "snippet": "The modules so constructed are called Specht modules"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Specht modules are not defined in Mathlib.",
+      "provenance": "ai"
+    }
+  ]
+}

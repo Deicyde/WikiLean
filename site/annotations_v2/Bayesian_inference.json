@@ -1,0 +1,209 @@
+{
+  "slug": "Bayesian_inference",
+  "wikipedia_title": "Bayesian inference",
+  "display_title": "Bayesian inference",
+  "schema_version": 1,
+  "source": "claude-agent-sdk/annotate_articles.py",
+  "annotations": [
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle P(H\\mid E)={\\frac {P(E\\mid H)\\cdot P(H)}{P(E)}},}"
+      },
+      "status": "formalized",
+      "decl": "cond_eq_inv_mul_cond_mul",
+      "module": "Mathlib.Probability.ConditionalProbability",
+      "note": "Bayes' theorem on measures: μ[t|s] = (μ s)⁻¹ * μ[s|t] * μ t."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle {\\begin{aligned}P(H\\mid E)&={\\frac {P(E\\mid H)P(H)}{P(E)}}\\\\\\\\&={\\frac {P(E\\mid H)P(H)}{P(E\\mid H)P(H)+P(E\\mid \\neg H)P(\\neg H)}}\\\\\\\\&={\\frac {1}{1+\\left({\\frac {1}{P(H)}}-1\\right){\\frac {P(E\\mid \\neg H)}{P(E\\mid H)}}}}\\\\\\end{aligned}}}"
+      },
+      "status": "partial",
+      "decl": "cond_eq_inv_mul_cond_mul",
+      "module": "Mathlib.Probability.ConditionalProbability",
+      "note": "Mathlib has Bayes' theorem but not this multi-step algebraic rewriting via the law of total probability."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle P(E)=P(E\\mid H)P(H)+P(E\\mid \\neg H)P(\\neg H)}"
+      },
+      "status": "formalized",
+      "decl": "cond_add_cond_compl_eq",
+      "module": "Mathlib.Probability.ConditionalProbability",
+      "note": "Law of total probability split on H/¬H: μ[t|s]*μ s + μ[t|sᶜ]*μ sᶜ = μ t."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle P(H)+P(\\neg H)=1.}"
+      },
+      "status": "formalized",
+      "decl": "prob_add_prob_compl",
+      "module": "Mathlib.MeasureTheory.Measure.Typeclasses.Probability",
+      "note": "Probability of a set plus its complement equals one for a probability measure."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\left({\\tfrac {1}{P(H)}}-1\\right){\\tfrac {P(E\\mid \\neg H)}{P(E\\mid H)}}.}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Expository proof intermediate; no standalone Mathlib decl for this composite term."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle P(E\\cap H)=P(E\\mid H)P(H)=P(H\\mid E)P(E).}"
+      },
+      "status": "formalized",
+      "decl": "cond_mul_eq_inter",
+      "module": "Mathlib.Probability.ConditionalProbability",
+      "note": "Multiplication rule: μ[t|s] * μ s = μ (s ∩ t)."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle P(M\\mid E)={\\frac {P(E\\mid M)}{\\sum _{m}{P(E\\mid M_{m})P(M_{m})}}}\\cdot P(M).}"
+      },
+      "status": "partial",
+      "decl": "cond_eq_inv_mul_cond_mul",
+      "module": "Mathlib.Probability.ConditionalProbability",
+      "note": "Bayes' theorem is formalized; the finite-sum normalization variant for a model partition is not stated directly."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle P(M\\mid \\mathbf {E} )={\\frac {P(\\mathbf {E} \\mid M)}{\\sum _{m}{P(\\mathbf {E} \\mid M_{m})P(M_{m})}}}\\cdot P(M),}"
+      },
+      "status": "partial",
+      "decl": "posterior",
+      "module": "Mathlib.Probability.Kernel.Posterior",
+      "note": "Mathlib's posterior kernel captures Bayesian updating but not this exact vector-observation Bayes formula."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle P(\\mathbf {E} \\mid M)=\\prod _{k}{P(e_{k}\\mid M)}.}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Conditional independence factorization of the likelihood is not stated as a standalone Mathlib lemma."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle {\\begin{aligned}p({\\boldsymbol {\\theta }}\\mid \\mathbf {E} ,{\\boldsymbol {\\alpha }})&={\\frac {p(\\mathbf {E} \\mid {\\boldsymbol {\\theta }},{\\boldsymbol {\\alpha }})}{p(\\mathbf {E} \\mid {\\boldsymbol {\\alpha }})}}\\cdot p({\\boldsymbol {\\theta }}\\mid {\\boldsymbol {\\alpha }})\\\\&={\\frac {p(\\mathbf {E} \\mid {\\boldsymbol {\\theta }},{\\boldsymbol {\\alpha }})}{\\int p(\\mathbf {E} \\mid {\\boldsymbol {\\theta }},{\\boldsymbol {\\alpha }})p({\\boldsymbol {\\theta }}\\mid {\\boldsymbol {\\alpha }})\\,d{\\boldsymbol {\\theta }}}}\\cdot p({\\boldsymbol {\\theta }}\\mid {\\boldsymbol {\\alpha }}),\\end{aligned}}}"
+      },
+      "status": "partial",
+      "decl": "posterior",
+      "module": "Mathlib.Probability.Kernel.Posterior",
+      "note": "Posterior kernel formalizes parametric Bayesian updating but not this density-level formula with the marginal-likelihood integral."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle p(\\mathbf {E} \\mid {\\boldsymbol {\\theta }},{\\boldsymbol {\\alpha }})=\\prod _{k}p(e_{k}\\mid {\\boldsymbol {\\theta }}).}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Conditional iid likelihood factorization is not provided as a standalone Mathlib lemma."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle p(\\mathbf {X} \\mid \\alpha )=\\int p(\\mathbf {X} \\mid \\theta )p(\\theta \\mid \\alpha )d\\theta .}"
+      },
+      "status": "partial",
+      "decl": "compProd_posterior_eq_map_swap",
+      "module": "Mathlib.Probability.Kernel.Posterior",
+      "note": "Marginal-over-parameter is implicit in the composition-product of the prior and likelihood kernel, not isolated as a marginal-likelihood decl."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle P_{X}^{y}(A)=E(1_{A}(X)|Y=y)}"
+      },
+      "status": "partial",
+      "decl": "posterior",
+      "module": "Mathlib.Probability.Kernel.Posterior",
+      "note": "Conditional distribution given Y=y is captured by Mathlib's posterior/condDistrib framework, not this exact conditional-expectation formulation."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle p({\\tilde {x}}\\mid \\mathbf {X} ,\\alpha )=\\int p({\\tilde {x}}\\mid \\theta )p(\\theta \\mid \\mathbf {X} ,\\alpha )d\\theta }"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Posterior predictive distribution is not a named Mathlib construction."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle p({\\tilde {x}}\\mid \\alpha )=\\int p({\\tilde {x}}\\mid \\theta )p(\\theta \\mid \\alpha )d\\theta }"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Prior predictive distribution is not a named Mathlib construction."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle {\\tilde {\\theta }}=\\operatorname {E} [\\theta ]=\\int \\theta \\,p(\\theta \\mid \\mathbf {X} ,\\alpha )\\,d\\theta }"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Posterior mean as a parameter estimator is not a named Mathlib decl."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\{\\theta _{\\text{MAP}}\\}\\subset \\arg \\max _{\\theta }p(\\theta \\mid \\mathbf {X} ,\\alpha ).}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Maximum a posteriori estimator is not formalized in Mathlib."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle p_{G}(c)=0.01+{\\frac {0.80}{5}}(c-11)}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Numerical example specific to the cookie/pottery vignette."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle p_{D}(c)=0.5-{\\frac {0.45}{5}}(c-11)}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Numerical example specific to the article's worked vignette."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle {\\bar {p}}_{G}(c)=1-p_{G}(c),\\quad {\\bar {p}}_{D}(c)=1-p_{D}(c).}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Example-specific complement probabilities for the worked vignette."
+    }
+  ]
+}

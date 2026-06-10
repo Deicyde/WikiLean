@@ -1,0 +1,551 @@
+#!/usr/bin/env python3
+"""Batch annotation orchestrator for WikiLean.
+
+Runs the full annotation pipeline across many articles:
+
+    fetch → extract → Agent 1 (enumerate) → validate → Agent 2 (Mathlib) → render
+
+The two agents run via claude-agent-sdk (Max-plan auth — pop ANTHROPIC_API_KEY
+before importing the SDK). Deterministic steps shell out to the tested scripts
+(extract_sections.py, validate_coverage.py, render.py). Article-level
+concurrency; resumable — an article whose out/<slug>.html already exists is
+skipped.
+
+Run with the venv that has claude-agent-sdk:
+    catalog/.venv/bin/python site/batch_annotate.py --limit 3            # smoke
+    catalog/.venv/bin/python site/batch_annotate.py --concurrency 6      # full
+"""
+from __future__ import annotations
+
+import argparse
+import asyncio
+import json
+import os
+import re
+import subprocess
+import sys
+import time
+import unicodedata
+from pathlib import Path
+
+# Pop the API key BEFORE importing the SDK so the spawned `claude` subprocess
+# uses the Max-subscription login rather than billing an API account.
+_popped_key = os.environ.pop("ANTHROPIC_API_KEY", None)
+
+import requests
+from claude_agent_sdk import (
+    AssistantMessage,
+    ClaudeAgentOptions,
+    ResultMessage,
+    TextBlock,
+    ToolUseBlock,
+    query,
+)
+
+HERE = Path(__file__).resolve().parent
+CACHE = HERE / "cache"
+ANNOT = HERE / "annotations"
+OUT = HERE / "out"
+CATALOG_DATA = HERE.parent / "catalog" / "data"
+RUN_LOG = CACHE / ".batch_run.log"
+
+MATHLIB = Path("/Users/jack/Desktop/LEAN/mathlib4")
+WIKI_API = "https://en.wikipedia.org/w/api.php"
+WIKI_UA = "WikiLean/0.1 (https://github.com/Deicyde/WikiLean; jack.mccarthy.1@stonybrook.edu)"
+PY = sys.executable if "venv" not in sys.executable else "python3"
+
+
+# ---------------------------------------------------------------------------
+# Agent system prompts (refined from the manual smoke-test runs)
+# ---------------------------------------------------------------------------
+
+AGENT1_SYSTEM = """\
+You are Agent 1 in the WikiLean annotation pipeline. Given the extracted
+plain-text sections of a Wikipedia mathematics article, enumerate every
+distinct mathematical statement (definition, proposition/theorem, example).
+
+RULES:
+1. Every `snippet` MUST be copied CHARACTER-FOR-CHARACTER from the paragraph
+   text given to you. Do NOT paraphrase or fix whitespace. Never include
+   `[MATH]` in a snippet — pick words from the non-math portions only.
+2. Theorem boxes (paragraphs starting `[THEOREM BOX: "..."]`): use anchor
+   `{"type": "theorem_box", "value": "<the label>"}` to highlight the whole box.
+3. Multi-paragraph statements already merged into one paragraph (e.g.
+   "X is Y if: cond1, cond2"): ONE annotation; snippet from the intro portion.
+4. Each annotation covers exactly ONE statement. Pick a snippet from WITHIN
+   the target sentence — the renderer expands it to sentence boundaries.
+5. Do NOT skip statements. Cover every definition, proposition, theorem, example.
+
+OUTPUT — your final reply must be ONLY one JSON object, no prose:
+{"annotations": [
+  {"kind": "definition"|"proposition"|"theorem"|"example",
+   "label": "<short human-readable name>",
+   "anchor": {"section": "<exact heading>", "snippet": "<verbatim phrase>"}}
+]}
+For a theorem box use "anchor": {"type": "theorem_box", "value": "<label>"} instead.
+"""
+
+AGENT2_SYSTEM = """\
+You are Agent 2 in the WikiLean annotation pipeline. Given a list of
+mathematical statements from a Wikipedia article, determine for each whether
+it is formalized in Mathlib4. Mathlib4 is the current working directory; only
+look in `Mathlib/`.
+
+For EACH statement:
+  1. Grep/Read Mathlib to find a formalizing declaration.
+  2. Classify: "formalized" (direct match), "partial" (related infra exists but
+     not the exact statement), or "not_formalized".
+  3. Record the Mathlib decl name, dotted module path, and match_kind
+     ("exact" | "generalization" | "special_case" | "invocation" | null).
+  4. Write a one-sentence note. Only cite decls you verified by grep/read.
+
+OUTPUT — your final reply must be ONLY one JSON object, no prose. Echo back
+every input annotation in the SAME ORDER, preserving kind/label/anchor AND
+`provenance` exactly (if an input annotation has provenance "human" or
+"ai-moderated", echo that string back unchanged — do NOT downgrade it to "ai"),
+adding status/mathlib/note:
+{"annotations": [
+  {"kind": "...", "label": "...", "anchor": {...},
+   "status": "formalized"|"partial"|"not_formalized",
+   "mathlib": {"decl": <str|null>, "module": <str|null>, "match_kind": <str|null>},
+   "note": "<one sentence>",
+   "provenance": "<echoed verbatim from input, if present>"}
+]}
+"""
+
+
+# ---------------------------------------------------------------------------
+# Helpers
+# ---------------------------------------------------------------------------
+
+def make_slug(title: str) -> str:
+    """Filesystem-safe slug. 'Picard–Lindelöf theorem' → 'Picard-Lindelof_theorem'."""
+    s = title.replace("–", "-").replace("—", "-")
+    s = unicodedata.normalize("NFKD", s).encode("ascii", "ignore").decode()
+    s = s.replace(" ", "_")
+    s = re.sub(r"[^A-Za-z0-9_.\-]", "", s)
+    return s
+
+
+def parse_json_object(text: str) -> dict | None:
+    """Extract the first balanced {...} JSON object from text."""
+    if not text:
+        return None
+    start = text.find("{")
+    if start < 0:
+        return None
+    depth = 0
+    in_str = False
+    esc = False
+    for i in range(start, len(text)):
+        c = text[i]
+        if esc:
+            esc = False
+            continue
+        if c == "\\":
+            esc = True
+            continue
+        if c == '"':
+            in_str = not in_str
+            continue
+        if in_str:
+            continue
+        if c == "{":
+            depth += 1
+        elif c == "}":
+            depth -= 1
+            if depth == 0:
+                try:
+                    return json.loads(text[start : i + 1])
+                except json.JSONDecodeError:
+                    return None
+    return None
+
+
+def fetch_html(slug: str, title: str) -> bool:
+    """Fetch + cache the article HTML. Returns True on success."""
+    path = CACHE / f"{slug}.html"
+    if path.exists() and path.stat().st_size > 0:
+        return True
+    params = {
+        "action": "parse", "page": title, "prop": "text|revid",
+        "format": "json", "formatversion": "2", "redirects": "1",
+    }
+    try:
+        r = requests.get(WIKI_API, params=params,
+                         headers={"User-Agent": WIKI_UA}, timeout=60)
+        r.raise_for_status()
+        data = r.json()
+        if "parse" not in data:
+            return False
+        path.write_text(data["parse"]["text"], encoding="utf-8")
+        revid = data["parse"].get("revid")
+        if revid:
+            import datetime as _dt
+            meta = {
+                "slug": slug, "wikipedia_title": title, "revid": revid,
+                "fetched_at": _dt.datetime.now(_dt.timezone.utc).isoformat(timespec="seconds"),
+                "pinned_via": "fetch",
+            }
+            (CACHE / f"{slug}.meta.json").write_text(
+                json.dumps(meta, ensure_ascii=False, indent=2), encoding="utf-8")
+        return True
+    except Exception:
+        return False
+
+
+def run_script(script: str, slug: str) -> tuple[int, str]:
+    """Run a deterministic pipeline script for one slug. Returns (rc, output)."""
+    proc = subprocess.run(
+        [PY, str(HERE / script), slug],
+        capture_output=True, text=True, cwd=str(HERE),
+    )
+    return proc.returncode, (proc.stdout + proc.stderr)
+
+
+async def run_agent(system: str, user: str, cwd: Path,
+                    tools: list[str], max_turns: int) -> tuple[dict | None, dict]:
+    """Run one agent via the SDK. Returns (parsed_json_or_None, meta)."""
+    options = ClaudeAgentOptions(
+        model="claude-opus-4-7",
+        system_prompt=system,
+        allowed_tools=tools,
+        cwd=str(cwd),
+        permission_mode="bypassPermissions",
+        max_turns=max_turns,
+    )
+    last_text = ""
+    result_obj = None
+    n_tool = 0
+    async for msg in query(prompt=user, options=options):
+        if isinstance(msg, AssistantMessage):
+            for b in msg.content:
+                if isinstance(b, TextBlock):
+                    last_text = b.text or last_text
+                elif isinstance(b, ToolUseBlock):
+                    n_tool += 1
+        elif isinstance(msg, ResultMessage):
+            result_obj = msg
+            if msg.result:
+                last_text = msg.result
+    usage = getattr(result_obj, "usage", None) if result_obj else None
+    tokens = 0
+    if isinstance(usage, dict):
+        tokens = (usage.get("input_tokens") or 0) + (usage.get("output_tokens") or 0)
+    meta = {
+        "n_tool_calls": n_tool,
+        # NOTE: this is the *equivalent* API cost the SDK reports; under
+        # Max-plan auth no per-token dollars are billed — it's a usage proxy.
+        "cost_usd_equiv": getattr(result_obj, "total_cost_usd", None) if result_obj else None,
+        "tokens": tokens,
+        "duration_ms": getattr(result_obj, "duration_ms", None) if result_obj else None,
+    }
+    return parse_json_object(last_text), meta
+
+
+# ---------------------------------------------------------------------------
+# Per-article pipeline
+# ---------------------------------------------------------------------------
+
+MODERATE_AGENT1_SYSTEM = """\
+You are the MODERATION agent for WikiLean, reviewing one article's EXISTING
+annotations against its text. You receive the article's extracted sections AND
+its current annotations, each tagged with `provenance` ("human" or "ai…").
+
+Produce the full, improved annotation set:
+1. PRESERVE every annotation with provenance "human" — keep its anchor, label,
+   kind, status, mathlib, and note exactly. NEVER delete or rewrite a human
+   annotation. If you think one is wrong, keep it unchanged and add a short
+   "moderation_flag" field explaining the concern.
+2. Review the AI annotations: fix clearly-wrong kind/label/anchor, drop exact
+   duplicates, otherwise keep them. Mark any you change provenance "ai-moderated".
+3. ADD annotations for mathematical statements not yet covered (improve
+   coverage); mark new ones provenance "ai".
+4. Copy each `snippet`/anchor value CHARACTER-FOR-CHARACTER; never include `[MATH]`.
+
+OUTPUT — ONLY one JSON object, carrying each annotation's provenance:
+{"annotations": [{"kind":"…","label":"…","anchor":{…},"status":"…",
+"mathlib":{…},"note":"…","provenance":"…"}]}
+"""
+
+
+def _anchor_sig(a: dict) -> str:
+    """Stable signature of an annotation's anchor, for matching across passes."""
+    anc = a.get("anchor") or {}
+    return json.dumps([anc.get("type"), anc.get("section"), anc.get("snippet"),
+                       anc.get("value"), anc.get("from")], sort_keys=True)
+
+
+def _preserve_human(existing: list[dict], produced: list[dict]) -> list[dict]:
+    """Deterministic guarantee that human contributions survive a moderation
+    pass: any human annotation the agent altered is restored to its original
+    form, and any it dropped is re-inserted. The agent's smart work stands for
+    everything else."""
+    human = [a for a in existing if a.get("provenance") == "human"]
+    if not human:
+        return produced
+    by_sig = {_anchor_sig(a): i for i, a in enumerate(produced)}
+    out = list(produced)
+    for h in human:
+        sig = _anchor_sig(h)
+        if sig in by_sig:
+            out[by_sig[sig]] = {**h, "provenance": "human"}   # restore original
+        else:
+            out.append({**h, "provenance": "human",
+                        "moderation_note": "re-inserted by moderator (agent omitted it)"})
+    return out
+
+
+async def annotate_one(article: dict, sem: asyncio.Semaphore, seed_decls: dict,
+                       moderate: bool = False) -> dict:
+    title = article["title"]
+    slug = make_slug(title)
+    rec = {"title": title, "slug": slug}
+    t0 = time.time()
+    async with sem:
+        try:
+            # 1. fetch
+            if not fetch_html(slug, title):
+                rec["error"] = "fetch_failed"
+                return rec
+            # 2. extract
+            rc, _ = run_script("extract_sections.py", slug)
+            if rc != 0:
+                rec["error"] = "extract_failed"
+                return rec
+            sections = json.loads((CACHE / f"{slug}.sections.json").read_text())
+
+            # Moderation mode: load the current annotations so the agents are
+            # context-aware and human edits are preserved (not clobbered).
+            existing: list[dict] = []
+            if moderate:
+                ap = ANNOT / f"{slug}.json"
+                if ap.exists():
+                    try:
+                        existing = json.loads(ap.read_text()).get("annotations", [])
+                    except (json.JSONDecodeError, OSError):
+                        existing = []
+            do_moderate = moderate and bool(existing)
+            rec["mode"] = "moderate" if do_moderate else "regen"
+
+            # 3. Agent 1 — enumerate, or moderate the existing set
+            if do_moderate:
+                a1_prompt = (
+                    f"Article: {title}\n\nExtracted sections (JSON):\n"
+                    f"{json.dumps(sections['sections'], ensure_ascii=False)}\n\n"
+                    f"CURRENT annotations (JSON):\n"
+                    f"{json.dumps(existing, ensure_ascii=False)}\n\n"
+                    "Moderate per the system prompt. Reply with ONLY the JSON object."
+                )
+                a1_system = MODERATE_AGENT1_SYSTEM
+            else:
+                a1_prompt = (
+                    f"Article: {title}\n\nExtracted sections (JSON):\n"
+                    f"{json.dumps(sections['sections'], ensure_ascii=False)}\n\n"
+                    "Enumerate every mathematical statement per the system prompt. "
+                    "Reply with ONLY the JSON object."
+                )
+                a1_system = AGENT1_SYSTEM
+            a1, a1_meta = await run_agent(a1_system, a1_prompt, HERE, [], 12)
+            if not a1 or "annotations" not in a1:
+                rec["error"] = "agent1_no_json"
+                return rec
+            annotations = a1["annotations"]
+            if do_moderate:
+                annotations = _preserve_human(existing, annotations)
+            envelope = {
+                "slug": slug, "wikipedia_title": title, "display_title": title,
+                "schema_version": 3, "annotations": [
+                    {**a, "provenance": "ai-agent1"} for a in annotations
+                ],
+            }
+            (ANNOT / f"{slug}.agent1.json").write_text(
+                json.dumps(envelope, ensure_ascii=False, indent=2), encoding="utf-8")
+
+            # 4. validate coverage (advisory)
+            _, cov_out = run_script("validate_coverage.py", slug)
+            m = re.search(r"Coverage: \d+/\d+ \w+ \w+ \((\d+)%\)", cov_out)
+            rec["coverage_pct"] = int(m.group(1)) if m else None
+
+            # 5. Agent 2 — Mathlib matching (greps mathlib4)
+            seed = seed_decls.get(title)
+            seed_hint = ""
+            if seed:
+                seed_hint = ("\n\nPrior pass found these Mathlib decls for the "
+                             f"article's central concept (use as leads, verify): {seed}")
+            a2_prompt = (
+                f"Article: {title}\n\nStatements to classify (JSON):\n"
+                f"{json.dumps(annotations, ensure_ascii=False)}{seed_hint}\n\n"
+                "Classify each against Mathlib4 per the system prompt. "
+                "Reply with ONLY the JSON object."
+            )
+            a2, a2_meta = await run_agent(AGENT2_SYSTEM, a2_prompt, MATHLIB,
+                                          ["Read", "Grep", "Glob"], 60)
+            if not a2 or "annotations" not in a2:
+                rec["error"] = "agent2_no_json"
+                return rec
+            a2_annos = a2["annotations"]
+            if do_moderate:
+                # Restore human annotations' decls/status after Agent 2 too, so
+                # the matcher can't override a human-verified mapping.
+                a2_annos = _preserve_human(existing, a2_annos)
+                # Deterministic provenance carry-through. Agent 2 must not be
+                # able to DOWNGRADE Agent 1's review marks: if the pre-Agent-2
+                # state had "ai-moderated" or "human" for this anchor, that
+                # wins regardless of what Agent 2 echoed back.
+                PRIORITY = {"human": 3, "ai-moderated": 2, "ai": 1,
+                            "ai-agent1": 1, None: 0}
+                pre_a2_prov = {_anchor_sig(a): a.get("provenance") for a in annotations}
+                out_annos = []
+                for a in a2_annos:
+                    if a.get("provenance") == "human":
+                        out_annos.append(a)  # _preserve_human already restored
+                        continue
+                    inherited = pre_a2_prov.get(_anchor_sig(a))
+                    echoed = a.get("provenance")
+                    winner = max((inherited, echoed), key=lambda p: PRIORITY.get(p, 0))
+                    out_annos.append({**a, "provenance": winner or "ai"})
+            else:
+                out_annos = [{**a, "provenance": "ai"} for a in a2_annos]
+            final = {
+                "slug": slug, "wikipedia_title": title, "display_title": title,
+                "schema_version": 3, "annotation_style": "theorem_article",
+                "annotations": out_annos,
+            }
+            (ANNOT / f"{slug}.json").write_text(
+                json.dumps(final, ensure_ascii=False, indent=2), encoding="utf-8")
+
+            # 6. render
+            rc, render_out = run_script("render.py", slug)
+            if rc != 0 or not (OUT / f"{slug}.html").exists():
+                rec["error"] = "render_failed"
+                return rec
+            mm = re.search(r"(\d+)/(\d+) matched", render_out)
+            rec["matched"] = mm.group(0) if mm else None
+            rec["n_annotations"] = len(final["annotations"])
+            rec["cost_usd_equiv"] = round(
+                (a1_meta.get("cost_usd_equiv") or 0) + (a2_meta.get("cost_usd_equiv") or 0), 3)
+            rec["tokens"] = (a1_meta.get("tokens") or 0) + (a2_meta.get("tokens") or 0)
+            rec["agent1_meta"] = a1_meta
+            rec["agent2_meta"] = a2_meta
+        except Exception as e:
+            rec["error"] = f"{type(e).__name__}: {e}"
+        finally:
+            rec["elapsed_s"] = round(time.time() - t0, 1)
+    return rec
+
+
+async def run(articles: list[dict], seed_decls: dict, concurrency: int,
+              moderate: bool = False) -> int:
+    sem = asyncio.Semaphore(concurrency)
+    t0 = time.time()
+    n_done = n_err = 0
+    cost = 0.0
+    tokens_total = 0
+    lock = asyncio.Lock()
+    state = {"consec_err": 0, "abort": False}
+    ABORT_AFTER = 15  # consecutive window-exhaustion errors → stop, resume later
+
+    with RUN_LOG.open("a", encoding="utf-8") as log:
+        async def worker(a: dict):
+            nonlocal n_done, n_err, cost, tokens_total
+            if state["abort"]:
+                return  # window died — skip cheaply, retried on next resume
+            rec = await annotate_one(a, sem, seed_decls, moderate=moderate)
+            async with lock:
+                log.write(json.dumps(rec, ensure_ascii=False) + "\n")
+                log.flush()
+                n_done += 1
+                err = rec.get("error")
+                if err:
+                    n_err += 1
+                    low = err.lower()
+                    if ("error result: success" in low or "rate" in low
+                            or "limit" in low or "overloaded" in low):
+                        state["consec_err"] += 1
+                        if state["consec_err"] >= ABORT_AFTER and not state["abort"]:
+                            state["abort"] = True
+                            print(f"  ⚠ {state['consec_err']} consecutive window-"
+                                  f"exhaustion errors — aborting; rerun resumes "
+                                  f"after the window resets", flush=True)
+                else:
+                    state["consec_err"] = 0
+                cost += rec.get("cost_usd_equiv") or 0
+                tokens_total += rec.get("tokens") or 0
+                elapsed = time.time() - t0
+                rate = n_done / elapsed if elapsed else 0
+                eta = (len(articles) - n_done) / rate if rate else 0
+                status = rec.get("error") or rec.get("matched") or "ok"
+                print(f"  [{n_done}/{len(articles)}] {rec['slug'][:40]:40s} "
+                      f"{status:18s} cov={rec.get('coverage_pct')}% "
+                      f"err={n_err} ~${cost:.2f} equiv {tokens_total/1e6:.2f}Mtok "
+                      f"eta={eta/60:.0f}m", flush=True)
+
+        await asyncio.gather(*(worker(a) for a in articles))
+
+    print(f"\ndone — {n_done} processed, {n_err} errors, "
+          f"{time.time()-t0:.0f}s, ~${cost:.2f} equiv, {tokens_total/1e6:.2f}M tokens"
+          + ("  [ABORTED: window exhausted — rerun to resume]" if state["abort"] else ""))
+    return 3 if state["abort"] else 0
+
+
+def load_articles() -> tuple[list[dict], dict]:
+    """Merge pilot + tier2 tagged concept articles. Returns (articles, seed_decls)."""
+    titles: dict[str, dict] = {}
+    seed: dict[str, str] = {}
+    for f in ["pilot_tagged.jsonl", "tier2_tagged.jsonl"]:
+        p = CATALOG_DATA / f
+        if not p.exists():
+            continue
+        for line in p.open():
+            r = json.loads(line)
+            if r.get("is_human"):
+                continue
+            titles[r["title"]] = {"title": r["title"]}
+            decls = r.get("mathlib_decls") or []
+            if decls:
+                seed[r["title"]] = ", ".join(
+                    f"{d.get('decl')} ({d.get('module')})" for d in decls[:6])
+    return list(titles.values()), seed
+
+
+def main() -> int:
+    ap = argparse.ArgumentParser()
+    ap.add_argument("--limit", type=int, default=None)
+    ap.add_argument("--concurrency", type=int, default=6)
+    ap.add_argument("--only-matched", action="store_true",
+                    help="Only articles that have prior Mathlib matches (840).")
+    ap.add_argument("--force", action="store_true",
+                    help="Re-run even if out/<slug>.html exists.")
+    args = ap.parse_args()
+
+    if not MATHLIB.exists():
+        print(f"ERROR: mathlib4 not found at {MATHLIB}", file=sys.stderr)
+        return 1
+    for d in (CACHE, ANNOT, OUT):
+        d.mkdir(parents=True, exist_ok=True)
+    if _popped_key:
+        print("(unset ANTHROPIC_API_KEY → Max-plan auth)")
+
+    articles, seed_decls = load_articles()
+    if args.only_matched:
+        articles = [a for a in articles if a["title"] in seed_decls]
+
+    # Resume: skip articles whose final render already exists.
+    if not args.force:
+        pending = [a for a in articles
+                   if not (OUT / f"{make_slug(a['title'])}.html").exists()]
+        skipped = len(articles) - len(pending)
+        if skipped:
+            print(f"resume: skipping {skipped} already-rendered articles")
+        articles = pending
+
+    if args.limit:
+        articles = articles[: args.limit]
+
+    print(f"processing {len(articles)} articles @ concurrency {args.concurrency}")
+    return asyncio.run(run(articles, seed_decls, args.concurrency))
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())

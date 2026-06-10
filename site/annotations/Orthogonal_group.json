@@ -1,0 +1,1635 @@
+{
+  "slug": "Orthogonal_group",
+  "wikipedia_title": "Orthogonal group",
+  "display_title": "Orthogonal group",
+  "schema_version": 3,
+  "annotation_style": "theorem_article",
+  "annotations": [
+    {
+      "kind": "definition",
+      "label": "Orthogonal group O(n)",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "is the group of distance-preserving transformations of a Euclidean space"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Matrix.orthogonalGroup",
+        "module": "Mathlib.LinearAlgebra.UnitaryGroup",
+        "match_kind": "special_case"
+      },
+      "note": "Mathlib defines the orthogonal group as the matrices whose transpose is their inverse, the matrix realization of O(n).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Special orthogonal group SO(n)",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "called the special orthogonal group"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Matrix.specialOrthogonalGroup",
+        "module": "Mathlib.LinearAlgebra.UnitaryGroup",
+        "match_kind": "special_case"
+      },
+      "note": "Matrix.specialOrthogonalGroup is the orthogonal matrices of determinant 1.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Orthogonal matrix over a field F",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "is called an orthogonal matrix over F"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Matrix.mem_orthogonalGroup_iff",
+        "module": "Mathlib.LinearAlgebra.UnitaryGroup",
+        "match_kind": "generalization"
+      },
+      "note": "Membership A ∈ orthogonalGroup ↔ A * Aᵀ = 1 is the orthogonal-matrix condition, stated over any CommRing.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "(Lead)",
+          "snippet": "is called an orthogonal matrix over F"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\operatorname {O} (n,F)=\\left\\{Q\\in \\operatorname {GL} (n,F)\\mid Q^{\\mathsf {T}}Q=QQ^{\\mathsf {T}}=I\\right\\}.}"
+        }
+      ]
+    },
+    {
+      "kind": "definition",
+      "label": "Orthogonal group of a form",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "the orthogonal group of the form is the group of invertible linear maps that preserve the form"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "QuadraticMap.IsometryEquiv",
+        "module": "Mathlib.LinearAlgebra.QuadraticForm.IsometryEquiv",
+        "match_kind": null
+      },
+      "note": "Self-isometries of a quadratic form are formalized but are not packaged as a named orthogonal group of the form.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Orthogonal groups are algebraic groups",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "All orthogonal groups are algebraic groups"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No algebraic-group structure on orthogonal groups is established in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Characterization of orthogonal group elements",
+      "anchor": {
+        "section": "Name",
+        "snippet": "the linear maps from E to E that map orthogonal vectors to orthogonal vectors"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This characterization of O(n) elements (up to scaling) is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "O(n) as norm-preserving endomorphisms",
+      "anchor": {
+        "section": "In Euclidean geometry",
+        "snippet": "consisting of all endomorphisms that preserve the Euclidean norm"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "LinearIsometryEquiv.instGroup",
+        "module": "Mathlib.Analysis.Normed.Operator.LinearIsometry",
+        "match_kind": "generalization"
+      },
+      "note": "The norm-preserving linear automorphisms E ≃ₗᵢ E form a group, which is O(n) for finite-dimensional real inner product spaces.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Euclidean isometry group E(n)",
+      "anchor": {
+        "section": "In Euclidean geometry",
+        "snippet": "Let E( n ) be the group of the Euclidean isometries"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "AffineIsometryEquiv.instGroup",
+        "module": "Mathlib.Analysis.Normed.Affine.Isometry",
+        "match_kind": "generalization"
+      },
+      "note": "The affine isometric automorphisms P ≃ᵃⁱ P form a group, the Euclidean isometry group.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Point stabilizer isomorphic to O(n)",
+      "anchor": {
+        "section": "In Euclidean geometry",
+        "snippet": "This stabilizer is (or, more exactly, is isomorphic to) O( n )"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The isomorphism between the stabilizer of a point in E(n) and O(n) is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Homomorphism p from E(n) to O(n)",
+      "anchor": {
+        "section": "In Euclidean geometry",
+        "snippet": "There is a natural group homomorphism p from E( n ) to O( n )"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "AffineIsometryEquiv.linearIsometryEquiv",
+        "module": "Mathlib.Analysis.Normed.Affine.Isometry",
+        "match_kind": null
+      },
+      "note": "The linear-part map from affine isometries to linear isometries exists but is not packaged as a group homomorphism onto O(n).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "p is a well-defined homomorphism",
+      "anchor": {
+        "section": "In Euclidean geometry",
+        "snippet": "This is a well defined homomorphism"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "AffineIsometryEquiv.linearIsometryEquiv",
+        "module": "Mathlib.Analysis.Normed.Affine.Isometry",
+        "match_kind": null
+      },
+      "note": "The linear part is defined and compatible with composition (map_vadd), but no MonoidHom packaging of p is present.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Kernel of p is the translations",
+      "anchor": {
+        "section": "In Euclidean geometry",
+        "snippet": "The kernel of p is the vector space of the translations"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Translations are available (AffineIsometryEquiv.constVAdd) but the kernel statement is not proven.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Euclidean group is a semidirect product",
+      "anchor": {
+        "section": "In Euclidean geometry",
+        "snippet": "Moreover, the Euclidean group is a semidirect product of O( n ) and the group of translations"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has SemidirectProduct generally but not this decomposition of the Euclidean group.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "O(n) as orthogonal matrices",
+      "anchor": {
+        "section": "Special orthogonal group",
+        "snippet": "the orthogonal group can be identified with the group (under matrix multiplication) of orthogonal matrices"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Matrix.orthogonalGroup",
+        "module": "Mathlib.LinearAlgebra.UnitaryGroup",
+        "match_kind": "exact"
+      },
+      "note": "Matrix.orthogonalGroup is exactly the group of orthogonal matrices under multiplication.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Determinant of orthogonal matrix is ±1",
+      "anchor": {
+        "section": "Special orthogonal group",
+        "snippet": "the square of the determinant of Q equals 1"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Matrix.det_of_mem_unitary",
+        "module": "Mathlib.LinearAlgebra.UnitaryGroup",
+        "match_kind": "generalization"
+      },
+      "note": "For an orthogonal matrix the determinant lies in unitary R, i.e. det·det = 1 (det = ±1 over ℝ via OrthonormalBasis.det_to_matrix_orthonormalBasis_real).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Special orthogonal group (determinant 1)",
+      "anchor": {
+        "section": "Special orthogonal group",
+        "snippet": "form a subgroup called the special orthogonal group"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Matrix.mem_specialOrthogonalGroup_iff",
+        "module": "Mathlib.LinearAlgebra.UnitaryGroup",
+        "match_kind": "exact"
+      },
+      "note": "specialOrthogonalGroup is characterized as orthogonal matrices with det = 1.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "SO(n) is a normal subgroup of O(n)",
+      "anchor": {
+        "section": "Special orthogonal group",
+        "snippet": "SO( n ) is a normal subgroup of O( n )"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No normality instance for specialOrthogonalGroup inside orthogonalGroup is provided.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "{±I} is a characteristic subgroup",
+      "anchor": {
+        "section": "Special orthogonal group",
+        "snippet": "is a normal subgroup and even a characteristic subgroup of O( n )"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Subgroup.Characteristic is defined generally but the specific {±I} ◁ O(n) fact is not.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "SO(2) is abelian",
+      "anchor": {
+        "section": "Special orthogonal group",
+        "snippet": "The group SO(2) is abelian"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No CommGroup instance or abelianness proof for SO(2) is present (only mem_specialOrthogonalGroup_fin_two_iff).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Canonical form of orthogonal matrices",
+      "anchor": {
+        "section": "Canonical form",
+        "snippet": "For any element of O( n ) there is an orthogonal basis, where its matrix has the form"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The block-diagonal rotation canonical form for orthogonal matrices is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Membership in SO(n) via −1 count",
+      "anchor": {
+        "section": "Canonical form",
+        "snippet": "The element belongs to SO( n ) if and only if there are an even number of −1 on the diagonal"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This parity criterion via the canonical form is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Euler's rotation theorem",
+      "anchor": {
+        "section": "Canonical form",
+        "snippet": "is known as Euler's rotation theorem"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Listed in docs/1000.yaml as title-only, so not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Reflections in O(n)",
+      "anchor": {
+        "section": "Reflections",
+        "snippet": "Reflections are the elements of O( n ) whose canonical form is"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Submodule.reflection",
+        "module": "Mathlib.Analysis.InnerProductSpace.Projection.Reflection",
+        "match_kind": "generalization"
+      },
+      "note": "Reflection in a subspace is defined as a linear isometry equivalence, generalizing hyperplane reflections.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Rotation as product of two reflections",
+      "anchor": {
+        "section": "Reflections",
+        "snippet": "every rotation can be decomposed into a product of two reflections"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This decomposition is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Reflections generate O(n)",
+      "anchor": {
+        "section": "Reflections",
+        "snippet": "A product of up to n elementary reflections always suffices to generate any element of O( n )"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The generation of O(n) by ≤ n reflections (Cartan–Dieudonné) is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Cartan–Dieudonné theorem",
+      "anchor": {
+        "section": "Reflections",
+        "snippet": "The Cartan–Dieudonné theorem is the generalization of this result"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Listed in docs/1000.yaml as title-only, so not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Reflection through the origin",
+      "anchor": {
+        "section": "Reflections",
+        "snippet": "The reflection through the origin"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Submodule.reflection",
+        "module": "Mathlib.Analysis.InnerProductSpace.Projection.Reflection",
+        "match_kind": "special_case"
+      },
+      "note": "Reflection in the ⊥ subspace gives the point reflection (negation), a special case of Submodule.reflection.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "O(n) is symmetry group of the sphere",
+      "anchor": {
+        "section": "Symmetry group of spheres",
+        "snippet": "is the symmetry group of the ( n − 1) -sphere"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The identification of O(n) with the isometry group of the sphere is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "SO(2) isomorphic to circle group",
+      "anchor": {
+        "section": "Symmetry group of spheres",
+        "snippet": "is isomorphic (as a real Lie group) to the circle group"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No isomorphism between SO(2) and the circle group is formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "O(n), SO(n) are compact Lie groups",
+      "anchor": {
+        "section": "Group structure",
+        "snippet": "are real compact Lie groups of dimension"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No Lie-group or compactness instance for the matrix orthogonal groups is present.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "O(n) defined by n(n+1)/2 equations",
+      "anchor": {
+        "section": "As algebraic groups",
+        "snippet": "this provides n ( n + 1) / 2 equations that the entries of an orthogonal matrix must satisfy"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The count of defining polynomial equations is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "O(n) has two irreducible components",
+      "anchor": {
+        "section": "As algebraic groups",
+        "snippet": "O( n ) has two irreducible components"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The component structure of O(n) as a variety is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Maximal torus in a compact Lie group",
+      "anchor": {
+        "section": "Maximal tori and Weyl groups",
+        "snippet": "A maximal torus in a compact Lie group G is a maximal subgroup"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "There is no general maximal-torus definition for compact Lie groups in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Form of maximal tori in O(2n), SO(2n)",
+      "anchor": {
+        "section": "Maximal tori and Weyl groups",
+        "snippet": "for every maximal torus, there is a basis on which the torus consists of the block-diagonal matrices"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The block-diagonal form of maximal tori of O(2n)/SO(2n) is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Weyl group of SO(2n+1)",
+      "anchor": {
+        "section": "Maximal tori and Weyl groups",
+        "snippet": "The Weyl group of SO(2 n + 1) is the semidirect product"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has Weyl groups of root systems but not this concrete identification for SO(2n+1).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Weyl group of SO(2n)",
+      "anchor": {
+        "section": "Maximal tori and Weyl groups",
+        "snippet": "The Weyl group of SO(2 n ) is the subgroup"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The concrete Weyl group of SO(2n) is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Low-dimensional orthogonal groups",
+      "anchor": {
+        "section": "Low-dimensional topology",
+        "snippet": "The low-dimensional (real) orthogonal groups are familiar spaces"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The topological identifications of low-dimensional orthogonal groups are not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Fundamental group of SO(n)",
+      "anchor": {
+        "section": "Fundamental group",
+        "snippet": "the fundamental group of SO( n ) is cyclic of order 2"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The fundamental group of SO(n) is not computed in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Stable orthogonal group",
+      "anchor": {
+        "section": "Homotopy groups",
+        "snippet": "the homotopy groups of the stable orthogonal group (aka the infinite orthogonal group), defined as the direct limit"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The stable/infinite orthogonal group is not defined in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Sphere as homogeneous space for O(n+1)",
+      "anchor": {
+        "section": "Homotopy groups",
+        "snippet": "S n is a homogeneous space for O( n + 1)"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The homogeneous-space action of O(n+1) on the sphere is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Stabilization of homotopy groups",
+      "anchor": {
+        "section": "Homotopy groups",
+        "snippet": "so the homotopy groups stabilize"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Stabilization of the homotopy groups of O(n) is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Bott periodicity for O",
+      "anchor": {
+        "section": "Homotopy groups",
+        "snippet": "From Bott periodicity we obtain"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Bott periodicity is listed in docs/1000.yaml as title-only, so not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Homotopy groups as stable vector bundles",
+      "anchor": {
+        "section": "Relation to KO-theory",
+        "snippet": "homotopy groups of the stable space O are identified with stable vector bundles on spheres"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "KO-theory interpretations of the homotopy groups of O are not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "π0(O) from orientation",
+      "anchor": {
+        "section": "Computation and interpretation of homotopy groups",
+        "snippet": "this class survives to O(2) and hence stably"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Computation of π0(O) is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "π1(O) is spin",
+      "anchor": {
+        "section": "Computation and interpretation of homotopy groups",
+        "snippet": "which is spin comes from SO(3)"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Computation of π1(O) is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "π2(O) vanishes",
+      "anchor": {
+        "section": "Computation and interpretation of homotopy groups",
+        "snippet": "which surjects onto π 2 (SO(4)) ; this latter thus vanishes"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The vanishing of π2(O) is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "General Lie group homotopy facts",
+      "anchor": {
+        "section": "Computation and interpretation of homotopy groups",
+        "snippet": "From general facts about Lie groups"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "These general homotopy facts about Lie groups (e.g. π2 vanishing) are not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "π0(KO) is the dimension",
+      "anchor": {
+        "section": "Computation and interpretation of homotopy groups",
+        "snippet": "π 0 ( K O) is a vector bundle over S 0 , which consists of two points"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "KO-theory computations are not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "KO generators from division algebras",
+      "anchor": {
+        "section": "Interpretation of homotopy groups",
+        "snippet": "Let R be any of the four division algebras"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The division-algebra description of KO generators is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Maslov index interpretation",
+      "anchor": {
+        "section": "Interpretation of homotopy groups",
+        "snippet": "can be interpreted as the Maslov index"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Maslov index is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Whitehead tower of O",
+      "anchor": {
+        "section": "Whitehead tower",
+        "snippet": "The orthogonal group anchors a Whitehead tower"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Whitehead tower of O is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Sylvester's law of inertia",
+      "anchor": {
+        "section": "Of indefinite quadratic form over the reals",
+        "snippet": "nondegenerate quadratic forms are classified by Sylvester's law of inertia"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "QuadraticForm.equivalent_one_zero_neg_one_weighted_sum_squared",
+        "module": "Mathlib.LinearAlgebra.QuadraticForm.Real",
+        "match_kind": "exact"
+      },
+      "note": "Existence is this lemma and uniqueness of the signature is QuadraticForm.sigPos_of_equiv_weightedSumSquares.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Indefinite orthogonal group O(p,q)",
+      "anchor": {
+        "section": "Of indefinite quadratic form over the reals",
+        "snippet": "The orthogonal group of a quadratic form depends only on the inertia, and is thus generally denoted O( p , q )"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "LieAlgebra.Orthogonal.so'",
+        "module": "Mathlib.Algebra.Lie.Classical",
+        "match_kind": null
+      },
+      "note": "Only the indefinite orthogonal Lie algebra so' is formalized, not the group O(p,q).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "O(p,q) = O(q,p)",
+      "anchor": {
+        "section": "Of indefinite quadratic form over the reals",
+        "snippet": "as a quadratic form and its opposite have the same orthogonal group"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The equality O(p,q) = O(q,p) is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "SO(p,q)",
+      "anchor": {
+        "section": "Of indefinite quadratic form over the reals",
+        "snippet": "The subgroup of the matrices of determinant 1 in O( p , q ) is denoted SO( p , q )"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The indefinite special orthogonal group SO(p,q) is not defined.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "O(p,q) has four connected components",
+      "anchor": {
+        "section": "Of indefinite quadratic form over the reals",
+        "snippet": "The group O( p , q ) has four connected components"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The component count of O(p,q) is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "O(3,1) is the Lorentz group",
+      "anchor": {
+        "section": "Of indefinite quadratic form over the reals",
+        "snippet": "The group O(3, 1) is the Lorentz group"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No Lorentz group is defined in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Classification of complex quadratic forms",
+      "anchor": {
+        "section": "Of complex quadratic forms",
+        "snippet": "every non-degenerate quadratic form in n variables is equivalent to"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "QuadraticForm.equivalent_of_isAlgClosed",
+        "module": "Mathlib.LinearAlgebra.QuadraticForm.AlgClosed",
+        "match_kind": "generalization"
+      },
+      "note": "All nondegenerate forms over an algebraically closed field of char ≠ 2 are equivalent to a sum of squares, generalizing the complex case.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Complex orthogonal group O(n,C)",
+      "anchor": {
+        "section": "Of complex quadratic forms",
+        "snippet": "one associated orthogonal group, usually denoted O( n , C )"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Matrix.orthogonalGroup",
+        "module": "Mathlib.LinearAlgebra.UnitaryGroup",
+        "match_kind": "special_case"
+      },
+      "note": "O(n,C) is Matrix.orthogonalGroup instantiated at R = ℂ.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "O(n,C) has two connected components",
+      "anchor": {
+        "section": "Of complex quadratic forms",
+        "snippet": "O( n , C ) has two connected components"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The component count of O(n,C) is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "O(n,C), SO(n,C) as complex Lie groups",
+      "anchor": {
+        "section": "Of complex quadratic forms",
+        "snippet": "are complex Lie groups of dimension n ( n − 1) / 2 over C"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No complex-Lie-group structure or dimension for O(n,C)/SO(n,C) is formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Equivalence of quadratic forms via congruence",
+      "anchor": {
+        "section": "Characteristic different from two",
+        "snippet": "two quadratic forms are equivalent if their matrices are congruent"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "QuadraticMap.Equivalent",
+        "module": "Mathlib.LinearAlgebra.QuadraticForm.IsometryEquiv",
+        "match_kind": null
+      },
+      "note": "Equivalence of forms is formalized via isometric equivalence rather than explicitly through matrix congruence.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Classification over finite fields",
+      "anchor": {
+        "section": "Characteristic different from two",
+        "snippet": "are completely classified into congruence classes"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Classification of quadratic forms over finite fields is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Witt's decomposition theorem",
+      "anchor": {
+        "section": "Characteristic different from two",
+        "snippet": "Witt's decomposition theorem asserts that"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Witt's decomposition theorem is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Chevalley–Warning theorem",
+      "anchor": {
+        "section": "Characteristic different from two",
+        "snippet": "The Chevalley–Warning theorem asserts that"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "char_dvd_card_solutions_of_sum_lt",
+        "module": "Mathlib.FieldTheory.ChevalleyWarning",
+        "match_kind": "exact"
+      },
+      "note": "The Chevalley–Warning theorem is formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "One orthogonal group O(2n+1,q) in odd dimension",
+      "anchor": {
+        "section": "Characteristic different from two",
+        "snippet": "there is only one orthogonal group that is denoted O(2 n + 1, q )"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Finite orthogonal groups over F_q are not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Two orthogonal groups in even dimension",
+      "anchor": {
+        "section": "Characteristic different from two",
+        "snippet": "there are only two orthogonal groups, depending whether the dimension of W zero or two"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The two even-dimensional finite orthogonal group types are not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "O^ε(2,q) is a dihedral group",
+      "anchor": {
+        "section": "Characteristic different from two",
+        "snippet": "The orthogonal group O ε (2, q ) is a dihedral group of order 2( q − ε )"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "DihedralGroup exists in Mathlib but this identification with O^ε(2,q) is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Map (a,b)↦a+αb is a homomorphism",
+      "anchor": {
+        "section": "Characteristic different from two",
+        "snippet": "the map ( a , b ) ↦ a + αb is a homomorphism"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This finite-field orthogonal group homomorphism is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Image in O+(2n,q) is cyclic of order q",
+      "anchor": {
+        "section": "Characteristic different from two",
+        "snippet": "the image is the multiplicative group of F q , which is a cyclic group of order q"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This structure result for O+(2n,q) is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "O−(2n,q) and (q+1)-roots of unity",
+      "anchor": {
+        "section": "Characteristic different from two",
+        "snippet": "is a group isomorphism from the orthogonal matrices of determinant 1 to the group of the ( q + 1) - roots of unity"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This isomorphism for O−(2n,q) is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Orders of orthogonal groups in odd characteristic",
+      "anchor": {
+        "section": "Characteristic different from two",
+        "snippet": "When the characteristic is not two, the order of the orthogonal groups are"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Order formulas for finite orthogonal groups are not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Order formulas in characteristic two",
+      "anchor": {
+        "section": "Characteristic different from two",
+        "snippet": "In characteristic two, the formulas are the same"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Order formulas in characteristic two are not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Dickson invariant",
+      "anchor": {
+        "section": "Dickson invariant",
+        "snippet": "the Dickson invariant is a homomorphism from the orthogonal group to the quotient group"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Dickson invariant of the orthogonal group is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Algebraic definition of Dickson invariant",
+      "anchor": {
+        "section": "Dickson invariant",
+        "snippet": "the Dickson invariant can be defined as"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The algebraic Dickson invariant is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "SO is kernel of Dickson invariant",
+      "anchor": {
+        "section": "Dickson invariant",
+        "snippet": "The special orthogonal group is the kernel of the Dickson invariant"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This characterization of SO via the Dickson invariant is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Orthogonal groups generated by reflections",
+      "anchor": {
+        "section": "Orthogonal groups of characteristic 2",
+        "snippet": "Any orthogonal group over any field is generated by reflections"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Generation of orthogonal groups by reflections (Cartan–Dieudonné) is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Reflection in characteristic two",
+      "anchor": {
+        "section": "Orthogonal groups of characteristic 2",
+        "snippet": "A reflection in characteristic two has a slightly different definition"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The characteristic-two reflection definition is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Center has order 1 in characteristic 2",
+      "anchor": {
+        "section": "Orthogonal groups of characteristic 2",
+        "snippet": "The center of the orthogonal group usually has order 1 in characteristic 2"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This center computation in characteristic two is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Odd-dimensional char 2 equals symplectic groups",
+      "anchor": {
+        "section": "Orthogonal groups of characteristic 2",
+        "snippet": "orthogonal groups over perfect fields are the same as symplectic groups"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The symplecticGroup exists but its identification with odd-dimensional char-2 orthogonal groups is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Even-dimensional char 2 subgroup of symplectic",
+      "anchor": {
+        "section": "Orthogonal groups of characteristic 2",
+        "snippet": "the orthogonal group is a subgroup of the symplectic group"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Matrix.symplecticGroup exists but this subgroup relation is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Spinor norm",
+      "anchor": {
+        "section": "The spinor norm",
+        "snippet": "The spinor norm is a homomorphism from an orthogonal group over a field F to the quotient group"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The spinor norm is not defined in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Spinor norm trivial over the reals",
+      "anchor": {
+        "section": "The spinor norm",
+        "snippet": "For the usual orthogonal group over the reals, it is trivial"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No spinor norm, hence its triviality over ℝ is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Quadratic forms as torsors of orthogonal group",
+      "anchor": {
+        "section": "Galois cohomology and orthogonal groups",
+        "snippet": "quadratic forms over a field can be identified as a Galois H 1"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Galois H^1 / torsor interpretation of quadratic forms is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Spin covering short exact sequence",
+      "anchor": {
+        "section": "Galois cohomology and orthogonal groups",
+        "snippet": "The spin covering of the orthogonal group provides a short exact sequence of algebraic groups"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The spin-covering exact sequence of algebraic groups is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Connecting homomorphism is the spinor norm",
+      "anchor": {
+        "section": "Galois cohomology and orthogonal groups",
+        "snippet": "is essentially the spinor norm"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This Galois-cohomology connecting map is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Orthogonal Lie algebra",
+      "anchor": {
+        "section": "Lie algebra",
+        "snippet": "consists of the skew-symmetric n × n matrices"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "LieAlgebra.Orthogonal.so",
+        "module": "Mathlib.Algebra.Lie.Classical",
+        "match_kind": "exact"
+      },
+      "note": "so n R is the Lie subalgebra of skew-symmetric matrices (mem_so: Aᵀ = -A).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Special orthogonal Lie algebra of a form",
+      "anchor": {
+        "section": "Lie algebra",
+        "snippet": "the special orthogonal Lie algebra consists of tracefree endomorphisms"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "skewAdjointMatricesLieSubalgebra",
+        "module": "Mathlib.Algebra.Lie.SkewAdjoint",
+        "match_kind": null
+      },
+      "note": "Skew-adjoint matrices with respect to a form form a Lie subalgebra, but the tracefree/'special' framing is not separately formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Eight inclusions and Bott periodicity",
+      "anchor": {
+        "section": "Related groups",
+        "snippet": "are part of a sequence of 8 inclusions used in a geometric proof of the Bott periodicity theorem"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The geometric eight-fold inclusion chain for Bott periodicity is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Unitary subgroup U(n) of O(2n)",
+      "anchor": {
+        "section": "Lie subgroups",
+        "snippet": "U( n ) are those that preserve a compatible complex structure or a compatible symplectic structure"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Matrix.unitaryGroup",
+        "module": "Mathlib.LinearAlgebra.UnitaryGroup",
+        "match_kind": null
+      },
+      "note": "The unitary group is formalized, but its embedding into O(2n) via a compatible complex structure is not.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Orthogonal transforms are conformal",
+      "anchor": {
+        "section": "Conformal group",
+        "snippet": "real orthogonal transforms preserve angles , and are thus conformal maps"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "LinearIsometry.isConformalMap",
+        "module": "Mathlib.Analysis.Normed.Operator.Conformal",
+        "match_kind": "generalization"
+      },
+      "note": "Every linear isometry is a conformal map, covering orthogonal transformations.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Conformal orthogonal group CO(n)",
+      "anchor": {
+        "section": "Conformal group",
+        "snippet": "The group of conformal linear maps of R n is denoted CO( n ) for the conformal orthogonal group"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The conformal orthogonal group CO(n) is not defined as a group in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "CSO(n)",
+      "anchor": {
+        "section": "Conformal group",
+        "snippet": "Similarly one can define CSO( n )"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "CSO(n) is not defined in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Discrete subgroups are finite (point groups)",
+      "anchor": {
+        "section": "Discrete subgroups",
+        "snippet": "discrete subgroups are equivalent to finite subgroups"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The finiteness of discrete subgroups of O(n) is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "2D finite subgroups cyclic or dihedral",
+      "anchor": {
+        "section": "Discrete subgroups",
+        "snippet": "the finite groups are either cyclic or dihedral"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The classification of finite subgroups of O(2) is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Permutation and signed permutation matrices",
+      "anchor": {
+        "section": "Discrete subgroups",
+        "snippet": "Other finite subgroups include"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Equiv.Perm.permMatrix",
+        "module": "Mathlib.LinearAlgebra.Matrix.Permutation",
+        "match_kind": null
+      },
+      "note": "Permutation matrices are formalized (and are orthogonal), but signed permutation matrices and their role as finite subgroups of O(n) are not.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Pin groups and PO(n)",
+      "anchor": {
+        "section": "Covering and quotient groups",
+        "snippet": "Two covering Pin groups"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "pinGroup",
+        "module": "Mathlib.LinearAlgebra.CliffordAlgebra.SpinGroup",
+        "match_kind": "generalization"
+      },
+      "note": "The Pin group is formalized via Clifford algebras; the projective orthogonal group PO(n) is not.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Spin group and PSO(n)",
+      "anchor": {
+        "section": "Covering and quotient groups",
+        "snippet": "Projective special orthogonal group , SO( n ) → PSO( n )"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "spinGroup",
+        "module": "Mathlib.LinearAlgebra.CliffordAlgebra.SpinGroup",
+        "match_kind": "generalization"
+      },
+      "note": "The Spin group is formalized via Clifford algebras; PSO(n) is not defined.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Cover multiplicities of Spin and PSO",
+      "anchor": {
+        "section": "Covering and quotient groups",
+        "snippet": "Spin is a 2-to-1 cover"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The covering multiplicities of Spin → SO and SO → PSO are not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Stiefel manifold as principal homogeneous space",
+      "anchor": {
+        "section": "Principal homogeneous space: Stiefel manifold",
+        "snippet": "The principal homogeneous space for the orthogonal group O( n ) is the Stiefel manifold"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Stiefel manifold and its torsor structure for O(n) are not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Incomplete Stiefel manifolds are not principal",
+      "anchor": {
+        "section": "Principal homogeneous space: Stiefel manifold",
+        "snippet": "are still homogeneous spaces for the orthogonal group, but not principal homogeneous spaces"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Incomplete Stiefel manifolds and their homogeneous-space structure are not formalized.",
+      "provenance": "ai"
+    }
+  ]
+}

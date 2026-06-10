@@ -1,0 +1,441 @@
+{
+  "slug": "Aleph_number",
+  "wikipedia_title": "Aleph number",
+  "display_title": "Aleph number",
+  "schema_version": 3,
+  "annotation_style": "theorem_article",
+  "annotations": [
+    {
+      "kind": "definition",
+      "label": "Aleph-zero",
+      "anchor": {
+        "section": "Aleph-zero",
+        "snippet": "is the cardinality of the set of all natural numbers"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Cardinal.aleph0",
+        "module": "Mathlib.SetTheory.Cardinal.Defs",
+        "match_kind": "exact"
+      },
+      "note": "Defined as `Cardinal.aleph0 := lift #ℕ`, with `Cardinal.mk_nat : #ℕ = ℵ₀` giving exactly the Wikipedia definition.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Characterization of cardinality aleph-zero",
+      "anchor": {
+        "section": "Aleph-zero",
+        "snippet": "A set has cardinality"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Cardinal.mk_eq_aleph0",
+        "module": "Mathlib.SetTheory.Cardinal.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`Cardinal.mk_eq_aleph0 : [Countable α] [Infinite α] → #α = ℵ₀` characterizes cardinality ℵ₀ as countably infinite (denumerable).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Well-ordering of positive integers with order type ω+ω",
+      "anchor": {
+        "section": "Aleph-zero",
+        "snippet": "the sequence (with order type"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Grep for an explicit ω+ω order on the positive integers yields no specific construction in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Aleph-zero is the smallest infinite cardinal under countable choice",
+      "anchor": {
+        "section": "Aleph-zero",
+        "snippet": "If the axiom of countable choice"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Cardinal.aleph0_le_mk_iff",
+        "module": "Mathlib.SetTheory.Cardinal.Basic",
+        "match_kind": "generalization"
+      },
+      "note": "`aleph0_le_mk_iff : ℵ₀ ≤ #α ↔ Infinite α` proves the conclusion in Mathlib's choice-based foundation (stronger than the countable-choice hypothesis Wikipedia mentions).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Aleph-one",
+      "anchor": {
+        "section": "Aleph-one",
+        "snippet": "is the cardinality of the set of all countable ordinal numbers"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Cardinal.succ_aleph0",
+        "module": "Mathlib.SetTheory.Cardinal.Aleph",
+        "match_kind": "exact"
+      },
+      "note": "Notation `ℵ₁ := aleph 1` together with `succ_aleph0 : succ ℵ₀ = ℵ₁` and `ord_aleph 1 = ω₁` show ℵ₁ is the cardinality of countable ordinals.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "No cardinal strictly between aleph-zero and aleph-one",
+      "anchor": {
+        "section": "Aleph-one",
+        "snippet": "implies (in ZF, Zermelo–Fraenkel set theory without the axiom of choice) that no cardinal number is between"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Cardinal.aleph_one_le_iff",
+        "module": "Mathlib.SetTheory.Cardinal.Aleph",
+        "match_kind": "exact"
+      },
+      "note": "`aleph_one_le_iff : ℵ₁ ≤ c ↔ ℵ₀ < c` (equivalently `lt_aleph_one_iff`) states that nothing lies strictly between ℵ₀ and ℵ₁.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Countable subsets of omega-one have an upper bound",
+      "anchor": {
+        "section": "Aleph-one",
+        "snippet": "Any countable subset of"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Cardinal.isRegular_aleph_one",
+        "module": "Mathlib.SetTheory.Cardinal.Regular",
+        "match_kind": "generalization"
+      },
+      "note": "`isRegular_aleph_one` together with `bsup_lt_ord_of_isRegular` gives boundedness of small-cardinality families in ω₁, but no single lemma is stated directly as `Countable s → BddAbove s` for `s ⊆ ω₁`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Closing under countable-arity operations using omega-one",
+      "anchor": {
+        "section": "Aleph-one",
+        "snippet": "An example application of the ordinal"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No general closure-under-countable-operations construction using ω₁ appears as a stated lemma in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Cardinality of the continuum",
+      "anchor": {
+        "section": "Continuum hypothesis",
+        "snippet": "The cardinality of the set of real numbers"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Cardinal.continuum",
+        "module": "Mathlib.SetTheory.Cardinal.Continuum",
+        "match_kind": "exact"
+      },
+      "note": "`Cardinal.continuum := 2 ^ ℵ₀` (notation `𝔠`), and `Cardinal.mk_real : #ℝ = 𝔠` in `Mathlib.Analysis.Real.Cardinality`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Continuum hypothesis",
+      "anchor": {
+        "section": "Continuum hypothesis",
+        "snippet": "The CH states that there is no set whose cardinality is strictly between that of the natural numbers and the real numbers"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": "Cardinal.aleph_one_le_continuum",
+        "module": "Mathlib.SetTheory.Cardinal.Continuum",
+        "match_kind": null
+      },
+      "note": "Mathlib proves only `aleph_one_le_continuum : ℵ₁ ≤ 𝔠`; the CH equality `ℵ₁ = 𝔠` is independent of ZFC and not stated.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Independence of CH from ZFC",
+      "anchor": {
+        "section": "Continuum hypothesis",
+        "snippet": "CH is independent of ZFC"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has no metamathematical formalization of forcing/models giving the independence of CH.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Aleph-omega",
+      "anchor": {
+        "section": "Aleph-omega",
+        "snippet": "Aleph-omega is"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Cardinal.aleph",
+        "module": "Mathlib.SetTheory.Cardinal.Aleph",
+        "match_kind": "special_case"
+      },
+      "note": "`ℵ_ ω` instantiates `Cardinal.aleph` at the first infinite ordinal; e.g. `isSingular_aleph_omega0 : (ℵ_ ω).IsSingular` uses exactly this value.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Aleph-omega not equal to continuum",
+      "anchor": {
+        "section": "Aleph-omega",
+        "snippet": "is the first uncountable cardinal number that can be demonstrated within Zermelo–Fraenkel set theory not to be equal to the cardinality of the set of all real numbers"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Cardinal.isSingular_aleph_omega0",
+        "module": "Mathlib.SetTheory.Cardinal.Regular",
+        "match_kind": null
+      },
+      "note": "`isSingular_aleph_omega0` shows ℵ_ω has cofinality ω; combined with König's theorem (cof(2^ℵ₀) > ℵ₀) this gives ℵ_ω ≠ 𝔠, but no direct lemma `aleph_omega ≠ continuum` is stated.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Cofinality omega",
+      "anchor": {
+        "section": "Aleph-omega",
+        "snippet": "An uncountably infinite cardinal"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Ordinal.cof",
+        "module": "Mathlib.SetTheory.Cardinal.Cofinality.Basic",
+        "match_kind": "exact"
+      },
+      "note": "Cofinality is defined as `Ordinal.cof`, and `IsSingular`/`IsRegular` capture the cofinality = ω case (cf. `isSingular_aleph_iff`).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Successor cardinal operation",
+      "anchor": {
+        "section": "Aleph- α for general α",
+        "snippet": "we must define the successor cardinal operation"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Cardinal.instSuccOrder",
+        "module": "Mathlib.SetTheory.Cardinal.Order",
+        "match_kind": "exact"
+      },
+      "note": "`SuccOrder Cardinal` instance gives `Order.succ : Cardinal → Cardinal`, with `succ_def : succ c = sInf {c' | c < c'}`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Aleph numbers for general ordinal",
+      "anchor": {
+        "section": "Aleph- α for general α",
+        "snippet": "We can then define the aleph numbers as follows"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Cardinal.aleph",
+        "module": "Mathlib.SetTheory.Cardinal.Aleph",
+        "match_kind": "exact"
+      },
+      "note": "`Cardinal.aleph : Ordinal ↪o Cardinal` defines `ℵ_ α` for any ordinal α; `succ_aleph` and `aleph_limit` recover the standard transfinite recursion.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Initial ordinal notation",
+      "anchor": {
+        "section": "Aleph- α for general α",
+        "snippet": "-th infinite initial ordinal is written"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Ordinal.omega",
+        "module": "Mathlib.SetTheory.Cardinal.Aleph",
+        "match_kind": "exact"
+      },
+      "note": "`Ordinal.omega` (notation `ω_ o`) enumerates infinite initial ordinals; `Ordinal.IsInitial` defines initiality and `isInitial_omega` shows `ω_ o` is initial.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Index of an infinite cardinal via transfinite induction",
+      "anchor": {
+        "section": "Aleph- α for general α",
+        "snippet": "Alternatively, for every infinite cardinal"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Cardinal.mem_range_aleph_iff",
+        "module": "Mathlib.SetTheory.Cardinal.Aleph",
+        "match_kind": "exact"
+      },
+      "note": "`mem_range_aleph_iff : c ∈ range aleph ↔ ℵ₀ ≤ c` says every infinite cardinal is `ℵ_ α` for some ordinal α.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Aleph as a function-like class on ordinals",
+      "anchor": {
+        "section": "Aleph- α for general α",
+        "snippet": "the aleph function"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Cardinal.isNormal_aleph",
+        "module": "Mathlib.SetTheory.Cardinal.Aleph",
+        "match_kind": "exact"
+      },
+      "note": "`Cardinal.aleph : Ordinal ↪o Cardinal` is the order-embedding form; `isNormal_aleph` shows it is a normal function.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Alpha bounded by aleph-alpha",
+      "anchor": {
+        "section": "Fixed points of omega",
+        "snippet": "For any ordinal"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Ordinal.le_omega_self",
+        "module": "Mathlib.SetTheory.Cardinal.Aleph",
+        "match_kind": "exact"
+      },
+      "note": "`le_omega_self : o ≤ omega o` (and the cardinal form `Ordinal.card_le_aleph : o.card ≤ ℵ_ o`) state α ≤ ω_α.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Strict inequality at successor ordinals",
+      "anchor": {
+        "section": "Fixed points of omega",
+        "snippet": "it is true for any successor ordinal"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Cardinal.aleph_lt_aleph",
+        "module": "Mathlib.SetTheory.Cardinal.Aleph",
+        "match_kind": "exact"
+      },
+      "note": "`aleph_lt_aleph` (and `succ_aleph`) imply `ℵ_ α < ℵ_ (α+1)`, giving strict inequality `α < ℵ_ α` at successors.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "First fixed point of the aleph function",
+      "anchor": {
+        "section": "Fixed points of omega",
+        "snippet": "The first such is the limit of the sequence"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Grep finds no construction of the first ℵ-fixed point (limit of ℵ₀, ℵ_{ℵ₀}, …) in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Weakly inaccessible cardinals are fixed points of aleph",
+      "anchor": {
+        "section": "Fixed points of omega",
+        "snippet": "Any weakly inaccessible cardinal is also a fixed point of the aleph function"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Cardinal.IsInaccessible.aleph_ord",
+        "module": "Mathlib.SetTheory.Cardinal.Regular",
+        "match_kind": "special_case"
+      },
+      "note": "Mathlib's `IsInaccessible` is strongly inaccessible; `IsInaccessible.aleph_ord : ℵ_ c.ord = c` gives the fixed-point property for the strong version, but weakly inaccessible cardinals are not defined.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Every aleph is the cardinality of some ordinal; initial ordinal",
+      "anchor": {
+        "section": "Role of axiom of choice",
+        "snippet": "Every aleph is the cardinality of some ordinal"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Cardinal.ord_aleph",
+        "module": "Mathlib.SetTheory.Cardinal.Aleph",
+        "match_kind": "exact"
+      },
+      "note": "`ord_aleph : (ℵ_ o).ord = ω_ o` together with `isInitial_omega` shows every aleph is the cardinality of its initial ordinal.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Finite sets are well-orderable but not alephs",
+      "anchor": {
+        "section": "Role of axiom of choice",
+        "snippet": "Each finite set is well-orderable"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Cardinal.range_aleph",
+        "module": "Mathlib.SetTheory.Cardinal.Aleph",
+        "match_kind": "exact"
+      },
+      "note": "`range_aleph = Set.Ici ℵ₀` says the alephs are exactly the infinite cardinals, so finite cardinals are not alephs (well-orderability of finite types is automatic).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Every cardinality is an aleph iff axiom of choice",
+      "anchor": {
+        "section": "Role of axiom of choice",
+        "snippet": "the assumption that the cardinality of each infinite set is an aleph number is equivalent to the existence of a well-ordering of every set"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib works in ZFC where AC is built in, so it does not formalize the ZF equivalence `(every infinite cardinal is an aleph) ↔ AC`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Scott's trick for cardinal representatives",
+      "anchor": {
+        "section": "Role of axiom of choice",
+        "snippet": "The method of Scott's trick"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib defines `Cardinal` via quotients/equivalence of types (not Scott's trick), and grep finds no `Scott` construction for cardinal representatives.",
+      "provenance": "ai"
+    }
+  ]
+}

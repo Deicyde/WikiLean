@@ -1,0 +1,789 @@
+{
+  "slug": "Mobius_transformation",
+  "wikipedia_title": "Möbius transformation",
+  "display_title": "Möbius transformation",
+  "schema_version": 1,
+  "source": "claude-agent-sdk/annotate_articles.py",
+  "annotations": [
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle f(z)={\\frac {az+b}{cz+d}}}"
+      },
+      "status": "partial",
+      "decl": "UpperHalfPlane.smulAux",
+      "module": "Mathlib.Analysis.Complex.UpperHalfPlane.MoebiusAction",
+      "note": "Mathlib defines the fractional linear formula via num/denom but as action on the upper half-plane, not on ℂ directly."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle f(z)={\\frac {az+b}{cz+d}},}"
+      },
+      "status": "partial",
+      "decl": "UpperHalfPlane.smulAux",
+      "module": "Mathlib.Analysis.Complex.UpperHalfPlane.MoebiusAction",
+      "note": "Same fractional linear formula; Mathlib's version specializes to GL(2,ℝ) acting on the upper half-plane."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle {\\begin{aligned}f\\left({\\frac {-d}{c}}\\right)&=\\infty ,\\\\f(\\infty )&={\\frac {a}{c}}.\\end{aligned}}}"
+      },
+      "status": "partial",
+      "decl": "OnePoint.instGLAction",
+      "module": "Mathlib.Topology.Compactification.OnePoint.ProjectiveLine",
+      "note": "Extension to ∞ via the GL(2,K)-action on the one-point compactification captures this case."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle f(\\infty )=\\infty .}"
+      },
+      "status": "partial",
+      "decl": "OnePoint.instGLAction",
+      "module": "Mathlib.Topology.Compactification.OnePoint.ProjectiveLine",
+      "note": "When c = 0 the projective-line action fixes ∞; this is covered by the GL-action on OnePoint."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle {\\frac {az+b}{cz+d}}={\\frac {a}{c}}={\\frac {b}{d}},}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Degeneracy when ad = bc is a proof intermediate, not a standalone Mathlib decl."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle f(z)={\\frac {az+b}{cz+d}}}"
+      },
+      "status": "partial",
+      "decl": "UpperHalfPlane.smulAux",
+      "module": "Mathlib.Analysis.Complex.UpperHalfPlane.MoebiusAction",
+      "note": "Same formula; only the upper half-plane version is provided in Mathlib."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle c\\gamma ^{2}-(a-d)\\gamma -b=0\\ ,}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Fixed-point equation derivation; not a standalone Mathlib decl."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\gamma _{1,2}={\\frac {(a-d)\\pm {\\sqrt {(a-d)^{2}+4bc}}}{2c}}={\\frac {(a-d)\\pm {\\sqrt {\\Delta }}}{2c}}}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Explicit roots of the fixed-point equation; not a Mathlib decl."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\Delta =(\\operatorname {tr} {\\mathfrak {H}})^{2}-4\\det {\\mathfrak {H}}=(a+d)^{2}-4(ad-bc),}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Discriminant identity specific to Möbius theory; no dedicated decl."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle {\\mathfrak {H}}={\\begin{pmatrix}a&b\\\\c&d\\end{pmatrix}}}"
+      },
+      "status": "partial",
+      "decl": "UpperHalfPlane.smulAux",
+      "module": "Mathlib.Analysis.Complex.UpperHalfPlane.MoebiusAction",
+      "note": "Mathlib uses GL(2,ℝ) matrices acting via smulAux; this is the associated matrix."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\gamma =-{\\frac {b}{a-d}}.}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Specific fixed-point formula in the affine case; not a Mathlib decl."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle z\\mapsto \\alpha z+\\beta .}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "General affine map; not represented as a dedicated Möbius-related decl in the provided list."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle z\\mapsto z+\\beta .}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Translation case; not a dedicated Möbius decl."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\chi ({\\hat {\\mathbb {C} }})=2.}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Euler characteristic of the Riemann sphere; not in the provided decl list."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle z\\mapsto kz}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Dilation/rotation normal form; not a standalone Möbius decl."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle g(z)={\\frac {z-\\gamma _{1}}{z-\\gamma _{2}}}}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Conjugating map used in normal-form derivation; not a Mathlib decl."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle {\\frac {f(z)-\\gamma _{1}}{f(z)-\\gamma _{2}}}=k{\\frac {z-\\gamma _{1}}{z-\\gamma _{2}}}.}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Normal-form identity; proof intermediate without dedicated Mathlib decl."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle {\\mathfrak {H}}(k;\\gamma _{1},\\gamma _{2})={\\begin{pmatrix}\\gamma _{1}-k\\gamma _{2}&(k-1)\\gamma _{1}\\gamma _{2}\\\\1-k&k\\gamma _{1}-\\gamma _{2}\\end{pmatrix}}}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Explicit matrix parameterization of a non-parabolic Möbius transformation; not in Mathlib."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle {\\mathfrak {H}}(k;\\gamma ,\\infty )={\\begin{pmatrix}k&(1-k)\\gamma \\\\0&1\\end{pmatrix}}.}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Special case matrix parameterization; not a Mathlib decl."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle f'(\\gamma _{1})=k}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Derivative-at-fixed-point identity; not a standalone Mathlib decl."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle f'(\\gamma _{2})=1/k.}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Derivative-at-fixed-point identity; not a standalone Mathlib decl."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle {\\mathfrak {H}}(k;\\gamma _{1},\\gamma _{2})={\\mathfrak {H}}(1/k;\\gamma _{2},\\gamma _{1}).}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Swap-fixed-points symmetry; not in Mathlib."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle g(z)={\\frac {1}{z-\\gamma }}}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Parabolic conjugating map; not a Mathlib decl."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle gfg^{-1}(z)=z+\\beta \\,.}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Parabolic conjugation result; proof intermediate, not in Mathlib."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle {\\frac {1}{f(z)-\\gamma }}={\\frac {1}{z-\\gamma }}+\\beta .}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Parabolic fixed-point formula; not a Mathlib decl."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle {\\mathfrak {H}}(\\beta ;\\gamma )={\\begin{pmatrix}1+\\gamma \\beta &-\\beta \\gamma ^{2}\\\\\\beta &1-\\gamma \\beta \\end{pmatrix}}}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Parabolic matrix parameterization; not in Mathlib."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle {\\mathfrak {H}}(\\beta ;\\infty )={\\begin{pmatrix}1&\\beta \\\\0&1\\end{pmatrix}}}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Special parabolic matrix; not a dedicated Mathlib decl."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle f'(\\gamma )=1.}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Derivative at parabolic fixed point; not in Mathlib."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\gamma _{1}+\\gamma _{2}=z_{\\infty }+Z_{\\infty }.}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Midpoint identity between poles and fixed points; not a Mathlib decl."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle {\\mathfrak {H}}={\\begin{pmatrix}Z_{\\infty }&-\\gamma _{1}\\gamma _{2}\\\\1&-z_{\\infty }\\end{pmatrix}},\\;\\;Z_{\\infty }=\\gamma _{1}+\\gamma _{2}-z_{\\infty }.}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Matrix expressed in terms of poles; not in Mathlib."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle z_{\\infty }={\\frac {k\\gamma _{1}-\\gamma _{2}}{1-k}}}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Formula for the pole in terms of fixed points and multiplier; not a Mathlib decl."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle k={\\frac {\\gamma _{2}-z_{\\infty }}{\\gamma _{1}-z_{\\infty }}}={\\frac {Z_{\\infty }-\\gamma _{1}}{Z_{\\infty }-\\gamma _{2}}}={\\frac {a-c\\gamma _{1}}{a-c\\gamma _{2}}},}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Multiplier formulas; not in Mathlib."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle k={\\frac {(a+d)+{\\sqrt {(a-d)^{2}+4bc}}}{(a+d)-{\\sqrt {(a-d)^{2}+4bc}}}}.}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Closed form of the multiplier; not a Mathlib decl."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\det(\\lambda I_{2}-{\\mathfrak {H}})=\\lambda ^{2}-\\operatorname {tr} {\\mathfrak {H}}\\,\\lambda +\\det {\\mathfrak {H}}=\\lambda ^{2}-(a+d)\\lambda +(ad-bc)}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "2×2 characteristic polynomial; general Matrix.charpoly exists but is not in this article's decl list."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\lambda _{i}={\\frac {(a+d)\\pm {\\sqrt {(a-d)^{2}+4bc}}}{2}}={\\frac {(a+d)\\pm {\\sqrt {(a+d)^{2}-4(ad-bc)}}}{2}}=c\\gamma _{i}+d\\,.}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Explicit eigenvalues of a 2×2 matrix; not a standalone Mathlib decl."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle f(z)={\\frac {az+b}{cz+d}},}"
+      },
+      "status": "partial",
+      "decl": "UpperHalfPlane.smulAux",
+      "module": "Mathlib.Analysis.Complex.UpperHalfPlane.MoebiusAction",
+      "note": "Recapitulation of the fractional linear formula; Mathlib's version is the upper half-plane action."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle f=f_{4}\\circ f_{3}\\circ f_{2}\\circ f_{1}.}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Decomposition into translations/inversion/rotation; not a single Mathlib decl."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle {\\frac {az+b}{cz+d}}={\\frac {a}{c}}+{\\frac {e}{z+{\\frac {d}{c}}}},}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Algebraic rewriting of (az+b)/(cz+d); not a Mathlib decl."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle e={\\frac {bc-ad}{c^{2}}}.}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Auxiliary constant in the decomposition; not in Mathlib."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle g_{1}\\circ g_{2}\\circ g_{3}\\circ g_{4}(z)=f^{-1}(z)={\\frac {dz-b}{-cz+a}}}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Explicit inverse Möbius formula; not in the provided decl list."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle {\\frac {(z_{1}-z_{3})(z_{2}-z_{4})}{(z_{2}-z_{3})(z_{1}-z_{4})}}={\\frac {(w_{1}-w_{3})(w_{2}-w_{4})}{(w_{2}-w_{3})(w_{1}-w_{4})}}.}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Cross-ratio preservation theorem; not represented in the provided decls."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle {\\frac {(z_{1}-z_{3})}{(z_{2}-z_{3})}}.}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Limiting cross-ratio with z₄ = ∞; not in Mathlib."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle z^{*}=e^{2i\\theta }\\,{\\overline {z-z_{0}}}+z_{0}.}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Reflection across a line in ℂ; not a Mathlib decl in this list."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle z^{*}={\\frac {r^{2}}{\\overline {z-z_{0}}}}+z_{0}.}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Inversion in a circle; not in the provided decl list."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle [z_{1}:z_{2}]\\ \\thicksim {\\frac {z_{1}}{z_{2}}}.}"
+      },
+      "status": "partial",
+      "decl": "OnePoint.instGLAction",
+      "module": "Mathlib.Topology.Compactification.OnePoint.ProjectiveLine",
+      "note": "Mathlib identifies ℙ¹(K) with OnePoint K but the explicit homogeneous-coordinate identification is in supporting infrastructure."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle {\\mathfrak {H}}={\\begin{pmatrix}a&b\\\\c&d\\end{pmatrix}}}"
+      },
+      "status": "partial",
+      "decl": "OnePoint.instGLAction",
+      "module": "Mathlib.Topology.Compactification.OnePoint.ProjectiveLine",
+      "note": "The 2×2 invertible matrix acting on ℙ¹ — its action is OnePoint.instGLAction."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle z=[z_{1}:z_{2}]\\mapsto w=[w_{1}:w_{2}],}"
+      },
+      "status": "formalized",
+      "decl": "OnePoint.instGLAction",
+      "module": "Mathlib.Topology.Compactification.OnePoint.ProjectiveLine",
+      "note": "This is exactly the GL(2,K)-action on the projective line by Möbius transformations."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle {\\begin{pmatrix}w_{1}\\\\w_{2}\\end{pmatrix}}={\\begin{pmatrix}a&b\\\\c&d\\end{pmatrix}}{\\begin{pmatrix}z_{1}\\\\z_{2}\\end{pmatrix}}={\\begin{pmatrix}az_{1}+bz_{2}\\\\cz_{1}+dz_{2}\\end{pmatrix}}.}"
+      },
+      "status": "partial",
+      "decl": "OnePoint.instGLAction",
+      "module": "Mathlib.Topology.Compactification.OnePoint.ProjectiveLine",
+      "note": "Linear action on homogeneous coordinates underlies OnePoint.instGLAction."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle w=[w_{1}:w_{2}]=[az_{1}+bz_{2}:cz_{1}+dz_{2}]}"
+      },
+      "status": "partial",
+      "decl": "OnePoint.instGLAction",
+      "module": "Mathlib.Topology.Compactification.OnePoint.ProjectiveLine",
+      "note": "Projective-coordinate description of the Möbius action; captured by OnePoint.instGLAction."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle w=[az_{1}+bz_{2}:cz_{1}+dz_{2}]\\thicksim {\\frac {az_{1}+bz_{2}}{cz_{1}+dz_{2}}}={\\frac {a{\\frac {z_{1}}{z_{2}}}+b}{c{\\frac {z_{1}}{z_{2}}}+d}}.}"
+      },
+      "status": "partial",
+      "decl": "UpperHalfPlane.num",
+      "module": "Mathlib.Analysis.Complex.UpperHalfPlane.MoebiusAction",
+      "note": "Identification of projective action with fractional linear form; Mathlib's num/denom encode the same formula."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle f_{1}(z)={\\frac {(z-z_{1})(z_{2}-z_{3})}{(z-z_{3})(z_{2}-z_{1})}}}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Explicit Möbius sending three points to 0, 1, ∞; not in the provided decls."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle {\\mathfrak {H}}_{1}={\\begin{pmatrix}z_{2}-z_{3}&-z_{1}(z_{2}-z_{3})\\\\z_{2}-z_{1}&-z_{3}(z_{2}-z_{1})\\end{pmatrix}}}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Matrix corresponding to the three-point map; not in Mathlib."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle {\\mathfrak {H}}={\\mathfrak {H}}_{2}^{-1}{\\mathfrak {H}}_{1}.}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Composition formula for the three-point Möbius map; not a Mathlib decl."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle w={\\frac {az+b}{cz+d}}}"
+      },
+      "status": "partial",
+      "decl": "UpperHalfPlane.smulAux",
+      "module": "Mathlib.Analysis.Complex.UpperHalfPlane.MoebiusAction",
+      "note": "Same fractional linear formula; only upper-half-plane version in Mathlib."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle cwz-az+dw-b=0}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Implicit hyperbola equation form of the Möbius relation; not in Mathlib."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle {\\begin{vmatrix}zw&z&w&1\\\\z_{1}w_{1}&z_{1}&w_{1}&1\\\\z_{2}w_{2}&z_{2}&w_{2}&1\\\\z_{3}w_{3}&z_{3}&w_{3}&1\\end{vmatrix}}\\,}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Determinant interpolation for the Möbius map; not in Mathlib."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle {\\begin{aligned}a&=z_{1}w_{1}(w_{2}-w_{3})+z_{2}w_{2}(w_{3}-w_{1})+z_{3}w_{3}(w_{1}-w_{2}),\\\\[5mu]b&=z_{1}w_{1}(z_{2}w_{3}-z_{3}w_{2})+z_{2}w_{2}(z_{3}w_{1}-z_{1}w_{3})+z_{3}w_{3}(z_{1}w_{2}-z_{2}w_{1}),\\\\[5mu]c&=w_{1}(z_{3}-z_{2})+w_{2}(z_{1}-z_{3})+w_{3}(z_{2}-z_{1}),\\\\[5mu]d&=z_{1}w_{1}(z_{2}-z_{3})+z_{2}w_{2}(z_{3}-z_{1})+z_{3}w_{3}(z_{1}-z_{2})\\end{aligned}}}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Explicit coefficients from Laplace expansion; not a Mathlib decl."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle f(z)=e^{i\\phi }{\\frac {z+b}{{\\bar {b}}z+1}}}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Disk-preserving Möbius normal form; not in the provided decls."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle f(z)={\\frac {z+i}{iz+1}}}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Specific Cayley-type transform between disk and upper half-plane; not in the provided decls."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle {\\mathcal {M}}_{0}:=\\left\\{z\\mapsto {\\frac {uz-{\\bar {v}}}{vz+{\\bar {u}}}}:|u|^{2}+|v|^{2}=1\\right\\},}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "SU(2)-Möbius subgroup of sphere isometries; not in Mathlib's provided decls."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\operatorname {tr} \\,{\\mathfrak {GHG}}^{-1}=\\operatorname {tr} \\,{\\mathfrak {H}},}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Trace conjugation invariance is in Mathlib generally, but not among the listed decls for this article."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\operatorname {tr} ^{2}{\\mathfrak {H}}=(a+d)^{2}=4}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Parabolicity condition on trace; not in the provided decls."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle {\\begin{pmatrix}1&1\\\\0&1\\end{pmatrix}}}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Canonical parabolic representative; not a dedicated decl."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\left\\{{\\begin{pmatrix}1&b\\\\0&1\\end{pmatrix}}\\mid b\\in \\mathbb {C} \\right\\};}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Unipotent translation subgroup; not in the provided decls."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle {\\begin{pmatrix}\\lambda &0\\\\0&\\lambda ^{-1}\\end{pmatrix}}}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Diagonal normal form for non-parabolic Möbius; not in the provided decls."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle 0\\leq \\operatorname {tr} ^{2}{\\mathfrak {H}}<4.}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Trace condition for elliptic Möbius; not in the provided decls."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle {\\begin{pmatrix}\\cos \\alpha &-\\sin \\alpha \\\\\\sin \\alpha &\\cos \\alpha \\end{pmatrix}}}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Rotation matrix representative; not in the provided decls."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle {\\begin{pmatrix}0&-1\\\\1&0\\end{pmatrix}}.}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Circular (order-2) involution matrix; not in the provided decls."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\operatorname {tr} ^{2}{\\mathfrak {H}}>4.}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Trace condition for hyperbolic Möbius; not in the provided decls."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle e^{\\rho +\\alpha i}=k.}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Logarithm of characteristic constant; not in the provided decls."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle f(x)=b+{\\frac {\\alpha A(x-a)}{|x-a|^{\\varepsilon }}},}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Higher-dimensional Möbius normal form (Liouville); not in the provided decls."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle Q(x_{0},x_{1},x_{2},x_{3})=x_{0}^{2}-x_{1}^{2}-x_{2}^{2}-x_{3}^{2}.}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Minkowski quadratic form; not in the provided decls."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle X={\\begin{bmatrix}x_{0}+x_{1}&x_{2}+ix_{3}\\\\x_{2}-ix_{3}&x_{0}-x_{1}\\end{bmatrix}}.}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Hermitian-matrix encoding of Minkowski vectors; not in the provided decls."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle x_{1}^{2}+x_{2}^{2}+x_{3}^{2}=1}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Unit-sphere equation in ℝ³; not in the provided Möbius-related decls."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\left(1,{\\frac {x_{1}}{1-x_{3}}},{\\frac {x_{2}}{1-x_{3}}},0\\right).}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Stereographic projection target; not in the provided decls."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\zeta ={\\frac {x_{1}+ix_{2}}{1-x_{3}}},}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Complex stereographic coordinate; not in the provided decls."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle {\\begin{bmatrix}x_{0}+x_{1}&x_{2}+ix_{3}\\\\x_{2}-ix_{3}&x_{0}-x_{1}\\end{bmatrix}}=2{\\begin{bmatrix}z\\\\w\\end{bmatrix}}{\\begin{bmatrix}{\\bar {z}}&{\\bar {w}}\\end{bmatrix}}.}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Outer-product identity linking Minkowski and spinor coordinates; not in the provided decls."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\xi ={\\frac {x_{1}}{x_{4}}},\\ \\eta ={\\frac {x_{2}}{x_{4}}},\\ \\zeta ={\\frac {x_{3}}{x_{4}}}}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Affine chart of homogeneous coordinates in Coxeter's setup; not in the provided decls."
+    }
+  ]
+}

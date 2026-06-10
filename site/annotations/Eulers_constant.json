@@ -1,0 +1,753 @@
+{
+  "slug": "Eulers_constant",
+  "wikipedia_title": "Euler's constant",
+  "display_title": "Euler's constant",
+  "schema_version": 3,
+  "annotation_style": "theorem_article",
+  "annotations": [
+    {
+      "kind": "definition",
+      "label": "Euler's constant",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "defined as the limiting difference between the harmonic series and the natural logarithm"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Real.eulerMascheroniConstant",
+        "module": "Mathlib.NumberTheory.Harmonic.EulerMascheroni",
+        "match_kind": "exact"
+      },
+      "note": "Mathlib defines `Real.eulerMascheroniConstant` and proves `Real.tendsto_harmonic_sub_log : harmonic n - log n → γ`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Mahler's transcendence result",
+      "anchor": {
+        "section": "Irrationality and transcendence",
+        "snippet": "Kurt Mahler showed in 1968 that the number"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No formalization of Mahler's 1968 transcendence result on the Bessel-function quotient appears in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Shidlovsky: γ or Gompertz constant is irrational",
+      "anchor": {
+        "section": "Irrationality and transcendence",
+        "snippet": "In 1959 Andrei Shidlovsky proved that at least one of Euler's constant"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has no Gompertz constant nor Shidlovsky's joint irrationality result.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Rivoal: γ or Gompertz constant is transcendental",
+      "anchor": {
+        "section": "Irrationality and transcendence",
+        "snippet": "Tanguy Rivoal proved in 2012 that at least one of them is transcendental"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Rivoal's 2012 transcendence statement is absent from Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Murty–Saradha on Euler–Lehmer constants",
+      "anchor": {
+        "section": "Irrationality and transcendence",
+        "snippet": "M. Ram Murty and N. Saradha showed that at most one of the Euler-Lehmer constants"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Euler–Lehmer constants themselves are not defined in Mathlib, let alone the Murty–Saradha theorem.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Irrationality and transcendence",
+          "snippet": "M. Ram Murty and N. Saradha showed that at most one of the Euler-Lehmer constants"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\gamma (a,q)=\\lim _{n\\rightarrow \\infty }\\left(\\sum _{k=0}^{n}{\\frac {1}{a+kq}}-{\\frac {\\log {(a+nq})}{q}}\\right)}"
+        }
+      ]
+    },
+    {
+      "kind": "theorem",
+      "label": "Murty–Zaytseva on generalized Euler constants",
+      "anchor": {
+        "section": "Irrationality and transcendence",
+        "snippet": "M. Ram Murty and A. Zaytseva showed that the generalized Euler constants have the same property"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Generalized Euler constants and the Murty–Zaytseva result are absent from Mathlib.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Irrationality and transcendence",
+          "snippet": "M. Ram Murty and A. Zaytseva showed that the generalized Euler constants have the same property"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\gamma (\\Omega )=\\lim _{x\\rightarrow \\infty }\\left(\\sum _{n=1}^{x}{\\frac {1_{\\Omega }(n)}{n}}-\\log x\\cdot \\lim _{x\\rightarrow \\infty }{\\frac {\\sum _{n=1}^{x}1_{\\Omega }(n)}{x}}\\right),}"
+        }
+      ]
+    },
+    {
+      "kind": "theorem",
+      "label": "Papanikolaou denominator bound",
+      "anchor": {
+        "section": "Irrationality and transcendence",
+        "snippet": "Papanikolaou showed in 1997 that if γ is rational , its denominator must be greater than"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No explicit denominator bound on γ is recorded in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Continued fraction infinitude iff irrational",
+      "anchor": {
+        "section": "Continued fraction",
+        "snippet": "it has infinitely many terms if and only if γ is irrational"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has general continued-fraction theory but no continued fraction of γ is computed.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Approximation by 1/√3",
+      "anchor": {
+        "section": "Continued fraction",
+        "snippet": "A good simple approximation of γ is given by the reciprocal of the square root of 3"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No comparison of γ with 1/√3 appears in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "γ via digamma at 1",
+      "anchor": {
+        "section": "Relation to gamma function",
+        "snippet": "γ is related to the digamma function Ψ"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Complex.digamma_one",
+        "module": "Mathlib.Analysis.SpecialFunctions.Gamma.Digamma",
+        "match_kind": "exact"
+      },
+      "note": "`Complex.digamma_one` states `digamma 1 = -Real.eulerMascheroniConstant`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "γ as series over zeta values",
+      "anchor": {
+        "section": "Relation to the zeta function",
+        "snippet": "γ can also be expressed as an infinite sum whose terms involve the Riemann zeta function evaluated at positive integers"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The series ∑(ζ(k)-1)/k = γ is not present in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "γ via reciprocals of non-trivial zeros",
+      "anchor": {
+        "section": "Relation to the zeta function",
+        "snippet": "can also be expressed in terms of the sum of the reciprocals of non-trivial zeros"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No formula for γ in terms of nontrivial ζ-zeros appears in Mathlib.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Relation to the zeta function",
+          "snippet": "can also be expressed in terms of the sum of the reciprocals of non-trivial zeros"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle {\\begin{aligned}\\gamma &amp;=\\sum _{m=2}^{\\infty }(-1)^{m}{\\frac {\\zeta (m)}{m}}\\\\&amp;=\\log {\\frac {4}{\\pi }}+\\sum _{m=2}^{\\infty }(-1)^{m}{\\frac {\\zeta (m)}{2^{m-1}m}}.\\end{aligned}}}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "de la Vallée-Poussin antisymmetric limit",
+      "anchor": {
+        "section": "Relation to the zeta function",
+        "snippet": "the following formula, established in 1898 by de la Vallée-Poussin"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The 1898 fractional-part limit of de la Vallée-Poussin is not in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Rational zeta series estimate",
+      "anchor": {
+        "section": "Relation to the zeta function",
+        "snippet": "Closely related to this is the rational zeta series expression"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Rational zeta series for γ are not present in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "γ via Glaisher–Kinkelin constant",
+      "anchor": {
+        "section": "Relation to the zeta function",
+        "snippet": "γ can also be expressed as follows where A is the Glaisher–Kinkelin constant"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Glaisher–Kinkelin constant is not defined in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "γ via zeta as Laurent series",
+      "anchor": {
+        "section": "Relation to the zeta function",
+        "snippet": "which can be proven by expressing the zeta function as a Laurent series"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "tendsto_riemannZeta_sub_one_div",
+        "module": "Mathlib.NumberTheory.Harmonic.ZetaAsymp",
+        "match_kind": "exact"
+      },
+      "note": "`tendsto_riemannZeta_sub_one_div` states `ζ(s) - 1/(s-1) → γ` at `s = 1`, which is exactly the constant term of the Laurent expansion.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Ramanujan harmonic number formula",
+      "anchor": {
+        "section": "Relation to triangular numbers",
+        "snippet": "One of the earliest of these is a formula"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Ramanujan's triangular-number formula for γ is not present in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Stirling-based triangular series",
+      "anchor": {
+        "section": "Relation to triangular numbers",
+        "snippet": "From Stirling's approximation"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No triangular-number series for γ derived from Stirling appears in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Mengoli's Basel result and Riemann formula",
+      "anchor": {
+        "section": "Relation to triangular numbers",
+        "snippet": "Mengoli proved that"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The displayed triangular-numbers/γ formula combining Mengoli's Basel sum with γ is not in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "γ as definite integrals",
+      "anchor": {
+        "section": "Integrals",
+        "snippet": "γ equals the value of a number of definite integrals"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has no integral representation of γ (e.g. -∫log log).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Catalan's 1875 integral",
+      "anchor": {
+        "section": "Integrals",
+        "snippet": "We also have Catalan 's 1875 integral"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Catalan's 1875 integral representation of γ is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Hadjicostas double integral",
+      "anchor": {
+        "section": "Integrals",
+        "snippet": "One can express γ using a special case of Hadjicostas's formula as a double integral"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Hadjicostas's double integral formula is not present in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Sondow alternating Euler constant",
+      "anchor": {
+        "section": "Integrals",
+        "snippet": "An interesting comparison by Sondow"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Sondow's alternating Euler constant comparison is not in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Pair of series with binary digit counts",
+      "anchor": {
+        "section": "Integrals",
+        "snippet": "The two constants are also related by the pair of series"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Binary-digit-count series for γ and ln(4/π) are not in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "General series expansion",
+      "anchor": {
+        "section": "Series expansions",
+        "snippet": "for any α > − n"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The parameter-α general series expansion of γ is not present in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Euler's infinite series for γ",
+      "anchor": {
+        "section": "Series expansions",
+        "snippet": "Euler showed that the following infinite series approaches γ"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Euler's original series for γ involving ζ(k) is not formalized.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Series expansions",
+          "snippet": "Euler showed that the following infinite series approaches γ"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\gamma =\\sum _{k=1}^{\\infty }\\left({\\frac {1}{k}}-\\log \\left(1+{\\frac {1}{k}}\\right)\\right).}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Nielsen 1897 series",
+      "anchor": {
+        "section": "Series expansions",
+        "snippet": "The series for γ is equivalent to a series Nielsen found in 1897"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Nielsen's 1897 series for γ is not in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Vacca 1910 series",
+      "anchor": {
+        "section": "Series expansions",
+        "snippet": "In 1910, Vacca found the closely related series"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Vacca's 1910 series for γ is not in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Vacca 1926 second series",
+      "anchor": {
+        "section": "Series expansions",
+        "snippet": "In 1926 Vacca found a second series"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Vacca's 1926 series is not present in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Malmsten–Kummer expansion",
+      "anchor": {
+        "section": "Series expansions",
+        "snippet": "From the Malmsten – Kummer expansion for the logarithm of the gamma function"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Malmsten–Kummer expansion of log Γ is not present in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Ramanujan lost notebook series",
+      "anchor": {
+        "section": "Series expansions",
+        "snippet": "Ramanujan, in his lost notebook gave a series that approaches γ"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Ramanujan's lost-notebook series for γ is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Fontana–Mascheroni expansion",
+      "anchor": {
+        "section": "Series expansions",
+        "snippet": "An important expansion for Euler's constant is due to Fontana and Mascheroni"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Fontana–Mascheroni's series with Gregory coefficients is not present in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Cauchy numbers second kind series",
+      "anchor": {
+        "section": "Series expansions",
+        "snippet": "A similar series with the Cauchy numbers of the second kind"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Cauchy-numbers-of-the-second-kind series for γ are not in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Blagouchine Fontana–Mascheroni generalization",
+      "anchor": {
+        "section": "Series expansions",
+        "snippet": "Blagouchine (2018) found a generalisation of the Fontana–Mascheroni series"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Blagouchine's 2018 generalization is not in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Akiyama–Tanigawa related series",
+      "anchor": {
+        "section": "Series expansions",
+        "snippet": "A series related to the Akiyama–Tanigawa algorithm is"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Akiyama–Tanigawa series for γ is not in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Asymptotic formulas (Euler, Negoi, Cesàro)",
+      "anchor": {
+        "section": "Asymptotic expansions",
+        "snippet": "γ equals the following asymptotic formulas"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Real.tendsto_harmonic_sub_log",
+        "module": "Mathlib.NumberTheory.Harmonic.EulerMascheroni",
+        "match_kind": "special_case"
+      },
+      "note": "Only the leading-order asymptotic `H_n - log n → γ` (via `Real.tendsto_harmonic_sub_log`) is in Mathlib; the higher-order Euler/Negoi/Cesàro refinements are not.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Alabdulmohsin Theorem A.1",
+      "anchor": {
+        "section": "Asymptotic expansions",
+        "snippet": "Alabdulmohsin derived closed-form expressions for the sums of errors of these approximations"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Alabdulmohsin's closed-form error sums are not present in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "e^γ as prime limit (Mertens)",
+      "anchor": {
+        "section": "Exponential",
+        "snippet": "e γ equals the following limit"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mertens' third theorem expressing e^γ as a limit over primes is not in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Product of e, π and γ",
+      "anchor": {
+        "section": "Exponential",
+        "snippet": "We further have the following product involving the three constants"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The infinite product relating e, π, and e^γ is not present in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Ser 1926 infinite product",
+      "anchor": {
+        "section": "Exponential",
+        "snippet": "This infinite product, first discovered by Ser in 1926"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Ser's 1926 infinite product for e^γ is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Euler's generalized constants",
+      "anchor": {
+        "section": "Stieltjes constants",
+        "snippet": "Euler's generalized constants are given by"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Briggs–Lehmer–Diamond generalized Euler constants γ(α) are not defined in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Stieltjes constants",
+      "anchor": {
+        "section": "Stieltjes constants",
+        "snippet": "gives rise to the Stieltjes constants"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Stieltjes constants γ_n are not defined in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Euler–Lehmer constants",
+      "anchor": {
+        "section": "Euler–Lehmer constants",
+        "snippet": "Euler–Lehmer constants are given by summation of inverses of numbers in a common modulo class"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Euler–Lehmer constants γ(a,q) are not defined in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Masser–Gramain constant",
+      "anchor": {
+        "section": "Masser–Gramain constant",
+        "snippet": "A two-dimensional generalization of Euler's constant is the Masser–Gramain constant"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Masser–Gramain constant is not defined in Mathlib.",
+      "provenance": "ai"
+    }
+  ]
+}

@@ -1,0 +1,260 @@
+{
+  "slug": "Generalized_Stokes_theorem",
+  "wikipedia_title": "Generalized Stokes theorem",
+  "display_title": "Generalized Stokes theorem",
+  "schema_version": 1,
+  "source": "claude-agent-sdk/annotate_articles.py",
+  "annotations": [
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\int _{\\partial \\Omega }\\omega =\\int _{\\Omega }\\mathop {} \\!d\\omega \\,.}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Generalized Stokes on manifolds with boundary is not formalized in Mathlib; only divergence-theorem on boxes exists."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\int _{a}^{b}f(x)\\,dx=F(b)-F(a)\\,.}"
+      },
+      "status": "partial",
+      "decl": "MeasureTheory.integral_eq_of_hasDerivAt_off_countable",
+      "module": "Mathlib.MeasureTheory.Integral.DivergenceTheorem",
+      "note": "Mathlib has an FTC derived from the divergence theorem, capturing this special case."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\int _{[a,b]}f(x)\\,dx=\\int _{[a,b]}\\,dF=\\int _{\\partial [a,b]}\\,F=\\int _{\\{a\\}^{-}\\cup \\{b\\}^{+}}F=F(b)-F(a)\\,.}"
+      },
+      "status": "partial",
+      "decl": "MeasureTheory.integral_eq_of_hasDerivAt_off_countable",
+      "module": "Mathlib.MeasureTheory.Integral.DivergenceTheorem",
+      "note": "Same FTC restatement framed as Stokes on [a,b]; matched to Mathlib's FTC-via-divergence theorem."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\int _{\\Omega }\\alpha =\\int _{\\varphi (U)}(\\varphi ^{-1})^{*}\\alpha \\,,}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Definition of integral of a form via a chart pullback; not present as a standalone decl in Mathlib."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\int _{\\Omega }\\alpha \\equiv \\sum _{i}\\int _{U_{i}}\\psi _{i}\\alpha \\,,}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Definition of integral of a form via partition of unity; not formalized in Mathlib."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\int _{\\Omega }d\\omega =\\int _{\\partial \\Omega }\\omega .}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Stokes–Cartan on manifolds with boundary is not formalized in Mathlib."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle I(\\omega )(c)=\\oint _{c}\\omega .}"
+      },
+      "section": "Topological preliminaries; integration over chains",
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Definition of the de Rham cochain map I(ω) on singular chains; not formalized in Mathlib."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\oint _{c_{i}}\\omega =a_{i}\\,,}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "De Rham's theorem statement about realizing cohomology periods; not formalized in Mathlib."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\int _{\\partial c}\\omega =\\int _{c}d\\omega .}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Stokes' theorem for smooth chains; integration of forms over chains is not formalized in Mathlib."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\oint _{\\Gamma }\\mathbf {F} \\,\\cdot \\,d{\\mathbf {\\Gamma } }=\\iint _{S}\\left(\\nabla \\times \\mathbf {F} \\right)\\cdot \\,d\\mathbf {S} }"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Classical Kelvin–Stokes (curl) theorem for surfaces in ℝ³ is not formalized in Mathlib."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle {\\begin{pmatrix}F_{x}\\\\F_{y}\\\\F_{z}\\\\\\end{pmatrix}}\\cdot d\\Gamma \\to F_{x}\\,dx+F_{y}\\,dy+F_{z}\\,dz}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Identification of vector field with 1-form; no such canonical correspondence formalized in Mathlib."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle {\\begin{aligned}&\\nabla \\times {\\begin{pmatrix}F_{x}\\\\F_{y}\\\\F_{z}\\end{pmatrix}}\\cdot d\\mathbf {S} ={\\begin{pmatrix}\\partial _{y}F_{z}-\\partial _{z}F_{y}\\\\\\partial _{z}F_{x}-\\partial _{x}F_{z}\\\\\\partial _{x}F_{y}-\\partial _{y}F_{x}\\\\\\end{pmatrix}}\\cdot d\\mathbf {S} \\to \\\\[1.4ex]&d(F_{x}\\,dx+F_{y}\\,dy+F_{z}\\,dz)=\\left(\\partial _{y}F_{z}-\\partial _{z}F_{y}\\right)dy\\wedge dz+\\left(\\partial _{z}F_{x}-\\partial _{x}F_{z}\\right)dz\\wedge dx+\\left(\\partial _{x}F_{y}-\\partial _{y}F_{x}\\right)dx\\wedge dy.\\end{aligned}}}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Identification of curl with the exterior derivative of a 1-form; not formalized in Mathlib."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\int _{P}\\omega =\\int _{D}d\\omega \\,.}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Stokes' theorem for rough sets / general domains; not formalized in Mathlib."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\iint _{\\Sigma }{\\Biggl (}\\left({\\frac {\\partial R}{\\partial y}}-{\\frac {\\partial Q}{\\partial z}}\\right)dy\\,dz+\\left({\\frac {\\partial P}{\\partial z}}-{\\frac {\\partial R}{\\partial x}}\\right)dz\\,dx+\\left({\\frac {\\partial Q}{\\partial x}}-{\\frac {\\partial P}{\\partial y}}\\right)dx\\,dy{\\Biggr )}=\\oint _{\\partial \\Sigma }{\\Big (}P\\,dx+Q\\,dy+R\\,dz{\\Big )}\\,,}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Classical Kelvin–Stokes theorem in coordinate form; not formalized in Mathlib."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle {\\begin{aligned}\\nabla \\times \\mathbf {E} &=-{\\frac {1}{c}}{\\frac {\\partial \\mathbf {B} }{\\partial t}}\\,,\\\\\\nabla \\times \\mathbf {H} &={\\frac {1}{c}}{\\frac {\\partial \\mathbf {D} }{\\partial t}}+{\\frac {4\\pi }{c}}\\mathbf {J} \\,,\\end{aligned}}}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Maxwell's equations (Faraday's law and Ampère's law); not formalized in Mathlib."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\int _{\\mathrm {Vol} }\\nabla \\cdot \\mathbf {F} \\,d_{\\mathrm {Vol} }=\\oint _{\\partial \\operatorname {Vol} }\\mathbf {F} \\cdot d{\\boldsymbol {\\Sigma }}}"
+      },
+      "status": "partial",
+      "decl": "MeasureTheory.integral_divergence_of_hasFDerivAt_off_countable",
+      "module": "Mathlib.MeasureTheory.Integral.DivergenceTheorem",
+      "note": "Mathlib's divergence theorem on boxes captures this on rectangular domains, not on general volumes."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle {\\vec {c}}\\cdot \\int _{\\mathrm {Vol} }\\nabla f\\,d_{\\mathrm {Vol} }={\\vec {c}}\\cdot \\oint _{\\partial \\mathrm {Vol} }f\\,d{\\boldsymbol {\\Sigma }}\\,.}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Intermediate step deriving gradient-integral identity from divergence theorem; not a standalone Mathlib decl."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\int _{\\mathrm {Vol} }\\nabla f\\,d_{\\mathrm {Vol} }=\\oint _{\\partial \\mathrm {Vol} }f\\,d{\\boldsymbol {\\Sigma }}\\,.}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Gradient-theorem corollary on volumes; not formalized as a standalone Mathlib decl."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\int _{\\Omega }{\\vec {\\nabla }}f=\\int _{\\partial \\Omega }{\\vec {n}}f}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Volume integral of gradient of a scalar field; not formalized in Mathlib."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle {\\begin{aligned}0&=\\int _{\\Omega }{\\vec {\\nabla }}\\cdot {\\vec {c}}f-\\int _{\\partial \\Omega }{\\vec {n}}\\cdot {\\vec {c}}f&{\\text{by the divergence theorem}}\\\\&=\\int _{\\Omega }{\\vec {c}}\\cdot {\\vec {\\nabla }}f-\\int _{\\partial \\Omega }{\\vec {c}}\\cdot {\\vec {n}}f\\\\&={\\vec {c}}\\cdot \\int _{\\Omega }{\\vec {\\nabla }}f-{\\vec {c}}\\cdot \\int _{\\partial \\Omega }{\\vec {n}}f\\\\&={\\vec {c}}\\cdot \\left(\\int _{\\Omega }{\\vec {\\nabla }}f-\\int _{\\partial \\Omega }{\\vec {n}}f\\right)\\end{aligned}}}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Proof-internal derivation chain; not a standalone Mathlib decl."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\{d_{\\text{total}}U\\}=\\sum _{i=1}^{3}{\\frac {\\partial U}{\\partial \\alpha _{i}}}\\,d\\alpha _{i}\\,,}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Thermodynamic total differential expression; ad-hoc physics formula not formalized in Mathlib."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\oint _{W}\\,\\{d_{\\text{total}}U\\}\\,{\\stackrel {!}{=}}\\,0\\,.}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Cyclic-integral postulate from thermodynamics; not formalized in Mathlib."
+    },
+    {
+      "anchor": {
+        "type": "theorem_box",
+        "value": "Theorem &#160; ( Stokes–Cartan ) — Let &#8288; &#x03A9; {\\di"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Stokes–Cartan theorem on smooth manifolds with boundary is not formalized in Mathlib."
+    },
+    {
+      "anchor": {
+        "type": "theorem_box",
+        "value": "Theorem &#160; ( Stokes' theorem for chains ) — If c is a sm"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Stokes' theorem for smooth chains is not formalized in Mathlib."
+    },
+    {
+      "anchor": {
+        "type": "theorem_box",
+        "value": "Theorem — Suppose F = ( P ( x , y , z ) , Q ( x , y , z ) , "
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Classical Kelvin–Stokes (curl) theorem on surfaces in ℝ³ is not formalized in Mathlib."
+    }
+  ]
+}

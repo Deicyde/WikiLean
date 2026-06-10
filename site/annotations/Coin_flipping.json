@@ -1,0 +1,185 @@
+{
+  "slug": "Coin_flipping",
+  "wikipedia_title": "Coin flipping",
+  "display_title": "Coin flipping",
+  "schema_version": 3,
+  "annotation_style": "theorem_article",
+  "annotations": [
+    {
+      "kind": "example",
+      "label": "Probability of coin landing on edge",
+      "anchor": {
+        "section": "Process",
+        "snippet": "A computational model suggests that the chance of a coin landing on its edge and staying there is about 1 in 6,000 for an American nickel."
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Empirical/physical estimate about real-world coin geometry; not the kind of statement formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Thickness-to-diameter ratio of fair three-sided coin",
+      "anchor": {
+        "section": "Process",
+        "snippet": "The ratio of the thickness of the coin to its diameter is thought to be between 0.577 and 0.866."
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "A physical/geometric estimate about three-sided fair coins, with no Mathlib counterpart.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Success probability of three-way flip",
+      "anchor": {
+        "section": "Three-way",
+        "snippet": "The three-way flip is 75% likely to work each time it is tried"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "An elementary probability calculation about a specific protocol; not stated in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Hand-flip bias (Diaconis)",
+      "anchor": {
+        "section": "Physics",
+        "snippet": "in flipping by hand people generate a slight bias"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Empirical claim about human-flipped coins; not a formal theorem in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Same-side bias for caught coin",
+      "anchor": {
+        "section": "Physics",
+        "snippet": "their theoretical analysis of the physics of coin tosses predicts a slight bias for a caught coin to be caught the same way up as it was thrown, with a probability of around 0.51"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "A physical/probabilistic result from rigid-body mechanics; no Mathlib formalization.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Amsterdam 350,757-toss study",
+      "anchor": {
+        "section": "Physics",
+        "snippet": "A much larger 2023 University of Amsterdam study"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Reference to an empirical experiment; nothing to formalize in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "TTH precedes THT twice as often",
+      "anchor": {
+        "section": "Counterintuitive properties",
+        "snippet": "it is twice as likely that the triplet TTH will occur before THT than after it"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Penney's-game style result; grep for TTH/THT/Penney in Mathlib found no relevant probability material.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "THH precedes HHT three times as often",
+      "anchor": {
+        "section": "Counterintuitive properties",
+        "snippet": "It is three times as likely that \"THH will precede HHT\" than that \"THH will follow HHT\""
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Another Penney's-game pattern result; no occurrences of these triplet patterns or Penney's game in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Coin flipping as Bernoulli process",
+      "anchor": {
+        "section": "Mathematics",
+        "snippet": "The mathematical abstraction of the statistics of coin flipping is described by means of the Bernoulli process"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "PMF.bernoulli",
+        "module": "Mathlib.Probability.ProbabilityMassFunction.Constructions",
+        "match_kind": "special_case"
+      },
+      "note": "Mathlib defines the single-trial `PMF.bernoulli` and `ProbabilityTheory.setBernoulli`, but a named `Bernoulli process` (i.i.d. sequence) is not present — grep finds no `bernoulliSeq`/`Bernoulli.process`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Single flip as Bernoulli trial",
+      "anchor": {
+        "section": "Mathematics",
+        "snippet": "a single flip of a coin is a Bernoulli trial"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "PMF.bernoulli",
+        "module": "Mathlib.Probability.ProbabilityMassFunction.Constructions",
+        "match_kind": "exact"
+      },
+      "note": "`PMF.bernoulli p h : PMF Bool` with `PMF.bernoulli_apply` directly formalizes a single Bernoulli trial.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Cryptographic coin-flip protocol",
+      "anchor": {
+        "section": "Telecommunications",
+        "snippet": "In telecommunications and cryptography , the following algorithm can be used"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Cryptographic protocol description; Mathlib does not formalize coin-flipping commitment protocols.",
+      "provenance": "ai"
+    }
+  ]
+}

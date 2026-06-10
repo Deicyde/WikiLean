@@ -1,0 +1,159 @@
+{
+  "slug": "Group_mathematics",
+  "wikipedia_title": "Group (mathematics)",
+  "display_title": "Group (mathematics)",
+  "schema_version": 1,
+  "source": "claude-agent-sdk/annotate_articles.py",
+  "annotations": [
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\mathbb {Z} =\\{\\ldots ,-4,-3,-2,-1,0,1,2,3,4,\\ldots \\}}"
+      },
+      "status": "formalized",
+      "decl": "Int",
+      "module": "Init.Data.Int.Basic",
+      "note": "The integers ℤ are the core Lean/Mathlib type `Int`, an additive group instance."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle f_{\\mathrm {h} }\\circ r_{3}=f_{\\mathrm {d} }.}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Specific Cayley-table computation in D₄; not a standalone Mathlib decl."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle r_{3}\\circ f_{\\mathrm {h} }=f_{\\mathrm {c} }.}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Specific Cayley-table computation in D₄; not a standalone Mathlib decl."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle (a\\circ b)\\circ c=a\\circ (b\\circ c).}"
+      },
+      "status": "formalized",
+      "decl": "mul_assoc",
+      "module": "Mathlib.Algebra.Group.Defs",
+      "note": "Group associativity is `mul_assoc : a * b * c = a * (b * c)`."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle {\\begin{aligned}(f_{\\mathrm {d} }\\circ f_{\\mathrm {v} })\\circ r_{2}&=r_{3}\\circ r_{2}=r_{1}\\\\f_{\\mathrm {d} }\\circ (f_{\\mathrm {v} }\\circ r_{2})&=f_{\\mathrm {d} }\\circ f_{\\mathrm {h} }=r_{1}.\\end{aligned}}}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Concrete D₄ associativity worked example, not a standalone declaration."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle a\\cdot b\\cdot c=(a\\cdot b)\\cdot c=a\\cdot (b\\cdot c)}"
+      },
+      "status": "formalized",
+      "decl": "mul_assoc",
+      "module": "Mathlib.Algebra.Group.Defs",
+      "note": "Multiplicative associativity is captured by `mul_assoc`."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle G/N=\\{gN\\mid g\\in G\\}}"
+      },
+      "status": "formalized",
+      "decl": "QuotientGroup.Quotient.group",
+      "module": "Mathlib.GroupTheory.QuotientGroup.Defs",
+      "note": "The quotient group G/N by a normal subgroup is `G ⧸ N` with its group instance."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle {\\frac {a}{b}}.}"
+      },
+      "status": "formalized",
+      "decl": "Rat",
+      "module": "Init.Data.Rat.Basic",
+      "note": "Fractions a/b are formalized as the rationals `ℚ` (`Rat`) in core/Mathlib."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle 9+4\\equiv 1{\\pmod {12}}.}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Concrete numerical congruence example, not a standalone Mathlib lemma."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle a\\cdot b\\equiv 1{\\pmod {p}},}"
+      },
+      "status": "partial",
+      "decl": "ZMod",
+      "module": "Mathlib.Data.ZMod.Basic",
+      "note": "Multiplicative inverses mod p exist via `ZMod p` being a field; not stated as this exact equation."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\dots ,a^{-3},a^{-2},a^{-1},a^{0},a,a^{2},a^{3},\\dots ,}"
+      },
+      "status": "partial",
+      "decl": "zpow",
+      "module": "Mathlib.Algebra.Group.Defs",
+      "note": "Integer powers of a group element are `a ^ (n : ℤ)`; the listing itself is informal."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\dots ,(-a)+(-a),-a,0,a,a+a,\\dots .}"
+      },
+      "status": "partial",
+      "decl": "zsmul",
+      "module": "Mathlib.Algebra.Group.Defs",
+      "note": "Integer multiples of an additive group element are `n • a`; the listing is informal."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle x={\\frac {-b\\pm {\\sqrt {b^{2}-4ac}}}{2a}}.}"
+      },
+      "status": "formalized",
+      "decl": "quadratic_eq_zero_iff",
+      "module": "Mathlib.Algebra.QuadraticDiscriminant",
+      "note": "The quadratic formula's roots are characterised by `quadratic_eq_zero_iff`."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\underbrace {a\\cdots a} _{n{\\text{ factors}}},}"
+      },
+      "status": "formalized",
+      "decl": "npowRec",
+      "module": "Mathlib.Algebra.Group.Defs",
+      "note": "The n-fold product aⁿ is defined by `npowRec` (the monoid `npow` recursion)."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\det(A)\\neq 0,}"
+      },
+      "status": "formalized",
+      "decl": "Matrix.GeneralLinearGroup",
+      "module": "Mathlib.LinearAlgebra.Matrix.GeneralLinearGroup.Defs",
+      "note": "The group of invertible matrices (det ≠ 0 over a field) is `Matrix.GeneralLinearGroup`."
+    }
+  ]
+}

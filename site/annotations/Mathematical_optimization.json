@@ -1,0 +1,953 @@
+{
+  "slug": "Mathematical_optimization",
+  "wikipedia_title": "Mathematical optimization",
+  "display_title": "Mathematical optimization",
+  "schema_version": 3,
+  "annotation_style": "theorem_article",
+  "annotations": [
+    {
+      "kind": "definition",
+      "label": "Mathematical optimization",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "is the selection of a best element, with regard to some criteria"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "IsExtrOn",
+        "module": "Mathlib.Order.Filter.Extr",
+        "match_kind": null
+      },
+      "note": "The general notion of selecting a best element is captured by the extremum predicates IsMinOn/IsMaxOn/IsExtrOn, but no overarching 'optimization' definition exists.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Discrete optimization",
+      "anchor": {
+        "section": "Optimization problems",
+        "snippet": "An optimization problem with discrete variables is known as a discrete optimization"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "ValuedCSP",
+        "module": "Mathlib.Combinatorics.Optimization.ValuedCSP",
+        "match_kind": null
+      },
+      "note": "ValuedCSP formalizes a broad class of discrete-optimization problems but not the category 'discrete optimization' itself.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Continuous optimization",
+      "anchor": {
+        "section": "Optimization problems",
+        "snippet": "A problem with continuous variables is known as a continuous optimization"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "IsMinOn",
+        "module": "Mathlib.Order.Filter.Extr",
+        "match_kind": null
+      },
+      "note": "Extremum predicates over continuous (topological/normed) domains exist, but 'continuous optimization' is not a defined category.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Optimization problem",
+      "anchor": {
+        "section": "Optimization problems",
+        "snippet": "Such a formulation is called an optimization problem or a mathematical programming problem"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "IsMinOn",
+        "module": "Mathlib.Order.Filter.Extr",
+        "match_kind": null
+      },
+      "note": "IsMinOn/IsMaxOn formalize minimizing/maximizing a function on a set, but there is no general 'optimization problem' structure.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Reduction to minimization",
+      "anchor": {
+        "section": "Optimization problems",
+        "snippet": "it suffices to solve only minimization problems"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "IsMaxOn.neg",
+        "module": "Mathlib.Order.Filter.Extr",
+        "match_kind": null
+      },
+      "note": "IsMaxOn.neg (with IsMinOn.neg) formalizes the negation duality underlying reduction of maximization to minimization, not the methodological claim itself.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Search space / choice set",
+      "anchor": {
+        "section": "Optimization problems",
+        "snippet": "is called the search space or the choice set"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The feasible set is just the ambient Set in IsMinOn; there is no dedicated 'search space' concept.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Objective function",
+      "anchor": {
+        "section": "Optimization problems",
+        "snippet": "is variously called an objective function , criterion function"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The objective is just the function argument of IsMinOn; no separate 'objective function' definition exists.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Optimal solution",
+      "anchor": {
+        "section": "Optimization problems",
+        "snippet": "is called an optimal solution"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "IsMinOn",
+        "module": "Mathlib.Order.Filter.Extr",
+        "match_kind": "exact"
+      },
+      "note": "IsMinOn f s a (dually IsMaxOn) is exactly the notion of a point that is an optimal solution over the feasible set s.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Local minimum",
+      "anchor": {
+        "section": "Optimization problems",
+        "snippet": "A local minimum x * is defined as an element for which there exists some"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "IsLocalMin",
+        "module": "Mathlib.Topology.Order.LocalExtr",
+        "match_kind": "exact"
+      },
+      "note": "IsLocalMin f a means f a ≤ f x in a neighborhood of a, exactly the local-minimum definition.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Global minimum",
+      "anchor": {
+        "section": "Optimization problems",
+        "snippet": "a global minimum is at least as good as every feasible element"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "IsMinOn",
+        "module": "Mathlib.Order.Filter.Extr",
+        "match_kind": "exact"
+      },
+      "note": "IsMinOn f s a means f a ≤ f x for all feasible x ∈ s, i.e. a global minimum on s.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Convex local minimum is global",
+      "anchor": {
+        "section": "Optimization problems",
+        "snippet": "if there is a local minimum that is interior"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "IsMinOn.of_isLocalMin_of_convex_univ",
+        "module": "Mathlib.Analysis.Convex.Extrema",
+        "match_kind": "exact"
+      },
+      "note": "This lemma proves any local minimum of a convex function is a global minimum.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Minimum of x^2+1",
+      "anchor": {
+        "section": "Minimum and maximum value of a function",
+        "snippet": "The minimum value in this case is 1, occurring at"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This specific worked example is not a Mathlib declaration.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Unbounded maximum of 2x",
+      "anchor": {
+        "section": "Minimum and maximum value of a function",
+        "snippet": "there is no such maximum as the objective function is unbounded"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This illustrative example of an unbounded objective is not formalized as a declaration.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "argmin of x^2+1",
+      "anchor": {
+        "section": "Optimal input arguments",
+        "snippet": "In this case, the answer is x = −1 , since x = 0 is infeasible"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This specific argmin example is not a Mathlib declaration.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "argmax of x cos y",
+      "anchor": {
+        "section": "Optimal input arguments",
+        "snippet": "In this case, the solutions are the pairs of the form"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This specific argmax example is not a Mathlib declaration.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "arg min and arg max",
+      "anchor": {
+        "section": "Optimal input arguments",
+        "snippet": "stand for argument of the minimum and argument of the maximum"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "IsMinOn",
+        "module": "Mathlib.Order.Filter.Extr",
+        "match_kind": null
+      },
+      "note": "IsMinOn/IsMaxOn capture being a minimizer/maximizer, but there is no general continuous-optimization argmin/argmax operator.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Convex programming",
+      "anchor": {
+        "section": "Major subfields",
+        "snippet": "Convex programming studies the case when the objective function is convex"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "ConvexOn",
+        "module": "Mathlib.Analysis.Convex.Function",
+        "match_kind": null
+      },
+      "note": "ConvexOn and associated convex-optimization lemmas exist, but 'convex programming' as a problem class is not defined.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Linear programming",
+      "anchor": {
+        "section": "Major subfields",
+        "snippet": "studies the case in which the objective function f is linear"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "ProperCone.hyperplane_separation",
+        "module": "Mathlib.Analysis.Convex.Cone.Dual",
+        "match_kind": null
+      },
+      "note": "Farkas' lemma / cone duality underlies LP duality, but linear programs and LP strong duality are an explicit TODO and not defined.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Second-order cone programming",
+      "anchor": {
+        "section": "Major subfields",
+        "snippet": "Second-order cone programming (SOCP) is a convex program"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No second-order cone program is formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Semidefinite programming",
+      "anchor": {
+        "section": "Major subfields",
+        "snippet": "Semidefinite programming (SDP) is a subfield of convex optimization"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has positive-semidefinite matrices but no semidefinite-programming problem or duality.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Conic programming",
+      "anchor": {
+        "section": "Major subfields",
+        "snippet": "Conic programming is a general form of convex programming"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "ProperCone.hyperplane_separation",
+        "module": "Mathlib.Analysis.Convex.Cone.Dual",
+        "match_kind": null
+      },
+      "note": "Convex/proper cones and cone duality (Farkas) are formalized, but no conic-program optimization problem is defined.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Geometric programming",
+      "anchor": {
+        "section": "Major subfields",
+        "snippet": "Geometric programming is a technique whereby objective and inequality constraints expressed as posynomials"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Geometric programming and posynomials are not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Integer programming",
+      "anchor": {
+        "section": "Major subfields",
+        "snippet": "Integer programming studies linear programs in which some or all variables are constrained to take on integer values"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Integer programs are not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Quadratic programming",
+      "anchor": {
+        "section": "Major subfields",
+        "snippet": "Quadratic programming allows the objective function to have quadratic terms"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Quadratic programming is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Fractional programming",
+      "anchor": {
+        "section": "Major subfields",
+        "snippet": "Fractional programming studies optimization of ratios of two nonlinear functions"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Fractional programming is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Nonlinear programming",
+      "anchor": {
+        "section": "Major subfields",
+        "snippet": "Nonlinear programming studies the general case in which the objective function or the constraints or both contain nonlinear parts"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Nonlinear programming as a problem class is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Stochastic programming",
+      "anchor": {
+        "section": "Major subfields",
+        "snippet": "Stochastic programming studies the case in which some of the constraints or parameters depend on random variables"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Stochastic programming is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Robust optimization",
+      "anchor": {
+        "section": "Major subfields",
+        "snippet": "Robust optimization is, like stochastic programming, an attempt to capture uncertainty"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Robust optimization is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Combinatorial optimization",
+      "anchor": {
+        "section": "Major subfields",
+        "snippet": "Combinatorial optimization is concerned with problems where the set of feasible solutions is discrete"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "ValuedCSP",
+        "module": "Mathlib.Combinatorics.Optimization.ValuedCSP",
+        "match_kind": null
+      },
+      "note": "ValuedCSP formalizes a class of discrete/combinatorial optimization problems but not the field in general.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Stochastic optimization",
+      "anchor": {
+        "section": "Major subfields",
+        "snippet": "Stochastic optimization is used with random (noisy) function measurements"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Stochastic optimization is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Infinite-dimensional optimization",
+      "anchor": {
+        "section": "Major subfields",
+        "snippet": "Infinite-dimensional optimization studies the case when the set of feasible solutions is a subset of an infinite- dimensional space"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No infinite-dimensional optimization framework is formalized, though extremum predicates apply to infinite-dimensional spaces.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Heuristics and metaheuristics",
+      "anchor": {
+        "section": "Major subfields",
+        "snippet": "Heuristics and metaheuristics make few or no assumptions about the problem being optimized"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Heuristics and metaheuristics are not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Constraint satisfaction",
+      "anchor": {
+        "section": "Major subfields",
+        "snippet": "Constraint satisfaction studies the case in which the objective function f is constant"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "ValuedCSP",
+        "module": "Mathlib.Combinatorics.Optimization.ValuedCSP",
+        "match_kind": null
+      },
+      "note": "ValuedCSP generalizes constraint-satisfaction problems (crisp CSP being the constant-cost case) but the pure CSP feasibility problem is not separately defined.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Disjunctive programming",
+      "anchor": {
+        "section": "Major subfields",
+        "snippet": "Disjunctive programming is used where at least one constraint must be satisfied but not all"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Disjunctive programming is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Space mapping",
+      "anchor": {
+        "section": "Major subfields",
+        "snippet": "Space mapping is a concept for modeling and optimization of an engineering system"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Space mapping is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Calculus of variations",
+      "anchor": {
+        "section": "Major subfields",
+        "snippet": "Calculus of variations is concerned with finding the best way to achieve some goal"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The calculus of variations (e.g. Euler–Lagrange equations) is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Optimal control theory",
+      "anchor": {
+        "section": "Major subfields",
+        "snippet": "Optimal control theory is a generalization of the calculus of variations which introduces control policies"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Optimal control theory is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Dynamic programming",
+      "anchor": {
+        "section": "Major subfields",
+        "snippet": "Dynamic programming is the approach to solve the stochastic optimization problem"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Dynamic programming for optimization is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Bellman equation",
+      "anchor": {
+        "section": "Major subfields",
+        "snippet": "is called the Bellman equation"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Bellman equation is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Mathematical programming with equilibrium constraints",
+      "anchor": {
+        "section": "Major subfields",
+        "snippet": "Mathematical programming with equilibrium constraints is where the constraints include variational inequalities"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "MPEC with variational-inequality constraints is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Pareto set",
+      "anchor": {
+        "section": "Multi-objective optimization",
+        "snippet": "is known as the Pareto set"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Pareto set is not formalized in Mathlib (only the unrelated Pareto probability distribution exists).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Pareto frontier",
+      "anchor": {
+        "section": "Multi-objective optimization",
+        "snippet": "is known as the Pareto frontier"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Pareto frontier is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Pareto optimal",
+      "anchor": {
+        "section": "Multi-objective optimization",
+        "snippet": "A design is judged to be \"Pareto optimal\""
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Pareto optimality is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Vector optimization",
+      "anchor": {
+        "section": "Multi-objective optimization",
+        "snippet": "have been generalized further into vector optimization problems"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Vector optimization is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Multi-modal optimization",
+      "anchor": {
+        "section": "Multi-modal or global optimization",
+        "snippet": "Optimization problems are often multi-modal; that is, they possess multiple good solutions"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Multi-modal/global optimization is not formalized as a concept in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Feasibility problem",
+      "anchor": {
+        "section": "Feasibility problem",
+        "snippet": "is just the problem of finding any feasible solution at all without regard to objective value"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The feasibility problem as an optimization concept is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Extreme value theorem (Weierstrass)",
+      "anchor": {
+        "section": "Existence",
+        "snippet": "states that a continuous real-valued function on a compact set attains its maximum and minimum value"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "IsCompact.exists_isMinOn",
+        "module": "Mathlib.Topology.Order.Compact",
+        "match_kind": "generalization"
+      },
+      "note": "IsCompact.exists_isMinOn (and exists_isMaxOn) is the extreme value theorem, generalized to continuous functions into a conditionally complete linear order.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Semicontinuous functions attain extrema",
+      "anchor": {
+        "section": "Existence",
+        "snippet": "a lower semi-continuous function on a compact set attains its minimum"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "LowerSemicontinuousOn.exists_isMinOn",
+        "module": "Mathlib.Topology.Semicontinuity.Basic",
+        "match_kind": "exact"
+      },
+      "note": "This states a lower semicontinuous function attains its minimum on a nonempty compact set (dually for upper semicontinuous and maxima).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Fermat's stationary point theorem",
+      "anchor": {
+        "section": "Necessary conditions for optimality",
+        "snippet": "states that optima of unconstrained problems are found at stationary points"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "IsLocalExtr.hasDerivAt_eq_zero",
+        "module": "Mathlib.Analysis.Calculus.LocalExtr.Basic",
+        "match_kind": "exact"
+      },
+      "note": "IsLocalExtr.hasDerivAt_eq_zero (and IsLocalMin.fderiv_eq_zero) proves the derivative vanishes at an interior local extremum.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Lagrange multiplier method",
+      "anchor": {
+        "section": "Necessary conditions for optimality",
+        "snippet": "Optima of equality-constrained problems can be found by the Lagrange multiplier method"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "IsLocalExtrOn.exists_multipliers_of_hasStrictFDerivAt_1d",
+        "module": "Mathlib.Analysis.Calculus.LagrangeMultipliers",
+        "match_kind": "exact"
+      },
+      "note": "This file formalizes the Lagrange multipliers method for equality-constrained local extrema.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Karush–Kuhn–Tucker conditions",
+      "anchor": {
+        "section": "Necessary conditions for optimality",
+        "snippet": "can be found using the ' Karush–Kuhn–Tucker conditions '"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "KKT conditions are an explicit TODO in the LagrangeMultipliers file and are not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Second-order sufficient conditions",
+      "anchor": {
+        "section": "Sufficient conditions for optimality",
+        "snippet": "the satisfaction of the second-order conditions as well is sufficient to establish at least local optimality"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The general second-order (Hessian) sufficient condition for local optimality is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Envelope theorem",
+      "anchor": {
+        "section": "Sensitivity and continuity of optima",
+        "snippet": "The envelope theorem describes how the value of an optimal solution changes when an underlying parameter changes"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The envelope theorem is listed as a wanted theorem in docs/1000.yaml with no Mathlib declaration.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Maximum theorem (Berge)",
+      "anchor": {
+        "section": "Sensitivity and continuity of optima",
+        "snippet": "The maximum theorem of Claude Berge (1963) describes the continuity of an optimal solution"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Berge's maximum theorem is listed as wanted in docs/1000.yaml with no Mathlib declaration.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Zero subgradient certifies local minimum",
+      "anchor": {
+        "section": "Calculus of optimization",
+        "snippet": "a zero subgradient certifies that a local minimum has been found"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Subgradients are not defined in Mathlib, so the zero-subgradient optimality certificate is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Hessian definiteness classification",
+      "anchor": {
+        "section": "Calculus of optimization",
+        "snippet": "If the Hessian is positive definite at a critical point, then the point is a local minimum"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The second-derivative/Hessian-definiteness test for classifying critical points is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Convex local minimum is global",
+      "anchor": {
+        "section": "Calculus of optimization",
+        "snippet": "When the objective function is a convex function , then any local minimum will also be a global minimum"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "IsMinOn.of_isLocalMin_of_convex_univ",
+        "module": "Mathlib.Analysis.Convex.Extrema",
+        "match_kind": "exact"
+      },
+      "note": "This lemma proves any local minimum of a convex function is a global minimum.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Heuristic",
+      "anchor": {
+        "section": "Heuristics",
+        "snippet": "A heuristic is any algorithm which is not guaranteed (mathematically) to find the solution"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The notion of a heuristic algorithm is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Utility maximization and expenditure minimization",
+      "anchor": {
+        "section": "Economics and finance",
+        "snippet": "the utility maximization problem and its dual problem , the expenditure minimization problem , are economic optimization problems"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Utility maximization and expenditure minimization economic problems are not formalized in Mathlib.",
+      "provenance": "ai"
+    }
+  ]
+}

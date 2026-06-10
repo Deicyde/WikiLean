@@ -1,0 +1,1129 @@
+{
+  "slug": "Chebyshev_polynomials",
+  "wikipedia_title": "Chebyshev polynomials",
+  "display_title": "Chebyshev polynomials",
+  "schema_version": 3,
+  "annotation_style": "theorem_article",
+  "annotations": [
+    {
+      "kind": "definition",
+      "label": "Chebyshev polynomials of the first kind (trigonometric)",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "The Chebyshev polynomials of the first kind"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Polynomial.Chebyshev.T_real_cos",
+        "module": "Mathlib.Analysis.SpecialFunctions.Trigonometric.Chebyshev.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`T_real_cos` (and its complex counterpart `T_complex_cos`) state `(T ℝ n).eval (cos θ) = cos (n * θ)`, the trigonometric definition.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Chebyshev polynomials of the second kind (trigonometric)",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "Similarly, the Chebyshev polynomials of the second kind"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Polynomial.Chebyshev.U_real_cos",
+        "module": "Mathlib.Analysis.SpecialFunctions.Trigonometric.Chebyshev.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`U_real_cos` and `U_complex_cos` express `(U R n).eval (cos θ) * sin θ = sin ((n + 1) * θ)`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Extremal property of T_n",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "are polynomials with the largest possible leading coefficient whose absolute value on the interval"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Polynomial.Chebyshev.leadingCoeff_eq_iff_of_forall_abs_le_one",
+        "module": "Mathlib.Analysis.SpecialFunctions.Trigonometric.Chebyshev.Extremal",
+        "match_kind": "exact"
+      },
+      "note": "`leadingCoeff_le_of_forall_abs_le_one` and `leadingCoeff_eq_iff_of_forall_abs_le_one` characterize `T_n` as the unique polynomial of degree `n` with maximal leading coefficient `2^(n-1)` under the `|P| ≤ 1` constraint on `[-1,1]`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Recurrence definition of T_n",
+      "anchor": {
+        "section": "Recurrence definition",
+        "snippet": "The Chebyshev polynomials of the first kind can be defined by the recurrence relation"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Polynomial.Chebyshev.T_add_two",
+        "module": "Mathlib.RingTheory.Polynomial.Chebyshev",
+        "match_kind": "exact"
+      },
+      "note": "`T` is defined by the recurrence `T (n+2) = 2 * X * T (n+1) - T n` with `T_zero = 1`, `T_one = X`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Recurrence definition of U_n",
+      "anchor": {
+        "section": "Recurrence definition",
+        "snippet": "The Chebyshev polynomials of the second kind can be defined by the recurrence relation"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Polynomial.Chebyshev.U_add_two",
+        "module": "Mathlib.RingTheory.Polynomial.Chebyshev",
+        "match_kind": "exact"
+      },
+      "note": "`U` is defined by `U (n+2) = 2 * X * U (n+1) - U n` with `U_zero = 1`, `U_one = 2 * X`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Trigonometric definition (unique polynomials)",
+      "anchor": {
+        "section": "Trigonometric definition",
+        "snippet": "can be defined as the unique polynomials satisfying"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Polynomial.Chebyshev.T_complex_cos",
+        "module": "Mathlib.Analysis.SpecialFunctions.Trigonometric.Chebyshev.Basic",
+        "match_kind": "invocation"
+      },
+      "note": "The identity `T_n(cos θ) = cos(n θ)` is proved as `T_complex_cos`/`T_real_cos`, but uniqueness of such polynomials is not packaged as a single statement.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Definition via complex exponentiation",
+      "anchor": {
+        "section": "Trigonometric definition",
+        "snippet": "An equivalent way to state this is via exponentiation of a complex number"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib relates `T_n` to `cos` and `cosh` but does not state the `(cos θ + i sin θ)^n` form explicitly.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "T_n is a polynomial of degree n in x",
+      "anchor": {
+        "section": "Trigonometric definition",
+        "snippet": "th- degree polynomial in"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Polynomial.Chebyshev.natDegree_T",
+        "module": "Mathlib.RingTheory.Polynomial.Chebyshev",
+        "match_kind": "exact"
+      },
+      "note": "`degree_T`/`natDegree_T` give `(T R n).natDegree = n.natAbs` over a domain with `NeZero (2 : R)`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Definition extension outside [-1,1]",
+      "anchor": {
+        "section": "Trigonometric definition",
+        "snippet": "outside the interval"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Polynomial.Chebyshev.T_real_cosh",
+        "module": "Mathlib.Analysis.SpecialFunctions.Trigonometric.Chebyshev.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`T_real_cosh` proves `(T ℝ n).eval (cosh θ) = cosh (n * θ)`, the standard extension for `|x| ≥ 1`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Commuting polynomials characterization",
+      "anchor": {
+        "section": "Commuting polynomials definition",
+        "snippet": "If [MATH] is a family of monic polynomials with coefficients in a field of characteristic"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Ritt's theorem characterizing commuting polynomial families as essentially Chebyshev or power maps is not in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Pell equation definition",
+      "anchor": {
+        "section": "Pell equation definition",
+        "snippet": "The Chebyshev polynomials can also be defined as the solutions to the Pell equation"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Polynomial.Chebyshev.S_sq_add_S_sq",
+        "module": "Mathlib.RingTheory.Polynomial.Chebyshev",
+        "match_kind": "invocation"
+      },
+      "note": "`S_sq_add_S_sq` proves a Pell-type identity for the rescaled `S` polynomial; no direct Pell-equation definition of `T_n^2 - (x^2 - 1) U_{n-1}^2 = 1` is stated.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Ordinary generating function for T_n",
+      "anchor": {
+        "section": "Generating functions",
+        "snippet": "The ordinary generating function for"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has no statement of the ordinary generating function for `T_n`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Exponential generating function for T_n",
+      "anchor": {
+        "section": "Generating functions",
+        "snippet": "the exponential generating function is"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No exponential generating function statement for Chebyshev polynomials is present.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Potential theory generating function",
+      "anchor": {
+        "section": "Generating functions",
+        "snippet": "The generating function relevant for 2-dimensional potential theory and multipole expansion is"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Generating functions for U_n",
+      "anchor": {
+        "section": "Generating functions",
+        "snippet": "The ordinary generating function for U n is"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Correspondence with Lucas sequences",
+      "anchor": {
+        "section": "Relations between the two kinds of Chebyshev polynomials",
+        "snippet": "correspond to a complementary pair of Lucas sequences"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has no connection between Chebyshev polynomials and Lucas sequences.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Mutual recurrence equations",
+      "anchor": {
+        "section": "Relations between the two kinds of Chebyshev polynomials",
+        "snippet": "they also satisfy a pair of mutual recurrence equations"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Polynomial.Chebyshev.T_eq_U_sub_X_mul_U",
+        "module": "Mathlib.RingTheory.Polynomial.Chebyshev",
+        "match_kind": "exact"
+      },
+      "note": "`T_eq_U_sub_X_mul_U`, `U_eq_X_mul_U_add_T`, `T_eq_X_mul_U_sub_U` express T in terms of U and vice versa.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Sum formula",
+      "anchor": {
+        "section": "Relations between the two kinds of Chebyshev polynomials",
+        "snippet": "Using this formula iteratively gives the sum formula"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Polynomial.Chebyshev.U_mem_span_T",
+        "module": "Mathlib.RingTheory.Polynomial.Chebyshev",
+        "match_kind": "invocation"
+      },
+      "note": "`U_mem_span_T` shows `U_n` lies in the span of `T_0,…,T_n` but the explicit telescoping sum formula is not stated.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Recurrence for derivative of T_n",
+      "anchor": {
+        "section": "Relations between the two kinds of Chebyshev polynomials",
+        "snippet": "gives the recurrence relationship for the derivative of"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Polynomial.Chebyshev.T_derivative_eq_U",
+        "module": "Mathlib.RingTheory.Polynomial.Chebyshev",
+        "match_kind": "exact"
+      },
+      "note": "`T_derivative_eq_U` proves `derivative (T R n) = n * U R (n - 1)`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Turán's inequalities",
+      "anchor": {
+        "section": "Relations between the two kinds of Chebyshev polynomials",
+        "snippet": "Turán's inequalities for the Chebyshev polynomials are"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Turán-type inequalities for Chebyshev polynomials are not in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Integral relations",
+      "anchor": {
+        "section": "Relations between the two kinds of Chebyshev polynomials",
+        "snippet": "The integral relations are"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The integral identities relating ∫T_n and U_n (and conversely) are not stated.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Explicit expressions from complex exponentiation",
+      "anchor": {
+        "section": "Explicit expressions",
+        "snippet": "Using the complex number exponentiation definition of the Chebyshev polynomial, one can derive the following expressions"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Polynomial.Chebyshev.T_complex_cos",
+        "module": "Mathlib.Analysis.SpecialFunctions.Trigonometric.Chebyshev.Basic",
+        "match_kind": "invocation"
+      },
+      "note": "Mathlib gives the trigonometric/hyperbolic evaluations but not the explicit `((x+√(x²-1))^n + (x-√(x²-1))^n)/2` style formulas.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Explicit form in terms of monomials",
+      "anchor": {
+        "section": "Explicit expressions",
+        "snippet": "An explicit form of the Chebyshev polynomial in terms of monomials"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The closed-form binomial-coefficient expression for T_n is not in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Hypergeometric representation",
+      "anchor": {
+        "section": "Explicit expressions",
+        "snippet": "This can be written as a"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No hypergeometric representation of Chebyshev polynomials is present.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "U_n as sum of monomials",
+      "anchor": {
+        "section": "Explicit expressions",
+        "snippet": "A related expression for [MATH] as a sum of monomials with binomial coefficients and powers of two"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The explicit monomial-sum formula for U_n is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Symmetry of Chebyshev polynomials",
+      "anchor": {
+        "section": "Symmetry",
+        "snippet": "Chebyshev polynomials of even order have even symmetry"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Polynomial.Chebyshev.T_eval_neg",
+        "module": "Mathlib.RingTheory.Polynomial.Chebyshev",
+        "match_kind": "exact"
+      },
+      "note": "`T_eval_neg` and `U_eval_neg` show `(T R n).eval (-x) = (-1)^n * (T R n).eval x`, capturing the even/odd parity.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Simple roots in [-1,1]",
+      "anchor": {
+        "section": "Roots and extrema",
+        "snippet": "A Chebyshev polynomial of either kind with degree n has n different simple roots"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Polynomial.Chebyshev.rootMultiplicity_T_real",
+        "module": "Mathlib.Analysis.SpecialFunctions.Trigonometric.Chebyshev.RootsExtrema",
+        "match_kind": "exact"
+      },
+      "note": "`rootMultiplicity_T_real`/`rootMultiplicity_U_real` together with `roots_T_real`/`roots_U_real` show the `n` listed roots are simple and lie in `(-1,1)`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Roots of T_n (Chebyshev nodes)",
+      "anchor": {
+        "section": "Roots and extrema",
+        "snippet": "one can show that the roots of"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Polynomial.Chebyshev.roots_T_real",
+        "module": "Mathlib.Analysis.SpecialFunctions.Trigonometric.Chebyshev.RootsExtrema",
+        "match_kind": "exact"
+      },
+      "note": "`roots_T_real` gives the standard Chebyshev nodes `cos((2k+1)π/(2n))`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Extrema of T_n",
+      "anchor": {
+        "section": "Roots and extrema",
+        "snippet": "The extrema of [MATH] on the interval [MATH] are located at"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Polynomial.Chebyshev.isExtrOn_T_real_iff",
+        "module": "Mathlib.Analysis.SpecialFunctions.Trigonometric.Chebyshev.RootsExtrema",
+        "match_kind": "exact"
+      },
+      "note": "`isExtrOn_T_real_iff` (and `isLocalExtr_T_real_iff`) identify the extrema of `T_n` on `[-1,1]` as `cos(kπ/n)` for `k ≤ n`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Shabat polynomial property",
+      "anchor": {
+        "section": "Roots and extrema",
+        "snippet": "One unique property of the Chebyshev polynomials of the first kind is that on the interval"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Shabat (dessins d'enfants) characterization of T_n is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Extrema of U_n",
+      "anchor": {
+        "section": "Roots and extrema",
+        "snippet": "The extrema of [MATH] on the interval [MATH] where [MATH] are located at"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib formalizes extrema of `T_n` but not the analogous statement for `U_n`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Minimal polynomial of 2cos(2pi/n) case formulas",
+      "anchor": {
+        "section": "Roots and extrema",
+        "snippet": "Specifically"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No statement about minimal polynomials of `2cos(2π/n)` via Chebyshev is in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Derivatives via trigonometric form",
+      "anchor": {
+        "section": "Differentiation and integration",
+        "snippet": "By differentiating the polynomials in their trigonometric forms, it can be shown that"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Polynomial.Chebyshev.T_derivative_eq_U",
+        "module": "Mathlib.RingTheory.Polynomial.Chebyshev",
+        "match_kind": "exact"
+      },
+      "note": "`T_derivative_eq_U` formalizes the derivative identity `T_n' = n U_{n-1}`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "L'Hôpital evaluation at endpoints",
+      "anchor": {
+        "section": "Differentiation and integration",
+        "snippet": "By L'Hôpital's rule"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Polynomial.Chebyshev.derivative_T_eval_one",
+        "module": "Mathlib.RingTheory.Polynomial.Chebyshev",
+        "match_kind": "exact"
+      },
+      "note": "`derivative_T_eval_one` proves `(T R n)'.eval 1 = n^2`, with similar lemmas at -1 and iterates.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Higher derivatives identity",
+      "anchor": {
+        "section": "Differentiation and integration",
+        "snippet": "which is of great use in the numerical solution of eigenvalue problems"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Polynomial.Chebyshev.iterate_derivative_T_eval_one",
+        "module": "Mathlib.RingTheory.Polynomial.Chebyshev",
+        "match_kind": "exact"
+      },
+      "note": "`iterate_derivative_T_eval_one` and `..._zero_recurrence` capture the higher derivative formulas at the endpoints.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Integration formula for T_n",
+      "anchor": {
+        "section": "Differentiation and integration",
+        "snippet": "Concerning integration, the first derivative of the T n implies that"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No statement of the antiderivative `∫T_n = (T_{n+1}/(n+1) - T_{n-1}/(n-1))/2` is present.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Integral of T_n in terms of T_n",
+      "anchor": {
+        "section": "Differentiation and integration",
+        "snippet": "The last formula can be further manipulated to express the integral of"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Product relation for T_n",
+      "anchor": {
+        "section": "Products of Chebyshev polynomials",
+        "snippet": "The Chebyshev polynomials of the first kind satisfy the relation"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Polynomial.Chebyshev.T_mul_T",
+        "module": "Mathlib.RingTheory.Polynomial.Chebyshev",
+        "match_kind": "exact"
+      },
+      "note": "`T_mul_T` proves `2 * T R m * T R k = T R (m + k) + T R (m - k)`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Product relation for U_n",
+      "anchor": {
+        "section": "Products of Chebyshev polynomials",
+        "snippet": "The polynomials of the second kind satisfy the similar relation"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No `U_mul_U` analogue of the product identity is present in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Composition / nesting property",
+      "anchor": {
+        "section": "Composition and divisibility properties",
+        "snippet": "imply the composition or nesting properties"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Polynomial.Chebyshev.T_mul",
+        "module": "Mathlib.RingTheory.Polynomial.Chebyshev",
+        "match_kind": "exact"
+      },
+      "note": "`T_mul` proves `T R (m * n) = (T R m).comp (T R n)`, the nesting property.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Divisibility properties",
+      "anchor": {
+        "section": "Composition and divisibility properties",
+        "snippet": "Since [MATH] is divisible by [MATH] if [MATH] is odd"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib does not formalize divisibility of `T_{mn}` by `T_m` (under parity conditions).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Orthogonality of T_n",
+      "anchor": {
+        "section": "Orthogonality",
+        "snippet": "The polynomials of the first kind [MATH] are orthogonal with respect to the weight"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Polynomial.Chebyshev.integral_eval_T_real_mul_eval_T_real_measureT_of_ne",
+        "module": "Mathlib.Analysis.SpecialFunctions.Trigonometric.Chebyshev.Orthogonality",
+        "match_kind": "exact"
+      },
+      "note": "Orthogonality of `T_n` w.r.t. `(1 - x^2)^{-1/2}` on `(-1,1]` is proved, with self-integrals `π` and `π/2` for `n = 0` and `n > 0`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Orthogonality of U_n",
+      "anchor": {
+        "section": "Orthogonality",
+        "snippet": "Similarly, the polynomials of the second kind U n are orthogonal with respect to the weight"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Orthogonality of `U_n` is listed as a TODO in `Orthogonality.lean`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Chebyshev differential equations",
+      "anchor": {
+        "section": "Orthogonality",
+        "snippet": "These orthogonality properties follow from the fact that the Chebyshev polynomials solve the Chebyshev differential equations"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Polynomial.Chebyshev.one_sub_X_sq_mul_derivative_derivative_T_eq_poly_in_T",
+        "module": "Mathlib.RingTheory.Polynomial.Chebyshev",
+        "match_kind": "exact"
+      },
+      "note": "`one_sub_X_sq_mul_derivative_derivative_T_eq_poly_in_T` and the analogue for `U` are the Chebyshev ODEs.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Discrete orthogonality of T_n",
+      "anchor": {
+        "section": "Orthogonality",
+        "snippet": "also satisfy a discrete orthogonality condition"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No discrete orthogonality at Chebyshev nodes is stated in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Discrete orthogonality of U_n at Chebyshev nodes",
+      "anchor": {
+        "section": "Orthogonality",
+        "snippet": "For the polynomials of the second kind and any integer"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Minimal ∞-norm property of T_n",
+      "anchor": {
+        "section": "Minimal ∞ -norm",
+        "snippet": "is the one of which the maximal absolute value on the interval"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Polynomial.Chebyshev.leadingCoeff_le_of_forall_abs_le_one",
+        "module": "Mathlib.Analysis.SpecialFunctions.Trigonometric.Chebyshev.Extremal",
+        "match_kind": "exact"
+      },
+      "note": "Equivalent extremal property is formalized via `leadingCoeff_le_of_forall_abs_le_one` and the equality characterisation.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Equioscillation theorem remark",
+      "anchor": {
+        "section": "Remark",
+        "snippet": "By the equioscillation theorem , among all the polynomials of degree"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Chebyshev equioscillation theorem is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Chebyshev as special case of Gegenbauer/Jacobi",
+      "anchor": {
+        "section": "Chebyshev polynomials as special cases of more general polynomial families",
+        "snippet": "The Chebyshev polynomials are a special case of the ultraspherical or Gegenbauer polynomials"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib does not formalize Gegenbauer or Jacobi polynomials.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Chebyshev as special case of Dickson polynomials",
+      "anchor": {
+        "section": "Chebyshev polynomials as special cases of more general polynomial families",
+        "snippet": "Chebyshev polynomials are also a special case of Dickson polynomials"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Polynomial.dickson_one_one_eq_chebyshev_C",
+        "module": "Mathlib.RingTheory.Polynomial.Dickson",
+        "match_kind": "exact"
+      },
+      "note": "`dickson_one_one_eq_chebyshev_C` and `dickson_two_one_eq_chebyshev_S` identify Dickson polynomials with rescaled `T` and `U`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Lissajous curve relation",
+      "anchor": {
+        "section": "Other properties",
+        "snippet": "are a special case of Lissajous curves with frequency ratio equal to n"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Legendre-Chebyshev relations",
+      "anchor": {
+        "section": "Other properties",
+        "snippet": "There are relations between Legendre polynomials and Chebyshev polynomials"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Legendre polynomials are not in Mathlib, so no such relation exists.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Determinant representation",
+      "anchor": {
+        "section": "Chebyshev polynomials as determinants",
+        "snippet": "the Chebyshev polynomials can be obtained as determinants of special tridiagonal matrices"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No tridiagonal-determinant representation of Chebyshev polynomials is stated.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "First few T_n",
+      "anchor": {
+        "section": "First kind",
+        "snippet": "The first few Chebyshev polynomials of the first kind"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Polynomial.Chebyshev.T_two",
+        "module": "Mathlib.RingTheory.Polynomial.Chebyshev",
+        "match_kind": "exact"
+      },
+      "note": "`T_zero = 1`, `T_one = X`, `T_two = 2 X^2 - 1` are proved; higher values follow from the recurrence.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "First few U_n",
+      "anchor": {
+        "section": "Second kind",
+        "snippet": "The first few Chebyshev polynomials of the second kind"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Polynomial.Chebyshev.U_two",
+        "module": "Mathlib.RingTheory.Polynomial.Chebyshev",
+        "match_kind": "exact"
+      },
+      "note": "`U_zero`, `U_one = 2 X`, `U_two = 4 X^2 - 1` are formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Orthonormal basis in Sobolev space",
+      "anchor": {
+        "section": "As a basis set",
+        "snippet": "the set of Chebyshev polynomials form an orthonormal basis"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Bundling `T_n` into a Hilbert/orthonormal basis is listed as TODO in `Orthogonality.lean`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Chebyshev series convergence properties",
+      "anchor": {
+        "section": "As a basis set",
+        "snippet": "The Chebyshev polynomials form a complete orthogonal system"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Polynomial.Chebyshev.chebyshevTsequence",
+        "module": "Mathlib.RingTheory.Polynomial.Chebyshev",
+        "match_kind": "invocation"
+      },
+      "note": "Polynomials of degree `< N` are spanned by `T_0,…,T_{N−1}` (via `chebyshevTsequence`), but Chebyshev-series convergence for general functions is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Chebyshev expansion of log(1+x)",
+      "anchor": {
+        "section": "Example 1",
+        "snippet": "Consider the Chebyshev expansion of log(1 + x )"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Another expansion example",
+      "anchor": {
+        "section": "Example 2",
+        "snippet": "To provide another example"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Chebyshev–Gauss–Lobatto interpolation points",
+      "anchor": {
+        "section": "Partial sums",
+        "snippet": "As an interpolant, the N coefficients of the"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Polynomial.Chebyshev.integral_eq_sumZeroes",
+        "module": "Mathlib.Analysis.SpecialFunctions.Trigonometric.Chebyshev.ChebyshevGauss",
+        "match_kind": "invocation"
+      },
+      "note": "Mathlib formalizes Chebyshev–Gauss quadrature (`integral_eq_sumZeroes` using the roots, not the Lobatto endpoint-inclusive nodes).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Polynomial in Chebyshev form",
+      "anchor": {
+        "section": "Polynomial in Chebyshev form",
+        "snippet": "An arbitrary polynomial of degree N can be written in terms of the Chebyshev polynomials of the first kind"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Polynomial.Chebyshev.chebyshevTsequence",
+        "module": "Mathlib.RingTheory.Polynomial.Chebyshev",
+        "match_kind": "invocation"
+      },
+      "note": "`chebyshevTsequence` together with `Sequence.span_degreeLT` shows polynomials of bounded degree are linear combinations of `T_n`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Vieta–Lucas and Vieta–Fibonacci polynomials",
+      "anchor": {
+        "section": "Families of polynomials related to Chebyshev polynomials",
+        "snippet": "closely related to Chebyshev polynomials are sometimes used"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Polynomial.Chebyshev.C",
+        "module": "Mathlib.RingTheory.Polynomial.Chebyshev",
+        "match_kind": "exact"
+      },
+      "note": "`Polynomial.Chebyshev.C` and `S` are the Vieta–Lucas and Vieta–Fibonacci polynomials, with `C_n(2x) = 2T_n(x)` and `S_n(2x) = U_n(x)`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Shifted Chebyshev polynomials",
+      "anchor": {
+        "section": "Families of polynomials related to Chebyshev polynomials",
+        "snippet": "Shifted Chebyshev polynomials of the first and second kinds are related to the Chebyshev polynomials by"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Shifted Chebyshev polynomials `T_n*(x) = T_n(2x − 1)` are not defined in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Chebyshev polynomials of the third and fourth kinds",
+      "anchor": {
+        "section": "Families of polynomials related to Chebyshev polynomials",
+        "snippet": "The Chebyshev polynomials of the third kind are defined as"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Third- and fourth-kind Chebyshev polynomials (V_n, W_n) are not in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Third/fourth kind orthogonality and Jacobi proportionality",
+      "anchor": {
+        "section": "Families of polynomials related to Chebyshev polynomials",
+        "snippet": "are orthogonal with respect to the weights"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Common recurrence for four families",
+      "anchor": {
+        "section": "Families of polynomials related to Chebyshev polynomials",
+        "snippet": "All four families satisfy the recurrence"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Only T and U recurrences are present; third/fourth kind not defined.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Factorization via cyclotomic polynomials",
+      "anchor": {
+        "section": "Irreducible Factorization of Chebyshev Polynomials",
+        "snippet": "the Chebyshev polynomials [MATH] and [MATH] can be factorized as follows"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No factorization of `T_n`/`U_n` via cyclotomic polynomials is in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Irreducibility of cyclotomic pre-polynomials",
+      "anchor": {
+        "section": "Irreducible Factorization of Chebyshev Polynomials",
+        "snippet": "From the irreducibility of the polynomials"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Even order modified Chebyshev polynomials",
+      "anchor": {
+        "section": "Even order modified Chebyshev polynomials",
+        "snippet": "Even order modified Chebyshev polynomials may be created from the Chebyshev nodes"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "4th order even order modified Chebyshev polynomial",
+      "anchor": {
+        "section": "Even order modified Chebyshev polynomials",
+        "snippet": "For example, the 4th order Chebyshev polynomial from the example above"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Not formalized.",
+      "provenance": "ai"
+    }
+  ]
+}

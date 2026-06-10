@@ -1,0 +1,299 @@
+{
+  "slug": "Sheaf_mathematics",
+  "wikipedia_title": "Sheaf (mathematics)",
+  "display_title": "Sheaf (mathematics)",
+  "schema_version": 1,
+  "source": "claude-agent-sdk/annotate_articles.py",
+  "annotations": [
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle {\\tilde {M}}(D_{f}):=M[1/f],}"
+      },
+      "status": "partial",
+      "decl": "AlgebraicGeometry.structureSheafInType",
+      "module": "Mathlib.AlgebraicGeometry.StructureSheaf",
+      "note": "Mathlib's structure sheaf on Spec R assigns localizations on basic opens (toBasicOpenₗ); article's exact M[1/f] formula is the value on D_f."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\Gamma (Y/X)(U)=\\{s:U\\to Y,f\\circ s=\\operatorname {id} _{U}\\}.}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Mathlib has sheaves of continuous/smooth functions but no general sheaf-of-sections-of-a-continuous-map construction stated this way."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\mathbb {C} {\\stackrel {\\exp }{\\longrightarrow }}\\mathbb {C} \\setminus \\{0\\}}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Concrete illustrative example (complex exponential covering); not a named Mathlib declaration."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle F(\\varnothing )=\\{\\varnothing \\},\\ F(\\{x\\})=\\mathbb {R} ,\\ F(\\{y\\})=\\mathbb {R} ,\\ F(\\{x,y\\})=\\mathbb {R} \\times \\mathbb {R} \\times \\mathbb {R} }"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Pedagogical example of a non-sheaf presheaf on a two-point space; not formalized."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle f:X\\to \\mathbb {C} }"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Informal statement about global holomorphic functions on compact complex manifolds; not a Mathlib declaration."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle {\\begin{array}{rcl}{\\mathcal {F}}(U)&\\xrightarrow {\\quad \\varphi _{U}\\quad } &{\\mathcal {G}}(U)\\\\r_{V}^{U}{\\Biggl \\downarrow }&&{\\Biggl \\downarrow }{r'}_{V}^{U}\\\\{\\mathcal {F}}(V)&{\\xrightarrow[{\\quad \\varphi _{V}\\quad }]{}}&{\\mathcal {G}}(V)\\end{array}}}"
+      },
+      "status": "partial",
+      "decl": "Sheaf",
+      "module": "Mathlib.CategoryTheory.Sites.Sheaf",
+      "note": "Morphisms in the Sheaf category are natural transformations, so this commuting-square condition is automatic from `Sheaf.Hom` naturality."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle {\\frac {\\mathrm {d} }{\\mathrm {d} x}}\\colon {\\mathcal {O}}_{\\mathbb {R} }^{n}\\to {\\mathcal {O}}_{\\mathbb {R} }^{n-1}.}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Concrete example of a sheaf morphism (differentiation on smooth functions on ℝ); not a named Mathlib decl."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle {\\mathcal {F}}_{x}=\\varinjlim _{U\\ni x}{\\mathcal {F}}(U),}"
+      },
+      "status": "formalized",
+      "decl": "TopCat.Presheaf.stalk",
+      "module": "Mathlib.Topology.Sheaves.Stalks",
+      "note": "Mathlib defines the stalk as exactly this filtered colimit over open neighborhoods of x."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle E\\to X.}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Notation for the étale-space map in the sheafification construction; not itself a Mathlib declaration."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle 0\\to K\\to F\\to Q\\to 0.}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Generic short exact sequence of subsheaf/sheaf/quotient; no dedicated Mathlib decl exists for this triple."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle {\\mathcal {Hom}}(F,G)}"
+      },
+      "status": "formalized",
+      "decl": "sheafHom",
+      "module": "Mathlib.CategoryTheory.Sites.SheafHom",
+      "note": "Mathlib's `sheafHom` (and `presheafHom`) is the internal-hom sheaf of morphisms F → G."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle (f_{*}{\\mathcal {F}})(V)={\\mathcal {F}}(f^{-1}(V)).}"
+      },
+      "status": "formalized",
+      "decl": "TopCat.Presheaf.pushforward",
+      "module": "Mathlib.Topology.Sheaves.Presheaf",
+      "note": "Mathlib's `pushforward` functor sends F to V ↦ F(f⁻¹V), exactly the direct-image formula."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle S_{x}=i_{*}(S)}"
+      },
+      "status": "formalized",
+      "decl": "skyscraperPresheaf_eq_pushforward",
+      "module": "Mathlib.Topology.Sheaves.Skyscraper",
+      "note": "Mathlib shows the skyscraper sheaf at x equals the pushforward along the inclusion of {x}."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle {\\mathcal {G}}_{x}=i^{-1}{\\mathcal {G}}(\\{x\\}).}"
+      },
+      "status": "partial",
+      "decl": "TopCat.Presheaf.stalkPullbackIso",
+      "module": "Mathlib.Topology.Sheaves.Stalks",
+      "note": "Mathlib's `stalkPullbackIso` relates the stalk to inverse images, capturing that G_x is the inverse image at the point."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle V\\mapsto {\\begin{cases}{\\mathcal {F}}(V)&{\\textrm {if}}\\ V\\subseteq U\\\\0&{\\textrm {otherwise.}}\\end{cases}}}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Extension-by-zero (j_!) functor for open immersions does not appear to be formalized in Mathlib."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle F(U)\\rightarrow \\prod _{i}F(U_{i}){{{} \\atop \\longrightarrow } \\atop {\\longrightarrow  \\atop {}}}\\prod _{i,j}F(U_{i}\\cap U_{j}).}"
+      },
+      "status": "formalized",
+      "decl": "TopCat.Presheaf.SheafConditionEqualizerProducts.IsSheafEqualizerProducts",
+      "module": "Mathlib.Topology.Sheaves.SheafCondition.EqualizerProducts",
+      "note": "Mathlib formulates the sheaf condition as an equalizer of the two product maps between F(U), ∏F(Uᵢ), ∏F(Uᵢ∩Uⱼ)."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\operatorname {res} _{U_{i},U}\\colon F(U)\\rightarrow F(U_{i})}"
+      },
+      "status": "partial",
+      "decl": "TopCat.Presheaf.SheafConditionEqualizerProducts.res",
+      "module": "Mathlib.Topology.Sheaves.SheafCondition.EqualizerProducts",
+      "note": "The restriction F(U) → ∏F(Uᵢ) is the `res` map; per-index restrictions arise from the presheaf functor's action on inclusions."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\operatorname {res} _{U_{i}\\cap U_{j},U_{i}}\\colon F(U_{i})\\rightarrow F(U_{i}\\cap U_{j})}"
+      },
+      "status": "partial",
+      "decl": "TopCat.Presheaf.SheafConditionEqualizerProducts.leftRes",
+      "module": "Mathlib.Topology.Sheaves.SheafCondition.EqualizerProducts",
+      "note": "`leftRes` packages the restrictions ∏F(Uᵢ) → ∏F(Uᵢ∩Uⱼ) coming from the inclusion Uᵢ∩Uⱼ ⊆ Uᵢ."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\operatorname {res} _{U_{i}\\cap U_{j},U_{j}}\\colon F(U_{j})\\rightarrow F(U_{i}\\cap U_{j}).}"
+      },
+      "status": "partial",
+      "decl": "TopCat.Presheaf.SheafConditionEqualizerProducts.rightRes",
+      "module": "Mathlib.Topology.Sheaves.SheafCondition.EqualizerProducts",
+      "note": "`rightRes` packages the restrictions ∏F(Uⱼ) → ∏F(Uᵢ∩Uⱼ) coming from the inclusion Uᵢ∩Uⱼ ⊆ Uⱼ."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle 0\\to F(U)\\to \\prod _{i}F(U_{i})\\xrightarrow {\\operatorname {res} _{U_{i}\\cap U_{j},U_{i}}-\\operatorname {res} _{U_{i}\\cap U_{j},U_{j}}} \\prod _{i,j}F(U_{i}\\cap U_{j}).}"
+      },
+      "status": "partial",
+      "decl": "TopCat.Presheaf.SheafConditionEqualizerProducts.IsSheafEqualizerProducts",
+      "module": "Mathlib.Topology.Sheaves.SheafCondition.EqualizerProducts",
+      "note": "This abelian-category exact sequence is the kernel/equalizer formulation of the same sheaf condition Mathlib formalizes."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle {\\mathcal {O}}{\\stackrel {\\exp }{\\to }}{\\mathcal {O}}^{\\times }}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Holomorphic exponential exact sequence used as motivating example; not a Mathlib declaration."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle 0\\to {\\mathcal {F}}_{1}\\to {\\mathcal {F}}_{2}\\to {\\mathcal {F}}_{3}\\to 0,}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Generic short exact sequence of sheaves of abelian groups; not a specific named decl."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle 0\\to \\Gamma (U,{\\mathcal {F}}_{1})\\to \\Gamma (U,{\\mathcal {F}}_{2})\\to \\Gamma (U,{\\mathcal {F}}_{3})\\to H^{1}(U,{\\mathcal {F}}_{1})\\to H^{1}(U,{\\mathcal {F}}_{2})\\to H^{1}(U,{\\mathcal {F}}_{3})\\to H^{2}(U,{\\mathcal {F}}_{1})\\to \\dots }"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Long exact sequence in sheaf cohomology — sheaf cohomology Hⁿ(U,ℱ) is not yet developed as a Mathlib API."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle H^{n}(X,{\\mathcal {F}})=\\operatorname {Hom} _{D(X)}(\\mathbf {Z} ,{\\mathcal {F}}[n]).}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Derived-category definition of sheaf cohomology is not formalized in Mathlib."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle f^{-1}:D(Y)\\rightleftarrows D(X):Rf_{*}}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Adjunction between f⁻¹ and Rf_* on derived categories of sheaves is not formalized."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle (R^{i}f_{!}{\\mathcal {F}})_{y}=H_{c}^{i}(f^{-1}(y),{\\mathcal {F}}).}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Proper-base-change stalk formula for Rⁱf_! is not formalized in Mathlib."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle Rf_{!}:D(X)\\rightleftarrows D(Y):f^{!}.}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Verdier-duality adjunction (Rf_! ⊣ f^!) is not formalized in Mathlib."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle f^{!}{\\underline {\\mathbf {R} }}\\cong {\\underline {\\mathbf {R} }}[n].}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Dualizing complex on a smooth orientable n-manifold is not formalized."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle [Y_{1}]\\cdot [Y_{2}]=[{\\mathcal {O}}_{Y_{1}}\\otimes _{{\\mathcal {O}}_{X}}^{\\mathbf {L} }{\\mathcal {O}}_{Y_{2}}]\\in K({\\text{Coh(X)}})}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Intersection product via derived tensor in the Grothendieck group of coherent sheaves is not formalized."
+    }
+  ]
+}

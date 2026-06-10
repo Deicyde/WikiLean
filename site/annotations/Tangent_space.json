@@ -1,0 +1,467 @@
+{
+  "slug": "Tangent_space",
+  "wikipedia_title": "Tangent space",
+  "display_title": "Tangent space",
+  "schema_version": 3,
+  "annotation_style": "theorem_article",
+  "annotations": [
+    {
+      "kind": "definition",
+      "label": "Tangent space (informal)",
+      "anchor": {
+        "section": "Informal description",
+        "snippet": "a real vector space that intuitively contains the possible directions in which one can tangentially pass through"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "TangentSpace",
+        "module": "Mathlib.Geometry.Manifold.IsManifold.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`TangentSpace I x` is defined (as a type synonym for the model space `E`) with its vector-space structure, giving the tangent space at a point of a manifold.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Tangent vectors",
+      "anchor": {
+        "section": "Informal description",
+        "snippet": "are called the tangent vectors at"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "TangentSpace",
+        "module": "Mathlib.Geometry.Manifold.IsManifold.Basic",
+        "match_kind": "exact"
+      },
+      "note": "Tangent vectors are exactly the terms of `TangentSpace I x`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Dimension of tangent space equals manifold dimension",
+      "anchor": {
+        "section": "Informal description",
+        "snippet": "The dimension of the tangent space at every point of a connected manifold is the same as that of the manifold itself"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "TangentSpace",
+        "module": "Mathlib.Geometry.Manifold.IsManifold.Basic",
+        "match_kind": null
+      },
+      "note": "Holds definitionally since `TangentSpace I x := E` equals the model space, but no separate `dim`-of-manifold lemma asserts the equality.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Tangent plane of a sphere",
+      "anchor": {
+        "section": "Informal description",
+        "snippet": "one can picture the tangent space at a point as the plane that touches the sphere at that point"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "range_mfderiv_coe_sphere",
+        "module": "Mathlib.Geometry.Manifold.Instances.Sphere",
+        "match_kind": "special_case"
+      },
+      "note": "`range_mfderiv_coe_sphere` identifies the tangent space of the unit sphere at `v` with the orthogonal complement `(ℝ ∙ v)ᗮ`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Tangent space of an algebraic variety",
+      "anchor": {
+        "section": "Informal description",
+        "snippet": "there is an intrinsic definition of the tangent space at a point of an algebraic variety"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "IsLocalRing.CotangentSpace",
+        "module": "Mathlib.RingTheory.Ideal.Cotangent",
+        "match_kind": null
+      },
+      "note": "The algebraic cotangent space `m ⧸ m²` of a local ring is formalized, but the (Zariski) tangent space of a variety/scheme point itself is not defined.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Non-singular and singular points",
+      "anchor": {
+        "section": "Informal description",
+        "snippet": "are called non-singular points; the others are called singular points"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "IsRegularLocalRing",
+        "module": "Mathlib.RingTheory.RegularLocalRing.Defs",
+        "match_kind": null
+      },
+      "note": "Non-singularity is captured algebraically by `IsRegularLocalRing` (regular local ring of the point), but a geometric singular/non-singular-point predicate on varieties is not defined.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Vector field",
+      "anchor": {
+        "section": "Informal description",
+        "snippet": "A vector field attaches to every point of the manifold a vector from the tangent space at that point"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "VectorField.mlieBracket",
+        "module": "Mathlib.Geometry.Manifold.VectorField.LieBracket",
+        "match_kind": null
+      },
+      "note": "Vector fields are represented as sections `Π (x : M), TangentSpace I x` and have substantial API (e.g. `VectorField.mlieBracket`), but there is no standalone `VectorField` definition.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Tangent bundle",
+      "anchor": {
+        "section": "Informal description",
+        "snippet": "to form a new differentiable manifold with twice the dimension of the original manifold"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "TangentBundle",
+        "module": "Mathlib.Geometry.Manifold.IsManifold.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`TangentBundle I M` is defined as the total space `Σ x, TangentSpace I x` and is given a manifold structure in `VectorBundle.Tangent`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Tangent space via tangent curves",
+      "anchor": {
+        "section": "Definition via tangent curves",
+        "snippet": "equivalence classes of such curves are known as tangent vectors of"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib defines the tangent space as a type synonym for `E`, not as equivalence classes of tangent curves.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Vector-space structure via chart",
+      "anchor": {
+        "section": "Definition via tangent curves",
+        "snippet": "turns out to be bijective and may be used to transfer the vector-space operations"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "tangentCoordChange",
+        "module": "Mathlib.Geometry.Manifold.VectorBundle.Tangent",
+        "match_kind": null
+      },
+      "note": "The vector-space structure on `TangentSpace` is built in (it is `E`), and chart-change linear maps `tangentCoordChange` exist, but no proposition transfers operations across a chart bijection of curve-classes.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Smooth functions on a manifold",
+      "anchor": {
+        "section": "Definition via derivations",
+        "snippet": "if and only if for every coordinate chart"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "ContMDiff",
+        "module": "Mathlib.Geometry.Manifold.ContMDiff.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`ContMDiff I I' n f` defines smoothness of maps between manifolds via charts, with the smooth-function bundled type `C^n⟮I, M; 𝕜⟯`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Smooth functions form a real associative algebra",
+      "anchor": {
+        "section": "Definition via derivations",
+        "snippet": "is a real associative algebra with respect to the pointwise product and sum of functions"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "ContMDiffMap.algebra",
+        "module": "Mathlib.Geometry.Manifold.Algebra.SmoothFunctions",
+        "match_kind": "exact"
+      },
+      "note": "Instances `ContMDiffMap.commRing` and `ContMDiffMap.algebra` make `C^n⟮I, N; 𝓘(𝕜,A), A⟯` a (commutative) algebra under pointwise operations.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Derivation at a point",
+      "anchor": {
+        "section": "Definition via derivations",
+        "snippet": "that satisfies the Leibniz identity"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Derivation",
+        "module": "Mathlib.RingTheory.Derivation.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`Derivation R A M` is a linear map satisfying the Leibniz rule (`leibniz'`), specialized to a point by `PointDerivation`.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Definition via derivations",
+          "snippet": "that satisfies the Leibniz identity"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\forall f,g\\in {C^{\\infty }}(M):\\qquad D(fg)=D(f)\\cdot g(x)+f(x)\\cdot D(g),}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Derivation vanishes on constant functions",
+      "anchor": {
+        "section": "Definition via derivations",
+        "snippet": "For every identically constant function"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Derivation.map_algebraMap",
+        "module": "Mathlib.RingTheory.Derivation.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`Derivation.map_algebraMap` (and `map_one_eq_zero`) shows a derivation sends constants (algebra-map elements) to zero.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Tangent space as derivations",
+      "anchor": {
+        "section": "Definition via derivations",
+        "snippet": "the set of all derivations at"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "PointDerivation",
+        "module": "Mathlib.Geometry.Manifold.DerivationBundle",
+        "match_kind": "exact"
+      },
+      "note": "`PointDerivation I x := Derivation 𝕜 C^∞⟮I,M;𝕜⟯⟨x⟩ 𝕜` is the space of derivations at a point, offered as an alternative tangent-space definition.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Zariski tangent space",
+      "anchor": {
+        "section": "Generalizations",
+        "snippet": "is the collection of all"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "IsLocalRing.CotangentSpace",
+        "module": "Mathlib.RingTheory.Ideal.Cotangent",
+        "match_kind": null
+      },
+      "note": "The cotangent space `CotangentSpace R = m ⧸ m²` is formalized; the Zariski tangent space (its dual) is obtainable but not explicitly named.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Isomorphism of curve and derivation tangent spaces",
+      "anchor": {
+        "section": "Equivalence of the definitions",
+        "snippet": "is a vector space isomorphism between the space of the equivalence classes"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib does not prove an isomorphism between the curve-based `TangentSpace` and `PointDerivation` (the docs note this identification fails in general).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Quotient isomorphic to cotangent space",
+      "anchor": {
+        "section": "Definition via cotangent spaces",
+        "snippet": "can be shown to be isomorphic to the cotangent space"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "IsLocalRing.CotangentSpace",
+        "module": "Mathlib.RingTheory.Ideal.Cotangent",
+        "match_kind": null
+      },
+      "note": "Algebraically `CotangentSpace R` is by definition `m ⧸ m²`, but the manifold germ-ring version `I_x ⧸ I_x²` and its identification with a cotangent space are not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Tangent space via cotangent space",
+      "anchor": {
+        "section": "Definition via cotangent spaces",
+        "snippet": "may then be defined as the dual space of"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "IsLocalRing.CotangentSpace",
+        "module": "Mathlib.RingTheory.Ideal.Cotangent",
+        "match_kind": null
+      },
+      "note": "The cotangent space `m ⧸ m²` is defined and a dual could be taken, but the tangent space as the dual of `I_x ⧸ I_x²` in the manifold setting is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Equivalence of derivation and cotangent definitions",
+      "anchor": {
+        "section": "Definition via cotangent spaces",
+        "snippet": "an equivalence between tangent spaces defined via derivations and tangent spaces defined via cotangent spaces"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No equivalence between the derivation and cotangent definitions of the tangent space is proved in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Tangent spaces of an open subset of R^n",
+      "anchor": {
+        "section": "Properties",
+        "snippet": "the tangent spaces are all naturally identified with"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "NormedSpace.fromTangentSpace",
+        "module": "Mathlib.Geometry.Manifold.IsManifold.Basic",
+        "match_kind": "special_case"
+      },
+      "note": "`NormedSpace.fromTangentSpace` gives the canonical isomorphism `TangentSpace 𝓘(𝕜,E) v ≃L[𝕜] E`, identifying tangent spaces of a normed space (hence an open subset) with the space itself.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Directional derivative in R^n",
+      "anchor": {
+        "section": "Tangent vectors as directional derivatives",
+        "snippet": "one defines the corresponding directional derivative at a point"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "lineDeriv",
+        "module": "Mathlib.Analysis.Calculus.LineDeriv.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`lineDeriv 𝕜 f x v = deriv (fun t ↦ f (x + t • v)) 0` is exactly the directional derivative of `f` at `x` along `v`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Derivations in R^n are directional derivatives",
+      "anchor": {
+        "section": "Tangent vectors as directional derivatives",
+        "snippet": "there is a one-to-one correspondence between vectors"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib does not establish the bijection between vectors of `ℝⁿ` and derivations of smooth functions at a point.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Directional derivative on a manifold",
+      "anchor": {
+        "section": "Tangent vectors as directional derivatives",
+        "snippet": "define the directional derivative"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "mfderiv",
+        "module": "Mathlib.Geometry.Manifold.MFDeriv.Defs",
+        "match_kind": null
+      },
+      "note": "The directional derivative is expressible via `mfderiv` or evaluation of a `PointDerivation`, but there is no dedicated manifold directional-derivative definition.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Coordinate basis of the tangent space",
+      "anchor": {
+        "section": "Basis of the tangent space at a point",
+        "snippet": "then one can define an ordered basis"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has no coordinate basis `∂/∂xⁱ` of the tangent space for general manifolds.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Tangent vector as linear combination of basis",
+      "anchor": {
+        "section": "Basis of the tangent space at a point",
+        "snippet": "as a linear combination of the basis tangent vectors"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Without a coordinate basis of the tangent space, the expansion of a tangent vector in such a basis is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Derivative (pushforward) of a smooth map",
+      "anchor": {
+        "section": "The derivative of a map",
+        "snippet": "induces natural linear maps between their corresponding tangent spaces"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "tangentMap",
+        "module": "Mathlib.Geometry.Manifold.MFDeriv.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`mfderiv` gives the induced linear map between tangent spaces and `tangentMap` the pushforward between tangent bundles of a smooth map.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Local diffeomorphism and inverse function theorem",
+      "anchor": {
+        "type": "theorem_box",
+        "value": "Theorem"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "LocalDiffeomorphAt.mfderivToContinuousLinearEquiv",
+        "module": "Mathlib.Geometry.Manifold.LocalDiffeomorph",
+        "match_kind": "invocation"
+      },
+      "note": "The direction local-diffeomorphism ⇒ `mfderiv` is a linear iso is proved, but the converse (manifold inverse function theorem: invertible differential ⇒ local diffeomorphism) is still a TODO.",
+      "provenance": "ai"
+    }
+  ]
+}

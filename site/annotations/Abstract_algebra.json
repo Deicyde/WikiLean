@@ -1,0 +1,521 @@
+{
+  "slug": "Abstract_algebra",
+  "wikipedia_title": "Abstract algebra",
+  "display_title": "Abstract algebra",
+  "schema_version": 3,
+  "annotation_style": "theorem_article",
+  "annotations": [
+    {
+      "kind": "definition",
+      "label": "Abstract algebra",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "abstract algebra or modern algebra is the study of algebraic structures"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Abstract algebra as a field of study is not itself a formal object in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Universal algebra",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "Universal algebra is a related subject that studies types of algebraic structures as single objects"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has no universal-algebra framework (signatures/varieties as single objects).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Variety of groups",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "which is called the variety of groups"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No formalization of varieties in the universal-algebra sense exists in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Rules of symbolical algebra",
+      "anchor": {
+        "section": "Elementary algebra",
+        "snippet": "in symbolical algebra all rules of operations hold with no restrictions"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Peacock's principle of permanence is a historical/philosophical statement with no Mathlib counterpart.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Square-root identity over reals vs complex numbers",
+      "anchor": {
+        "section": "Elementary algebra",
+        "snippet": "holds for the nonnegative real numbers , but not for general complex numbers"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Real.sqrt_mul",
+        "module": "Mathlib.Data.Real.Sqrt",
+        "match_kind": "special_case"
+      },
+      "note": "`Real.sqrt_mul` proves √(xy)=√x·√y for nonnegative reals; the complex failure is not a formal statement.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Monoid (Cayley)",
+      "anchor": {
+        "section": "Early group theory",
+        "snippet": "defined a group as a set with an associative composition operation and the identity 1, today called a monoid"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Monoid",
+        "module": "Mathlib.Algebra.Group.Defs",
+        "match_kind": "exact"
+      },
+      "note": "Mathlib's `Monoid` is exactly a set with an associative operation and an identity.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Kronecker's abstract binary operation",
+      "anchor": {
+        "section": "Early group theory",
+        "snippet": "defined an abstract binary operation that was closed, commutative, associative, and had the left cancellation property"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "LeftCancelMonoid",
+        "module": "Mathlib.Algebra.Group.Defs",
+        "match_kind": null
+      },
+      "note": "Mathlib has commutative left-cancellative monoids (`CommMonoid`/`LeftCancelMonoid`) but no single decl packaging exactly these historical axioms.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Weber's definition of a group",
+      "anchor": {
+        "section": "Early group theory",
+        "snippet": "definition of a group was a closed binary operation that was associative and had left and right cancellation"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "LeftCancelMonoid.groupOfFinite",
+        "module": "Mathlib.GroupTheory.OrderOfElement",
+        "match_kind": null
+      },
+      "note": "Mathlib proves a finite (left/right) cancellative monoid is a group via `LeftCancelMonoid.groupOfFinite`, capturing Weber's finite-case characterization rather than a definition.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Sylow's theorem",
+      "anchor": {
+        "section": "Early group theory",
+        "snippet": "Sylow's theorem was reproven by Frobenius"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Sylow.exists_subgroup_card_pow_prime",
+        "module": "Mathlib.GroupTheory.Sylow",
+        "match_kind": "generalization"
+      },
+      "note": "Sylow's theorems are formalized in `Mathlib.GroupTheory.Sylow`, including a generalization of Sylow I.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Cayley's theorem (embedding in permutation groups)",
+      "anchor": {
+        "section": "Early group theory",
+        "snippet": "every finite group is a subgroup of a permutation group"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Equiv.Perm.subgroupOfMulAction",
+        "module": "Mathlib.GroupTheory.Perm.Subgroup",
+        "match_kind": "generalization"
+      },
+      "note": "`Equiv.Perm.subgroupOfMulAction` is Cayley's theorem, embedding any group (not just finite) into a symmetric group.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Jordan–Hölder theorem",
+      "anchor": {
+        "section": "Early group theory",
+        "snippet": "He also completed the Jordan–Hölder theorem"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "CompositionSeries.jordan_holder",
+        "module": "Mathlib.Order.JordanHolder",
+        "match_kind": "generalization"
+      },
+      "note": "`CompositionSeries.jordan_holder` proves uniqueness of composition factors for any Jordan–Hölder lattice (subgroups being one instance).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Associative algebra (Peirce)",
+      "anchor": {
+        "section": "Early ring theory",
+        "snippet": "gave an explicit definition of an associative algebra"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Algebra",
+        "module": "Mathlib.Algebra.Algebra.Defs",
+        "match_kind": "exact"
+      },
+      "note": "Mathlib's `Algebra R A` (with `Semiring A`) is precisely an associative unital algebra over a commutative ring.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Every algebra contains a nilpotent or idempotent element",
+      "anchor": {
+        "section": "Early ring theory",
+        "snippet": "proved that any algebra contains one or the other"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No Mathlib theorem states that every (finite-dimensional) algebra contains a nonzero nilpotent or idempotent element.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Frobenius theorem (real division algebras)",
+      "anchor": {
+        "section": "Early ring theory",
+        "snippet": "were the real numbers, the complex numbers, and the quaternions"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib does not formalize Frobenius's classification of finite-dimensional real associative division algebras as ℝ, ℂ, ℍ.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Decomposition and classification of simple Lie algebras",
+      "anchor": {
+        "section": "Early ring theory",
+        "snippet": "semisimple Lie algebras could be decomposed into simple ones, and classified all simple Lie algebras"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "LieAlgebra.IsSemisimple",
+        "module": "Mathlib.Algebra.Lie.Semisimple.Basic",
+        "match_kind": null
+      },
+      "note": "Mathlib formalizes that a semisimple Lie algebra decomposes uniquely into simple-ideal atoms, but the full Cartan–Killing classification of simple Lie algebras is not done.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Wedderburn decomposition of associative algebras",
+      "anchor": {
+        "section": "Early ring theory",
+        "snippet": "uniquely decomposes into the direct sums of a nilpotent algebra and a semisimple algebra"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": null,
+        "module": "Mathlib.RingTheory.SimpleModule.WedderburnArtin",
+        "match_kind": null
+      },
+      "note": "Mathlib has the Wedderburn–Artin structure theorem for semisimple rings, but not the Wedderburn principal theorem (radical + semisimple decomposition of an algebra).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Gaussian integers form a UFD",
+      "anchor": {
+        "section": "Early ring theory",
+        "snippet": "showed that they form a unique factorization domain"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": null,
+        "module": "Mathlib.NumberTheory.Zsqrtd.GaussianInt",
+        "match_kind": "invocation"
+      },
+      "note": "ℤ[i] is given a `EuclideanDomain` instance in `GaussianInt`, so it is a UFD via Mathlib's EuclideanDomain → PID → UniqueFactorizationMonoid chain.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Unique factorization of ideals (Dedekind)",
+      "anchor": {
+        "section": "Early ring theory",
+        "snippet": "every nonzero ideal in the domain of integers of an algebraic number field is a unique product of prime ideals"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Ideal.uniqueFactorizationMonoid",
+        "module": "Mathlib.RingTheory.DedekindDomain.Ideal.Basic",
+        "match_kind": "generalization"
+      },
+      "note": "`Ideal.uniqueFactorizationMonoid` gives unique factorization of ideals in any Dedekind domain, of which a number field's ring of integers is a special case.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Lasker–Noether theorem",
+      "anchor": {
+        "section": "Early ring theory",
+        "snippet": "every ideal in a polynomial ring is a finite intersection of primary ideals"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Submodule.isLasker",
+        "module": "Mathlib.RingTheory.Lasker",
+        "match_kind": "generalization"
+      },
+      "note": "`Submodule.isLasker` shows every Noetherian module admits a primary decomposition, generalizing the Lasker–Noether theorem for polynomial rings.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Gordan's finiteness theorem for invariants",
+      "anchor": {
+        "section": "Early ring theory",
+        "snippet": "the graded algebra of invariants of a binary form over the complex numbers was finitely generated"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No Mathlib result on finite generation of the invariant algebra of a binary form.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Hilbert's basis theorem",
+      "anchor": {
+        "section": "Early ring theory",
+        "snippet": "any form of any degree or number of variables has a basis"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Polynomial.isNoetherianRing",
+        "module": "Mathlib.RingTheory.Polynomial.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`Polynomial.isNoetherianRing` is the Hilbert basis theorem: a polynomial ring over a Noetherian ring is Noetherian.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Fraenkel's axiomatic ring",
+      "anchor": {
+        "section": "Early ring theory",
+        "snippet": "a set with two operations addition, which forms a group"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Ring",
+        "module": "Mathlib.Algebra.Ring.Defs",
+        "match_kind": "exact"
+      },
+      "note": "Mathlib's `Ring` (an additive group with a compatible associative multiplication) realizes this axiomatic notion of a ring.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Field (Dedekind's Körper)",
+      "anchor": {
+        "section": "Early field theory",
+        "snippet": "for a set of real or complex numbers that is closed under the four arithmetic operations"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Field",
+        "module": "Mathlib.Algebra.Field.Defs",
+        "match_kind": "generalization"
+      },
+      "note": "Mathlib's abstract `Field` generalizes Dedekind's concrete subfields of ℂ closed under the four operations.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Domain of rationality (Kronecker)",
+      "anchor": {
+        "section": "Early field theory",
+        "snippet": "defined what he called a domain of rationality"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "IntermediateField",
+        "module": "Mathlib.FieldTheory.IntermediateField.Basic",
+        "match_kind": "generalization"
+      },
+      "note": "Kronecker's domain of rationality (a field generated by adjoining quantities) corresponds to Mathlib's `IntermediateField`/`Subfield` constructions.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Abstract field (Steinitz)",
+      "anchor": {
+        "section": "Early field theory",
+        "snippet": "He axiomatically defined fields with the modern definition"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Field",
+        "module": "Mathlib.Algebra.Field.Defs",
+        "match_kind": "exact"
+      },
+      "note": "Mathlib's `Field` is the modern abstract axiomatic definition Steinitz introduced.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Magma",
+      "anchor": {
+        "section": "Basic concepts",
+        "snippet": "Those sets that have a certain binary operation defined on them form magmas"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "MagmaCat",
+        "module": "Mathlib.Algebra.Category.Semigrp.Basic",
+        "match_kind": "exact"
+      },
+      "note": "Mathlib represents magmas via the `Mul` typeclass (a type with one binary operation), bundled as the category `MagmaCat`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Structures with a single binary operation",
+      "anchor": {
+        "section": "Basic concepts",
+        "snippet": "Examples of algebraic structures with a single binary operation are"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Semigroup",
+        "module": "Mathlib.Algebra.Group.Defs",
+        "match_kind": "exact"
+      },
+      "note": "Single-operation structures (semigroup, monoid, group, etc.) are all formalized as typeclasses in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Structures with several operations",
+      "anchor": {
+        "section": "Basic concepts",
+        "snippet": "Examples involving several operations include"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Ring",
+        "module": "Mathlib.Algebra.Ring.Defs",
+        "match_kind": "exact"
+      },
+      "note": "Multi-operation structures (rings, fields, modules, algebras) are all formalized as typeclasses in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Group",
+      "anchor": {
+        "section": "Group theory",
+        "snippet": "A group is a set"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Group",
+        "module": "Mathlib.Algebra.Group.Defs",
+        "match_kind": "exact"
+      },
+      "note": "Mathlib's `Group` class is the standard group definition.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Ring",
+      "anchor": {
+        "section": "Ring theory",
+        "snippet": "A ring is a set"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Ring",
+        "module": "Mathlib.Algebra.Ring.Defs",
+        "match_kind": "exact"
+      },
+      "note": "Mathlib's `Ring` class is the standard ring definition.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Poincaré conjecture",
+      "anchor": {
+        "section": "Applications",
+        "snippet": "the fundamental group of a manifold, which encodes information about connectedness, can be used to determine whether a manifold is a sphere or not"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "SimplyConnectedSpace.nonempty_homeomorph_sphere_three",
+        "module": "Mathlib.Geometry.Manifold.PoincareConjecture",
+        "match_kind": null
+      },
+      "note": "The Poincaré conjecture is only *stated* (as `proof_wanted` declarations) in Mathlib, with no proof.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Fermat's Last Theorem (Wiles)",
+      "anchor": {
+        "section": "Applications",
+        "snippet": "Andrew Wiles proved Fermat's Last Theorem"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "FermatLastTheorem",
+        "module": "Mathlib.NumberTheory.FLT.Basic",
+        "match_kind": null
+      },
+      "note": "`FermatLastTheorem` is defined as a Prop and only special cases (e.g. n=4) and reductions are proven; Wiles's full proof is not in Mathlib.",
+      "provenance": "ai"
+    }
+  ]
+}

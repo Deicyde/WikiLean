@@ -1,0 +1,345 @@
+{
+  "slug": "Logical_conjunction",
+  "wikipedia_title": "Logical conjunction",
+  "display_title": "Logical conjunction",
+  "schema_version": 3,
+  "annotation_style": "theorem_article",
+  "annotations": [
+    {
+      "kind": "definition",
+      "label": "Logical conjunction (and)",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "and ("
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "And",
+        "module": "Init.Prelude",
+        "match_kind": "exact"
+      },
+      "note": "The `And` connective is defined in Lean core and used throughout Mathlib (e.g. Mathlib.Logic.Basic).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Conjunction of a set of operands",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "The and of a set of operands is true if and only if all of its operands are true"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Finset.inf_eq_top_iff",
+        "module": "Mathlib.Order.Finset",
+        "match_kind": "generalization"
+      },
+      "note": "Iterated conjunction over a finite set is captured by `Finset.inf` over `Prop`/`Bool` or via `∀ x ∈ s, p x`, but no single lemma matches verbatim.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Conjunct",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "An operand of a conjunction is a conjunct"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This is informal terminology with no Mathlib declaration.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Notation for conjunction",
+      "anchor": {
+        "section": "Notation",
+        "snippet": "And is usually denoted by an infix operator"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "And",
+        "module": "Init.Prelude",
+        "match_kind": "exact"
+      },
+      "note": "The infix `∧` notation for `And` is defined in Lean core and pervasively used in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Big wedge (iterated conjunction)",
+      "anchor": {
+        "section": "Notation",
+        "snippet": "the conjunction of an arbitrary number of elements"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Finset.inf",
+        "module": "Mathlib.Order.Finset.Lattice.Fold",
+        "match_kind": "generalization"
+      },
+      "note": "Iterated conjunction is expressed via `∀ x ∈ s, p x` or `Finset.inf`/`List.all`, not by a dedicated `⋀`-style operator.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Classical logical conjunction",
+      "anchor": {
+        "section": "Definition",
+        "snippet": "logical conjunction is an operation on two logical values"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "And",
+        "module": "Init.Prelude",
+        "match_kind": "exact"
+      },
+      "note": "Classical two-valued conjunction is realized as Lean's `And` (and `Bool.and` at the boolean level).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Conjunctive identity / empty conjunction",
+      "anchor": {
+        "section": "Definition",
+        "snippet": "The conjunctive identity is true"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "and_true",
+        "module": "Init.SimpLemmas",
+        "match_kind": "exact"
+      },
+      "note": "Lemmas `and_true` and `true_and` (core Lean, used throughout Mathlib) express that `True` is the identity of `∧`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Truth table of conjunction",
+      "anchor": {
+        "section": "Truth table",
+        "snippet": "The truth table of"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Bool.and_eq_true",
+        "module": "Init.Data.Bool",
+        "match_kind": "exact"
+      },
+      "note": "All four truth-table rows are encoded by `and_true`, `true_and`, `and_false`, `false_and` (core), and on `Bool` by `Bool.and_eq_true`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Conjunction defined by other operators",
+      "anchor": {
+        "section": "Defined by other operators",
+        "snippet": "In systems where logical conjunction is not a primitive"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "and_iff_not_or_not",
+        "module": "Mathlib.Logic.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`and_iff_not_or_not : a ∧ b ↔ ¬(¬a ∨ ¬b)` in Mathlib.Logic.Basic (line 420) gives the De Morgan definition via ¬ and ∨.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Conjunction introduction",
+      "anchor": {
+        "section": "Introduction and elimination rules",
+        "snippet": "conjunction introduction is a classically valid"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "And.intro",
+        "module": "Init.Prelude",
+        "match_kind": "exact"
+      },
+      "note": "`And.intro : a → b → a ∧ b` is the conjunction introduction rule, defined in Lean core and used throughout Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Bob likes apples and oranges",
+      "anchor": {
+        "section": "Introduction and elimination rules",
+        "snippet": "Here is an example of an argument that fits the form conjunction introduction"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Informal pedagogical example with no formal counterpart.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Conjunction elimination",
+      "anchor": {
+        "section": "Introduction and elimination rules",
+        "snippet": "Conjunction elimination is another classically valid"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "And.left",
+        "module": "Init.Prelude",
+        "match_kind": "exact"
+      },
+      "note": "`And.left` and `And.right` (Lean core) provide the two elimination rules; widely invoked in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Falsifying a conjunction",
+      "anchor": {
+        "section": "Definition (2)",
+        "snippet": "is proven false by establishing either"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "not_and_or",
+        "module": "Mathlib.Logic.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`not_and_or : ¬(a ∧ b) ↔ ¬a ∨ ¬b` in Mathlib.Logic.Basic (line 415) encodes that falsifying ∧ amounts to falsifying one conjunct.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Falsity from implication between conjuncts",
+      "anchor": {
+        "section": "Other proof strategies",
+        "snippet": "a conjunction can actually be proven false just by knowing about the relation of its conjuncts"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "not_and_not_right",
+        "module": "Mathlib.Logic.Basic",
+        "match_kind": "generalization"
+      },
+      "note": "`not_and_not_right : ¬(a ∧ ¬b) ↔ a → b` (Mathlib.Logic.Basic line 408) gives the closely related equivalence.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Properties of conjunction",
+      "anchor": {
+        "section": "Properties",
+        "snippet": "commutativity"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "and_comm",
+        "module": "Init.Core",
+        "match_kind": "exact"
+      },
+      "note": "`and_comm`, `and_assoc`, `and_self`, `and_true`, `true_and` (Lean core, used everywhere in Mathlib) cover the standard algebraic properties of ∧.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Conjunction as arithmetic multiplication",
+      "anchor": {
+        "section": "Properties",
+        "snippet": "logical conjunction works exactly like normal arithmetic multiplication"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No Mathlib lemma directly identifies `∧` with multiplication on {0,1}; one could express it via `Bool.toNat` but no such lemma exists verbatim.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Bitwise AND of binary words",
+      "anchor": {
+        "section": "Applications in computer engineering",
+        "snippet": "by taking the bitwise AND of each pair of bits at corresponding positions"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Nat.land",
+        "module": "Init.Data.Nat.Bitwise",
+        "match_kind": "exact"
+      },
+      "note": "Bitwise AND on naturals is `Nat.land` (Lean core; with Mathlib lemmas in Mathlib.Data.Nat.Bitwise).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Bit mask extraction",
+      "anchor": {
+        "section": "Applications in computer engineering",
+        "snippet": "This can be used to select part of a bitstring using a bit mask"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Application-level usage of bitwise AND for masking is not stated as a Mathlib lemma.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Subnet network address via AND",
+      "anchor": {
+        "section": "Applications in computer engineering",
+        "snippet": "bit masks are used to derive the network address of a subnet"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Networking-domain application with no Mathlib counterpart.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Curry–Howard: conjunction as product type",
+      "anchor": {
+        "section": "Applications in computer engineering",
+        "snippet": "The Curry–Howard correspondence relates logical conjunction to product types"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Prod",
+        "module": "Init.Prelude",
+        "match_kind": "generalization"
+      },
+      "note": "Lean realizes the correspondence via `And` (in `Prop`) and `Prod` / `PProd` (in `Type`), but no Mathlib theorem states the Curry–Howard equivalence formally.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Intersection via conjunction",
+      "anchor": {
+        "section": "Set-theoretic correspondence",
+        "snippet": "The membership of an element of an intersection set in set theory is defined in terms of a logical conjunction"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Set.mem_inter_iff",
+        "module": "Mathlib.Data.Set.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`Set.mem_inter_iff : x ∈ s ∩ t ↔ x ∈ s ∧ x ∈ t` defines set-intersection membership via ∧.",
+      "provenance": "ai"
+    }
+  ]
+}

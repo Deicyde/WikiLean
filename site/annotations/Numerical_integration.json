@@ -1,0 +1,601 @@
+{
+  "slug": "Numerical_integration",
+  "wikipedia_title": "Numerical integration",
+  "display_title": "Numerical integration",
+  "schema_version": 3,
+  "annotation_style": "theorem_article",
+  "annotations": [
+    {
+      "kind": "definition",
+      "label": "Numerical integration",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "comprises a broad family of algorithms for calculating the numerical value of a definite integral"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib formalizes exact integration (intervalIntegral) and one quadrature rule (trapezoidal), but has no general framework for numerical integration algorithms.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Numerical quadrature",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "The term numerical quadrature"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The term/concept of numerical quadrature is not defined in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Cubature",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "numerical integration over more than one dimension as cubature"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Multidimensional numerical integration (cubature) is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Basic problem of numerical integration",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "The basic problem in numerical integration is to compute an approximate solution to a definite integral"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "intervalIntegral",
+        "module": "Mathlib.MeasureTheory.Integral.IntervalIntegral.Basic",
+        "match_kind": null
+      },
+      "note": "The definite integral object being approximated is formalized as intervalIntegral, but the approximation problem itself is not stated.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Non-elementary antiderivative (Gaussian)",
+      "anchor": {
+        "section": "Motivation and need",
+        "snippet": "An example of such an integrand is"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "integral_gaussian",
+        "module": "Mathlib.Analysis.SpecialFunctions.Gaussian.GaussianIntegral",
+        "match_kind": null
+      },
+      "note": "integral_gaussian gives the value ∫ exp(-b·x²) = √(π/b), but the claim that exp(-x²) has no elementary antiderivative is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Geometric mean construction for rectangle quadrature",
+      "anchor": {
+        "section": "History",
+        "snippet": "equals their geometric mean"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This classical compass-and-straightedge construction equating a rectangle's area to a square of side the geometric mean is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Surface area of a sphere (Archimedes)",
+      "anchor": {
+        "section": "History",
+        "snippet": "The area of the surface of a sphere is equal to quadruple the area of a great circle of this sphere"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has volume-of-balls results but no theorem giving the surface area of a sphere as 4πr².",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Quadrature of the parabola (Archimedes)",
+      "anchor": {
+        "section": "History",
+        "snippet": "The area of a segment of the parabola cut from it by a straight line is 4/3 the area of the triangle inscribed in this segment"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No formalization of Archimedes' quadrature of the parabola exists in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Impossibility of squaring the circle",
+      "anchor": {
+        "section": "History",
+        "snippet": "The quadrature of the circle with compass and straightedge had been proved in the 19th century to be impossible"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Only the analytical part of Lindemann's theorem is present; transcendence of π (hence impossibility of squaring the circle) is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Quadrature rule",
+      "anchor": {
+        "section": "Methods for one-dimensional integrals",
+        "snippet": "A quadrature rule is an approximation of the definite integral of a function"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has no general definition of a quadrature rule as a weighted sum of function values; only the specific trapezoidal rule exists.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Midpoint / rectangle rule",
+      "anchor": {
+        "section": "Quadrature rules based on step functions",
+        "snippet": "This is called the midpoint rule or rectangle rule"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "trapezoidal_integral_one",
+        "module": "Mathlib.MeasureTheory.Integral.IntervalIntegral.TrapezoidalRule",
+        "match_kind": null
+      },
+      "note": "Mathlib has a related single-interval trapezoidal formula (trapezoidal_integral_one) but no genuine midpoint/rectangle rule using the midpoint value.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Quadrature rules based on step functions",
+          "snippet": "This is called the midpoint rule or rectangle rule"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\int _{a}^{b}f(x)\\,dx\\approx (b-a)f\\left({\\frac {a+b}{2}}\\right).}"
+        }
+      ]
+    },
+    {
+      "kind": "definition",
+      "label": "Trapezoidal rule",
+      "anchor": {
+        "section": "Quadrature rules based on interpolating functions",
+        "snippet": "This is called the trapezoidal rule"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "trapezoidal_integral",
+        "module": "Mathlib.MeasureTheory.Integral.IntervalIntegral.TrapezoidalRule",
+        "match_kind": "exact"
+      },
+      "note": "trapezoidal_integral defines integration of f over [a,b] using N trapezoids, exactly matching the trapezoidal rule.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Quadrature rules based on interpolating functions",
+          "snippet": "This is called the trapezoidal rule"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\int _{a}^{b}f(x)\\,dx\\approx (b-a)\\left({\\frac {f(a)+f(b)}{2}}\\right).}"
+        }
+      ]
+    },
+    {
+      "kind": "definition",
+      "label": "Composite rule",
+      "anchor": {
+        "section": "Quadrature rules based on interpolating functions",
+        "snippet": "This is called a composite rule"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "sum_trapezoidal_integral_adjacent_intervals",
+        "module": "Mathlib.MeasureTheory.Integral.IntervalIntegral.TrapezoidalRule",
+        "match_kind": null
+      },
+      "note": "The composite trapezoidal rule (sum over adjacent subintervals) is formalized, but the general notion of a composite rule for arbitrary base rules is not.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Quadrature rules based on interpolating functions",
+          "snippet": "This is called a composite rule"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\int _{a}^{b}f(x)\\,dx\\approx {\\frac {b-a}{n}}\\left({f(a) \\over 2}+\\sum _{k=1}^{n-1}\\left(f\\left(a+k{\\frac {b-a}{n}}\\right)\\right)+{f(b) \\over 2}\\right),}"
+        }
+      ]
+    },
+    {
+      "kind": "definition",
+      "label": "Newton–Cotes formulas",
+      "anchor": {
+        "section": "Quadrature rules based on interpolating functions",
+        "snippet": "yields the Newton–Cotes formulas"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "trapezoidal_integral",
+        "module": "Mathlib.MeasureTheory.Integral.IntervalIntegral.TrapezoidalRule",
+        "match_kind": "special_case"
+      },
+      "note": "The trapezoidal rule is the two-point closed Newton–Cotes formula, but the general Newton–Cotes family is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Simpson's rule",
+      "anchor": {
+        "section": "Quadrature rules based on interpolating functions",
+        "snippet": "which is based on a polynomial of order 2"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Simpson's rule (quadratic-interpolation quadrature) is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Gaussian quadrature accuracy",
+      "anchor": {
+        "section": "Quadrature rules based on interpolating functions",
+        "snippet": "A Gaussian quadrature rule is typically more accurate than a Newton–Cotes rule"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Gaussian quadrature and its accuracy/degree-of-exactness results are not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Clenshaw–Curtis quadrature",
+      "anchor": {
+        "section": "Quadrature rules based on interpolating functions",
+        "snippet": "Other quadrature methods with varying intervals include Clenshaw–Curtis quadrature"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Clenshaw–Curtis quadrature is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Nesting of Gaussian and Gauss–Kronrod rules",
+      "anchor": {
+        "section": "Quadrature rules based on interpolating functions",
+        "snippet": "Gaussian quadrature rules do not nest, but the related Gauss–Kronrod quadrature formulas do"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Gauss–Kronrod rules and the nesting property are not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Adaptive quadrature",
+      "anchor": {
+        "section": "Adaptive algorithms",
+        "snippet": "Adaptive quadrature is a numerical integration method"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Adaptive quadrature algorithms are not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Extrapolation methods",
+      "anchor": {
+        "section": "Extrapolation methods",
+        "snippet": "extrapolating the result from two or more nonzero step sizes"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Richardson-style extrapolation methods for integration are not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "A priori error bound",
+      "anchor": {
+        "section": "Conservative (a priori) error estimation",
+        "snippet": "our error is no greater than the right hand side"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "intervalIntegral.norm_integral_le_of_norm_le_const",
+        "module": "Mathlib.MeasureTheory.Integral.IntervalIntegral.Basic",
+        "match_kind": null
+      },
+      "note": "The supporting bound |∫_a^b g| ≤ (b−a)·sup‖g‖ is formalized, but the a priori quadrature error estimate is not stated as such.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Conservative (a priori) error estimation",
+          "snippet": "our error is no greater than the right hand side"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle {\\frac {n^{-1}}{2}}\\sup _{0\\leq x\\leq 1}\\left|f'(x)\\right|}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Riemann sum error bound",
+      "anchor": {
+        "section": "Conservative (a priori) error estimation",
+        "snippet": "We can convert this into an error analysis for the Riemann sum"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has no Riemann-sum construction or associated error bound (its integral is the Bochner integral).",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Conservative (a priori) error estimation",
+          "snippet": "We can convert this into an error analysis for the Riemann sum"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle {\\frac {n^{-1}}{2}}\\sup _{0\\leq x\\leq 1}\\left|f'(x)\\right|}"
+        }
+      ]
+    },
+    {
+      "kind": "definition",
+      "label": "Quadrature rules for infinite intervals",
+      "anchor": {
+        "section": "Integrals over infinite intervals",
+        "snippet": "The standard technique involves specially derived quadrature rules"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Specially-derived quadrature rules for infinite intervals (e.g. Gauss–Hermite) are not formalized.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Integrals over infinite intervals",
+          "snippet": "The standard technique involves specially derived quadrature rules"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\int _{-\\infty }^{\\infty }f(x)\\,dx=\\int _{-1}^{+1}f\\left({\\frac {t}{1-t^{2}}}\\right){\\frac {1+t^{2}}{\\left(1-t^{2}\\right)^{2}}}\\,dt,}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle {\\begin{aligned}\\int _{a}^{\\infty }f(x)\\,dx&amp;=\\int _{0}^{1}f\\left(a+{\\frac {t}{1-t}}\\right){\\frac {dt}{(1-t)^{2}}},\\\\\\int _{-\\infty }^{a}f(x)\\,dx&amp;=\\int _{0}^{1}f\\left(a-{\\frac {1-t}{t}}\\right){\\frac {dt}{t^{2}}},\\end{aligned}}}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Tensor product rule via Fubini's theorem",
+      "anchor": {
+        "section": "Multidimensional integrals",
+        "snippet": "phrase the multiple integral as repeated one-dimensional integrals by applying Fubini's theorem"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "MeasureTheory.integral_prod",
+        "module": "Mathlib.MeasureTheory.Integral.Prod",
+        "match_kind": "exact"
+      },
+      "note": "integral_prod is exactly Fubini's theorem, expressing a product-measure integral as repeated one-dimensional integrals.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Curse of dimensionality",
+      "anchor": {
+        "section": "Multidimensional integrals",
+        "snippet": "requires the function evaluations to grow exponentially as the number of dimensions increases"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The exponential growth of work with dimension (curse of dimensionality) is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Monte Carlo methods",
+      "anchor": {
+        "section": "Monte Carlo",
+        "snippet": "Monte Carlo methods and quasi-Monte Carlo methods are easy to apply to multi-dimensional integrals"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Monte Carlo / quasi-Monte Carlo integration methods are not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Markov chain Monte Carlo",
+      "anchor": {
+        "section": "Monte Carlo",
+        "snippet": "A large class of useful Monte Carlo methods are the so-called Markov chain Monte Carlo algorithms"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Although Markov kernels exist in Mathlib's probability library, MCMC integration algorithms are not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Sparse grids (Smolyak)",
+      "anchor": {
+        "section": "Sparse grids",
+        "snippet": "Sparse grids were originally developed by Smolyak for the quadrature of high-dimensional functions"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Smolyak sparse-grid quadrature is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Bayesian quadrature",
+      "anchor": {
+        "section": "Bayesian quadrature",
+        "snippet": "Bayesian quadrature is a statistical approach to the numerical problem of computing integrals"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Bayesian quadrature is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Reduction of integral to an initial value problem",
+      "anchor": {
+        "section": "Connection with differential equations",
+        "snippet": "can be reduced to an initial value problem for an ordinary differential equation"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "intervalIntegral.integral_hasStrictDerivAt_right",
+        "module": "Mathlib.MeasureTheory.Integral.IntervalIntegral.FundThmCalculus",
+        "match_kind": null
+      },
+      "note": "The fundamental theorem of calculus (y(u)=∫_a^u f has derivative f) provides the mathematical content of this reduction, but it is not framed as reducing quadrature to an IVP.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Special form of the resulting differential equation",
+      "anchor": {
+        "section": "Connection with differential equations",
+        "snippet": "the right-hand side contains only the independent variable"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The observation that the resulting ODE y'=f(x) has a right-hand side independent of y is not formalized as a statement.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "RK4 yields Simpson's rule",
+      "anchor": {
+        "section": "Connection with differential equations",
+        "snippet": "the standard fourth-order Runge–Kutta method applied to the differential equation yields Simpson's rule"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Neither the RK4 method nor Simpson's rule is formalized, so their equivalence is not stated.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Solving by quadrature",
+      "anchor": {
+        "section": "Connection with differential equations",
+        "snippet": "means expressing its solution in terms of integrals"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The notion of solving a differential equation 'by quadrature' is not defined in Mathlib.",
+      "provenance": "ai"
+    }
+  ]
+}

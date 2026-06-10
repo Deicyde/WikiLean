@@ -1,0 +1,297 @@
+{
+  "slug": "Analysis_of_algorithms",
+  "wikipedia_title": "Analysis of algorithms",
+  "display_title": "Analysis of algorithms",
+  "schema_version": 3,
+  "annotation_style": "theorem_article",
+  "annotations": [
+    {
+      "kind": "definition",
+      "label": "Analysis of algorithms",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "the analysis of algorithms is the process of finding the computational complexity of algorithms"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has no notion of computational complexity analysis as a process; it only provides asymptotic comparison of functions.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Efficient algorithm",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "An algorithm is said to be efficient when this function's values are small"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No definition of algorithmic efficiency exists in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Binary search runs in logarithmic time",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "binary search is said to run in a number of steps proportional to the logarithm"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib does not formalize binary search or any logarithmic-time complexity bound.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Hidden constant",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "related by a constant multiplicative factor called a hidden constant"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Asymptotics.IsBigOWith",
+        "module": "Mathlib.Analysis.Asymptotics.Defs",
+        "match_kind": null
+      },
+      "note": "IsBigOWith c makes the multiplicative constant c explicit (‖f‖ ≤ c‖g‖), but 'hidden constant' is not itself a named notion.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Model of computation",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "concerning the particular implementation of the algorithm, called a model of computation"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Turing.TM0.Machine",
+        "module": "Mathlib.Computability.TuringMachine.PostTuringMachine",
+        "match_kind": null
+      },
+      "note": "Mathlib formalizes Turing machines as a model of computation but has no general notion of 'model of computation' nor cost models.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Binary search time bound on n elements",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "if the sorted list to which we apply binary search has n elements"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No binary search timing bound is formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Uniform cost model",
+      "anchor": {
+        "section": "Cost models",
+        "snippet": "the uniform cost model , also called unit-cost model"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has no formalization of cost models of computation.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Logarithmic cost model",
+      "anchor": {
+        "section": "Cost models",
+        "snippet": "the logarithmic cost model , also called logarithmic-cost measurement"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has no formalization of cost models of computation.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Run-time analysis",
+      "anchor": {
+        "section": "Run-time analysis",
+        "snippet": "Run-time analysis is a theoretical classification that estimates and anticipates"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No notion of run-time estimation is formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Linear vs binary search on two computers",
+      "anchor": {
+        "section": "Shortcomings of empirical metrics",
+        "snippet": "Take as an example a program that looks up a specific entry in a sorted list"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This empirical comparison example has no counterpart in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Order of growth (Big O)",
+      "anchor": {
+        "section": "Orders of growth",
+        "snippet": "an algorithm can be said to exhibit a growth rate on the order of a mathematical function"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Asymptotics.IsBigO",
+        "module": "Mathlib.Analysis.Asymptotics.Defs",
+        "match_kind": "exact"
+      },
+      "note": "IsBigO l f g is exactly the big-O 'order of growth' relation between functions along a filter.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Insertion sort is O(n^2)",
+      "anchor": {
+        "section": "Orders of growth",
+        "snippet": "since the run-time of insertion sort grows quadratically as its input size increases"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "List.insertionSort",
+        "module": "Mathlib.Data.List.Sort",
+        "match_kind": null
+      },
+      "note": "Mathlib defines List.insertionSort and proves its correctness but does not analyze its O(n²) run-time.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Quicksort average-case O(n log n)",
+      "anchor": {
+        "section": "Orders of growth",
+        "snippet": "but the average-case run-time is"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has no quicksort definition nor any average-case complexity analysis.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Power rule for empirical order of growth",
+      "anchor": {
+        "section": "Empirical orders of growth",
+        "snippet": "Assuming the run-time follows the power rule"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Empirical determination of growth order via the power rule is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Algorithm run-time is O(n^2)",
+      "anchor": {
+        "section": "Evaluating run-time complexity",
+        "snippet": "so one can conclude that f ( n ) = O ( n 2 )"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Asymptotics.IsBigO",
+        "module": "Mathlib.Analysis.Asymptotics.Defs",
+        "match_kind": null
+      },
+      "note": "The claim f(n) = O(n²) is expressible via IsBigO atTop f (fun n => n^2), but this particular algorithm's bound is not proved in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Exponential memory consumption O(2^n)",
+      "anchor": {
+        "section": "Growth rate analysis of other resources",
+        "snippet": "as the file size n increases, memory will be consumed at an exponential growth rate"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Asymptotics.IsBigO",
+        "module": "Mathlib.Analysis.Asymptotics.Defs",
+        "match_kind": null
+      },
+      "note": "Exponential growth O(2^n) is expressible via IsBigO, but this specific memory-consumption example is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "All practical algorithms are O(1) for large enough constant",
+      "anchor": {
+        "section": "Constant factors",
+        "snippet": "all practical algorithms are O (1) for a large enough constant"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This is an informal observation about bounded inputs with no Mathlib formalization.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Hybrid algorithm Timsort",
+      "anchor": {
+        "section": "Constant factors",
+        "snippet": "This is particularly used in hybrid algorithms"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Timsort and hybrid sorting algorithms are not formalized in Mathlib.",
+      "provenance": "ai"
+    }
+  ]
+}

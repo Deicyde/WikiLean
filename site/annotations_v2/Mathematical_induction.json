@@ -1,0 +1,159 @@
+{
+  "slug": "Mathematical_induction",
+  "wikipedia_title": "Mathematical induction",
+  "display_title": "Mathematical induction",
+  "schema_version": 1,
+  "source": "claude-agent-sdk/annotate_articles.py",
+  "annotations": [
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle P(n)\\!:\\ \\ 0+1+2+\\cdots +n={\\frac {n(n+1)}{2}}.}"
+      },
+      "status": "formalized",
+      "decl": "Finset.sum_range_id",
+      "module": "Mathlib.Algebra.BigOperators.Intervals",
+      "note": "Gauss' summation formula; Mathlib states it as ∑ i ∈ range n, i = n(n-1)/2."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle 0+1+\\cdots +k={\\frac {k(k+1)}{2}}.}"
+      },
+      "status": "formalized",
+      "decl": "Finset.sum_range_id",
+      "module": "Mathlib.Algebra.BigOperators.Intervals",
+      "note": "Same Gauss-sum identity instantiated at k as the induction hypothesis."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle (0+1+2+\\cdots +k)+(k+1)={\\frac {k(k+1)}{2}}+(k+1).}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Intermediate algebraic step inside the induction proof, not a standalone lemma."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle {\\begin{aligned}{\\frac {k(k+1)}{2}}+(k+1)&={\\frac {k(k+1)+2(k+1)}{2}}\\\\&={\\frac {(k+1)(k+2)}{2}}\\\\&={\\frac {(k+1)((k+1)+1)}{2}}.\\end{aligned}}}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Pure algebraic simplification used in the proof; no dedicated Mathlib lemma."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle 0+1+2+\\cdots +k+(k+1)={\\frac {(k+1)((k+1)+1)}{2}}.}"
+      },
+      "status": "formalized",
+      "decl": "Finset.sum_range_id",
+      "module": "Mathlib.Algebra.BigOperators.Intervals",
+      "note": "Conclusion of the induction step is the same Gauss-sum formula evaluated at k+1."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle {\\begin{aligned}\\left|\\sin(k+1)x\\right|&=\\left|\\sin kx\\cos x+\\sin x\\cos kx\\right|&&{\\text{(angle addition)}}\\\\&\\leq \\left|\\sin kx\\cos x\\right|+\\left|\\sin x\\,\\cos kx\\right|&&{\\text{(triangle inequality)}}\\\\&=\\left|\\sin kx\\right|\\left|\\cos x\\right|+\\left|\\sin x\\right|\\left|\\cos kx\\right|\\\\&\\leq \\left|\\sin kx\\right|+\\left|\\sin x\\right|&&(\\left|\\cos t\\right|\\leq 1)\\\\&\\leq k\\left|\\sin x\\right|+\\left|\\sin x\\right|&&{\\text{(induction hypothesis}})\\\\&=(k+1)\\left|\\sin x\\right|.\\end{aligned}}}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "The inequality |sin nx| ≤ n|sin x| does not appear as a standalone declaration in Mathlib."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\forall k\\,(P(k)\\to P(k+1))}"
+      },
+      "status": "partial",
+      "decl": "Nat.le_induction",
+      "module": "Mathlib.Data.Nat.Init",
+      "note": "The successor-induction step is built into Nat.rec and exposed via Nat.le_induction."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\forall k\\,(P(k)\\to P(2k)\\land P(2k+1))}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Prefix (binary doubling) induction is not provided as a named induction principle in Mathlib."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\forall k\\,\\left(P\\!\\left(\\left\\lfloor {\\frac {k}{2}}\\right\\rfloor \\right)\\to P(k)\\right)}"
+      },
+      "status": "partial",
+      "decl": "Nat.binaryRec",
+      "module": "Mathlib.Data.Nat.Bits",
+      "note": "Mathlib's Nat.binaryRec recurses on a number from its half, matching this prefix-induction scheme."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\forall k\\,\\left(P\\!\\left(\\left\\lfloor {\\sqrt {k}}\\right\\rfloor \\right)\\to P(k)\\right)}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "No square-root-step induction principle exists in Mathlib."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle F_{n}={\\frac {\\varphi ^{n}-\\psi ^{n}}{\\varphi -\\psi }}}"
+      },
+      "status": "formalized",
+      "decl": "Real.coe_fib_eq",
+      "module": "Mathlib.NumberTheory.Real.GoldenRatio",
+      "note": "Binet's closed-form formula for Fibonacci numbers via φ and ψ = 1−φ."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle S(n):\\,\\,n\\geq 12\\implies \\,\\exists \\,a,b\\in \\mathbb {N} .\\,\\,n=4a+5b}"
+      },
+      "status": "partial",
+      "decl": "frobeniusNumber_pair",
+      "module": "Mathlib.NumberTheory.FrobeniusNumber",
+      "note": "Mathlib's Chicken McNugget theorem subsumes this 4,5 case (Frobenius number 11)."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle {\\begin{aligned}4\\cdot 3+5\\cdot 0=12\\\\4\\cdot 2+5\\cdot 1=13\\\\4\\cdot 1+5\\cdot 2=14\\\\4\\cdot 0+5\\cdot 3=15\\end{aligned}}}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Concrete arithmetic base cases, not a standalone Mathlib declaration."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\forall P\\,{\\Bigl (}P(0)\\land \\forall k{\\bigl (}P(k)\\to P(k+1){\\bigr )}\\to \\forall n\\,{\\bigl (}P(n){\\bigr )}{\\Bigr )},}"
+      },
+      "status": "partial",
+      "decl": "Nat.rec",
+      "module": "Init.Prelude",
+      "note": "The second-order induction axiom is realised as Lean's core Nat.rec recursor."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\forall A{\\Bigl (}0\\in A\\land \\forall k\\in \\mathbb {N} {\\bigl (}k\\in A\\to (k+1)\\in A{\\bigr )}\\to \\mathbb {N} \\subseteq A{\\Bigr )}}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Set-theoretic ZFC formulation of induction is not stated as such in Mathlib."
+    }
+  ]
+}

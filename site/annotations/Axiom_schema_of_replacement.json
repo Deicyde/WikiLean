@@ -1,0 +1,329 @@
+{
+  "slug": "Axiom_schema_of_replacement",
+  "wikipedia_title": "Axiom schema of replacement",
+  "display_title": "Axiom schema of replacement",
+  "schema_version": 3,
+  "annotation_style": "theorem_article",
+  "annotations": [
+    {
+      "kind": "definition",
+      "label": "Axiom schema of replacement (informal)",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "the axiom schema of replacement is a schema of axioms in Zermelo–Fraenkel set theory"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "ZFSet.image",
+        "module": "Mathlib.SetTheory.ZFC.Basic",
+        "match_kind": "invocation"
+      },
+      "note": "Mathlib encodes replacement via the `Definable₁` typeclass plus `ZFSet.image`, giving the image of any definable set function, but does not state the axiom schema as such.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Image of a set under a definable function",
+      "anchor": {
+        "section": "Statement",
+        "snippet": "is called the image of"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "ZFSet.image",
+        "module": "Mathlib.SetTheory.ZFC.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`ZFSet.image f x` (Mathlib/SetTheory/ZFC/Basic.lean:649) is exactly the image of `x` under a definable function `f`, characterized by `ZFSet.mem_image`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Axiom schema of replacement (formal statement)",
+      "anchor": {
+        "section": "Statement",
+        "snippet": "The axiom schema of replacement states that if"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "ZFSet.mem_image",
+        "module": "Mathlib.SetTheory.ZFC.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`ZFSet.mem_image` together with the existence of `ZFSet.image` realises the replacement schema: for any `Definable₁ f` and `x`, the set `{f z | z ∈ x}` exists.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Replacement implied by limitation of size",
+      "anchor": {
+        "section": "Statement",
+        "snippet": "It is implied by the stronger axiom of limitation of size"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Grepping `Mathlib` for `limitation of size`/`LimitationOfSize` returns no results; this axiom is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Existence of ω·2 requires replacement",
+      "anchor": {
+        "section": "Applications",
+        "snippet": "proving the existence of any limit ordinal greater than"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Ordinal.mul_two",
+        "module": "Mathlib.SetTheory.Ordinal.Arithmetic",
+        "match_kind": "invocation"
+      },
+      "note": "The ordinal ω·2 exists in Mathlib via `Ordinal.omega0 * 2` (e.g. `Ordinal.mul_two`), but the metamathematical claim that its existence requires replacement is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Construction of the first uncountable ordinal",
+      "anchor": {
+        "section": "Applications",
+        "snippet": "the first uncountable ordinal"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Ordinal.omega",
+        "module": "Mathlib.SetTheory.Cardinal.Aleph",
+        "match_kind": "exact"
+      },
+      "note": "`ω₁ = ω_ 1 = Ordinal.omega 1` is defined in `Mathlib/SetTheory/Cardinal/Aleph.lean` as the first uncountable ordinal.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Hartogs number generalization",
+      "anchor": {
+        "section": "Applications",
+        "snippet": "This is a special case of the result of Hartogs number"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Greps for `Hartogs`/`hartogs` in `Mathlib/SetTheory` return no matches; the Hartogs number construction is not in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Ordinal assignment to well-ordered sets requires replacement",
+      "anchor": {
+        "section": "Applications",
+        "snippet": "the existence of an assignment of an ordinal to every well-ordered set requires replacement"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Ordinal.type",
+        "module": "Mathlib.SetTheory.Ordinal.Basic",
+        "match_kind": "invocation"
+      },
+      "note": "`Ordinal.type` assigns an ordinal to every well-ordered type, but the metatheorem that this assignment requires the replacement axiom is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Von Neumann cardinal assignment requires replacement",
+      "anchor": {
+        "section": "Applications",
+        "snippet": "the von Neumann cardinal assignment"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Cardinal.mk",
+        "module": "Mathlib.SetTheory.Cardinal.Defs",
+        "match_kind": "invocation"
+      },
+      "note": "Mathlib defines `Cardinal.mk` as a quotient-based cardinal assignment, but the meta-statement that the von Neumann assignment requires replacement is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "High-rank tuple sets unprovable without replacement",
+      "anchor": {
+        "section": "Applications",
+        "snippet": "has too high of a rank for its existence to be provable from set theory"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This is a metamathematical independence claim about Z without replacement; no such statement appears in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Borel determinacy theorem (Martin)",
+      "anchor": {
+        "section": "Applications",
+        "snippet": "Borel determinacy theorem"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Greps for `BorelDeterminacy`/`borel_determinacy` yield no relevant Mathlib declarations.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "ZF proves consistency of Z",
+      "anchor": {
+        "section": "Applications",
+        "snippet": "ZF (which includes replacement) proves the consistency of Z"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib does not contain a formal consistency statement Con(Z) provable in ZF; no `Consistency` declarations were found in `Mathlib/SetTheory`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Lévy's parameter-free replacement equivalence",
+      "anchor": {
+        "section": "Simplifications",
+        "snippet": "a version of replacement with parameters removed"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Greps for `Lévy`/`Levy`/`reflection` in `Mathlib/SetTheory` return no matches; no parameter-free replacement equivalence is formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Axiom schema of collection",
+      "anchor": {
+        "section": "Collection",
+        "snippet": "The axiom schema of collection is closely related to and frequently confused with the axiom schema of replacement"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Searching `Mathlib/SetTheory/ZFC` finds only `EmptyCollection`/`powerset` collections; no axiom schema of collection.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Collection equivalent to replacement over ZF",
+      "anchor": {
+        "section": "Collection",
+        "snippet": "Over the remainder of the ZF axioms, it is equivalent to the axiom schema of replacement"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Since neither schema is formally stated in Mathlib, the equivalence between them is not formalized either.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Collection stronger than replacement without power set",
+      "anchor": {
+        "section": "Collection",
+        "snippet": "The axiom of collection is stronger than replacement in the absence of the power set axiom"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has no formal treatment of subsystems of ZF without powerset comparing collection and replacement.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Axiom schema of boundedness",
+      "anchor": {
+        "section": "Collection",
+        "snippet": "The resulting axiom schema is also called the axiom schema of boundedness"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No `Boundedness` axiom schema is defined in `Mathlib/SetTheory/ZFC`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Separation follows from replacement and empty set",
+      "anchor": {
+        "section": "Separation",
+        "snippet": "is implied by the axiom schema of replacement and the axiom of empty set"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "ZFSet.sep",
+        "module": "Mathlib.SetTheory.ZFC.Basic",
+        "match_kind": "invocation"
+      },
+      "note": "`ZFSet.sep` (Mathlib/SetTheory/ZFC/Basic.lean:415) provides separation, and `ZFSet.image` provides replacement, but the metatheorem deriving one from the other is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "ZFC axiomatizable by a single infinite schema",
+      "anchor": {
+        "section": "Separation",
+        "snippet": "it is possible to axiomatize ZFC with a single infinite axiom schema"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This is a metalogical statement about axiomatizations of ZFC; nothing of the kind is formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Lévy's reflection principle equivalent to replacement",
+      "anchor": {
+        "section": "Reflection",
+        "snippet": "Lévy's reflection principle for ZFC is equivalent to the axiom schema of replacement"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No reflection principle or Lévy-style equivalence with replacement is found in Mathlib.",
+      "provenance": "ai"
+    }
+  ]
+}

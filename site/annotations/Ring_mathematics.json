@@ -1,0 +1,2441 @@
+{
+  "slug": "Ring_mathematics",
+  "wikipedia_title": "Ring (mathematics)",
+  "display_title": "Ring (mathematics)",
+  "schema_version": 3,
+  "annotation_style": "theorem_article",
+  "annotations": [
+    {
+      "kind": "definition",
+      "label": "Ring (informal)",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "a ring is an algebraic structure consisting of a set with two binary operations"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Ring",
+        "module": "Mathlib.Algebra.Ring.Defs",
+        "match_kind": "exact"
+      },
+      "note": "The Mathlib `Ring` typeclass formalizes the standard ring axioms.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Ring (formal)",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "More formally, a ring is a set that is endowed with two binary operations"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Ring",
+        "module": "Mathlib.Algebra.Ring.Defs",
+        "match_kind": "exact"
+      },
+      "note": "Mathlib's `Ring` class encodes the axiomatic definition.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Commutative ring",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "A commutative ring is a ring with a commutative multiplication"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "CommRing",
+        "module": "Mathlib.Algebra.Ring.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`CommRing` extends `Ring` with `CommMonoid`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Ring axioms",
+      "anchor": {
+        "section": "Definition",
+        "snippet": "A ring is a set R equipped with two binary operations"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Ring",
+        "module": "Mathlib.Algebra.Ring.Defs",
+        "match_kind": "exact"
+      },
+      "note": "Same as the lead: `Ring` class assembles the axioms.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Rng",
+      "anchor": {
+        "section": "Variations on terminology",
+        "snippet": "a structure with the same axiomatic definition but without the requirement for a multiplicative identity is instead called a"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "NonUnitalRing",
+        "module": "Mathlib.Algebra.Ring.Defs",
+        "match_kind": "exact"
+      },
+      "note": "Mathlib's `NonUnitalRing` is the rng concept (associative ring without 1).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Division ring and field",
+      "anchor": {
+        "section": "Variations on terminology",
+        "snippet": "A nonzero ring in which every nonzero element has a multiplicative inverse is called a division ring"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "DivisionRing",
+        "module": "Mathlib.Algebra.Field.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`DivisionRing` and `Field` are defined in `Mathlib.Algebra.Field.Defs`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Additive group of a ring is abelian",
+      "anchor": {
+        "section": "Variations on terminology",
+        "snippet": "Although the definition requires that the additive group be abelian, this can be inferred from the other ring axioms"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib bakes `AddCommGroup` into `Ring`; the proof that commutativity is redundant is not packaged as a named theorem.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Integers as a ring",
+      "anchor": {
+        "section": "Illustration",
+        "snippet": "The most familiar example of a ring is the set of all integers"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Int.instCommRing",
+        "module": "Mathlib.Data.Int.Defs",
+        "match_kind": "exact"
+      },
+      "note": "ℤ has a `CommRing` instance via the integer constructions in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Basic properties of a ring",
+      "anchor": {
+        "section": "Some properties",
+        "snippet": "Some basic properties of a ring follow immediately from the axioms"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Ring",
+        "module": "Mathlib.Algebra.Ring.Basic",
+        "match_kind": "exact"
+      },
+      "note": "Standard consequences (e.g. `mul_zero`, `neg_one_mul`, etc.) are in `Mathlib.Algebra.Ring.{Defs,Basic}`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Integers modulo 4",
+      "anchor": {
+        "section": "Example: Integers modulo 4",
+        "snippet": "The sum"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "ZMod",
+        "module": "Mathlib.Data.ZMod.Defs",
+        "match_kind": "special_case"
+      },
+      "note": "`ZMod 4` gives the ring ℤ/4ℤ.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Ring of 2-by-2 matrices over a field",
+      "anchor": {
+        "section": "Example: 2-by-2 matrices",
+        "snippet": "The set of 2-by-2 square matrices with entries in a field F"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Matrix.instRing",
+        "module": "Mathlib.Data.Matrix.Mul",
+        "match_kind": "special_case"
+      },
+      "note": "Special case of the general `Matrix n n R` ring instance.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Matrix ring over a ring",
+      "anchor": {
+        "section": "Example: 2-by-2 matrices",
+        "snippet": "More generally, for any ring R , commutative or not, and any nonnegative integer n , the square n × n matrices with entries in R form a ring"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Matrix.instRing",
+        "module": "Mathlib.Data.Matrix.Mul",
+        "match_kind": "exact"
+      },
+      "note": "The square matrix ring instance is in `Mathlib.Data.Matrix.Mul`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Ring of integers (prototypical commutative ring)",
+      "anchor": {
+        "section": "Commutative rings",
+        "snippet": "The prototypical example is the ring of integers with the two operations of addition and multiplication"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Int.instCommRing",
+        "module": "Mathlib.Data.Int.Defs",
+        "match_kind": "exact"
+      },
+      "note": "ℤ is a `CommRing` in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Rational, real, complex numbers as fields",
+      "anchor": {
+        "section": "Commutative rings",
+        "snippet": "The rational, real and complex numbers are commutative rings of a type called fields"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Rat.instField",
+        "module": "Mathlib.Data.Rat.Defs",
+        "match_kind": "exact"
+      },
+      "note": "ℚ, ℝ, ℂ all carry `Field` instances in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Unital associative algebra over commutative ring",
+      "anchor": {
+        "section": "Commutative rings",
+        "snippet": "A unital associative algebra over a commutative ring R is itself a ring as well as an R -module"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Algebra",
+        "module": "Mathlib.Algebra.Algebra.Defs",
+        "match_kind": "exact"
+      },
+      "note": "The `Algebra R A` class encodes a unital associative R-algebra structure.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Polynomial algebra R[X]",
+      "anchor": {
+        "section": "Commutative rings",
+        "snippet": "The algebra R [ X ] of polynomials with coefficients in R"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Polynomial",
+        "module": "Mathlib.Algebra.Polynomial.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`Polynomial R` (notation `R[X]`) carries a `CommSemiring`/`CommRing` structure.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Continuous real-valued functions",
+      "anchor": {
+        "section": "Commutative rings",
+        "snippet": "The set of all continuous real-valued functions defined on the real line forms a commutative"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "ContinuousMap.instCommRing",
+        "module": "Mathlib.Topology.ContinuousMap.Algebra",
+        "match_kind": "special_case"
+      },
+      "note": "`C(X, ℝ)` is a commutative ring via the general `ContinuousMap` ring instance.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Functions from a set to a ring",
+      "anchor": {
+        "section": "Commutative rings",
+        "snippet": "Let X be a set, and let R be a ring. Then the set of all functions from X to R forms a ring"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Pi.ring",
+        "module": "Mathlib.Algebra.Ring.Pi",
+        "match_kind": "exact"
+      },
+      "note": "Pointwise ring structure on `X → R` is provided by `Pi.ring` (and `Pi.commRing`).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Ring of quadratic integers",
+      "anchor": {
+        "section": "Commutative rings",
+        "snippet": "The ring of quadratic integers , the integral closure of"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Zsqrtd",
+        "module": "Mathlib.NumberTheory.Zsqrtd.Basic",
+        "match_kind": "special_case"
+      },
+      "note": "`Zsqrtd d` formalizes ℤ[√d], a subclass of quadratic integer rings, but not the full general construction.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Ring of profinite integers",
+      "anchor": {
+        "section": "Commutative rings",
+        "snippet": "The ring of profinite integers"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No dedicated `ProfiniteIntegers` ring construction found in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Hecke ring",
+      "anchor": {
+        "section": "Commutative rings",
+        "snippet": "The Hecke ring , the ring generated by Hecke operators"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No formalization of the Hecke ring of Hecke operators found in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Boolean ring on a power set",
+      "anchor": {
+        "section": "Commutative rings",
+        "snippet": "If S is a set, then the power set of S becomes a ring if we define addition to be the symmetric difference of sets and multiplication to be intersection"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "BooleanRing",
+        "module": "Mathlib.Algebra.Ring.BooleanRing",
+        "match_kind": "generalization"
+      },
+      "note": "`BooleanRing` class exists; the specific instance on `Set S` via symmetric difference/intersection is not packaged as a `BooleanRing` instance in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Matrix ring (noncommutative)",
+      "anchor": {
+        "section": "Noncommutative rings",
+        "snippet": "For any ring R and any natural number n , the set of all square n -by- n matrices with entries from R , forms a ring with matrix addition and matrix multiplication as operations"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Matrix.instRing",
+        "module": "Mathlib.Data.Matrix.Mul",
+        "match_kind": "exact"
+      },
+      "note": "`Matrix n n R` is a ring (noncommutative in general).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Endomorphism ring of an abelian group",
+      "anchor": {
+        "section": "Noncommutative rings",
+        "snippet": "If G is an abelian group , then the endomorphisms of G form a ring, the endomorphism ring"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "AddMonoid.End",
+        "module": "Mathlib.Algebra.GroupPower.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`AddMonoid.End G` carries a ring instance giving the endomorphism ring of an abelian group.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Endomorphism ring of an elliptic curve",
+      "anchor": {
+        "section": "Noncommutative rings",
+        "snippet": "The endomorphism ring of an elliptic curve"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No endomorphism ring construction for elliptic curves found in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Group ring",
+      "anchor": {
+        "section": "Noncommutative rings",
+        "snippet": "If G is a group and R is a ring, the group ring of G over R is a free module over R having G as basis"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "MonoidAlgebra",
+        "module": "Mathlib.Algebra.MonoidAlgebra.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`MonoidAlgebra R G` is the group/monoid ring construction.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Ring of differential operators",
+      "anchor": {
+        "section": "Noncommutative rings",
+        "snippet": "The ring of differential operators (depending on the context)"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No general ring of differential operators (Weyl algebra / D-modules) construction found in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Natural numbers are not a ring",
+      "anchor": {
+        "section": "Non-rings",
+        "snippet": "The set of natural numbers"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has `Nat` as `CommSemiring` but no theorem stating ℕ is not a ring.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Convolution rng (Dirac delta)",
+      "anchor": {
+        "section": "Non-rings",
+        "snippet": "Let R be the set of all continuous functions on the real line that vanish outside a bounded interval that depends on the function"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The convolution rng of compactly supported continuous functions with Dirac identity is not in Mathlib.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Non-rings",
+          "snippet": "Let R be the set of all continuous functions on the real line that vanish outside a bounded interval that depends on the function"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle (f*g)(x)=\\int _{-\\infty }^{\\infty }f(y)g(x-y)\\,dy.}"
+        }
+      ]
+    },
+    {
+      "kind": "definition",
+      "label": "Product of a sequence in a ring",
+      "anchor": {
+        "section": "Products and powers",
+        "snippet": "given a sequence"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Finset.prod",
+        "module": "Mathlib.Algebra.BigOperators.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`Finset.prod` (`∏`) formalizes finite products in a commutative monoid/ring.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Nonnegative integer powers",
+      "anchor": {
+        "section": "Products and powers",
+        "snippet": "As a special case, one can define nonnegative integer powers of an element a of a ring"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Monoid.npow",
+        "module": "Mathlib.Algebra.Group.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`Monoid.npow`/`HPow` provide ℕ-indexed powers in a monoid/ring.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Left zero divisor",
+      "anchor": {
+        "section": "Elements in a ring",
+        "snippet": "A left zero divisor of a ring R is an element a in the ring such that there exists a nonzero element b of R such that"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "IsLeftRegular",
+        "module": "Mathlib.Algebra.Regular.Basic",
+        "match_kind": "generalization"
+      },
+      "note": "Mathlib uses the dual `IsLeftRegular`/`NoZeroDivisors`; there is no standalone `IsLeftZeroDivisor` predicate.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Nilpotent element",
+      "anchor": {
+        "section": "Elements in a ring",
+        "snippet": "A nilpotent element is an element a such that"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "IsNilpotent",
+        "module": "Mathlib.Algebra.GroupWithZero.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`IsNilpotent x` is `∃ n, x ^ n = 0`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Nilpotent is a zero divisor",
+      "anchor": {
+        "section": "Elements in a ring",
+        "snippet": "A nilpotent element in a nonzero ring is necessarily a zero divisor"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": null,
+        "module": "Mathlib.RingTheory.Nilpotent.Lemmas",
+        "match_kind": null
+      },
+      "note": "Nilpotents-as-non-regular results exist in `Mathlib.RingTheory.Nilpotent.Lemmas` but no direct named lemma 'nilpotent ⇒ zero divisor' was located.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Idempotent element",
+      "anchor": {
+        "section": "Elements in a ring",
+        "snippet": "is an element such that"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "IsIdempotentElem",
+        "module": "Mathlib.Algebra.Group.Idempotent",
+        "match_kind": "exact"
+      },
+      "note": "`IsIdempotentElem a := a * a = a`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Unit in a ring",
+      "anchor": {
+        "section": "Elements in a ring",
+        "snippet": "A unit is an element a having a multiplicative inverse"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "IsUnit",
+        "module": "Mathlib.Algebra.Group.Units.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`IsUnit` predicate exists; `Units R` (`Rˣ`) bundles the group of units.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Subring",
+      "anchor": {
+        "section": "Subring",
+        "snippet": "A subset S of R is called a subring if any one of the following equivalent conditions holds"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Subring",
+        "module": "Mathlib.Algebra.Ring.Subring.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`Subring R` is a structure bundling submonoid+subgroup conditions.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Intersection of subrings is a subring",
+      "anchor": {
+        "section": "Subring",
+        "snippet": "An intersection of subrings is a subring"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Subring.instCompleteLattice",
+        "module": "Mathlib.Algebra.Ring.Subring.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`Subring` carries a `CompleteLattice` instance whose `inf`/`iInf` is intersection.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Subring generated by a set",
+      "anchor": {
+        "section": "Subring",
+        "snippet": "the smallest subring of R containing E is the intersection of all subrings of R containing E"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Subring.closure",
+        "module": "Mathlib.Algebra.Ring.Subring.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`Subring.closure s` is the smallest subring containing `s`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Characteristic subring and characteristic",
+      "anchor": {
+        "section": "Subring",
+        "snippet": "the smallest subring of R is called the characteristic subring of R"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "CharP",
+        "module": "Mathlib.Algebra.CharP.Defs",
+        "match_kind": "generalization"
+      },
+      "note": "`CharP R p` and `ringChar` capture the characteristic; the prime/characteristic subring itself is not separately named.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Center and centralizer of a ring",
+      "anchor": {
+        "section": "Subring",
+        "snippet": "Then Z( R ) is a subring of R , called the center of R"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Subring.center",
+        "module": "Mathlib.Algebra.Ring.Subring.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`Subring.center` and `Subring.centralizer` are defined in `Mathlib.Algebra.Ring.Subring.Basic`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Left ideal",
+      "anchor": {
+        "section": "Ideal",
+        "snippet": "A left ideal of R is a nonempty subset I of R such that for any"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Submodule",
+        "module": "Mathlib.Algebra.Module.Submodule.Basic",
+        "match_kind": "generalization"
+      },
+      "note": "Left ideals are `Submodule R R`; Mathlib's main `Ideal R` (defined the same way) is geared toward commutative use.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Right ideal and two-sided ideal",
+      "anchor": {
+        "section": "Ideal",
+        "snippet": "Similarly, a right ideal is a subset I such that"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "TwoSidedIdeal",
+        "module": "Mathlib.RingTheory.TwoSidedIdeal.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`TwoSidedIdeal R` exists; right ideals via `Submodule Rᵐᵒᵖ R`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Principal ideal",
+      "anchor": {
+        "section": "Ideal",
+        "snippet": "If x is in R , then Rx is a left ideal, and xR is a right ideal; they are called the principal left ideal and right ideal generated by x"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Ideal.span",
+        "module": "Mathlib.RingTheory.Ideal.Span",
+        "match_kind": "exact"
+      },
+      "note": "`Ideal.span {x}` gives the principal ideal generated by `x`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Simple ring",
+      "anchor": {
+        "section": "Ideal",
+        "snippet": "A ring is simple if it is nonzero and it has no proper nonzero two-sided ideals"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "IsSimpleRing",
+        "module": "Mathlib.RingTheory.SimpleRing.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`IsSimpleRing` is defined in `Mathlib.RingTheory.SimpleRing.Defs`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Commutative simple rings are fields",
+      "anchor": {
+        "section": "Ideal",
+        "snippet": "A commutative simple ring is precisely a field"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "IsSimpleRing.isField",
+        "module": "Mathlib.RingTheory.SimpleRing.Basic",
+        "match_kind": "exact"
+      },
+      "note": "Mathlib has the equivalence between commutative simple rings and fields in `SimpleRing.Basic`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Noetherian and Artinian rings",
+      "anchor": {
+        "section": "Ideal",
+        "snippet": "a ring in which there is no strictly increasing infinite chain of left ideals is called a left Noetherian ring"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "IsNoetherianRing",
+        "module": "Mathlib.RingTheory.Noetherian.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`IsNoetherianRing` and `IsArtinianRing` are defined in `Mathlib.RingTheory.{Noetherian,Artinian}.Defs`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Hopkins–Levitzki theorem",
+      "anchor": {
+        "section": "Ideal",
+        "snippet": "It is a somewhat surprising fact that a left Artinian ring is left Noetherian"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "IsSemiprimaryRing.isNoetherian_iff_isArtinian",
+        "module": "Mathlib.RingTheory.HopkinsLevitzki",
+        "match_kind": "exact"
+      },
+      "note": "The Hopkins–Levitzki theorem is in `Mathlib.RingTheory.HopkinsLevitzki`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Prime ideal",
+      "anchor": {
+        "section": "Ideal",
+        "snippet": "A proper ideal P of R is called a prime ideal if for any elements"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Ideal.IsPrime",
+        "module": "Mathlib.RingTheory.Ideal.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`Ideal.IsPrime` is the standard prime-ideal predicate.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Ring homomorphism",
+      "anchor": {
+        "section": "Homomorphism",
+        "snippet": "A homomorphism from a ring"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "RingHom",
+        "module": "Mathlib.Algebra.Ring.Hom.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`RingHom α β` (`α →+* β`) bundles ring homomorphisms.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Ring isomorphism",
+      "anchor": {
+        "section": "Homomorphism",
+        "snippet": "A ring homomorphism f is said to be an isomorphism if there exists an inverse homomorphism to f"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "RingEquiv",
+        "module": "Mathlib.Algebra.Ring.Equiv",
+        "match_kind": "exact"
+      },
+      "note": "`RingEquiv R S` (`R ≃+* S`) is the ring isomorphism bundle.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Reduction modulo 4 homomorphism",
+      "anchor": {
+        "section": "Homomorphism",
+        "snippet": "The function that maps each integer x to its remainder modulo 4"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Int.castRingHom",
+        "module": "Mathlib.Data.Int.Cast.Lemmas",
+        "match_kind": "special_case"
+      },
+      "note": "`Int.castRingHom (ZMod 4)` is the reduction mod 4 ring homomorphism.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Inner automorphism",
+      "anchor": {
+        "section": "Homomorphism",
+        "snippet": "If u is a unit element in a ring R , then"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "MulAut.conj",
+        "module": "Mathlib.Algebra.Group.Aut",
+        "match_kind": "generalization"
+      },
+      "note": "Inner automorphisms exist for groups via `MulAut.conj`; a dedicated ring-inner-automorphism bundle was not located.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Frobenius homomorphism",
+      "anchor": {
+        "section": "Homomorphism",
+        "snippet": "Let R be a commutative ring of prime characteristic p"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "frobenius",
+        "module": "Mathlib.Algebra.CharP.Lemmas",
+        "match_kind": "exact"
+      },
+      "note": "`frobenius R p : R →+* R` raises to the p-th power.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Galois group",
+      "anchor": {
+        "section": "Homomorphism",
+        "snippet": "The Galois group of a field extension L / K is the set of all automorphisms of L whose restrictions to K are the identity"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "AlgEquiv",
+        "module": "Mathlib.Algebra.Algebra.Equiv",
+        "match_kind": "exact"
+      },
+      "note": "`L ≃ₐ[K] L` is the Galois group (with `IsGalois` capturing the Galois-extension property).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Representation of an algebra",
+      "anchor": {
+        "section": "Homomorphism",
+        "snippet": "An algebra homomorphism from a k -algebra to the endomorphism algebra of a vector space over k is called a representation of the algebra"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Representation",
+        "module": "Mathlib.RepresentationTheory.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`Representation k G V` is defined as `G →* (V →ₗ[k] V)ˣ`; algebra-representation analogue available via `AlgHom`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Kernel of a ring homomorphism",
+      "anchor": {
+        "section": "Homomorphism",
+        "snippet": "Given a ring homomorphism f : R → S , the set of all elements mapped to 0 by f is called the kernel of f"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "RingHom.ker",
+        "module": "Mathlib.RingTheory.Ideal.Maps",
+        "match_kind": "exact"
+      },
+      "note": "`RingHom.ker f` is the ideal kernel of a ring hom.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Homomorphism to center = algebra structure",
+      "anchor": {
+        "section": "Homomorphism",
+        "snippet": "To give a ring homomorphism from a commutative ring R to a ring A with image contained in the center of A is the same as to give a structure of an algebra over R to A"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "RingHom.toAlgebra",
+        "module": "Mathlib.Algebra.Algebra.Defs",
+        "match_kind": "invocation"
+      },
+      "note": "`RingHom.toAlgebra` constructs an algebra structure from a hom into the center, but the bijective correspondence is not packaged as a single equivalence.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Quotient ring",
+      "anchor": {
+        "section": "Quotient ring",
+        "snippet": "the quotient ring R / I is the set of cosets of I together with the operations"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Ideal.Quotient",
+        "module": "Mathlib.RingTheory.Ideal.Quotient.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`R ⧸ I` is the quotient ring with `Ideal.Quotient.mk` as the projection.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Universal property of quotient ring",
+      "anchor": {
+        "section": "Quotient ring",
+        "snippet": "there is a canonical homomorphism"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Ideal.Quotient.lift",
+        "module": "Mathlib.RingTheory.Ideal.Quotient.Operations",
+        "match_kind": "exact"
+      },
+      "note": "`Ideal.Quotient.lift` formalizes the universal property of the quotient.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "First isomorphism theorem for rings",
+      "anchor": {
+        "section": "Quotient ring",
+        "snippet": "For any ring homomorphism f : R → S , invoking the universal property with"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "RingHom.quotientKerEquivOfSurjective",
+        "module": "Mathlib.RingTheory.Ideal.Quotient.Operations",
+        "match_kind": "exact"
+      },
+      "note": "The first iso theorem for rings is `RingHom.quotientKerEquivOfSurjective`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Module over a ring",
+      "anchor": {
+        "section": "Modules",
+        "snippet": "given a ring R , an R -module M is an abelian group equipped with an operation"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Module",
+        "module": "Mathlib.Algebra.Module.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`Module R M` (over a semiring R, abelian monoid M).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Ring homomorphism induces module structure",
+      "anchor": {
+        "section": "Modules",
+        "snippet": "Any ring homomorphism induces a structure of a module"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Module.compHom",
+        "module": "Mathlib.Algebra.Module.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`Module.compHom` pulls back a module along a ring hom (restriction of scalars).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Direct product of rings",
+      "anchor": {
+        "section": "Direct product",
+        "snippet": "is called the direct product of R with S"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Prod.instRing",
+        "module": "Mathlib.Algebra.Ring.Prod",
+        "match_kind": "exact"
+      },
+      "note": "`Prod` and `Pi` ring instances formalize direct products of rings.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Chinese remainder theorem",
+      "anchor": {
+        "section": "Direct product",
+        "snippet": "Then the Chinese remainder theorem says there is a canonical ring isomorphism"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Ideal.quotientInfRingEquivPiQuotient",
+        "module": "Mathlib.RingTheory.Ideal.Quotient.Operations",
+        "match_kind": "exact"
+      },
+      "note": "`Ideal.quotientInfRingEquivPiQuotient` is the CRT for ideals.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Direct product",
+          "snippet": "Then the Chinese remainder theorem says there is a canonical ring isomorphism"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle R/{\\textstyle \\bigcap _{i=1}^{n}{{\\mathfrak {a}}_{i}}}\\simeq \\prod _{i=1}^{n}{R/{\\mathfrak {a}}_{i}},\\qquad x{\\bmod {\\textstyle \\bigcap _{i=1}^{n}{\\mathfrak {a}}_{i}}}\\mapsto (x{\\bmod {\\mathfrak {a}}}_{1},\\ldots ,x{\\bmod {\\mathfrak {a}}}_{n}).}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Finite direct product as direct sum of ideals",
+      "anchor": {
+        "section": "Direct product",
+        "snippet": "A \"finite\" direct product may also be viewed as a direct sum of ideals"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Ideal.CompleteOrthogonalIdempotents",
+        "module": "Mathlib.RingTheory.Idempotents",
+        "match_kind": "generalization"
+      },
+      "note": "Decomposition via complete orthogonal idempotents is formalized; the precise direct-sum-of-ideals identification is not a single named lemma.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Direct product",
+          "snippet": "A \"finite\" direct product may also be viewed as a direct sum of ideals"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle R={\\mathfrak {a}}_{1}\\oplus \\cdots \\oplus {\\mathfrak {a}}_{n},\\quad {\\mathfrak {a}}_{i}{\\mathfrak {a}}_{j}=0,i\\neq j,\\quad {\\mathfrak {a}}_{i}^{2}\\subseteq {\\mathfrak {a}}_{i}}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle 1=e_{1}+\\cdots +e_{n},\\quad e_{i}\\in {\\mathfrak {a}}_{i}.}"
+        }
+      ]
+    },
+    {
+      "kind": "definition",
+      "label": "Polynomial ring",
+      "anchor": {
+        "section": "Polynomial ring",
+        "snippet": "It is called the polynomial ring over R"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Polynomial",
+        "module": "Mathlib.Algebra.Polynomial.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`Polynomial R` is the univariate polynomial ring; `MvPolynomial σ R` for multivariate.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Properties of polynomial rings",
+      "anchor": {
+        "section": "Polynomial ring",
+        "snippet": "If R is an integral domain , then R [ t ] is also an integral domain"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Polynomial.instIsDomain",
+        "module": "Mathlib.Algebra.Polynomial.RingDivision",
+        "match_kind": "exact"
+      },
+      "note": "`Polynomial R` inherits `IsDomain` from `R`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Substitution homomorphism",
+      "anchor": {
+        "section": "Polynomial ring",
+        "snippet": "Given an element x of S , one can consider the ring homomorphism"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Polynomial.aeval",
+        "module": "Mathlib.Algebra.Polynomial.AlgebraMap",
+        "match_kind": "exact"
+      },
+      "note": "`Polynomial.aeval x : R[X] →ₐ S` is evaluation/substitution at `x`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Subalgebra generated by t^2 and t^3",
+      "anchor": {
+        "section": "Polynomial ring",
+        "snippet": "In other words, it is the subalgebra of k [ t ] generated by"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No specific formalization of the `k[t²,t³]` example.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Derivative from polynomial substitution",
+      "anchor": {
+        "section": "Polynomial ring",
+        "snippet": "let f be a polynomial in one variable, that is, an element in a polynomial ring R"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Polynomial.derivative",
+        "module": "Mathlib.Algebra.Polynomial.Derivative",
+        "match_kind": "generalization"
+      },
+      "note": "`Polynomial.derivative` is the formal derivative; the substitution-of-`t+h` derivation is not formalized as such.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Universal property of polynomial ring",
+      "anchor": {
+        "section": "Polynomial ring",
+        "snippet": "The substitution is a special case of the universal property of a polynomial ring"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "MvPolynomial.aeval_unique",
+        "module": "Mathlib.Algebra.MvPolynomial.Eval",
+        "match_kind": "exact"
+      },
+      "note": "`MvPolynomial.aeval_unique` (and the univariate analog) encodes the universal property.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Monic polynomial factors over an extension",
+      "anchor": {
+        "section": "Polynomial ring",
+        "snippet": "Given a non-constant monic polynomial f in R [ t ] , there exists a ring S containing R such that f is a product of linear factors"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Polynomial.SplittingField",
+        "module": "Mathlib.FieldTheory.SplittingField.Construction",
+        "match_kind": "special_case"
+      },
+      "note": "`SplittingField` realizes this over fields; the statement for general commutative rings is not in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Hilbert's Nullstellensatz",
+      "anchor": {
+        "section": "Polynomial ring",
+        "snippet": "The Hilbert's Nullstellensatz (theorem of zeros) states that there is a natural one-to-one correspondence"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "MvPolynomial.vanishingIdeal_zeroLocus_eq_radical",
+        "module": "Mathlib.RingTheory.Nullstellensatz",
+        "match_kind": "exact"
+      },
+      "note": "Hilbert's Nullstellensatz is proved in `Mathlib.RingTheory.Nullstellensatz`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Formal power series ring",
+      "anchor": {
+        "section": "Polynomial ring",
+        "snippet": "A formal power series ring"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "PowerSeries",
+        "module": "Mathlib.RingTheory.PowerSeries.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`PowerSeries R` is the formal power series ring (and `MvPowerSeries` for multivariate).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Matrix ring M_n(R)",
+      "anchor": {
+        "section": "Matrix ring and endomorphism ring",
+        "snippet": "The set of all square matrices of size n with entries in R forms a ring with the entry-wise addition and the usual matrix multiplication. It is called the matrix ring"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Matrix.instRing",
+        "module": "Mathlib.Data.Matrix.Mul",
+        "match_kind": "exact"
+      },
+      "note": "`Matrix n n R` carries the matrix ring instance.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Endomorphism ring End_R(U)",
+      "anchor": {
+        "section": "Matrix ring and endomorphism ring",
+        "snippet": "the set of all R -linear maps from U to itself forms a ring with addition that is of function and multiplication that is of composition of functions ; it is called the endomorphism ring"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Module.End",
+        "module": "Mathlib.Algebra.Module.LinearMap.End",
+        "match_kind": "exact"
+      },
+      "note": "`Module.End R M` is `M →ₗ[R] M` with ring structure.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Matrix ring as endomorphism ring",
+      "anchor": {
+        "section": "Matrix ring and endomorphism ring",
+        "snippet": "As in linear algebra, a matrix ring may be canonically interpreted as an endomorphism ring"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Matrix.toLinAlgEquiv",
+        "module": "Mathlib.LinearAlgebra.Matrix.ToLin",
+        "match_kind": "exact"
+      },
+      "note": "`Matrix.toLinAlgEquiv` identifies square matrices with the endomorphism algebra of a finite free module.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Schur's lemma",
+      "anchor": {
+        "section": "Matrix ring and endomorphism ring",
+        "snippet": "Schur's lemma says that if U is a simple right R -module"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "IsSimpleModule.instDivisionRingEnd",
+        "module": "Mathlib.RingTheory.SimpleModule.Basic",
+        "match_kind": "exact"
+      },
+      "note": "Schur's lemma (endomorphism ring of a simple module is a division ring) is in `SimpleModule.Basic`; categorical version in `CategoryTheory.Preadditive.Schur`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Artin–Wedderburn theorem",
+      "anchor": {
+        "section": "Matrix ring and endomorphism ring",
+        "snippet": "The Artin–Wedderburn theorem states any semisimple ring (cf. below) is of this form"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "IsSemisimpleRing.exists_algEquiv_pi_matrix_divisionRing",
+        "module": "Mathlib.RingTheory.SimpleModule.WedderburnArtin",
+        "match_kind": "exact"
+      },
+      "note": "Artin–Wedderburn is `IsSemisimpleRing.exists_algEquiv_pi_matrix_divisionRing` in `SimpleModule.WedderburnArtin`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Morita equivalence of R and M_n(R)",
+      "anchor": {
+        "section": "Matrix ring and endomorphism ring",
+        "snippet": "are Morita equivalent : the category of right modules of R is equivalent to the category of right modules"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Morita equivalence between `R` and `Mₙ(R)` (category-of-modules equivalence) is not in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Filtered colimit (union) of rings",
+      "anchor": {
+        "section": "Limits and colimits of rings",
+        "snippet": "Then the union (or filtered colimit ) of R i"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Ring.DirectLimit",
+        "module": "Mathlib.Algebra.Colimit.Ring",
+        "match_kind": "exact"
+      },
+      "note": "`Ring.DirectLimit` realizes directed/filtered colimits of rings.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Every ring is a filtered colimit of finitely generated subrings",
+      "anchor": {
+        "section": "Limits and colimits of rings",
+        "snippet": "Any ring is the filtered colimit (union) of its finitely generated subrings"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No theorem stating every ring is the filtered colimit of its f.g. subrings was located.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Projective limit of rings",
+      "anchor": {
+        "section": "Limits and colimits of rings",
+        "snippet": "A projective limit (or a filtered limit ) of rings is defined as follows"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "CommRingCat.HasLimits",
+        "module": "Mathlib.Algebra.Category.Ring.Limits",
+        "match_kind": "generalization"
+      },
+      "note": "Categorical limits in `CommRingCat`/`RingCat` exist; no separately bundled 'projective limit of rings' constructor.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Localization of a ring",
+      "anchor": {
+        "section": "Localization",
+        "snippet": "is called the localization of R with respect to S"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Localization",
+        "module": "Mathlib.RingTheory.Localization.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`Localization S` and `IsLocalization` axiomatize ring localization.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Localization of a module",
+      "anchor": {
+        "section": "Localization",
+        "snippet": "If M is a left R -module, then the localization of M with respect to S is given by a change of rings"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "LocalizedModule",
+        "module": "Mathlib.Algebra.Module.LocalizedModule.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`LocalizedModule` and `IsLocalizedModule` formalize module localization.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Prime ideals under localization",
+      "anchor": {
+        "section": "Localization",
+        "snippet": "is a bijection between the set of all prime ideals in R disjoint from S"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "IsLocalization.orderIsoOfPrime",
+        "module": "Mathlib.RingTheory.Localization.Ideal",
+        "match_kind": "exact"
+      },
+      "note": "`IsLocalization.orderIsoOfPrime` gives the bijection between primes of the localization and primes disjoint from S.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Localization is exact",
+      "anchor": {
+        "section": "Localization",
+        "snippet": "The localization is exact"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "IsLocalizedModule.map_exact",
+        "module": "Mathlib.Algebra.Module.LocalizedModule.Exact",
+        "match_kind": "exact"
+      },
+      "note": "Exactness of localization is proven for `LocalizedModule`/`IsLocalizedModule`.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Localization",
+          "snippet": "The localization is exact"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle 0\\to M'\\left[S^{-1}\\right]\\to M\\left[S^{-1}\\right]\\to M''\\left[S^{-1}\\right]\\to 0}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Exactness from local exactness",
+      "anchor": {
+        "section": "Localization",
+        "snippet": "Conversely, if"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Module.exact_of_localization_maximal",
+        "module": "Mathlib.Algebra.Module.LocalizedModule.Exact",
+        "match_kind": "exact"
+      },
+      "note": "The 'local-to-global' exactness criterion is in Mathlib via localization at maximal ideals.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Completion of a ring at an ideal",
+      "anchor": {
+        "section": "Completion",
+        "snippet": "The completion of R at I is the projective limit"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "AdicCompletion",
+        "module": "Mathlib.RingTheory.AdicCompletion.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`AdicCompletion I R` is the I-adic completion.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Krull's intersection theorem",
+      "anchor": {
+        "section": "Completion",
+        "snippet": "The latter homomorphism is injective if R is a Noetherian integral domain and I is a proper ideal"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Ideal.iInf_pow_eq_bot_of_isDomain",
+        "module": "Mathlib.RingTheory.Filtration",
+        "match_kind": "exact"
+      },
+      "note": "Krull's intersection theorem is proven in `Mathlib.RingTheory.Filtration` for Noetherian local rings and domains.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Ring of p-adic integers",
+      "anchor": {
+        "section": "Completion",
+        "snippet": "it is called the ring of p -adic integers"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "PadicInt",
+        "module": "Mathlib.NumberTheory.Padics.PadicIntegers",
+        "match_kind": "exact"
+      },
+      "note": "`PadicInt p` is the ring of p-adic integers ℤ_p.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "p-adic absolute value",
+      "anchor": {
+        "section": "Completion",
+        "snippet": "The p -adic absolute value on"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "padicNorm",
+        "module": "Mathlib.NumberTheory.Padics.PadicNorm",
+        "match_kind": "exact"
+      },
+      "note": "`padicNorm p q` is the p-adic absolute value on ℚ.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Cohen structure theorem",
+      "anchor": {
+        "section": "Completion",
+        "snippet": "This owns to the Cohen structure theorem , which says, roughly, that a complete local ring tends to look like a formal power series ring or a quotient of it"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Cohen's structure theorem is not in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Free ring",
+      "anchor": {
+        "section": "Rings with generators and relations",
+        "snippet": "Let F be a free ring (that is, free algebra over the integers) with the set X of symbols"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "FreeRing",
+        "module": "Mathlib.RingTheory.FreeRing",
+        "match_kind": "exact"
+      },
+      "note": "`FreeRing α` is the free (associative, unital) ring on a set.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Universal property of free ring",
+      "anchor": {
+        "section": "Rings with generators and relations",
+        "snippet": "A free ring satisfies the universal property: any function from the set X to a ring R factors through F"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "FreeRing.lift",
+        "module": "Mathlib.RingTheory.FreeRing",
+        "match_kind": "exact"
+      },
+      "note": "`FreeRing.lift` provides the universal map.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Ring with generators and relations",
+      "anchor": {
+        "section": "Rings with generators and relations",
+        "snippet": "the quotient ring of F by the ideal generated by E is called the ring with generators X and relations E"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "RingQuot",
+        "module": "Mathlib.RingTheory.RingQuot",
+        "match_kind": "generalization"
+      },
+      "note": "`RingQuot` and quotients by `Ideal.span` realize 'generators and relations' but no single named bundle 'GeneratorsAndRelations'.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Tensor product of algebras",
+      "anchor": {
+        "section": "Rings with generators and relations",
+        "snippet": "Let A , B be algebras over a commutative ring R . Then the tensor product of R -modules"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Algebra.TensorProduct",
+        "module": "Mathlib.RingTheory.TensorProduct.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`Algebra.TensorProduct R A B` gives the algebra tensor product.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Domain and integral domain",
+      "anchor": {
+        "section": "Domains",
+        "snippet": "A nonzero ring with no nonzero zero-divisors is called a domain . A commutative domain is called an integral domain"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "IsDomain",
+        "module": "Mathlib.Algebra.Ring.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`IsDomain` (with `[CommRing]` for integral domains) is in `Mathlib.Algebra.Ring.Defs`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Principal ideal domain",
+      "anchor": {
+        "section": "Domains",
+        "snippet": "A principal ideal domain is an integral domain in which every ideal is principal"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "IsPrincipalIdealRing",
+        "module": "Mathlib.RingTheory.Ideal.Span",
+        "match_kind": "exact"
+      },
+      "note": "`IsPrincipalIdealRing` plus `IsDomain` gives PID.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Unique factorization domain",
+      "anchor": {
+        "section": "Domains",
+        "snippet": "a unique factorization domain (UFD), an integral domain in which every nonunit element is a product of prime elements"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "UniqueFactorizationMonoid",
+        "module": "Mathlib.RingTheory.UniqueFactorizationDomain.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`UniqueFactorizationMonoid` on a `CommMonoidWithZero` formalizes UFDs.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Structure theorem for finitely generated modules over a PID",
+      "anchor": {
+        "section": "Domains",
+        "snippet": "the most important one is the structure theorem for finitely generated modules over a principal ideal domain"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Module.equiv_free_prod_directSum",
+        "module": "Mathlib.Algebra.Module.PID",
+        "match_kind": "exact"
+      },
+      "note": "`Module.equiv_free_prod_directSum` is the PID structure theorem in `Mathlib.Algebra.Module.PID`.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Domains",
+          "snippet": "the most important one is the structure theorem for finitely generated modules over a principal ideal domain"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle q=p_{1}^{e_{1}}\\ldots p_{s}^{e_{s}}.}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Regular local rings are UFDs",
+      "anchor": {
+        "section": "Domains",
+        "snippet": "A regular local ring is a UFD"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Auslander–Buchsbaum (regular local ⇒ UFD) is not in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Division ring",
+      "anchor": {
+        "section": "Division ring",
+        "snippet": "A division ring is a ring such that every non-zero element is a unit"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "DivisionRing",
+        "module": "Mathlib.Algebra.Field.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`DivisionRing` class in `Mathlib.Algebra.Field.Defs`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Centralizer in a division ring",
+      "anchor": {
+        "section": "Division ring",
+        "snippet": "Any centralizer in a division ring is also a division ring"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No named theorem that the centralizer of any subset in a division ring is itself a division ring.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Wedderburn's little theorem",
+      "anchor": {
+        "section": "Division ring",
+        "snippet": "every finite domain (in particular finite division ring) is a field"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "LittleWedderburn",
+        "module": "Mathlib.RingTheory.LittleWedderburn",
+        "match_kind": "exact"
+      },
+      "note": "Wedderburn's little theorem is in `Mathlib.RingTheory.LittleWedderburn`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Modules over a division ring are free",
+      "anchor": {
+        "section": "Division ring",
+        "snippet": "Every module over a division ring is a free module (has a basis)"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Module.Free.of_divisionRing",
+        "module": "Mathlib.LinearAlgebra.FreeModule.Basic",
+        "match_kind": "exact"
+      },
+      "note": "Vector spaces over a division ring are free (every module admits a basis).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Cyclic algebra",
+      "anchor": {
+        "section": "Division ring",
+        "snippet": "A cyclic algebra , introduced by L. E. Dickson , is a generalization of a quaternion algebra"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Cyclic algebras are not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Semisimple module and ring",
+      "anchor": {
+        "section": "Semisimple rings",
+        "snippet": "A semisimple module is a direct sum of simple modules. A semisimple ring is a ring that is semisimple as a left module"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "IsSemisimpleModule",
+        "module": "Mathlib.RingTheory.SimpleModule.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`IsSemisimpleModule` and abbrev `IsSemisimpleRing := IsSemisimpleModule R R`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Division ring is semisimple",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "A division ring is semisimple (and simple )"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "DivisionRing.toIsSemisimpleRing",
+        "module": "Mathlib.RingTheory.SimpleModule.Basic",
+        "match_kind": "exact"
+      },
+      "note": "Instance making a division ring semisimple is present in `SimpleModule.Basic`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Matrix ring over a division ring is semisimple",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "For any division ring D and positive integer n , the matrix ring"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Matrix.instIsSemisimpleRing",
+        "module": "Mathlib.RingTheory.SimpleModule.WedderburnArtin",
+        "match_kind": "exact"
+      },
+      "note": "Matrix rings over a division ring are shown semisimple in `WedderburnArtin`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Maschke's theorem",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "For a field k and finite group G , the group ring kG is semisimple if and only if the characteristic of k does not divide the order of G"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "MonoidAlgebra.Submodule.exists_isCompl",
+        "module": "Mathlib.RepresentationTheory.Maschke",
+        "match_kind": "exact"
+      },
+      "note": "Maschke's theorem is formalized in `Mathlib.RepresentationTheory.Maschke`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Clifford algebras are semisimple",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "Clifford algebras are semisimple"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib defines `CliffordAlgebra` but no semisimplicity instance is provided.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Weyl algebra is simple but not semisimple",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "The Weyl algebra over a field is a simple ring , but it is not semisimple"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Weyl algebra is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Modules over a semisimple ring are semisimple",
+      "anchor": {
+        "section": "Properties",
+        "snippet": "Any module over a semisimple ring is semisimple"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "IsSemisimpleRing.isSemisimpleModule",
+        "module": "Mathlib.RingTheory.SimpleModule.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`IsSemisimpleRing.isSemisimpleModule` makes every module over a semisimple ring semisimple.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Characterizations of semisimple rings",
+      "anchor": {
+        "section": "Properties",
+        "snippet": "For a ring R , the following are equivalent"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "IsSemisimpleRing",
+        "module": "Mathlib.RingTheory.SimpleModule.Basic",
+        "match_kind": "generalization"
+      },
+      "note": "Various equivalences for `IsSemisimpleRing` exist (and the Artin–Wedderburn equivalence) but a single tfae lemma matching the Wikipedia list isn't present.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Separable algebra",
+      "anchor": {
+        "section": "Properties",
+        "snippet": "A unital associative algebra A over a field k is said to be separable if the base extension"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Algebra.IsSeparable",
+        "module": "Mathlib.FieldTheory.IsSeparable",
+        "match_kind": "generalization"
+      },
+      "note": "Mathlib has `Algebra.IsSeparable` for field extensions; the more general `separable algebra` (every base change is semisimple) is not packaged directly.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Central simple algebra",
+      "anchor": {
+        "section": "Central simple algebra and Brauer group",
+        "snippet": "a k -algebra is central if its center is k and is simple if it is a simple ring"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Algebra.IsCentralSimple",
+        "module": "Mathlib.Algebra.Central.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`Algebra.IsCentralSimple` formalizes central simple algebras.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Skolem–Noether theorem",
+      "anchor": {
+        "section": "Central simple algebra and Brauer group",
+        "snippet": "The Skolem–Noether theorem states any automorphism of a central simple algebra is inner"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Skolem–Noether is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Similarity of central simple algebras",
+      "anchor": {
+        "section": "Central simple algebra and Brauer group",
+        "snippet": "Two central simple algebras A and B are said to be similar if there are integers n and m"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Brauer.CSA_Setoid",
+        "module": "Mathlib.Algebra.BrauerGroup.Defs",
+        "match_kind": "exact"
+      },
+      "note": "Brauer similarity is the setoid `Brauer.CSA_Setoid` in `BrauerGroup.Defs`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Brauer group",
+      "anchor": {
+        "section": "Central simple algebra and Brauer group",
+        "snippet": "form an abelian group called the Brauer group of k"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "BrauerGroup",
+        "module": "Mathlib.Algebra.BrauerGroup.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`BrauerGroup K := Quotient (Brauer.CSA_Setoid K)`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Brauer groups of standard fields",
+      "anchor": {
+        "section": "Central simple algebra and Brauer group",
+        "snippet": "Br( k ) is trivial if k is a finite field or an algebraically closed field"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Vanishing of `Br(k)` for finite or algebraically closed `k` is not in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Br(F/k) for finite Galois extensions",
+      "anchor": {
+        "section": "Central simple algebra and Brauer group",
+        "snippet": "If the extension is finite and Galois, then Br( F / k ) is canonically isomorphic to"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The identification of relative Brauer groups with `H²(Gal, F^×)` is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Azumaya algebra",
+      "anchor": {
+        "section": "Central simple algebra and Brauer group",
+        "snippet": "Azumaya algebras generalize the notion of central simple algebras to a commutative local ring"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "IsAzumaya",
+        "module": "Mathlib.Algebra.Azumaya.Defs",
+        "match_kind": "exact"
+      },
+      "note": "Azumaya algebras are formalized in `Mathlib.Algebra.Azumaya.Defs`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Valuation",
+      "anchor": {
+        "section": "Valuation ring",
+        "snippet": "a valuation v is a group homomorphism from the multiplicative group"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Valuation",
+        "module": "Mathlib.RingTheory.Valuation.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`Valuation R Γ₀` is a multiplicative-norm-style valuation on a ring.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Valuation ring",
+      "anchor": {
+        "section": "Valuation ring",
+        "snippet": "The valuation ring of v is the subring of K consisting of zero and all nonzero f such that"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "ValuationSubring",
+        "module": "Mathlib.RingTheory.Valuation.ValuationSubring",
+        "match_kind": "exact"
+      },
+      "note": "`ValuationSubring K` and the `ValuationRing` typeclass capture valuation rings.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Valuation on formal Laurent series",
+      "anchor": {
+        "section": "Valuation ring",
+        "snippet": "The field of formal Laurent series"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "LaurentSeries",
+        "module": "Mathlib.RingTheory.LaurentSeries",
+        "match_kind": "special_case"
+      },
+      "note": "Mathlib has `LaurentSeries`/`HahnSeries` and order valuations on these, but the example's specific valuation packaging isn't named.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Group ring with totally ordered group",
+      "anchor": {
+        "section": "Valuation ring",
+        "snippet": "given a field k and a totally ordered abelian group G"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "HahnSeries",
+        "module": "Mathlib.RingTheory.HahnSeries.Basic",
+        "match_kind": "generalization"
+      },
+      "note": "`HahnSeries` generalizes `k[[G]]` and carries a valuation; not packaged as the exact group-ring example.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Valuation ring",
+          "snippet": "given a field k and a totally ordered abelian group G"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle (f*g)(t)=\\sum _{s\\in G}f(s)g(t-s).}"
+        }
+      ]
+    },
+    {
+      "kind": "definition",
+      "label": "Associative algebra",
+      "anchor": {
+        "section": "Rings with extra structure",
+        "snippet": "An associative algebra is a ring that is also a vector space over a field such that the scalar multiplication is compatible with the ring multiplication"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Algebra",
+        "module": "Mathlib.Algebra.Algebra.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`Algebra R A` over a commutative (semi)ring `R` formalizes associative algebras.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Topological ring",
+      "anchor": {
+        "section": "Rings with extra structure",
+        "snippet": "A ring R is a topological ring if its set of elements R is given a topology"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "IsTopologicalRing",
+        "module": "Mathlib.Topology.Algebra.Ring.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`IsTopologicalRing R` requires continuity of +, -, ×.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Lambda-ring",
+      "anchor": {
+        "section": "Rings with extra structure",
+        "snippet": "A λ-ring is a commutative ring R together with operations"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "λ-rings are not formalized in Mathlib (binomial rings are, but not λ-rings).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Totally ordered ring",
+      "anchor": {
+        "section": "Rings with extra structure",
+        "snippet": "A totally ordered ring is a ring with a total ordering that is compatible with ring operations"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "IsOrderedRing",
+        "module": "Mathlib.Algebra.Order.Ring.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`IsOrderedRing`/`IsStrictOrderedRing` (with a `LinearOrder`) formalize totally ordered rings.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Integral cohomology ring",
+      "anchor": {
+        "section": "Cohomology ring of a topological space",
+        "snippet": "To any topological space X one can associate its integral cohomology ring"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Singular cohomology with its cup product ring structure is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Burnside ring of a group",
+      "anchor": {
+        "section": "Burnside ring of a group",
+        "snippet": "To any group is associated its Burnside ring which uses a ring to describe the various ways the group can act on a finite set"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Burnside ring is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Representation ring",
+      "anchor": {
+        "section": "Representation ring of a group ring",
+        "snippet": "To any group ring or Hopf algebra is associated its representation ring"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The representation ring of a group is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Function field of an algebraic variety",
+      "anchor": {
+        "section": "Function field of an irreducible algebraic variety",
+        "snippet": "To any irreducible algebraic variety is associated its function field"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "AlgebraicGeometry.Scheme.functionField",
+        "module": "Mathlib.AlgebraicGeometry.FunctionField",
+        "match_kind": "exact"
+      },
+      "note": "`Scheme.functionField` defines the function field of an integral scheme.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Face ring (Stanley–Reisner ring)",
+      "anchor": {
+        "section": "Face ring of a simplicial complex",
+        "snippet": "Every simplicial complex has an associated face ring, also called its Stanley–Reisner ring"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Stanley–Reisner rings are not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Ring as monoid in Ab",
+      "anchor": {
+        "section": "Category-theoretic description",
+        "snippet": "Every ring can be thought of as a monoid in Ab , the category of abelian groups"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Mon_Class",
+        "module": "Mathlib.CategoryTheory.Monoidal.Mon_",
+        "match_kind": "generalization"
+      },
+      "note": "Monoid objects in monoidal categories are formalized; the specific equivalence `Ring ≃ Mon_(Ab)` is not a single named theorem.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Ring as endomorphism ring of an abelian X-group",
+      "anchor": {
+        "section": "Category-theoretic description",
+        "snippet": "any ring can be viewed as the endomorphism ring of some abelian X -group"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This category-theoretic characterization is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Ring as preadditive category with one object",
+      "anchor": {
+        "section": "Category-theoretic description",
+        "snippet": "Any ring can be seen as a preadditive category with a single object"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "CategoryTheory.Preadditive",
+        "module": "Mathlib.CategoryTheory.Preadditive.Basic",
+        "match_kind": "generalization"
+      },
+      "note": "Preadditive categories are formalized; the explicit `Ring ↔ one-object preadditive category` bridge is not packaged.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Rng (generalization)",
+      "anchor": {
+        "section": "Rng",
+        "snippet": "A rng is the same as a ring, except that the existence of a multiplicative identity is not assumed"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "NonUnitalRing",
+        "module": "Mathlib.Algebra.Ring.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`NonUnitalRing` is Mathlib's rng class.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Nonassociative ring",
+      "anchor": {
+        "section": "Nonassociative ring",
+        "snippet": "A nonassociative ring is an algebraic structure that satisfies all of the ring axioms except the associative property and the existence of a multiplicative identity"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "NonUnitalNonAssocRing",
+        "module": "Mathlib.Algebra.Ring.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`NonUnitalNonAssocRing` drops associativity and unit from `Ring`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Semiring",
+      "anchor": {
+        "section": "Semiring",
+        "snippet": "A semiring (sometimes rig ) is obtained by weakening the assumption that"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Semiring",
+        "module": "Mathlib.Algebra.Ring.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`Semiring` (additive structure only a commutative monoid).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Non-negative integers as a semiring",
+      "anchor": {
+        "section": "Semiring",
+        "snippet": "the non-negative integers"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Nat.instCommSemiring",
+        "module": "Mathlib.Data.Nat.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`ℕ` is a `CommSemiring`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Ring object in a category",
+      "anchor": {
+        "section": "Ring object in a category",
+        "snippet": "A ring object in C is an object R equipped with morphisms"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Mon_Class",
+        "module": "Mathlib.CategoryTheory.Monoidal.Ring",
+        "match_kind": "generalization"
+      },
+      "note": "Monoid objects in monoidal categories exist; an explicit `RingObject`/`Ring_` in a general category isn't packaged.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Ring scheme",
+      "anchor": {
+        "section": "Ring scheme",
+        "snippet": "a ring scheme over a base scheme S is a ring object in the category of S -schemes"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Ring schemes are not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Witt vector ring scheme W_n",
+      "anchor": {
+        "section": "Ring scheme",
+        "snippet": "One example is the ring scheme W n over"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "WittVector",
+        "module": "Mathlib.RingTheory.WittVector.Basic",
+        "match_kind": "generalization"
+      },
+      "note": "`WittVector` exists as a ring construction but not as a ring scheme.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Ring spectrum",
+      "anchor": {
+        "section": "Ring spectrum",
+        "snippet": "a ring spectrum is a spectrum X together with a multiplication"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Ring spectra (stable homotopy theory) are not formalized in Mathlib.",
+      "provenance": "ai"
+    }
+  ]
+}

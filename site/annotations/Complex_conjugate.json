@@ -1,0 +1,313 @@
+{
+  "slug": "Complex_conjugate",
+  "wikipedia_title": "Complex conjugate",
+  "display_title": "Complex conjugate",
+  "schema_version": 3,
+  "annotation_style": "theorem_article",
+  "annotations": [
+    {
+      "kind": "definition",
+      "label": "Complex conjugate",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "the complex conjugate of a complex number is the number with an equal real part and an imaginary part equal in magnitude but opposite in sign"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Complex.instStarRing",
+        "module": "Mathlib.Data.Complex.Basic",
+        "match_kind": "exact"
+      },
+      "note": "Complex conjugation is the `star` operation of `Complex.instStarRing`; `conj_re` and `conj_im` (in `Mathlib/Data/Complex/Basic.lean`) confirm the same-real-part / negated-imaginary-part definition.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Conjugate in polar form",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "In polar form"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Complex.polarCoord",
+        "module": "Mathlib.Analysis.SpecialFunctions.PolarCoord",
+        "match_kind": null
+      },
+      "note": "Polar coordinates for complex numbers are formalized as `Complex.polarCoord`, but there is no dedicated lemma stating `conj (r e^{iθ}) = r e^{-iθ}` in this form.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Product of a number and its conjugate is real",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "The product of a complex number and its conjugate is a real number"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Complex.mul_conj",
+        "module": "Mathlib.Data.Complex.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`Complex.mul_conj` states `z * conj z = (normSq z : ℂ)`, exhibiting the product as a (coerced) real number.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Complex conjugate root theorem",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "If a root of a univariate polynomial with real coefficients is complex, then its complex conjugate is also a root"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "RCLike.aeval_conj",
+        "module": "Mathlib.Analysis.RCLike.Lemmas",
+        "match_kind": "exact"
+      },
+      "note": "`RCLike.aeval_conj` gives `aeval (conj z) p = conj (aeval z p)` for `p : ℝ[X]`, immediately yielding the conjugate-root theorem (used as `simpa [dvd_iff_isRoot, aeval_conj]` in `Analysis/Complex/Polynomial/Basic.lean`).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Conjugation distributes over arithmetic",
+      "anchor": {
+        "section": "Properties",
+        "snippet": "For any two complex numbers, conjugation is distributive over addition, subtraction, multiplication and division"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "starRingEnd",
+        "module": "Mathlib.Algebra.Star.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`starRingEnd ℂ` is a ring homomorphism (a `RingHom`), so `map_add`, `map_sub`, `map_mul`, `map_div` give distributivity over all arithmetic operations.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Fixed points of conjugation are reals",
+      "anchor": {
+        "section": "Properties",
+        "snippet": "A complex number is equal to its complex conjugate if its imaginary part is zero"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Complex.conj_eq_iff_im",
+        "module": "Mathlib.Data.Complex.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`Complex.conj_eq_iff_im` states `conj z = z ↔ z.im = 0`, with `conj_eq_iff_real` giving the equivalent characterisation via realness.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Conjugation preserves modulus",
+      "anchor": {
+        "section": "Properties",
+        "snippet": "Conjugation does not change the modulus of a complex number"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Complex.norm_conj",
+        "module": "Mathlib.Analysis.Complex.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`Complex.norm_conj` (and `RCLike.norm_conj`) state `‖conj z‖ = ‖z‖`; `Complex.normSq_conj` provides the squared version.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Conjugation is an involution",
+      "anchor": {
+        "section": "Properties",
+        "snippet": "Conjugation is an involution"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "star_involutive",
+        "module": "Mathlib.Algebra.Star.Basic",
+        "match_kind": "exact"
+      },
+      "note": "The `InvolutiveStar` field `star_involutive : Function.Involutive star` applies to `ℂ` via `Complex.instStarRing` (cf. `star_involutive x := by simp only [eta, neg_neg]` at `Data/Complex/Basic.lean:440`).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Product with conjugate equals modulus squared",
+      "anchor": {
+        "section": "Properties",
+        "snippet": "The product of a complex number with its conjugate is equal to the square of the number's modulus"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Complex.mul_conj",
+        "module": "Mathlib.Data.Complex.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`Complex.mul_conj` yields `z * conj z = (normSq z : ℂ)` where `normSq z = ‖z‖²` (`Complex.sq_abs` / `Complex.normSq_eq_abs`).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Conjugation commutes with exp, log, integer powers",
+      "anchor": {
+        "section": "Properties",
+        "snippet": "Conjugation is commutative under composition with exponentiation to integer powers, with the exponential function, and with the natural logarithm for nonzero arguments"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Complex.exp_conj",
+        "module": "Mathlib.Data.Complex.Exponential",
+        "match_kind": "exact"
+      },
+      "note": "`Complex.exp_conj` (used in `JacobiTheta`) and `Complex.log_conj` (in `Analysis/SpecialFunctions/Complex/Log.lean:123`, with side hypothesis `x.arg ≠ π`) give the exp/log cases; integer-power compatibility follows from `map_pow`/`map_zpow` on the ring homomorphism `starRingEnd ℂ`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Real polynomial roots in conjugate pairs",
+      "anchor": {
+        "section": "Properties",
+        "snippet": "non-real roots of real polynomials occur in complex conjugate pairs"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "RCLike.aeval_conj",
+        "module": "Mathlib.Analysis.RCLike.Lemmas",
+        "match_kind": "invocation"
+      },
+      "note": "`RCLike.aeval_conj` is the workhorse and is invoked (via `simpa [dvd_iff_isRoot, aeval_conj]`) in `Analysis/Complex/Polynomial/Basic.lean:180` precisely to derive that non-real roots come in conjugate pairs.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Conjugation commutes with real-valued holomorphic functions",
+      "anchor": {
+        "section": "Properties",
+        "snippet": "In general, if"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "I found no Schwarz-reflection-style lemma `conj (f z) = f (conj z)` for holomorphic functions taking reals to reals in Mathlib (searched for `SchwarzReflection`, `reflection_principle`, `conj.*holomorph`).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Conjugation is a field automorphism fixing R",
+      "anchor": {
+        "section": "Properties",
+        "snippet": "is a homeomorphism"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Complex.conjAe",
+        "module": "Mathlib.LinearAlgebra.Complex.Module",
+        "match_kind": "exact"
+      },
+      "note": "`Complex.conjAe : ℂ ≃ₐ[ℝ] ℂ` realizes conjugation as an ℝ-algebra automorphism, with `Complex.real_algHom_eq_id_or_conj` showing it is (with the identity) the only one; `Complex.conjCLE`/`conjCAE` give the homeomorphism upgrade.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Recovering real/imaginary parts, modulus, argument from conjugate",
+      "anchor": {
+        "section": "Use as a variable",
+        "snippet": "its conjugate is sufficient to reproduce the parts"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Complex.re_eq_add_conj",
+        "module": "Mathlib.Data.Complex.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`Complex.re_eq_add_conj` (`(z.re : ℂ) = (z + conj z)/2`) and `Complex.sub_conj` (`z - conj z = (2 z.im) i`) cover real/imaginary parts; modulus via `mul_conj`, but I found no direct lemma recovering the argument from `z` and `conj z`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Lines in the plane via conjugate",
+      "anchor": {
+        "section": "Use as a variable",
+        "snippet": "can be used to specify lines in the plane"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "I found no formalization of lines in ℂ expressed in the form `\\overline c z + c \\overline z = k`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Conjugation on matrices",
+      "anchor": {
+        "section": "Generalizations",
+        "snippet": "For matrices of complex numbers"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Matrix.conjTranspose",
+        "module": "Mathlib.LinearAlgebra.Matrix.ConjTranspose",
+        "match_kind": "exact"
+      },
+      "note": "`Matrix.conjTranspose` (notation `ᴴ`) is defined and packaged as a star operation, additive equiv, linear map, and (in the square case) a `StarRingEquiv` to the opposite ring.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Quaternion conjugation",
+      "anchor": {
+        "section": "Generalizations",
+        "snippet": "One may also define a conjugation for quaternions and split-quaternions"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Quaternion.instStarRing",
+        "module": "Mathlib.Algebra.Quaternion",
+        "match_kind": "exact"
+      },
+      "note": "Quaternion conjugation is the `star` of `Quaternion.instStarRing` (line 605, `star_involutive x := by simp [Star.star]`), with companion lemmas `Quaternion.star_mul_self`, `self_mul_star`, etc.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Generalized conjugation is multiplicative with reversal",
+      "anchor": {
+        "section": "Generalizations",
+        "snippet": "All these generalizations are multiplicative only if the factors are reversed"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "StarMul.star_mul",
+        "module": "Mathlib.Algebra.Star.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`StarMul.star_mul : ∀ r s, star (r * s) = star s * star r` (line 123) is exactly the antimultiplicative-with-reversal property satisfied by complex, matrix, quaternion star operations.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Complex conjugation / real structure on a vector space",
+      "anchor": {
+        "section": "Generalizations",
+        "snippet": "There is also an abstract notion of conjugation for vector spaces"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "StarModule",
+        "module": "Mathlib.Algebra.Star.Module",
+        "match_kind": null
+      },
+      "note": "Mathlib has `StarModule` capturing conjugate-linear / star-semilinear structure on a module, but no dedicated `RealStructure` type for an antilinear involution making the real-fixed subspace a real form of a complex vector space.",
+      "provenance": "ai"
+    }
+  ]
+}

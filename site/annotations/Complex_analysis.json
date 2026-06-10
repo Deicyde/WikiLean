@@ -1,0 +1,361 @@
+{
+  "slug": "Complex_analysis",
+  "wikipedia_title": "Complex analysis",
+  "display_title": "Complex analysis",
+  "schema_version": 3,
+  "annotation_style": "theorem_article",
+  "annotations": [
+    {
+      "kind": "definition",
+      "label": "Complex function",
+      "anchor": {
+        "section": "Complex functions",
+        "snippet": "A complex function is a function from complex numbers to complex numbers"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "A 'function ℂ → ℂ' is just function-type syntax in Lean and has no dedicated Mathlib definition.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Holomorphic function",
+      "anchor": {
+        "section": "Holomorphic functions",
+        "snippet": "Complex functions that are differentiable at every point of an open subset"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "DifferentiableOn",
+        "module": "Mathlib.Analysis.Calculus.FDeriv.Defs",
+        "match_kind": "generalization"
+      },
+      "note": "`DifferentiableOn ℂ f s` over an open `s` is exactly holomorphy on `s`; equivalently `AnalyticOnNhd ℂ f s` via `analyticOnNhd_iff_differentiableOn`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Complex derivative",
+      "anchor": {
+        "section": "Holomorphic functions",
+        "snippet": "the derivative of"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "deriv",
+        "module": "Mathlib.Analysis.Calculus.Deriv.Basic",
+        "match_kind": "generalization"
+      },
+      "note": "The complex derivative is `deriv` instantiated with the scalar field `ℂ`, characterized via `HasDerivAt`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Holomorphic functions are infinitely differentiable and analytic",
+      "anchor": {
+        "section": "Holomorphic functions",
+        "snippet": "holomorphic functions are infinitely differentiable"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "DifferentiableOn.analyticOnNhd",
+        "module": "Mathlib.Analysis.Complex.CauchyIntegral",
+        "match_kind": "exact"
+      },
+      "note": "`DifferentiableOn.analyticOnNhd` (and `analyticOnNhd_iff_differentiableOn`) gives that complex-differentiable on an open set implies analytic, which yields C^∞.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Meromorphic function",
+      "anchor": {
+        "section": "Holomorphic functions",
+        "snippet": "Such functions that are holomorphic everywhere except a set of isolated points are known as meromorphic functions"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "MeromorphicOn",
+        "module": "Mathlib.Analysis.Meromorphic.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`MeromorphicOn` (and `MeromorphicAt`) formalize meromorphic functions on a set.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Cauchy–Riemann conditions",
+      "anchor": {
+        "section": "Holomorphic functions",
+        "snippet": "the relationship between the partial derivatives of their real and imaginary components, known as the Cauchy–Riemann conditions"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "differentiableAt_complex_iff_differentiableAt_real",
+        "module": "Mathlib.Analysis.Complex.Conformal",
+        "match_kind": "exact"
+      },
+      "note": "Complex differentiability is characterized in terms of the classical Cauchy–Riemann equation by `differentiableAt_complex_iff_differentiableAt_real`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Picard's theorem",
+      "anchor": {
+        "section": "Holomorphic functions",
+        "snippet": "Picard's theorem asserts that the range of an entire function can take only three possible forms"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "A grep for `Picard` in `Mathlib/Analysis` finds only Picard–Lindelöf (ODEs), not the little/great Picard theorem about ranges of entire functions.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Identity principle for holomorphic functions",
+      "anchor": {
+        "section": "Holomorphic functions",
+        "snippet": "a holomorphic function on a connected open set is determined by its restriction to any nonempty open subset"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "AnalyticOnNhd.eqOn_of_preconnected_of_eventuallyEq",
+        "module": "Mathlib.Analysis.Analytic.Uniqueness",
+        "match_kind": "exact"
+      },
+      "note": "The identity theorem for analytic functions on preconnected open sets is `AnalyticOnNhd.eqOn_of_preconnected_of_eventuallyEq` (with frequently_eq variants in `IsolatedZeros`).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Conformal map",
+      "anchor": {
+        "section": "Conformal map",
+        "snippet": "a conformal map is a function that locally preserves angles"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Conformal",
+        "module": "Mathlib.Analysis.Calculus.Conformal.NormedSpace",
+        "match_kind": "generalization"
+      },
+      "note": "`Conformal f` is defined as `ConformalAt f x` at every point, on real normed spaces.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Conformal at a point",
+      "anchor": {
+        "section": "Conformal map",
+        "snippet": "is called conformal (or angle-preserving) at a point"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "ConformalAt",
+        "module": "Mathlib.Analysis.Calculus.Conformal.NormedSpace",
+        "match_kind": "exact"
+      },
+      "note": "`ConformalAt f x` is defined as having an `IsConformalMap` Fréchet derivative at `x`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Jacobian characterization of conformality",
+      "anchor": {
+        "section": "Conformal map",
+        "snippet": "The transformation is conformal whenever the Jacobian at each point is a positive scalar times a rotation matrix"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "IsConformalMap",
+        "module": "Mathlib.Analysis.Normed.Operator.Conformal",
+        "match_kind": "exact"
+      },
+      "note": "`IsConformalMap f'` is defined as `f' = c • li` with `c ≠ 0` and `li` a linear isometry — exactly 'positive scalar times rotation'; `conformalAt_iff_isConformalMap_fderiv` links it to the derivative.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Conformal maps in two dimensions",
+      "anchor": {
+        "section": "Conformal map",
+        "snippet": "the (orientation-preserving) conformal mappings are precisely the locally invertible complex analytic functions"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "conformalAt_iff_differentiableAt_or_differentiableAt_comp_conj",
+        "module": "Mathlib.Analysis.Complex.Conformal",
+        "match_kind": "generalization"
+      },
+      "note": "Mathlib characterizes plane `ConformalAt` as holomorphic-or-antiholomorphic-with-nonvanishing-derivative, without separately isolating the orientation-preserving (= holomorphic) case.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Liouville's theorem (conformal maps)",
+      "anchor": {
+        "section": "Conformal map",
+        "snippet": "Liouville's theorem sharply limits the conformal mappings to a few types"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No grep hit classifies conformal maps in dimension ≥ 3 as Möbius transformations; only complex Liouville (`Differentiable.const_of_bounded`) is present.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Cauchy integral theorem",
+      "anchor": {
+        "section": "Major results",
+        "snippet": "The line integral around a closed path of a function that is holomorphic everywhere inside the area bounded by the closed path is always zero"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "circleIntegral_eq_zero_of_differentiable_on_off_countable",
+        "module": "Mathlib.Analysis.Complex.CauchyIntegral",
+        "match_kind": "special_case"
+      },
+      "note": "Cauchy's theorem is stated for circular contours via `circleIntegral_eq_zero_of_differentiable_on_off_countable` and `DiffContOnCl.circleIntegral_eq_zero`; the fully general Jordan-curve version is not in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Cauchy's integral formula",
+      "anchor": {
+        "section": "Major results",
+        "snippet": "The values of such a holomorphic function inside a disk can be computed by a path integral on the disk's boundary"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Complex.circleIntegral_sub_inv_smul_of_differentiable_on_off_countable",
+        "module": "Mathlib.Analysis.Complex.CauchyIntegral",
+        "match_kind": "exact"
+      },
+      "note": "The disk version of Cauchy's integral formula is `circleIntegral_sub_inv_smul_of_differentiable_on_off_countable` (and `DifferentiableOn.circleIntegral_sub_inv_smul`).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Residue theorem",
+      "anchor": {
+        "section": "Major results",
+        "snippet": "this is the content of the powerful residue theorem"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Grep for `residue` in `Mathlib/Analysis` finds only residue classes / Gamma residues, no general complex residue theorem.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Picard's theorem (essential singularities)",
+      "anchor": {
+        "section": "Major results",
+        "snippet": "The remarkable behavior of holomorphic functions near essential singularities is described by Picard's theorem"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No Casorati–Weierstrass or great Picard theorem found in Mathlib by grep.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Meromorphic function (poles only)",
+      "anchor": {
+        "section": "Major results",
+        "snippet": "Functions that have only poles but no essential singularities are called meromorphic"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "MeromorphicOn",
+        "module": "Mathlib.Analysis.Meromorphic.Basic",
+        "match_kind": "exact"
+      },
+      "note": "Same `MeromorphicOn`/`MeromorphicAt` definitions (cf. `Mathlib/Analysis/Meromorphic/*`).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Liouville's theorem",
+      "anchor": {
+        "section": "Major results",
+        "snippet": "A bounded function that is holomorphic in the entire complex plane must be constant"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Differentiable.apply_eq_apply_of_bounded",
+        "module": "Mathlib.Analysis.Complex.Liouville",
+        "match_kind": "exact"
+      },
+      "note": "`Differentiable.apply_eq_apply_of_bounded` (with `Differentiable.const_of_bounded`) gives Liouville's theorem in `Mathlib/Analysis/Complex/Liouville.lean`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Fundamental theorem of algebra",
+      "anchor": {
+        "section": "Major results",
+        "snippet": "the fundamental theorem of algebra which states that the field of complex numbers is algebraically closed"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Complex.isAlgClosed",
+        "module": "Mathlib.Analysis.Complex.Polynomial.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`Complex.isAlgClosed` (proved via `Complex.exists_root`) states that ℂ is algebraically closed.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Analytic continuation",
+      "anchor": {
+        "section": "Major results",
+        "snippet": "If a function is holomorphic throughout a connected domain then its values are fully determined by its values on any smaller subdomain"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "AnalyticOnNhd.eqOn_of_preconnected_of_eventuallyEq",
+        "module": "Mathlib.Analysis.Analytic.Uniqueness",
+        "match_kind": "exact"
+      },
+      "note": "Uniqueness of analytic continuation on preconnected sets is `AnalyticOnNhd.eqOn_of_preconnected_of_eventuallyEq`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Riemann mapping theorem",
+      "anchor": {
+        "section": "Major results",
+        "snippet": "The Riemann mapping theorem about the conformal relationship of certain domains in the complex plane"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Grep for `RiemannMapping`/`riemann_mapping` returns no hits in Mathlib.",
+      "provenance": "ai"
+    }
+  ]
+}

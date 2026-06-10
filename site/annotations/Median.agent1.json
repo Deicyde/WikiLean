@@ -1,0 +1,620 @@
+{
+  "slug": "Median",
+  "wikipedia_title": "Median",
+  "display_title": "Median",
+  "schema_version": 3,
+  "annotations": [
+    {
+      "kind": "definition",
+      "label": "Median of a set",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "the value separating the higher half from the lower half"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "definition",
+      "label": "Median as 2-quantile",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "the value that partitions a set into two equal parts"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "definition",
+      "label": "Median of a finite list",
+      "anchor": {
+        "section": "Finite set of numbers",
+        "snippet": "The median of a finite list of numbers is the"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "definition",
+      "label": "Median of odd-sized set",
+      "anchor": {
+        "section": "Finite set of numbers",
+        "snippet": "the middle one is selected"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "example",
+      "label": "Seven-number median is 6",
+      "anchor": {
+        "section": "Finite set of numbers",
+        "snippet": "which is the fourth value"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "definition",
+      "label": "Median of even-sized set",
+      "anchor": {
+        "section": "Finite set of numbers",
+        "snippet": "the median is usually defined to be the arithmetic mean of the two middle values"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "example",
+      "label": "Eight-number median is 4.5",
+      "anchor": {
+        "section": "Finite set of numbers",
+        "snippet": "has a median value of 4.5"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "definition",
+      "label": "General median formula",
+      "anchor": {
+        "section": "Finite set of numbers",
+        "snippet": "the median can be defined as follows"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "definition",
+      "label": "Formal median of a population",
+      "anchor": {
+        "section": "Definition and notation",
+        "snippet": "a median of a population is any value such that at least half of the population is less than or equal to the proposed median"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "proposition",
+      "label": "Median well-defined for ordered data",
+      "anchor": {
+        "section": "Definition and notation",
+        "snippet": "The median is well-defined for any ordered (one-dimensional) data"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "definition",
+      "label": "Geometric median dimensions",
+      "anchor": {
+        "section": "Definition and notation",
+        "snippet": "is defined in any number of dimensions"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "proposition",
+      "label": "Median as quartile/decile/percentile",
+      "anchor": {
+        "section": "Definition and notation",
+        "snippet": "it is the 2nd quartile"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "example",
+      "label": "Multiset median is 2",
+      "anchor": {
+        "section": "Uses",
+        "snippet": "The median is 2 in this case"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "definition",
+      "label": "Median of a random variable",
+      "anchor": {
+        "section": "Probability distributions",
+        "snippet": "A median of a real-valued random variable"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "proposition",
+      "label": "Existence and non-uniqueness",
+      "anchor": {
+        "section": "Probability distributions",
+        "snippet": "always exists, but needs not be uniquely determined"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "proposition",
+      "label": "At least one median exists",
+      "anchor": {
+        "section": "Probability distributions",
+        "snippet": "has at least one median, but in pathological cases there may be more than one median"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "proposition",
+      "label": "Symmetric unimodal median equals mode",
+      "anchor": {
+        "section": "Medians of particular distributions",
+        "snippet": "The median of a symmetric unimodal distribution coincides with the mode"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "proposition",
+      "label": "Symmetric distribution median equals mean",
+      "anchor": {
+        "section": "Medians of particular distributions",
+        "snippet": "also takes the value μ"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "example",
+      "label": "Median of normal distribution",
+      "anchor": {
+        "section": "Medians of particular distributions",
+        "snippet": "The median of a normal distribution with mean μ and variance"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "example",
+      "label": "Median of uniform distribution",
+      "anchor": {
+        "section": "Medians of particular distributions",
+        "snippet": "The median of a uniform distribution in the interval"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "example",
+      "label": "Median of Cauchy distribution",
+      "anchor": {
+        "section": "Medians of particular distributions",
+        "snippet": "The median of a Cauchy distribution with location parameter"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "example",
+      "label": "Median of power law distribution",
+      "anchor": {
+        "section": "Medians of particular distributions",
+        "snippet": "The median of a power law distribution"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "example",
+      "label": "Median of exponential distribution",
+      "anchor": {
+        "section": "Medians of particular distributions",
+        "snippet": "The median of an exponential distribution with rate parameter"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "example",
+      "label": "Median of Weibull distribution",
+      "anchor": {
+        "section": "Medians of particular distributions",
+        "snippet": "The median of a Weibull distribution with shape parameter"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "theorem",
+      "label": "Median minimizes mean absolute error",
+      "anchor": {
+        "section": "Optimality property",
+        "snippet": "m is a median of X if and only if m is a minimizer of the mean absolute error"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "example",
+      "label": "k-medians clustering use",
+      "anchor": {
+        "section": "Optimality property",
+        "snippet": "useful in statistical data-analysis"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "theorem",
+      "label": "Mean-median distance bound",
+      "anchor": {
+        "section": "Inequality relating means and medians",
+        "snippet": "is bounded by one standard deviation"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "theorem",
+      "label": "Multivariate mean-median inequality",
+      "anchor": {
+        "section": "Inequality relating means and medians",
+        "snippet": "a multivariate version of the inequality"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "proposition",
+      "label": "Uniqueness of spatial median",
+      "anchor": {
+        "section": "Inequality relating means and medians",
+        "snippet": "The spatial median is unique when the data-set's dimension is two or more"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "theorem",
+      "label": "Sharper unimodal mean-median bound",
+      "anchor": {
+        "section": "Unimodal distributions",
+        "snippet": "one can achieve a sharper bound on the distance between the median and the mean"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "proposition",
+      "label": "Median-mode relation (unimodal)",
+      "anchor": {
+        "section": "Unimodal distributions",
+        "snippet": "A similar relation holds between the median and the mode"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "proposition",
+      "label": "Positive skew heuristic",
+      "anchor": {
+        "section": "Mean, median, and skew",
+        "snippet": "positively skewed distributions have mean > median"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "proposition",
+      "label": "Decreasing density: median < mean",
+      "anchor": {
+        "section": "Mean, median, and skew",
+        "snippet": "the median is less than the mean"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "theorem",
+      "label": "Jensen's inequality",
+      "anchor": {
+        "section": "Jensen's inequality for medians",
+        "snippet": "Jensen's inequality states that for any random variable"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "definition",
+      "label": "C function",
+      "anchor": {
+        "section": "Jensen's inequality for medians",
+        "snippet": "We say a function f : R → R is a C function"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "proposition",
+      "label": "Convex functions are C functions",
+      "anchor": {
+        "section": "Jensen's inequality for medians",
+        "snippet": "Every convex function is a C function"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "theorem",
+      "label": "Jensen's inequality for medians",
+      "anchor": {
+        "section": "Jensen's inequality for medians",
+        "snippet": "If f is a C function, then"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "proposition",
+      "label": "Linear-time selection of median",
+      "anchor": {
+        "section": "Efficient computation of the sample median",
+        "snippet": "selection algorithms can compute the k th-smallest of n items"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "definition",
+      "label": "Median of three rule",
+      "anchor": {
+        "section": "Efficient computation of the sample median",
+        "snippet": "the median of three rule, which estimates the median as the median of a three-element subsample"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "definition",
+      "label": "Tukey's ninther",
+      "anchor": {
+        "section": "Efficient computation of the sample median",
+        "snippet": "Tukey 's ninther , which is the median of three rule applied with limited recursion"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "definition",
+      "label": "Remedian",
+      "anchor": {
+        "section": "Efficient computation of the sample median",
+        "snippet": "The remedian is an estimator for the median that requires linear time but sub-linear memory"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "theorem",
+      "label": "Asymptotic normality of sample median",
+      "anchor": {
+        "section": "Sampling distribution",
+        "snippet": "is asymptotically normal with mean"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "proposition",
+      "label": "Variance of median for normal samples",
+      "anchor": {
+        "section": "Sampling distribution",
+        "snippet": "for large samples the variance of the median equals"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "proposition",
+      "label": "Median density is symmetric beta",
+      "anchor": {
+        "section": "Derivation of the asymptotic distribution",
+        "snippet": "the density function of the median is a symmetric beta distribution"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "proposition",
+      "label": "Consistency of delete-k estimator",
+      "anchor": {
+        "section": "Estimation of variance from sample data",
+        "snippet": "has been shown to be asymptotically consistent"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "proposition",
+      "label": "Efficiency of sample median (normal)",
+      "anchor": {
+        "section": "Efficiency",
+        "snippet": "the efficiency for large N is"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "proposition",
+      "label": "Hodges–Lehmann estimator",
+      "anchor": {
+        "section": "Other estimators",
+        "snippet": "the Hodges–Lehmann estimator is a robust and highly efficient estimator of the population median"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "definition",
+      "label": "Pareto interpolation",
+      "anchor": {
+        "section": "Other estimators",
+        "snippet": "Pareto interpolation is an application of this"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "proposition",
+      "label": "Multivariate median agrees in 1D",
+      "anchor": {
+        "section": "Multivariate median",
+        "snippet": "each such multivariate median agrees with the univariate median when the dimension is exactly one"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "definition",
+      "label": "Marginal median",
+      "anchor": {
+        "section": "Marginal median",
+        "snippet": "the vector whose components are univariate medians"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "definition",
+      "label": "Geometric median",
+      "anchor": {
+        "section": "Geometric median",
+        "snippet": "point minimizing the sum of distances to the sample points"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "proposition",
+      "label": "Geometric median equivariance",
+      "anchor": {
+        "section": "Geometric median",
+        "snippet": "the geometric median is equivariant with respect to Euclidean similarity transformations"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "definition",
+      "label": "Median in all directions",
+      "anchor": {
+        "section": "Median in all directions",
+        "snippet": "their common location may be termed the"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "proposition",
+      "label": "Coincides with geometric median",
+      "anchor": {
+        "section": "Median in all directions",
+        "snippet": "the median in all directions coincides with the geometric median"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "definition",
+      "label": "Centerpoint",
+      "anchor": {
+        "section": "Centerpoint",
+        "snippet": "a centerpoint of the set is a point such that any hyperplane that goes through that point divides the set of points in two roughly equal subsets"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "theorem",
+      "label": "Existence of a centerpoint",
+      "anchor": {
+        "section": "Centerpoint",
+        "snippet": "Every non-empty set of points (with no duplicates) has at least one centerpoint"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "definition",
+      "label": "Conditional median",
+      "anchor": {
+        "section": "Conditional median",
+        "snippet": "The conditional median occurs in the setting where we seek to estimate a random variable"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "theorem",
+      "label": "Conditional median is optimal Bayesian estimator",
+      "anchor": {
+        "section": "Conditional median",
+        "snippet": "The conditional median is the optimal Bayesian"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "theorem",
+      "label": "Linearity iff Gaussian",
+      "anchor": {
+        "section": "Conditional median",
+        "snippet": "the estimator is linear if and only if"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "definition",
+      "label": "Interpolated median",
+      "anchor": {
+        "section": "Interpolated median",
+        "snippet": "the interpolated median can be calculated from"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "definition",
+      "label": "Pseudo-median",
+      "anchor": {
+        "section": "Pseudo-median",
+        "snippet": "the population pseudo-median , which is the median of a symmetrized distribution"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "definition",
+      "label": "Theil–Sen estimator",
+      "anchor": {
+        "section": "Variants of regression",
+        "snippet": "The Theil–Sen estimator is a method for robust linear regression based on finding medians of slopes"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "definition",
+      "label": "Median filter",
+      "anchor": {
+        "section": "Median filter",
+        "snippet": "The median filter is an important tool of image processing"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "definition",
+      "label": "k-medians clustering",
+      "anchor": {
+        "section": "Cluster analysis",
+        "snippet": "the k-medians clustering algorithm provides a way of defining clusters"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "definition",
+      "label": "Median–median line",
+      "anchor": {
+        "section": "Median–median line",
+        "snippet": "This is a method of robust regression"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "definition",
+      "label": "Median-unbiased estimator",
+      "anchor": {
+        "section": "Median-unbiased estimators",
+        "snippet": "will be said to be median-unbiased"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "proposition",
+      "label": "Mean-unbiased minimizes squared-error risk",
+      "anchor": {
+        "section": "Median-unbiased estimators",
+        "snippet": "Any mean -unbiased estimator minimizes the risk"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "proposition",
+      "label": "Median-unbiased minimizes absolute-deviation risk",
+      "anchor": {
+        "section": "Median-unbiased estimators",
+        "snippet": "A median -unbiased estimator minimizes the risk with respect to the absolute-deviation loss function"
+      },
+      "provenance": "ai-agent1"
+    }
+  ]
+}

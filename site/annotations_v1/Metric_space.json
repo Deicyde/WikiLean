@@ -1,0 +1,319 @@
+{
+  "slug": "Metric_space",
+  "wikipedia_title": "Metric space",
+  "display_title": "Metric space",
+  "schema_version": 1,
+  "source": "claude-agent-sdk/annotate_articles.py",
+  "annotations": [
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle d\\,\\colon M\\times M\\to \\mathbb {R} }"
+      },
+      "status": "formalized",
+      "decl": "Dist",
+      "module": "Mathlib.Topology.MetricSpace.Pseudo.Defs",
+      "note": "The distance function d : M × M → ℝ is captured by the Dist typeclass."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle d(x,x)=0}"
+      },
+      "status": "partial",
+      "decl": "PseudoMetricSpace",
+      "module": "Mathlib.Topology.MetricSpace.Pseudo.Defs",
+      "note": "The axiom dist x x = 0 is a field of PseudoMetricSpace but not a separate decl in the list."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle {\\text{If }}x\\neq y{\\text{, then }}d(x,y)>0}"
+      },
+      "status": "partial",
+      "decl": "MetricSpace",
+      "module": "Mathlib.Topology.MetricSpace.Defs",
+      "note": "Positivity is encoded via eq_of_dist_eq_zero in MetricSpace's definition rather than a separate decl."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle d(x,y)=d(y,x)}"
+      },
+      "status": "partial",
+      "decl": "PseudoMetricSpace",
+      "module": "Mathlib.Topology.MetricSpace.Pseudo.Defs",
+      "note": "Symmetry is an axiom field of PseudoMetricSpace; no standalone decl is provided in the list."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle d(x,z)\\leq d(x,y)+d(y,z)}"
+      },
+      "status": "formalized",
+      "decl": "dist_triangle",
+      "module": "Mathlib.Topology.MetricSpace.Pseudo.Defs",
+      "note": "Exactly the triangle inequality, formalized as dist_triangle."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle d_{2}((x_{1},y_{1}),(x_{2},y_{2}))={\\sqrt {(x_{2}-x_{1})^{2}+(y_{2}-y_{1})^{2}}}.}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Euclidean distance formula for ℝ² is not present as a standalone decl in the provided list."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle d_{1}((x_{1},y_{1}),(x_{2},y_{2}))=|x_{2}-x_{1}|+|y_{2}-y_{1}|}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Taxicab/Manhattan distance is not in the provided list of related decls."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle d_{\\infty }((x_{1},y_{1}),(x_{2},y_{2}))=\\max\\{|x_{2}-x_{1}|,|y_{2}-y_{1}|\\}.}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Chebyshev/L^∞ distance is not in the provided list of related decls."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle d_{\\infty }(p,q)\\leq d_{2}(p,q)\\leq d_{1}(p,q)\\leq 2d_{\\infty }(p,q),}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Comparison inequalities between L^∞, L^2, and L^1 distances are not in the provided list."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle d_{\\alpha }((x_{1},y_{1}),(x_{2},y_{2}))=\\left(\\vert x_{2}-x_{1}\\vert ^{\\alpha }+\\vert y_{2}-y_{1}\\vert ^{\\alpha }\\right)^{1/\\alpha }.}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "L^α / p-norm distance is not in the provided list of related decls."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle d(p,q)={\\begin{cases}0,&{\\text{if }}p=q,\\\\1,&{\\text{otherwise.}}\\end{cases}}}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Discrete metric is not in the provided list of related decls."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle d_{A}(x,y)=d(x,y).}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Subspace/induced metric is not represented as a standalone decl in the provided list."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle B_{r}(x)=\\{y\\in M:d(x,y)<r\\}.}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Open ball definition (Metric.ball) is not present in the provided list of related decls."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle d_{2}(f(x),f(y))=d_{1}(x,y).}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Isometry condition (Isometry) is not in the provided list of related decls."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle f(x,y)=(x+y,x-y).}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Specific example map of an isometry; not a standalone Mathlib decl."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle d_{1}(x,y)<\\delta \\implies d_{2}(f(x),f(y))<\\varepsilon .}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "ε–δ definition of continuity for metric spaces is not in the provided list."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle d_{2}(f(x),f(y))<\\varepsilon .}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Uniform continuity ε–δ statement is not in the provided list of related decls."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle d_{2}(f(x),f(y))\\leq Kd_{1}(x,y)\\quad {\\text{for all}}\\quad x,y\\in M_{1}.}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Lipschitz condition (LipschitzWith) is not in the provided list of related decls."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle d(f(x),f(y))<d(x,y)\\quad {\\mbox{for all}}\\quad x\\neq y\\in M_{1}.}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Strict contraction condition is not in the provided list of related decls."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle {\\frac {1}{A}}d_{2}(f(x),f(y))-B\\leq d_{1}(x,y)\\leq Ad_{2}(f(x),f(y))+B\\quad {\\text{ for all }}\\quad x,y\\in M_{1}.}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Quasi-isometric embedding condition is not in the provided list of related decls."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle d(x,y):=\\lVert x-y\\rVert .}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Norm-induced metric is not in the provided list of related decls."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle L(\\gamma )=\\sup _{0=x_{0}<x_{1}<\\cdots <x_{n}=T}\\left\\{\\sum _{k=1}^{n}d(\\gamma (x_{k-1}),\\gamma (x_{k}))\\right\\}.}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Length of a curve as supremum over partitions is not in the provided list."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle L(\\gamma )=\\int _{0}^{T}|{\\dot {\\gamma }}(t)|dt.}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Riemannian length integral is not in the provided list of related decls."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle d(f,g)=\\sup _{x\\in X}d(f(x),g(x)).}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Sup-metric on bounded functions is not in the provided list of related decls."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle d(x,S)=\\inf\\{d(x,s):s\\in S\\}.}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Point-to-set distance (infDist) is not in the provided list of related decls."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle d(x,S)\\leq d(x,y)+d(y,S),}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Triangle inequality for point-to-set distance is not in the provided list."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle d_{H}(S,T)=\\max\\{\\sup\\{d(s,T):s\\in S\\},\\sup\\{d(t,S):t\\in T\\}\\}.}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Hausdorff distance is not in the provided list of related decls."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle d_{\\times }{\\bigl (}(x_{1},\\ldots ,x_{n}),(y_{1},\\ldots ,y_{n}){\\bigr )}=N{\\bigl (}d_{1}(x_{1},y_{1}),\\ldots ,d_{n}(x_{n},y_{n}){\\bigr )},}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Generic product metric construction via a norm N is not in the provided list."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle d(x,y)=\\sum _{i=1}^{\\infty }{\\frac {1}{2^{i}}}{\\frac {d_{i}(x_{i},y_{i})}{1+d_{i}(x_{i},y_{i})}}.}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Countable product metric formula is not in the provided list of related decls."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle d'([x],[y])=\\inf\\{d(p_{1},q_{1})+d(p_{2},q_{2})+\\dotsb +d(p_{n},q_{n})\\},}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Quotient metric construction is not in the provided list of related decls."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle d(x,y)={\\begin{cases}x-y&{\\text{if }}x\\geq y,\\\\1&{\\text{otherwise.}}\\end{cases}}}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Specific quasimetric example is not in the provided list of related decls."
+    }
+  ]
+}

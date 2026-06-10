@@ -1,0 +1,377 @@
+{
+  "slug": "Real_projective_line",
+  "wikipedia_title": "Real projective line",
+  "display_title": "Real projective line",
+  "schema_version": 3,
+  "annotation_style": "theorem_article",
+  "annotations": [
+    {
+      "kind": "definition",
+      "label": "Real projective line",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "a real projective line is a projective line over the real numbers"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Projectivization",
+        "module": "Mathlib.LinearAlgebra.Projectivization.Basic",
+        "match_kind": "generalization"
+      },
+      "note": "Mathlib defines the projectivization of any vector space over a division ring; the real projective line is the special case ℙ ℝ (Fin 2 → ℝ), not separately named.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Formal definition of P(R)",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "a real projective line P ( R ) is defined as the set of all one-dimensional linear subspaces of a two-dimensional vector space over the reals"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Projectivization.equivSubmodule",
+        "module": "Mathlib.LinearAlgebra.Projectivization.Basic",
+        "match_kind": "generalization"
+      },
+      "note": "equivSubmodule gives the bijection between ℙ K V and the one-dimensional submodules (finrank = 1), generalizing the real two-dimensional case.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Projective transformations",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "The automorphisms of a real projective line are called projective transformations"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Projectivization.map",
+        "module": "Mathlib.LinearAlgebra.Projectivization.Basic",
+        "match_kind": null
+      },
+      "note": "Injective (semi)linear maps induce maps on ℙ via Projectivization.map, but the automorphism group of the projective line is not bundled or named.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Automorphisms form PGL(2,R)",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "They form the projective linear group PGL(2, R )"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Matrix.ProjGenLinGroup",
+        "module": "Mathlib.LinearAlgebra.Matrix.GeneralLinearGroup.Projective",
+        "match_kind": null
+      },
+      "note": "PGL(2,R) is defined, but the theorem that it is exactly the automorphism group of the projective line is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Homeomorphic to circles",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "real projective lines are homeomorphic to circles"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No homeomorphism between the real projective line and a circle is present in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Equivalence relation on V",
+      "anchor": {
+        "section": "Definition",
+        "snippet": "Define on V ∖ 0 the binary relation v ~ w to hold when there exists a nonzero real number t such that v = t w"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "projectivizationSetoid",
+        "module": "Mathlib.LinearAlgebra.Projectivization.Basic",
+        "match_kind": "generalization"
+      },
+      "note": "projectivizationSetoid is the setoid on nonzero vectors given by the Kˣ scalar-orbit relation, exactly the v ~ tw relation.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "P(V) as set of equivalence classes",
+      "anchor": {
+        "section": "Definition",
+        "snippet": "The real projective line P ( V ) is the set of all equivalence classes"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Projectivization",
+        "module": "Mathlib.LinearAlgebra.Projectivization.Basic",
+        "match_kind": "generalization"
+      },
+      "note": "Projectivization is defined as the quotient of nonzero vectors by projectivizationSetoid, i.e. the set of equivalence classes.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Projective coordinates notation",
+      "anchor": {
+        "section": "Definition",
+        "snippet": "The equivalence class of the pair ( x , y ) is traditionally denoted"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Projectivization.mk",
+        "module": "Mathlib.LinearAlgebra.Projectivization.Basic",
+        "match_kind": "generalization"
+      },
+      "note": "Projectivization.mk constructs the equivalence class of a nonzero vector, but the homogeneous-coordinate bracket notation [x : y] is not provided.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Projective line as quotient of circle",
+      "anchor": {
+        "section": "Definition",
+        "snippet": "the projective line may be considered as the quotient space of the circle by the equivalence relation such that"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The realization of the projective line as the quotient of the circle by antipodal identification is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Projective line is a manifold",
+      "anchor": {
+        "section": "Charts",
+        "snippet": "The projective line is a manifold"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "There is no ChartedSpace or manifold instance on the projectivization in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Transition map and analytic manifold",
+      "anchor": {
+        "section": "Charts",
+        "snippet": "The transition map between these two charts is the multiplicative inverse"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No chart atlas or transition map giving an analytic manifold structure on the projective line is present.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Projectively extended real line embedding",
+      "anchor": {
+        "section": "Charts",
+        "snippet": "It defines an embedding of the real line into the projective line, whose complement of the image is the point"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "OnePoint.equivProjectivization",
+        "module": "Mathlib.Topology.Compactification.OnePoint.ProjectiveLine",
+        "match_kind": "generalization"
+      },
+      "note": "OnePoint.equivProjectivization gives a set-theoretic equiv OnePoint K ≃ ℙ K (Fin 2 → K) with coe t ↦ [t:1] and ∞ ↦ [1:0], but only as an equivalence, not as a topological embedding.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Association with antipodal points",
+      "anchor": {
+        "section": "Structure",
+        "snippet": "Points of the real projective line can be associated with pairs of antipodal points on a circle"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The correspondence between projective points and antipodal point-pairs on a circle is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Complete projective range",
+      "anchor": {
+        "section": "Structure",
+        "snippet": "The real projective line is a complete projective range that is found in the real projective plane and in the complex projective line"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The synthetic-geometry notion of a complete projective range is not present in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Cyclic order on the projective line",
+      "anchor": {
+        "section": "Structure",
+        "snippet": "The real projective line has a cyclic order that extends the usual order of the real numbers"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "CircularOrder",
+        "module": "Mathlib.Order.Circular",
+        "match_kind": null
+      },
+      "note": "Mathlib has the CircularOrder typeclass but no cyclic-order instance on the real projective line extending the order of ℝ.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Right action of GL2(R) on row vectors",
+      "anchor": {
+        "section": "The projective linear group and its action",
+        "snippet": "Matrix-vector multiplication defines a right action of GL 2 ( R ) on the space R 2 of row vectors"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Matrix.op_smul_eq_vecMul",
+        "module": "Mathlib.Data.Matrix.Action",
+        "match_kind": "generalization"
+      },
+      "note": "Mathlib gives a right module action of square matrices on vectors via vecMul (and a left one via mulVec); GL₂(R) on R² is a special case.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Induced action on P1(R)",
+      "anchor": {
+        "section": "The projective linear group and its action",
+        "snippet": "there is an induced action of GL 2 ( R ) on P 1 ( R )"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Projectivization.generalLinearGroup_smul_def",
+        "module": "Mathlib.LinearAlgebra.Projectivization.Action",
+        "match_kind": "generalization"
+      },
+      "note": "Any group acting linearly on V (including the general linear group) gets an induced MulAction on ℙ K V.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Projective linear group",
+      "anchor": {
+        "section": "The projective linear group and its action",
+        "snippet": "The projective linear group is defined to be the quotient group PGL 2 ( R ) = GL 2 ( R )/ R ×"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Matrix.ProjGenLinGroup",
+        "module": "Mathlib.LinearAlgebra.Matrix.GeneralLinearGroup.Projective",
+        "match_kind": "generalization"
+      },
+      "note": "ProjGenLinGroup is GL n R quotiented by its center, which equals the scalar matrices Rˣ for a field, matching PGL₂(R) = GL₂(R)/R×.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Faithful action of PGL2(R)",
+      "anchor": {
+        "section": "The projective linear group and its action",
+        "snippet": "there is an induced faithful action of PGL 2 ( R ) on P 1 ( R )"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Matrix.ProjGenLinGroup.mulActionOfGL",
+        "module": "Mathlib.LinearAlgebra.Matrix.GeneralLinearGroup.Projective",
+        "match_kind": null
+      },
+      "note": "Machinery to build a PGL action from a scalar-trivial GL action exists, but a faithful PGL action on the projective line is not instantiated or proven faithful.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Action by linear fractional transformations",
+      "anchor": {
+        "section": "Linear fractional transformations",
+        "snippet": "one obtains a corresponding action of PGL 2 ( R ) on R ∪ ∞ , which is by linear fractional transformations"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "OnePoint.smul_some_eq_ite",
+        "module": "Mathlib.Topology.Compactification.OnePoint.ProjectiveLine",
+        "match_kind": "generalization"
+      },
+      "note": "The GL(2,K) action on OnePoint K acts on finite points by the Möbius/linear-fractional formula (g00·k+g01)/(g10·k+g11).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Sharply 3-transitive action",
+      "anchor": {
+        "section": "Properties",
+        "snippet": "there exists a unique element of PGL 2 ( R ) mapping the first triple to the second; that is, the action is sharply 3-transitive"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Projectivization.generalLinearGroup_is_two_pretransitive",
+        "module": "Mathlib.LinearAlgebra.Projectivization.Action",
+        "match_kind": null
+      },
+      "note": "The action on ℙ K V is proven 2-pretransitive, but sharp 3-transitivity of PGL on the projective line is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Cayley transform",
+      "anchor": {
+        "section": "Properties",
+        "snippet": "the linear fractional transformation mapping (0, 1, ∞) to (−1, 0, 1) is the Cayley transform"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Cayley transform as a specific linear fractional transformation is not formalized (only Cayley graphs/Cayley's theorem exist).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Stabilizer of the point at infinity",
+      "anchor": {
+        "section": "Properties",
+        "snippet": "The stabilizer in PGL 2 ( R ) of the point ∞ is the affine group of the real line"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "OnePoint.smul_infty_eq_self_iff",
+        "module": "Mathlib.Topology.Compactification.OnePoint.ProjectiveLine",
+        "match_kind": null
+      },
+      "note": "The stabilizer of ∞ is characterized by g 1 0 = 0 (upper-triangular matrices), but its identification with the affine group is not stated.",
+      "provenance": "ai"
+    }
+  ]
+}

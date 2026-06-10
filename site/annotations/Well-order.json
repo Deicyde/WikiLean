@@ -1,0 +1,761 @@
+{
+  "slug": "Well-order",
+  "wikipedia_title": "Well-order",
+  "display_title": "Well-order",
+  "schema_version": 3,
+  "annotation_style": "theorem_article",
+  "annotations": [
+    {
+      "kind": "definition",
+      "label": "Transitivity tacitly required",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "tacitly require the homogeneous relation"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This is a meta-convention, not a theorem; though Mathlib's `IsWellOrder` does derive an `IsTrans` instance automatically.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Well-order",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "a total ordering on S with the property that every non-empty subset of S has a least element"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "IsWellOrder",
+        "module": "Mathlib.Order.RelClasses",
+        "match_kind": "exact"
+      },
+      "note": "`IsWellOrder` is a relation that is well-founded and trichotomous (hence a well-founded linear order).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Well-ordered set",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "together with the ordering is then called a well-ordered set"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "WellOrder",
+        "module": "Mathlib.SetTheory.Ordinal.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`WellOrder` bundles a type, a relation, and a proof that the relation is an `IsWellOrder`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Existence of least element",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "Every non-empty well-ordered set has a least element"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "WellFounded.has_min",
+        "module": "Mathlib.Order.WellFounded",
+        "match_kind": "generalization"
+      },
+      "note": "`WellFounded.has_min` gives a minimal element of any nonempty set under a well-founded relation, generalizing the well-order case.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Unique successor",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "has a unique successor (next element)"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "SuccOrder.ofLinearWellFoundedLT",
+        "module": "Mathlib.Order.SuccPred.Basic",
+        "match_kind": "generalization"
+      },
+      "note": "A well-order is made into a `SuccOrder` whose `Order.succ` is the next element (the min of strictly larger elements).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Least upper bound of bounded subsets",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "contains for every subset T with an upper bound a least upper bound"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "WellFoundedLT.conditionallyCompleteLinearOrderBot",
+        "module": "Mathlib.Order.ConditionallyCompleteLattice.Defs",
+        "match_kind": "generalization"
+      },
+      "note": "Any well-founded linear order with a bottom is conditionally complete, so every bounded-above set has a least upper bound.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Non-strict yields strict well ordering",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "is a non-strict well ordering, then"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "isWellOrder_lt",
+        "module": "Mathlib.Order.RelClasses",
+        "match_kind": "generalization"
+      },
+      "note": "From a `LinearOrder` with `WellFoundedLT` Mathlib derives `IsWellOrder α (· < ·)`, i.e. the strict version is a strict well order.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Strict well ordering characterization",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "is a strict well ordering if and only if it is a well-founded strict total order"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "IsWellOrder",
+        "module": "Mathlib.Order.RelClasses",
+        "match_kind": "exact"
+      },
+      "note": "`IsWellOrder` is defined as well-founded + trichotomous and carries an `IsStrictTotalOrder` instance, which is exactly a well-founded strict total order.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Order type ordinal isomorphism",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "is uniquely order isomorphic to a unique ordinal number , called the order type"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Ordinal.type",
+        "module": "Mathlib.SetTheory.Ordinal.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`Ordinal.type` assigns the order type, and `Ordinal.type_eq` shows two well orders are order-isomorphic iff they have the same ordinal.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Well-ordering theorem",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "The well-ordering theorem , which is equivalent to the axiom of choice"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "exists_wellFoundedLT",
+        "module": "Mathlib.SetTheory.Cardinal.Order",
+        "match_kind": "exact"
+      },
+      "note": "`exists_wellFoundedLT` (Zermelo's theorem) gives every type a well-order using choice; the explicit equivalence to AC is not separately formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Transfinite induction applicability",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "the proof technique of transfinite induction can be used to prove"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "WellFoundedLT.induction",
+        "module": "Mathlib.Order.RelClasses",
+        "match_kind": "generalization"
+      },
+      "note": "`WellFoundedLT.induction` (and `Ordinal.inductionOn`) provide transfinite/well-founded induction.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Well-ordering principle",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "is commonly called the well-ordering principle"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "type_nat_lt",
+        "module": "Mathlib.SetTheory.Ordinal.Basic",
+        "match_kind": "special_case"
+      },
+      "note": "`type_nat_lt` (typeLT ℕ = ω) records that ℕ under `<` is a well order, the content of the well-ordering principle.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Standard order on naturals",
+      "anchor": {
+        "section": "Natural numbers",
+        "snippet": "The standard ordering ≤ of the natural numbers is a well ordering"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "type_nat_lt",
+        "module": "Mathlib.SetTheory.Ordinal.Basic",
+        "match_kind": "special_case"
+      },
+      "note": "`type_nat_lt` states ℕ's standard order is a well order of type ω (ℕ also has a `WellFoundedLT` instance).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Evens-before-odds order (type ω+ω)",
+      "anchor": {
+        "section": "Natural numbers",
+        "snippet": "all even numbers are less than all odd numbers"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This specific reordering of ℕ giving order type ω+ω is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Standard order on integers not a well order",
+      "anchor": {
+        "section": "Integers",
+        "snippet": "the standard ordering ≤ of the integers is not a well ordering"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "There is no explicit statement that ℤ is not well-ordered (ℤ simply has no `WellFoundedLT` instance and is `NoMinOrder`).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Well order R of integers (type ω+ω)",
+      "anchor": {
+        "section": "Integers",
+        "snippet": "The following binary relation R is an example of well ordering of the integers"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This explicit well order of ℤ of type ω+ω is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Alternate well order of integers (type ω)",
+      "anchor": {
+        "section": "Integers",
+        "snippet": "Another relation for well ordering the integers is the following definition"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This alternate well order of ℤ of type ω is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Real interval not a well order",
+      "anchor": {
+        "section": "Reals",
+        "snippet": "The standard ordering ≤ of any real interval is not a well ordering"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No explicit statement that real intervals are not well-ordered by ≤.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "ZFC implies a well order of the reals",
+      "anchor": {
+        "section": "Reals",
+        "snippet": "one can show that there is a well order of the reals"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "exists_wellFoundedLT",
+        "module": "Mathlib.SetTheory.Cardinal.Order",
+        "match_kind": "invocation"
+      },
+      "note": "Instantiating `exists_wellFoundedLT` at ℝ yields a well order of the reals.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Sierpiński: ZF+GCH implies AC",
+      "anchor": {
+        "section": "Reals",
+        "snippet": "Wacław Sierpiński proved that ZF + GCH"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Sierpiński's theorem that GCH implies AC over ZF is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "No definable well order from ZFC+GCH alone",
+      "anchor": {
+        "section": "Reals",
+        "snippet": "are not sufficient to prove the existence of a definable"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This independence/non-definability metatheorem is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "ZFC+V=L gives definable well order",
+      "anchor": {
+        "section": "Reals",
+        "snippet": "it follows from ZFC+V=L that a particular formula well orders the reals"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "V=L and the definable well order of the reals it provides are not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Uncountable real subset cannot be well ordered by ≤",
+      "anchor": {
+        "section": "Reals",
+        "snippet": "An uncountable subset of the real numbers with the standard ordering ≤ cannot be a well order"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No statement that an uncountable subset of ℝ cannot be well-ordered by the standard ≤ was found.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Naturals well ordered by ≤",
+      "anchor": {
+        "section": "Reals",
+        "snippet": "The natural numbers are a well order under the standard ordering ≤"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "type_nat_lt",
+        "module": "Mathlib.SetTheory.Ordinal.Basic",
+        "match_kind": "special_case"
+      },
+      "note": "ℕ under its standard order is a well order (type ω), via `type_nat_lt` and the `WellFoundedLT ℕ` instance.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Set with no least element",
+      "anchor": {
+        "section": "Reals",
+        "snippet": "has no least element and is therefore not a well order under standard ordering ≤"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The specific example {1/n} lacking a least element is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Real set of order type ω",
+      "anchor": {
+        "section": "Reals",
+        "snippet": "Examples of well orders"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This concrete subset of ℝ of order type ω is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Real set of order type ω²",
+      "anchor": {
+        "section": "Reals",
+        "snippet": "has order type ω 2"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This concrete subset of ℝ of order type ω² is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Real set of order type ω+1",
+      "anchor": {
+        "section": "Reals",
+        "snippet": "has order type ω + 1"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This concrete subset of ℝ of order type ω+1 is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Equivalent formulations of well order",
+      "anchor": {
+        "section": "Equivalent formulations",
+        "snippet": "If a set is totally ordered , then the following are equivalent to each other"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "wellFounded_iff_isEmpty_descending_chain",
+        "module": "Mathlib.Order.WellFounded",
+        "match_kind": null
+      },
+      "note": "Individual equivalences exist (`wellFounded_iff_has_min`, `wellFounded_iff_isEmpty_descending_chain`) but not bundled as one TFAE statement.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Initial segment",
+      "anchor": {
+        "section": "Initial segments",
+        "snippet": "An initial segment , determined by an element"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "PrincipalSeg.ofElement",
+        "module": "Mathlib.Order.InitialSeg",
+        "match_kind": "special_case"
+      },
+      "note": "`PrincipalSeg.ofElement r a` is the initial segment determined by `a`, with range `Set.Iio a`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Initial segments are lower sets",
+      "anchor": {
+        "section": "Initial segments",
+        "snippet": "an initial segment is the same thing as a lower set in order theory"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "InitialSeg.isLowerSet_range",
+        "module": "Mathlib.Order.InitialSeg",
+        "match_kind": "exact"
+      },
+      "note": "`InitialSeg.isLowerSet_range` shows the range of an initial-segment embedding is an `IsLowerSet`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Ordinal number via initial segments",
+      "anchor": {
+        "section": "Initial segments",
+        "snippet": "an ordinal number is a well-ordered set"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "ZFSet.IsOrdinal",
+        "module": "Mathlib.SetTheory.ZFC.Ordinal",
+        "match_kind": "special_case"
+      },
+      "note": "`ZFSet.IsOrdinal` defines von Neumann ordinals as transitive sets well-ordered by ∈, where each element is its own initial segment.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Not isomorphic to proper initial segment",
+      "anchor": {
+        "section": "Initial segments",
+        "snippet": "A well-ordered set is never isomorphic to a proper initial segment of itself"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "PrincipalSeg.irrefl",
+        "module": "Mathlib.Order.InitialSeg",
+        "match_kind": "exact"
+      },
+      "note": "`PrincipalSeg.irrefl` shows there is no principal-segment embedding `r ≺i r` of a well order into itself.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Comparability of well-ordered sets",
+      "anchor": {
+        "section": "Initial segments",
+        "snippet": "given two well-ordered sets"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "InitialSeg.total",
+        "module": "Mathlib.Order.InitialSeg",
+        "match_kind": "exact"
+      },
+      "note": "`InitialSeg.total` shows of two well orders, one embeds as an initial segment of the other.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Morphisms preserve initial segments",
+      "anchor": {
+        "section": "Initial segments",
+        "snippet": "A morphism between well-ordered sets sends initial segments to initial segments"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "InitialSeg.image_Iio",
+        "module": "Mathlib.Order.InitialSeg",
+        "match_kind": "generalization"
+      },
+      "note": "`InitialSeg.image_Iio` shows an initial-segment morphism maps `Set.Iio a` to `Set.Iio (f a)`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Ordering on the class of well-ordered sets",
+      "anchor": {
+        "section": "Initial segments",
+        "snippet": "Initial segments give an ordering"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Ordinal",
+        "module": "Mathlib.SetTheory.Ordinal.Basic",
+        "match_kind": "generalization"
+      },
+      "note": "`Ordinal` is the class of well orders up to isomorphism carrying a `LinearOrder` defined via initial-segment embeddings.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Union of a chain is well-ordered",
+      "anchor": {
+        "section": "Initial segments",
+        "snippet": "The union of a chain of well-ordered sets is then well-ordered"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No direct statement that the union of a chain of well-ordered sets (each an initial segment of the next) is well-ordered was found.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Initial-segment order coincides with inclusion for ordinals",
+      "anchor": {
+        "section": "Initial segments",
+        "snippet": "this ordering given by initial segments coincides with set inclusion"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "ZFSet.IsOrdinal",
+        "module": "Mathlib.SetTheory.ZFC.Ordinal",
+        "match_kind": null
+      },
+      "note": "The von Neumann ordinal development (∈/⊆ order via `ZFSet.IsOrdinal`) exists, but the exact coincidence statement isn't isolated.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Well-foundedness via initial segments",
+      "anchor": {
+        "section": "Initial segments",
+        "snippet": "is well-founded if and only if it is covered by well-founded initial segments"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "wellFounded_iff_principalSeg",
+        "module": "Mathlib.Order.InitialSeg",
+        "match_kind": null
+      },
+      "note": "`wellFounded_iff_principalSeg` characterizes well-foundedness via well-foundedness of principal segments below, closely related to this statement.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Order topology on a well-ordered set",
+      "anchor": {
+        "section": "Order topology",
+        "snippet": "Every well-ordered set can be made into a topological space by endowing it with the order topology"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Preorder.topology",
+        "module": "Mathlib.Topology.Order.Basic",
+        "match_kind": "generalization"
+      },
+      "note": "`Preorder.topology` / `OrderTopology` provide the order topology for any (pre)order, hence for well orders.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Isolated points and limit points",
+      "anchor": {
+        "section": "Order topology",
+        "snippet": "there can be two kinds of elements: isolated points"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Order.IsSuccLimit",
+        "module": "Mathlib.Order.SuccPred.Limit",
+        "match_kind": null
+      },
+      "note": "`Order.IsSuccLimit` captures limit elements (vs successors), but the topological isolated/limit-point dichotomy for well orders isn't separately stated.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Cofinal subset",
+      "anchor": {
+        "section": "Order topology",
+        "snippet": "A subset is cofinal in the whole set if and only if it is unbounded in the whole set"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "IsCofinal",
+        "module": "Mathlib.Order.Cofinal",
+        "match_kind": "generalization"
+      },
+      "note": "`IsCofinal` defines a cofinal set in any ordered type as one with elements ≥ every element (i.e. unbounded).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "First-countability criterion",
+      "anchor": {
+        "section": "Order topology",
+        "snippet": "is a first-countable space if and only if it has order type less than or equal to ω 1"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The criterion that an ordinal-indexed order topology is first-countable iff its type is ≤ ω₁ was not found.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Order type as unique ordinal",
+      "anchor": {
+        "section": "Ordinal numbers",
+        "snippet": "called the order type of the well-ordered set"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Ordinal.type",
+        "module": "Mathlib.SetTheory.Ordinal.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`Ordinal.type` is the unique ordinal (order type) attached to a well order.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Finite set size equals order type",
+      "anchor": {
+        "section": "Ordinal numbers",
+        "snippet": "of a finite set is equal to the order type"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Ordinal.type_fintype",
+        "module": "Mathlib.SetTheory.Ordinal.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`Ordinal.type_fintype` shows the order type of a finite well order equals its `Fintype.card`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Order type determines cardinality",
+      "anchor": {
+        "section": "Ordinal numbers",
+        "snippet": "the order type determines the cardinality , but not conversely"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Ordinal.card",
+        "module": "Mathlib.SetTheory.Ordinal.Basic",
+        "match_kind": "generalization"
+      },
+      "note": "`Ordinal.card` (with `card_type`) is the well-defined map from order type to cardinality; the 'not conversely' direction is not a single theorem.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Uncountably many order types for countable sets",
+      "anchor": {
+        "section": "Ordinal numbers",
+        "snippet": "the set of possible order types is uncountable"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The infrastructure of ω₁ and ℵ₁ > ℵ₀ exists, but the specific statement that the countable order types form an uncountable set isn't isolated.",
+      "provenance": "ai"
+    }
+  ]
+}

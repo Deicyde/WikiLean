@@ -1,0 +1,1549 @@
+{
+  "slug": "Primitive_recursive_function",
+  "wikipedia_title": "Primitive recursive function",
+  "display_title": "Primitive recursive function",
+  "schema_version": 3,
+  "annotation_style": "theorem_article",
+  "annotations": [
+    {
+      "kind": "definition",
+      "label": "Primitive recursive function (informal)",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "a function that can be computed by a computer program whose loops are all"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Nat.Primrec",
+        "module": "Mathlib.Computability.Primrec.Basic",
+        "match_kind": "exact"
+      },
+      "note": "Mathlib's inductive `Nat.Primrec` (zero, succ, projections, composition, primitive recursion) is exactly the formal counterpart of this informal class.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Strict subset of total general recursive functions",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "form a strict subset of those general recursive functions that are also total functions"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Primrec.to_comp",
+        "module": "Mathlib.Computability.Partrec",
+        "match_kind": null
+      },
+      "note": "`Primrec.to_comp` gives the inclusion into total computable functions and Ackermann results witness strictness, but no single decl states the strict-subset proposition.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Time-complexity bound criterion",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "it suffices to show that its time complexity is bounded above by a primitive recursive function"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No formalization of a time-complexity-based criterion for primitive recursiveness exists in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Primitive recursive function arity",
+      "anchor": {
+        "section": "Definition",
+        "snippet": "takes a fixed number of arguments"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Nat.Primrec'",
+        "module": "Mathlib.Computability.Primrec.List",
+        "match_kind": "exact"
+      },
+      "note": "`Nat.Primrec'` is the textbook n-ary definition over `Vector ℕ n`, directly encoding fixed-arity primitive recursive functions.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Constant functions (basic)",
+      "anchor": {
+        "section": "Definition",
+        "snippet": "the k -ary constant function"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Nat.Primrec'.const",
+        "module": "Mathlib.Computability.Primrec.List",
+        "match_kind": "exact"
+      },
+      "note": "`Nat.Primrec'.const` proves the n-ary constant function is primitive recursive.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Successor function (basic)",
+      "anchor": {
+        "section": "Definition",
+        "snippet": "which returns the successor of its argument"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Nat.Primrec'.succ",
+        "module": "Mathlib.Computability.Primrec.List",
+        "match_kind": "exact"
+      },
+      "note": "The successor is a primitive constructor `succ` in both `Nat.Primrec` and `Nat.Primrec'`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Projection functions (basic)",
+      "anchor": {
+        "section": "Definition",
+        "snippet": "For all natural numbers"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Nat.Primrec'.get",
+        "module": "Mathlib.Computability.Primrec.List",
+        "match_kind": "exact"
+      },
+      "note": "The projection constructor `Nat.Primrec'.get i` formalizes the basic n-ary projection functions.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Composition operator",
+      "anchor": {
+        "section": "Definition",
+        "snippet": "also called the substitution operator"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Nat.Primrec'.comp",
+        "module": "Mathlib.Computability.Primrec.List",
+        "match_kind": "exact"
+      },
+      "note": "`Nat.Primrec'.comp` (and `Nat.Primrec.comp`/`Primrec.comp`) is exactly the composition/substitution closure operator.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Definition",
+          "snippet": "also called the substitution operator"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle h\\circ (g_{1},\\ldots ,g_{m})\\ {\\stackrel {\\mathrm {def} }{=}}\\ f,\\quad {\\text{where}}\\quad f(x_{1},\\ldots ,x_{k})=h(g_{1}(x_{1},\\ldots ,x_{k}),\\ldots ,g_{m}(x_{1},\\ldots ,x_{k})).}"
+        }
+      ]
+    },
+    {
+      "kind": "definition",
+      "label": "Primitive recursion operator",
+      "anchor": {
+        "section": "Definition",
+        "snippet": "acts as a for-loop from"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Nat.Primrec'.prec",
+        "module": "Mathlib.Computability.Primrec.List",
+        "match_kind": "exact"
+      },
+      "note": "`Nat.Primrec'.prec` is the primitive-recursion constructor matching this for-loop operator.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Definition",
+          "snippet": "acts as a for-loop from"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle {\\begin{aligned}\\rho (g,h)&amp;\\ {\\stackrel {\\mathrm {def} }{=}}\\ f,\\quad {\\text{where the }}(k+1){\\text{-ary function }}f{\\text{ is defined by}}\\\\f(y,x_{1},\\dots ,x_{k})&amp;={\\begin{cases}g(x_{1},\\dots ,x_{k})&amp;{\\text{if }}y=0,\\\\h(y',f(y',x_{1},\\dots ,x_{k}),x_{1},\\dots ,x_{k})&amp;{\\text{if }}y=S(y'){\\text{ for a }}y'\\in \\mathbb {N} .\\end{cases}}\\end{aligned}}}"
+        }
+      ]
+    },
+    {
+      "kind": "definition",
+      "label": "Class of primitive recursive functions",
+      "anchor": {
+        "section": "Definition",
+        "snippet": "are the basic functions and those obtained from the basic functions"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Nat.Primrec'",
+        "module": "Mathlib.Computability.Primrec.List",
+        "match_kind": "exact"
+      },
+      "note": "`Nat.Primrec'` is the inductively-defined least class closed under the basic functions and operators, with `prim_iff` linking it to `Nat.Primrec`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Vector-valued primitive recursive function",
+      "anchor": {
+        "section": "Primitive-recursiveness of vector-valued functions",
+        "snippet": "is primitive recursive if it can be written as"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Nat.Primrec'.Vec",
+        "module": "Mathlib.Computability.Primrec.List",
+        "match_kind": "exact"
+      },
+      "note": "`Nat.Primrec'.Vec` defines a vector-valued function to be primitive recursive iff all of its component projections are.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Constant unary function example",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "is a 1-ary function which returns"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Primrec.const",
+        "module": "Mathlib.Computability.Primrec.Basic",
+        "match_kind": "special_case"
+      },
+      "note": "`Primrec.const` shows any constant function (including the unary case) is primitive recursive.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Zero-ary constant example",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "is a 0-ary function, i.e. a constant"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Nat.Primrec'.zero",
+        "module": "Mathlib.Computability.Primrec.List",
+        "match_kind": "special_case"
+      },
+      "note": "`Nat.Primrec'.zero` is precisely the 0-ary constant zero function.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Identity function example",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "is the identity function on the natural numbers"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Primrec.id",
+        "module": "Mathlib.Computability.Primrec.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`Primrec.id` (and `Nat.Primrec.id`) proves the identity function is primitive recursive.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Left and right projection example",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "is the left and right projection on natural number pairs"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Primrec.fst",
+        "module": "Mathlib.Computability.Primrec.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`Primrec.fst` and `Primrec.snd` give the left and right projections as primitive recursive functions.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Add-2 function example",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "is a 1-ary function that adds 2 to its input"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Primrec.succ",
+        "module": "Mathlib.Computability.Primrec.Basic",
+        "match_kind": null
+      },
+      "note": "Not stated as a named lemma, but it is the immediate composition `succ ∘ succ` of the primitive recursive `Primrec.succ`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Constants as compositions",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "are the same function"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This is an informal remark about two notations denoting the same constant function, with no formal counterpart.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Addition function",
+      "anchor": {
+        "section": "Addition",
+        "snippet": "to compute the sum of its arguments"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Nat.Primrec.add",
+        "module": "Mathlib.Computability.Primrec.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`Nat.Primrec.add` (also `Primrec.nat_add`, `Nat.Primrec'.add`) proves addition is primitive recursive.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Doubling function",
+      "anchor": {
+        "section": "Doubling",
+        "snippet": "doubles its argument"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Primrec.nat_double",
+        "module": "Mathlib.Computability.Primrec.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`Primrec.nat_double` proves `fun n => 2 * n` is primitive recursive.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Multiplication function",
+      "anchor": {
+        "section": "Multiplication",
+        "snippet": "multiplication can be defined by"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Nat.Primrec.mul",
+        "module": "Mathlib.Computability.Primrec.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`Nat.Primrec.mul` (also `Primrec.nat_mul`, `Nat.Primrec'.mul`) proves multiplication is primitive recursive.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Predecessor function",
+      "anchor": {
+        "section": "Predecessor",
+        "snippet": "acts as the \"opposite\" of the successor function"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Nat.Primrec.pred",
+        "module": "Mathlib.Computability.Primrec.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`Nat.Primrec.pred` (also `Primrec.pred`, `Nat.Primrec'.pred`) proves the predecessor is primitive recursive.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Truncated subtraction (monus)",
+      "anchor": {
+        "section": "Truncated subtraction",
+        "snippet": "is definable from the predecessor function"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Nat.Primrec.sub",
+        "module": "Mathlib.Computability.Primrec.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`Nat.Primrec.sub` (also `Primrec.nat_sub`, `Nat.Primrec'.sub`) proves truncated subtraction is primitive recursive.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Identifying predicates with numeric functions",
+      "anchor": {
+        "section": "Converting predicates to numeric functions",
+        "snippet": "identifying the truth values with numbers in any fixed manner"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "PrimrecPred",
+        "module": "Mathlib.Computability.Primrec.Basic",
+        "match_kind": "generalization"
+      },
+      "note": "`PrimrecPred p` is defined as `decide ∘ p` being primitive recursive, i.e. identifying a predicate with its Boolean/numeric characteristic function.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Is-zero predicate",
+      "anchor": {
+        "section": "Predicate \"Is zero\"",
+        "snippet": "As an example for a primitive recursive predicate"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Primrec.eq",
+        "module": "Mathlib.Computability.Primrec.Basic",
+        "match_kind": "special_case"
+      },
+      "note": "The is-zero predicate is the instance `Primrec.eq` composed with the constant `0`, giving a `PrimrecPred`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Less-or-equal predicate",
+      "anchor": {
+        "section": "Predicate \"Less or equal\"",
+        "snippet": "Using the property"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Primrec.nat_le",
+        "module": "Mathlib.Computability.Primrec.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`Primrec.nat_le : PrimrecRel (· ≤ ·)` proves `≤` on ℕ is a primitive recursive relation.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Greater-or-equal predicate",
+      "anchor": {
+        "section": "Predicate \"Greater or equal\"",
+        "snippet": "the converse predicate can be defined as"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Primrec.nat_le",
+        "module": "Mathlib.Computability.Primrec.Basic",
+        "match_kind": "special_case"
+      },
+      "note": "The converse `≥` is `Primrec.nat_le` swapped via `PrimrecRel.swap`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "If-then-else operator",
+      "anchor": {
+        "section": "If-then-else",
+        "snippet": "known from programming languages can be defined by"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Primrec.cond",
+        "module": "Mathlib.Computability.Primrec.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`Primrec.cond` (and `Primrec.ite`) formalizes the primitive recursive if-then-else operator.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Logical conjunction",
+      "anchor": {
+        "section": "Junctors",
+        "snippet": "logical conjunction of"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "PrimrecPred.and",
+        "module": "Mathlib.Computability.Primrec.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`PrimrecPred.and` (and `Primrec.and` on Bool) proves conjunction of primitive recursive predicates is primitive recursive.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Disjunction and negation",
+      "anchor": {
+        "section": "Junctors",
+        "snippet": "lead to appropriate definitions of disjunction and negation"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "PrimrecPred.or",
+        "module": "Mathlib.Computability.Primrec.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`PrimrecPred.or` and `PrimrecPred.not` (with `Primrec.or`/`Primrec.not`) formalize disjunction and negation.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Equality predicate",
+      "anchor": {
+        "section": "Equality predicate",
+        "snippet": "implements the equality predicate"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Primrec.eq",
+        "module": "Mathlib.Computability.Primrec.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`Primrec.eq : PrimrecRel (@Eq α)` (and `Primrec.beq`) proves equality is a primitive recursive relation.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Less-than and greater-than predicates",
+      "anchor": {
+        "section": "Equality predicate",
+        "snippet": "implements the predicate \"less-than\""
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Primrec.nat_lt",
+        "module": "Mathlib.Computability.Primrec.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`Primrec.nat_lt : PrimrecRel (· < ·)` proves `<`, with greater-than obtained by swapping.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Exponentiation and primality are primitive recursive",
+      "anchor": {
+        "section": "Other operations on natural numbers",
+        "snippet": "Exponentiation and primality testing are primitive recursive"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Nat.Primrec.pow",
+        "module": "Mathlib.Computability.Primrec.Basic",
+        "match_kind": "special_case"
+      },
+      "note": "Exponentiation is formalized as `Nat.Primrec.pow`, but no primitive recursive primality test is present in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Case function is primitive recursive",
+      "anchor": {
+        "section": "Other operations on natural numbers",
+        "snippet": "a function that returns the value of"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Primrec.nat_casesOn",
+        "module": "Mathlib.Computability.Primrec.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`Primrec.nat_casesOn` (and `Nat.Primrec.casesOn'`) formalizes the primitive recursive case/branching function.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Extension via Gödel numberings",
+      "anchor": {
+        "section": "Operations on integers and rational numbers",
+        "snippet": "can be extended to operate on other objects such as integers and rational numbers"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Primcodable",
+        "module": "Mathlib.Computability.Primrec.Basic",
+        "match_kind": "generalization"
+      },
+      "note": "The `Primcodable` type class is exactly Mathlib's Gödel-numbering mechanism for extending primitive recursion to encodable types.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Integer arithmetic operations primitive recursive",
+      "anchor": {
+        "section": "Operations on integers and rational numbers",
+        "snippet": "the arithmetic operations including addition, subtraction, and multiplication are all primitive recursive"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib provides `Primcodable ℤ` and the `Primrec` framework but does not prove integer +, −, × are primitive recursive.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Rational field operations primitive recursive",
+      "anchor": {
+        "section": "Operations on integers and rational numbers",
+        "snippet": "the field operations are all primitive recursive"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No proofs that the rational field operations are primitive recursive exist in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Exponentiation",
+      "anchor": {
+        "section": "Some common primitive recursive functions",
+        "snippet": "Exponentiation: a"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Nat.Primrec.pow",
+        "module": "Mathlib.Computability.Primrec.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`Nat.Primrec.pow` proves `fun (a,b) => a ^ b` is primitive recursive.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Factorial",
+      "anchor": {
+        "section": "Some common primitive recursive functions",
+        "snippet": "Factorial a!"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No proof that `Nat.factorial` is primitive recursive is present in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Predecessor / decrement",
+      "anchor": {
+        "section": "Some common primitive recursive functions",
+        "snippet": "Predecessor or decrement"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Nat.Primrec.pred",
+        "module": "Mathlib.Computability.Primrec.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`Nat.Primrec.pred` proves the predecessor/decrement is primitive recursive.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Proper subtraction",
+      "anchor": {
+        "section": "Some common primitive recursive functions",
+        "snippet": "Proper subtraction"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Nat.Primrec.sub",
+        "module": "Mathlib.Computability.Primrec.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`Nat.Primrec.sub` (truncated/proper subtraction on ℕ) is proved primitive recursive.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Minimum and Maximum",
+      "anchor": {
+        "section": "Some common primitive recursive functions",
+        "snippet": "Minimum(a"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Primrec.nat_min",
+        "module": "Mathlib.Computability.Primrec.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`Primrec.nat_min` and `Primrec.nat_max` prove min and max on ℕ are primitive recursive.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Absolute difference",
+      "anchor": {
+        "section": "Some common primitive recursive functions",
+        "snippet": "Absolute difference"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Primrec.nat_sub",
+        "module": "Mathlib.Computability.Primrec.Basic",
+        "match_kind": null
+      },
+      "note": "Not a named lemma, but expressible from the primitive recursive `Primrec.nat_sub`/`nat_max` (e.g. `(a-b)+(b-a)`).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Signum and its negation",
+      "anchor": {
+        "section": "Some common primitive recursive functions",
+        "snippet": "NOT[signum(a)]"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Primrec.nat_casesOn",
+        "module": "Mathlib.Computability.Primrec.Basic",
+        "match_kind": null
+      },
+      "note": "No dedicated signum lemma, but it is the immediate case-split `if n = 0 then 0 else 1` built from `Primrec.nat_casesOn`/`Primrec.eq`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Divisibility",
+      "anchor": {
+        "section": "Some common primitive recursive functions",
+        "snippet": "a divides b"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Primrec.nat_mod",
+        "module": "Mathlib.Computability.Primrec.Basic",
+        "match_kind": null
+      },
+      "note": "No primitive recursive divisibility predicate is stated, but it follows from `Primrec.nat_mod` being zero (`b % a = 0`).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Remainder / MOD",
+      "anchor": {
+        "section": "Some common primitive recursive functions",
+        "snippet": "the leftover if b does not divide a"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Primrec.nat_mod",
+        "module": "Mathlib.Computability.Primrec.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`Primrec.nat_mod` proves `(· % ·)` on ℕ is primitive recursive (via `Primrec.nat_div`).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Primality predicate",
+      "anchor": {
+        "section": "Some common primitive recursive functions",
+        "snippet": "a is a prime number"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib does not prove `Nat.Prime` is a primitive recursive predicate.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "i+1th prime",
+      "anchor": {
+        "section": "Some common primitive recursive functions",
+        "snippet": "the i+1th prime number"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No proof that the prime-enumeration function is primitive recursive exists in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Exponent of prime in number",
+      "anchor": {
+        "section": "Some common primitive recursive functions",
+        "snippet": "exponent of p"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No primitive recursive prime-exponent (Gödel decoding) function is formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Length (number of nonzero exponents)",
+      "anchor": {
+        "section": "Some common primitive recursive functions",
+        "snippet": "non-vanishing exponents"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No primitive recursive 'length of Gödel encoding' function is formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Integer logarithm",
+      "anchor": {
+        "section": "Some common primitive recursive functions",
+        "snippet": "logarithm of a to base b"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "`Nat.log` exists but is not proven primitive recursive in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Explicit definition closure (#A)",
+      "anchor": {
+        "section": "Some common primitive recursive functions",
+        "snippet": "definable explicitly from functions"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Primrec.comp",
+        "module": "Mathlib.Computability.Primrec.Basic",
+        "match_kind": "generalization"
+      },
+      "note": "Closure under explicit definition/substitution is the `Primrec.comp` family of lemmas.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Bounded sum and product (#B)",
+      "anchor": {
+        "section": "Some common primitive recursive functions",
+        "snippet": "The finite sum"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Primrec.list_foldl",
+        "module": "Mathlib.Computability.Primrec.List",
+        "match_kind": null
+      },
+      "note": "No named bounded-sum/product lemma exists, but `Primrec.list_foldl` with `Primrec.list_range` provides the infrastructure to build them.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Substitution into predicate (#C)",
+      "anchor": {
+        "section": "Some common primitive recursive functions",
+        "snippet": "obtained by substituting functions"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "PrimrecRel.comp",
+        "module": "Mathlib.Computability.Primrec.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`PrimrecPred.comp` and `PrimrecRel.comp` formalize substitution of primitive recursive functions into primitive recursive predicates.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Logical connectives of predicates (#D)",
+      "anchor": {
+        "section": "Some common primitive recursive functions",
+        "snippet": "The following predicates are primitive recursive in Q and R"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "PrimrecPred.and",
+        "module": "Mathlib.Computability.Primrec.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`PrimrecPred.and`/`.or`/`.not` show the class of primitive recursive predicates is closed under the logical connectives.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Bounded quantifiers and minimization (#E)",
+      "anchor": {
+        "section": "Some common primitive recursive functions",
+        "snippet": "The following predicates are primitive recursive in the predicate R"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "PrimrecPred.exists_lt",
+        "module": "Mathlib.Computability.Primrec.List",
+        "match_kind": "generalization"
+      },
+      "note": "`PrimrecPred.exists_lt`/`forall_lt` (and `PrimrecRel` versions) formalize bounded existential/universal quantifiers as primitive recursive.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Bounded mu-operator",
+      "anchor": {
+        "section": "Some common primitive recursive functions",
+        "snippet": "a bounded form of the so-called minimization- or mu-operator"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Primrec.nat_findGreatest",
+        "module": "Mathlib.Computability.Primrec.Basic",
+        "match_kind": null
+      },
+      "note": "Mathlib has `Primrec.nat_findGreatest` (bounded maximization) but no dedicated bounded least-witness μ-operator lemma.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Definition by cases (#F)",
+      "anchor": {
+        "section": "Some common primitive recursive functions",
+        "snippet": "Definition by cases"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Primrec.cond",
+        "module": "Mathlib.Computability.Primrec.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`Primrec.cond`/`Primrec.ite`/`Primrec.nat_casesOn` formalize definition by cases.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Course-of-values recursion (#G)",
+      "anchor": {
+        "section": "Some common primitive recursive functions",
+        "snippet": "the course-of-values function encodes the sequence of values"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Primrec.nat_strong_rec",
+        "module": "Mathlib.Computability.Primrec.List",
+        "match_kind": "exact"
+      },
+      "note": "`Primrec.nat_strong_rec` formalizes course-of-values (strong) recursion producing primitive recursive functions.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Partial recursive function",
+      "anchor": {
+        "section": "Relationship to recursive functions",
+        "snippet": "is defined by introducing an unbounded search operator"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Partrec",
+        "module": "Mathlib.Computability.Partrec",
+        "match_kind": "exact"
+      },
+      "note": "`Nat.Partrec`/`Partrec` adds the unbounded-search `rfind` (μ) operator, matching the definition of partial recursive functions.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Turing-machine characterization of partial recursive",
+      "anchor": {
+        "section": "Relationship to recursive functions",
+        "snippet": "An equivalent definition states that a partial recursive function"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Turing.PartrecToTM2.tr_eval",
+        "module": "Mathlib.Computability.TuringMachine.ToPartrec",
+        "match_kind": null
+      },
+      "note": "`Turing.PartrecToTM2.tr_eval` shows a Turing machine evaluates any partial recursive code, but the full bi-directional equivalence is not packaged as a single iff.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Total recursive function",
+      "anchor": {
+        "section": "Relationship to recursive functions",
+        "snippet": "is a partial recursive function that is defined for every input"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Computable",
+        "module": "Mathlib.Computability.Partrec",
+        "match_kind": "exact"
+      },
+      "note": "`Computable f` is defined as `Partrec (↑f)`, i.e. a partial recursive function total on every input.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Primitive recursive implies total recursive",
+      "anchor": {
+        "section": "Relationship to recursive functions",
+        "snippet": "Every primitive recursive function is total recursive"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Primrec.to_comp",
+        "module": "Mathlib.Computability.Partrec",
+        "match_kind": "exact"
+      },
+      "note": "`Primrec.to_comp` proves every primitive recursive function is computable (total recursive).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Ackermann function not primitive recursive",
+      "anchor": {
+        "section": "Relationship to recursive functions",
+        "snippet": "is a well-known example of a total recursive function"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "not_primrec₂_ack",
+        "module": "Mathlib.Computability.Ackermann",
+        "match_kind": "exact"
+      },
+      "note": "`not_primrec₂_ack` proves Ackermann is not primitive recursive while `computable₂_ack` proves it is computable (total recursive).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Ackermann-bound characterization",
+      "anchor": {
+        "section": "Relationship to recursive functions",
+        "snippet": "if and only if there is a natural number"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "exists_lt_ack_of_nat_primrec",
+        "module": "Mathlib.Computability.Ackermann",
+        "match_kind": null
+      },
+      "note": "`exists_lt_ack_of_nat_primrec` proves the forward bound (every primitive recursive `f` is dominated by some `ack m`), but the full iff characterization is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Primitive recursive set is recursively enumerable",
+      "anchor": {
+        "section": "Relationship to recursive functions",
+        "snippet": "they are a recursively enumerable subset of the set of all total recursive functions"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has `REPred` but does not prove the set of primitive recursive functions is a recursively enumerable subset of the total recursive functions.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Encoding multi-arg as unary via pairing",
+      "anchor": {
+        "section": "Relationship to recursive functions",
+        "snippet": "can be encoded as unary primitive recursive functions by using a primitive recursive pairing function"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Nat.Primrec'.prim_iff",
+        "module": "Mathlib.Computability.Primrec.List",
+        "match_kind": "exact"
+      },
+      "note": "`Nat.Primrec'.prim_iff` proves the n-ary definition is equivalent to the unary `Nat.Primrec` using the primitive recursive pairing function `Nat.pair`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Enumerator f is not primitive recursive",
+      "anchor": {
+        "section": "Relationship to recursive functions",
+        "snippet": "is not recursive primitive in itself"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The diagonal argument that an enumerator of primitive recursive functions is itself not primitive recursive is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Not the largest r.e. subset",
+      "anchor": {
+        "section": "Relationship to recursive functions",
+        "snippet": "is not the largest recursively enumerable subset of the set of all total recursive functions"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This proposition about r.e. subsets of total recursive functions is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Provably total but converse fails",
+      "anchor": {
+        "section": "Relationship to recursive functions",
+        "snippet": "all primitive recursive functions are provably total"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This metamathematical provable-totality statement (and failure of its converse) is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Not all total computable functions are primitive recursive",
+      "anchor": {
+        "section": "Limitations",
+        "snippet": "does not include every possible total computable function"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "not_primrec₂_ack",
+        "module": "Mathlib.Computability.Ackermann",
+        "match_kind": null
+      },
+      "note": "Witnessed by combining `computable₂_ack` and `not_primrec₂_ack` (Ackermann is computable but not primitive recursive), though not stated as one theorem.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Evaluator function not primitive recursive",
+      "anchor": {
+        "section": "Limitations",
+        "snippet": "Now define the \"evaluator function\""
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has a computable universal evaluator (`Nat.Partrec.Code.eval`) but no proof that an evaluator of primitive recursive functions fails to be primitive recursive.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Diagonal Ackermann m to A(m,m)",
+      "anchor": {
+        "section": "Limitations",
+        "snippet": "is a unary total recursive function that is not primitive recursive"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "not_primrec_ack_self",
+        "module": "Mathlib.Computability.Ackermann",
+        "match_kind": "exact"
+      },
+      "note": "`not_primrec_ack_self` proves the diagonal `fun n => ack n n` is not primitive recursive (it is computable via `computable₂_ack`).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Paris–Harrington function",
+      "anchor": {
+        "section": "Limitations",
+        "snippet": "The Paris–Harrington theorem involves a total recursive function"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Paris–Harrington theorem and its associated function are not present in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Sudan function",
+      "anchor": {
+        "section": "Limitations",
+        "snippet": "The Sudan function"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Sudan function is not defined in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Goodstein function",
+      "anchor": {
+        "section": "Limitations",
+        "snippet": "The Goodstein function"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No Goodstein function or Goodstein's theorem is present in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Single zero function alternative",
+      "anchor": {
+        "section": "Constant functions",
+        "snippet": "alternative definitions use just one 0-ary zero function"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Nat.Primrec'.zero",
+        "module": "Mathlib.Computability.Primrec.List",
+        "match_kind": null
+      },
+      "note": "Mathlib uses a single 0-ary `Nat.Primrec'.zero` and derives all constants in `Nat.Primrec'.const`, but the equivalence of definitional variants is not stated as a theorem.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Iteration rule",
+      "anchor": {
+        "section": "Iterative functions",
+        "snippet": "the so-called iteration rule"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Primrec.nat_iterate",
+        "module": "Mathlib.Computability.Primrec.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`Primrec.nat_iterate` formalizes that iterating a primitive recursive function is primitive recursive.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Iteration rule generates all PR functions",
+      "anchor": {
+        "section": "Iterative functions",
+        "snippet": "the class of all primitive recursive functions can still be obtained in this way"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib uses primitive recursion as primitive; there is no theorem that the iteration rule alone generates all primitive recursive functions.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Pure recursion rule",
+      "anchor": {
+        "section": "Pure recursion",
+        "snippet": "pure recursion , where h does not have access to the induction variable"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The 'pure recursion' rule (step function without access to the induction variable) is not defined in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Pure recursion suffices (Gladstone)",
+      "anchor": {
+        "section": "Pure recursion",
+        "snippet": "this rule is enough to generate all primitive recursive functions"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Gladstone's theorem that pure recursion generates all primitive recursive functions is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Pure iteration rule suffices",
+      "anchor": {
+        "section": "Pure recursion",
+        "snippet": "the pure iteration rule below, is enough"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No theorem that the pure iteration rule suffices to generate all primitive recursive functions exists in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Pure iteration without parameters (Severin)",
+      "anchor": {
+        "section": "Pure recursion",
+        "snippet": "the pure iteration rule without parameters"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Severin's result on parameter-free pure iteration is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Course-of-values recursion gives PR functions",
+      "anchor": {
+        "section": "Additional primitive recursive forms",
+        "snippet": "Course-of-values recursion defines primitive recursive functions"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Primrec.nat_strong_rec",
+        "module": "Mathlib.Computability.Primrec.List",
+        "match_kind": "exact"
+      },
+      "note": "`Primrec.nat_strong_rec` proves course-of-values recursion yields primitive recursive functions.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Mutual recursion gives PR functions",
+      "anchor": {
+        "section": "Additional primitive recursive forms",
+        "snippet": "Some forms of mutual recursion also define primitive recursive functions"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Primrec.nat_omega_rec",
+        "module": "Mathlib.Computability.Primrec.List",
+        "match_kind": null
+      },
+      "note": "`Primrec.nat_omega_rec` (well-founded ω-recursion) covers related recursion schemes, but mutual recursion is not formalized as such.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "LOOP language equals PR functions",
+      "anchor": {
+        "section": "Additional primitive recursive forms",
+        "snippet": "are exactly the primitive recursive functions"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The LOOP programming language and its equivalence with the primitive recursive functions are not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Primitive recursive programming language",
+      "anchor": {
+        "section": "Computer language definition",
+        "snippet": "is one that contains basic arithmetic operators"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No primitive-recursive programming language is defined in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "LOOP computing power",
+      "anchor": {
+        "section": "Computer language definition",
+        "snippet": "Its computing power coincides with the primitive recursive functions"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No theorem relating a LOOP language's computing power to the primitive recursive functions exists in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "PR computation always halts",
+      "anchor": {
+        "section": "Computer language definition",
+        "snippet": "implies that their computation halts on every input"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Primrec.to_comp",
+        "module": "Mathlib.Computability.Partrec",
+        "match_kind": null
+      },
+      "note": "Totality is implicit in primitive recursive functions being total `ℕ → ℕ` functions, with `Primrec.to_comp` placing them among the computable functions, but halting is not stated as a theorem.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Halting problem undecidable for general recursive",
+      "anchor": {
+        "section": "Computer language definition",
+        "snippet": "the halting problem is undecidable for general recursive functions"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "ComputablePred.halting_problem",
+        "module": "Mathlib.Computability.Halting",
+        "match_kind": "exact"
+      },
+      "note": "`ComputablePred.halting_problem` proves the halting problem is not computable (undecidable).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Primitive recursive arithmetic (PRA)",
+      "anchor": {
+        "section": "Finitism and consistency results",
+        "snippet": "a formal axiom system for the natural numbers and the primitive recursive functions"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The PRA axiom system is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "PRA weaker than Peano arithmetic",
+      "anchor": {
+        "section": "Finitism and consistency results",
+        "snippet": "PRA is much weaker than Peano arithmetic"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No comparison of proof-theoretic strength between PRA and Peano arithmetic is formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Gödel incompleteness formalized in PRA",
+      "anchor": {
+        "section": "Finitism and consistency results",
+        "snippet": "then PRA proves the implication"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Gödel's incompleteness theorems are not formalized in Mathlib, let alone within PRA.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "PR functions carry out syntactic transformations",
+      "anchor": {
+        "section": "Finitism and consistency results",
+        "snippet": "there are primitive recursive functions that carry out the corresponding syntactic transformations"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib does not formalize primitive recursive functions performing proof-theoretic syntactic transformations.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Finitistic consistency proof",
+      "anchor": {
+        "section": "Finitism and consistency results",
+        "snippet": "consistency proofs that themselves are finitistically acceptable"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The notion of a finitistically acceptable consistency proof is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Sufficient condition for finitistic proof",
+      "anchor": {
+        "section": "Finitism and consistency results",
+        "snippet": "One sufficient condition for a consistency proof to be finitistic"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No sufficient condition for finitistic consistency proofs is formalized in Mathlib.",
+      "provenance": "ai"
+    }
+  ]
+}

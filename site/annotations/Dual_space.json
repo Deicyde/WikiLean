@@ -1,0 +1,1235 @@
+{
+  "slug": "Dual_space",
+  "wikipedia_title": "Dual space",
+  "display_title": "Dual space",
+  "schema_version": 3,
+  "annotation_style": "theorem_article",
+  "annotations": [
+    {
+      "kind": "definition",
+      "label": "Dual space",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "has a corresponding dual vector space (or just dual space for short) consisting of all linear forms on"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Module.Dual",
+        "module": "Mathlib.LinearAlgebra.Dual.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`Module.Dual R M` is defined as `M →ₗ[R] R`, the module of linear forms.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Continuous dual space (intro)",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "corresponding to continuous linear functionals , called the continuous dual space"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "StrongDual",
+        "module": "Mathlib.Topology.Algebra.Module.LinearMap",
+        "match_kind": "exact"
+      },
+      "note": "`StrongDual R M` abbreviates `M →L[R] R`, the space of continuous linear functionals.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Algebraic dual space",
+      "anchor": {
+        "section": "Algebraic dual space",
+        "snippet": "is defined as the set of all linear maps"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Module.Dual",
+        "module": "Mathlib.LinearAlgebra.Dual.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`Module.Dual R M = M →ₗ[R] R` is exactly the set of all linear maps to the base ring.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Algebraic dual space",
+          "snippet": "is defined as the set of all linear maps"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle {\\begin{aligned}(\\varphi +\\psi )(x)&amp;=\\varphi (x)+\\psi (x)\\\\(a\\varphi )(x)&amp;=a\\left(\\varphi (x)\\right)\\end{aligned}}}"
+        }
+      ]
+    },
+    {
+      "kind": "example",
+      "label": "A linear functional on R^2",
+      "anchor": {
+        "section": "Algebraic dual space",
+        "snippet": "For example, if we express the vector space"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "A concrete worked example, not a standalone formalizable statement.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Algebraic dual space",
+          "snippet": "For example, if we express the vector space"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle {\\begin{aligned}(\\varphi +\\psi )(x)&amp;=\\varphi (x)+\\psi (x)\\\\(a\\varphi )(x)&amp;=a\\left(\\varphi (x)\\right)\\end{aligned}}}"
+        }
+      ]
+    },
+    {
+      "kind": "definition",
+      "label": "Covectors / one-forms / linear forms",
+      "anchor": {
+        "section": "Algebraic dual space",
+        "snippet": "are sometimes called covectors , one-forms , or linear forms ."
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Module.Dual",
+        "module": "Mathlib.LinearAlgebra.Dual.Defs",
+        "match_kind": "exact"
+      },
+      "note": "These are alternative names for elements of `Module.Dual R M`; the object is formalized though the terminology is informal.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Natural pairing",
+      "anchor": {
+        "section": "Algebraic dual space",
+        "snippet": "called the natural pairing"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Module.Dual.eval",
+        "module": "Mathlib.LinearAlgebra.Dual.Defs",
+        "match_kind": "exact"
+      },
+      "note": "The pairing ⟨φ,x⟩ = φ(x) is given by `Module.Dual.eval` (with `eval_apply`) / the identity bilinear map on `Dual R M`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Dual set",
+      "anchor": {
+        "section": "Dual set",
+        "snippet": "one can define a linearly independent set in"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Basis.dualBasis",
+        "module": "Mathlib.LinearAlgebra.Dual.Basis",
+        "match_kind": "special_case"
+      },
+      "note": "Mathlib constructs the dual family via `Basis.dualBasis` (and `Basis.coord`) for a basis, but no general 'dual set' for an arbitrary independent family is defined.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Dual set is a basis when finite-dimensional",
+      "anchor": {
+        "section": "Dual set",
+        "snippet": "the dual set is a basis, called the dual basis"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Basis.dualBasis",
+        "module": "Mathlib.LinearAlgebra.Dual.Basis",
+        "match_kind": "exact"
+      },
+      "note": "`Basis.dualBasis` is a `Basis ι R (Dual R M)` for a finite basis `b`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Dual basis (finite-dimensional)",
+      "anchor": {
+        "section": "Finite-dimensional case",
+        "snippet": "the dual basis is a set"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Basis.dualBasis",
+        "module": "Mathlib.LinearAlgebra.Dual.Basis",
+        "match_kind": "exact"
+      },
+      "note": "`Basis.dualBasis` is exactly the dual basis associated to a finite basis.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Finite-dimensional case",
+          "snippet": "the dual basis is a set"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\mathbf {e} ^{i}(c^{1}\\mathbf {e} _{1}+\\cdots +c^{n}\\mathbf {e} _{n})=c^{i},\\quad i=1,\\ldots ,n}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\mathbf {e} ^{i}(\\mathbf {e} _{j})=\\delta _{j}^{i}}"
+        }
+      ]
+    },
+    {
+      "kind": "definition",
+      "label": "Bi-orthogonality property",
+      "anchor": {
+        "section": "Finite-dimensional case",
+        "snippet": "is referred to as the bi-orthogonality property"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Basis.dualBasis_apply_self",
+        "module": "Mathlib.LinearAlgebra.Dual.Basis",
+        "match_kind": "exact"
+      },
+      "note": "`Basis.dualBasis_apply_self` states `b.dualBasis i (b j) = if j = i then 1 else 0`, the Kronecker-delta biorthogonality.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Finite-dimensional case",
+          "snippet": "is referred to as the bi-orthogonality property"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\mathbf {e} ^{i}(c^{1}\\mathbf {e} _{1}+\\cdots +c^{n}\\mathbf {e} _{n})=c^{i},\\quad i=1,\\ldots ,n}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\mathbf {e} ^{i}(\\mathbf {e} _{j})=\\delta _{j}^{i}}"
+        }
+      ]
+    },
+    {
+      "kind": "example",
+      "label": "Verifying a dual basis",
+      "anchor": {
+        "section": "Finite-dimensional case",
+        "snippet": "These are a basis of"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "A concrete verification example rather than a general statement.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Finite-dimensional case",
+          "snippet": "These are a basis of"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle g(x)=g(\\alpha _{1}\\mathbf {e} _{1}+\\dots +\\alpha _{n}\\mathbf {e} _{n})=\\alpha _{1}g(\\mathbf {e} _{1})+\\dots +\\alpha _{n}g(\\mathbf {e} _{n})=\\mathbf {e} ^{1}(x)g(\\mathbf {e} _{1})+\\dots +\\mathbf {e} ^{n}(x)g(\\mathbf {e} _{n})}"
+        }
+      ]
+    },
+    {
+      "kind": "example",
+      "label": "Dual basis of a non-orthogonal basis of R^2",
+      "anchor": {
+        "section": "Finite-dimensional case",
+        "snippet": "let its basis be chosen as"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "A specific numerical worked example, not formalized.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Finite-dimensional case",
+          "snippet": "let its basis be chosen as"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle {\\begin{bmatrix}e^{11}&amp;e^{12}\\\\e^{21}&amp;e^{22}\\end{bmatrix}}{\\begin{bmatrix}e_{11}&amp;e_{21}\\\\e_{12}&amp;e_{22}\\end{bmatrix}}={\\begin{bmatrix}1&amp;0\\\\0&amp;1\\end{bmatrix}}.}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Matrix biorthogonality of basis and dual basis",
+      "anchor": {
+        "section": "Finite-dimensional case",
+        "snippet": "is a matrix whose columns are the basis vectors and"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Basis.dualBasis_apply_self",
+        "module": "Mathlib.LinearAlgebra.Dual.Basis",
+        "match_kind": "special_case"
+      },
+      "note": "The biorthogonality `dualBasis_apply_self` is formalized, but the explicit statement about inverse coordinate matrices of basis vs dual basis is not packaged as such.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Finite-dimensional case",
+          "snippet": "is a matrix whose columns are the basis vectors and"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle {\\hat {E}}^{\\textrm {T}}\\cdot E=I_{n},}"
+        }
+      ]
+    },
+    {
+      "kind": "example",
+      "label": "Level curves of a functional as parallel lines",
+      "anchor": {
+        "section": "Finite-dimensional case",
+        "snippet": "form a family of parallel lines in"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "A geometric illustration with no corresponding Mathlib statement.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Infinite-dimensional dual: independent but not a basis",
+      "anchor": {
+        "section": "Infinite-dimensional case",
+        "snippet": "then the same construction as in the finite-dimensional case yields linearly independent elements"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Basis.dualBasis",
+        "module": "Mathlib.LinearAlgebra.Dual.Basis",
+        "match_kind": "special_case"
+      },
+      "note": "`Basis.dualBasis` functionals are linearly independent, and `lift_rank_lt_rank_dual` shows they cannot span in infinite dimension, but the combined 'not a basis' claim is not a single lemma.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Dual of finitely-supported real sequences",
+      "anchor": {
+        "section": "Infinite-dimensional case",
+        "snippet": "whose elements are those sequences of real numbers that contain only finitely many non-zero entries"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No declaration identifying the dual of `ℕ →₀ ℝ` with `ℕ → ℝ` was found.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Dual identified with function space on a basis",
+      "anchor": {
+        "section": "Infinite-dimensional case",
+        "snippet": "This observation generalizes to any"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Basis.dualBasis",
+        "module": "Mathlib.LinearAlgebra.Dual.Basis",
+        "match_kind": "special_case"
+      },
+      "note": "Coordinate functionals `Basis.coord`/`dualBasis` exist, but no equivalence `Dual R (ι →₀ R) ≃ (ι → R)` for the infinite-dimensional identification was found.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Dual of infinite-dimensional space has larger dimension",
+      "anchor": {
+        "section": "Infinite-dimensional case",
+        "snippet": "then its (algebraic) dual space is always of larger dimension"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Module.lift_rank_lt_rank_dual",
+        "module": "Mathlib.LinearAlgebra.Dimension.ErdosKaplansky",
+        "match_kind": "exact"
+      },
+      "note": "`lift_rank_lt_rank_dual` states the rank of an infinite-dimensional space is strictly less than that of its dual.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Erdős–Kaplansky theorem",
+      "anchor": {
+        "section": "Infinite-dimensional case",
+        "snippet": "The exact dimension of the dual is given by the Erdős–Kaplansky theorem"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Module.rank_dual_eq_card_dual_of_aleph0_le_rank",
+        "module": "Mathlib.LinearAlgebra.Dimension.ErdosKaplansky",
+        "match_kind": "exact"
+      },
+      "note": "The Erdős–Kaplansky theorem is stated as `rank_dual_eq_card_dual_of_aleph0_le_rank`.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Infinite-dimensional case",
+          "snippet": "The exact dimension of the dual is given by the Erdős–Kaplansky theorem"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\mathrm {dim} (V)=|A|&lt;|F|^{|A|}=|V^{\\ast }|=\\mathrm {max} (|\\mathrm {dim} (V^{\\ast })|,|F|),}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "V isomorphic to V* but not naturally",
+      "anchor": {
+        "section": "Bilinear products and dual spaces",
+        "snippet": "But there is in general no natural isomorphism between these two spaces."
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Basis.toDualEquiv",
+        "module": "Mathlib.LinearAlgebra.Dual.Basis",
+        "match_kind": "special_case"
+      },
+      "note": "`Basis.toDualEquiv` gives `M ≃ₗ[R] Dual R M` from a finite basis; the 'no natural isomorphism' caveat is informal/not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Nondegenerate bilinear form induces isomorphism into dual",
+      "anchor": {
+        "section": "Bilinear products and dual spaces",
+        "snippet": "If the bilinear form is nondegenerate , then this is an isomorphism onto a subspace of"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "LinearMap.BilinForm.toDual",
+        "module": "Mathlib.LinearAlgebra.BilinearForm.Properties",
+        "match_kind": "special_case"
+      },
+      "note": "`BilinForm.toDual` builds `V ≃ₗ[K] Module.Dual K V` from a nondegenerate form on a finite-dimensional space.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Correspondence: isomorphisms into dual vs nondegenerate bilinear forms",
+      "anchor": {
+        "section": "Bilinear products and dual spaces",
+        "snippet": "Thus there is a one-to-one correspondence between isomorphisms of"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "LinearMap.BilinForm.toDual",
+        "module": "Mathlib.LinearAlgebra.BilinearForm.Properties",
+        "match_kind": "special_case"
+      },
+      "note": "Both directions exist (a bilinear form is a map to the dual, and `BilinForm.toDual` gives the iso), but the explicit bijective correspondence is not a single declaration.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Sesquilinear form gives isomorphism with conjugate dual",
+      "anchor": {
+        "section": "Bilinear products and dual spaces",
+        "snippet": "it is more natural to consider sesquilinear forms instead of bilinear forms"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "InnerProductSpace.toDual",
+        "module": "Mathlib.Analysis.InnerProductSpace.Dual",
+        "match_kind": "special_case"
+      },
+      "note": "`InnerProductSpace.toDual` is the conjugate-linear (sesquilinear) isometric iso to the dual for Hilbert spaces; the general nondegenerate-sesquilinear-form statement is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Natural map into the double dual",
+      "anchor": {
+        "section": "Injection into the double-dual",
+        "snippet": "There is a natural homomorphism"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Module.Dual.eval",
+        "module": "Mathlib.LinearAlgebra.Dual.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`Module.Dual.eval R M : M →ₗ[R] Dual R (Dual R M)` is the canonical map into the double dual.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Double-dual map injective, iso iff finite-dimensional",
+      "anchor": {
+        "section": "Injection into the double-dual",
+        "snippet": "and it is always an isomorphism if"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Module.evalEquiv",
+        "module": "Mathlib.LinearAlgebra.Dual.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`eval_apply_injective` gives injectivity over a field and `Module.evalEquiv` is the iso for reflexive (incl. finite-dimensional) spaces.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Transpose of a linear map",
+      "anchor": {
+        "section": "Transpose of a linear map",
+        "snippet": "then the transpose (or dual )"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "LinearMap.dualMap",
+        "module": "Mathlib.LinearAlgebra.Dual.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`LinearMap.dualMap` (= `Module.Dual.transpose`) is the transpose `Dual R M₂ →ₗ[R] Dual R M₁`.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Transpose of a linear map",
+          "snippet": "then the transpose (or dual )"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle f^{*}(\\varphi )=\\varphi \\circ f\\,}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Identity characterizing the transpose",
+      "anchor": {
+        "section": "Transpose of a linear map",
+        "snippet": "This identity characterizes the transpose"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Module.Dual.transpose_apply",
+        "module": "Mathlib.LinearAlgebra.Dual.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`transpose_apply`/`LinearMap.dualMap_apply` state `(transpose u) l = l.comp u`, i.e. ⟨ᵗf φ, x⟩ = ⟨φ, f x⟩.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Transpose of a linear map",
+          "snippet": "This identity characterizes the transpose"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle [f^{*}(\\varphi ),\\,v]=[\\varphi ,\\,f(v)],}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Transpose assignment: injective, iso iff finite-dim, contravariant functor",
+      "anchor": {
+        "section": "Transpose of a linear map",
+        "snippet": "produces an injective linear map between the space of linear operators"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Module.Dual.transpose_comp",
+        "module": "Mathlib.LinearAlgebra.Dual.Defs",
+        "match_kind": "special_case"
+      },
+      "note": "Contravariant functoriality `transpose_comp` is formalized, but the injectivity and finite-dimensional iso of the assignment `u ↦ ᵗu` are not stated together.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Transpose represented by transpose matrix",
+      "anchor": {
+        "section": "Transpose of a linear map",
+        "snippet": "is represented by the transpose matrix"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "LinearMap.toMatrix_transpose",
+        "module": "Mathlib.LinearAlgebra.Matrix.Dual",
+        "match_kind": "exact"
+      },
+      "note": "`LinearMap.toMatrix_transpose` shows the matrix of the transpose in dual bases is the transpose matrix.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Annihilator of a subset",
+      "anchor": {
+        "section": "Quotient spaces and annihilators",
+        "snippet": "is the collection of linear functionals"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Submodule.dualAnnihilator",
+        "module": "Mathlib.LinearAlgebra.Dual.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`Submodule.dualAnnihilator W` is the submodule of functionals vanishing on `W`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Basic annihilator properties",
+      "anchor": {
+        "section": "Quotient spaces and annihilators",
+        "snippet": "The annihilator of a subset is itself a vector space."
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Submodule.dualAnnihilator",
+        "module": "Mathlib.LinearAlgebra.Dual.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`dualAnnihilator` returns a `Submodule` (hence a vector space) by construction, with lemmas like `dualAnnihilator_bot`/`_top`.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Quotient spaces and annihilators",
+          "snippet": "The annihilator of a subset is itself a vector space."
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\{0\\}\\subseteq T^{0}\\subseteq S^{0}\\subseteq V^{*}.}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Annihilators of subsets, sums and intersections",
+      "anchor": {
+        "section": "Quotient spaces and annihilators",
+        "snippet": "are two subsets of"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Submodule.dualAnnihilator_sup_eq",
+        "module": "Mathlib.LinearAlgebra.Dual.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`dualAnnihilator_sup_eq` and `dualAnnihilator_iSup_eq` give the behavior under sums/suprema (with `dualAnnihilator_inf_eq` for subspaces).",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Quotient spaces and annihilators",
+          "snippet": "are two subsets of"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle A^{0}+B^{0}\\subseteq (A\\cap B)^{0}.}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\left(\\bigcup _{i\\in I}A_{i}\\right)^{0}=\\bigcap _{i\\in I}A_{i}^{0}.}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle (A+B)^{0}=A^{0}\\cap B^{0}}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle (A\\cap B)^{0}=A^{0}+B^{0}.}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Double annihilator and Galois connection (finite-dim)",
+      "anchor": {
+        "section": "Quotient spaces and annihilators",
+        "snippet": "forming the annihilator is a Galois connection on the lattice of subsets"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Module.dualAnnihilator_gc",
+        "module": "Mathlib.LinearAlgebra.Dual.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`dualAnnihilator_gc` is the antitone Galois connection; `Subspace.dualAnnihilator_dualAnnihilator` gives the double annihilator via `mapEvalEquiv`.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Quotient spaces and annihilators",
+          "snippet": "forming the annihilator is a Galois connection on the lattice of subsets"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle W^{00}=W}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Dual of quotient isomorphic to annihilator",
+      "anchor": {
+        "section": "Quotient spaces and annihilators",
+        "snippet": "By the first isomorphism theorem , a functional"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Submodule.dualQuotEquivDualAnnihilator",
+        "module": "Mathlib.LinearAlgebra.Dual.Lemmas",
+        "match_kind": "exact"
+      },
+      "note": "`dualQuotEquivDualAnnihilator W` is the iso `Dual R (M ⧸ W) ≃ₗ[R] W.dualAnnihilator`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Dual of a direct sum",
+      "anchor": {
+        "section": "Quotient spaces and annihilators",
+        "snippet": "is a direct sum of two subspaces"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Module.dualProdDualEquivDual",
+        "module": "Mathlib.LinearAlgebra.Dual.Lemmas",
+        "match_kind": "exact"
+      },
+      "note": "`dualProdDualEquivDual` gives `(Dual R M × Dual R M') ≃ₗ[R] Dual R (M × M')`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Dual space as negative-dimensional",
+      "anchor": {
+        "section": "Dimensional analysis",
+        "snippet": "The dual space is analogous to a"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "An informal dimensional-analysis analogy with no Mathlib counterpart.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Dual space has inverse units (Fourier/physics)",
+      "anchor": {
+        "section": "Dimensional analysis",
+        "snippet": "This arises in physics via dimensional analysis , where the dual space has inverse units."
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "A physics motivation, not a formalizable mathematical statement.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Continuous and algebraic dual coincide in finite dimensions",
+      "anchor": {
+        "section": "Continuous dual space",
+        "snippet": "the continuous dual and the algebraic dual coincide"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "LinearMap.toContinuousLinearMap",
+        "module": "Mathlib.Topology.Algebra.Module.FiniteDimension",
+        "match_kind": "special_case"
+      },
+      "note": "`LinearMap.toContinuousLinearMap : (E →ₗ[𝕜] F') ≃ₗ[𝕜] E →L[𝕜] F'` for finite-dimensional `E` shows algebraic and continuous duals coincide (take `F' = 𝕜`).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Continuous dual space",
+      "anchor": {
+        "section": "Continuous dual space",
+        "snippet": "is defined as the space of all continuous linear functionals"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "StrongDual",
+        "module": "Mathlib.Topology.Algebra.Module.LinearMap",
+        "match_kind": "exact"
+      },
+      "note": "`StrongDual R M = M →L[R] R` is the space of continuous linear functionals.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Test function spaces and distributions",
+      "anchor": {
+        "section": "Continuous dual space",
+        "snippet": "Important examples for continuous dual spaces are the space of compactly supported test functions"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has Schwartz functions but no theory of compactly-supported test functions `D(Ω)` and distributions `D'(Ω)` as the continuous dual.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Dual of a TVS equals dual of its completion",
+      "anchor": {
+        "section": "Properties",
+        "snippet": "is identical to the continuous dual space of the completion of"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No declaration equating the continuous dual of a TVS with that of its completion was found.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Polar topology on the continuous dual",
+      "anchor": {
+        "section": "Topologies on the dual",
+        "snippet": "There is a standard construction for introducing a topology on the continuous dual"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "StrongDual.polar",
+        "module": "Mathlib.Analysis.Normed.Module.Dual",
+        "match_kind": "special_case"
+      },
+      "note": "Polar sets (`StrongDual.polar`, `LinearMap.polar`) and topologies of uniform convergence exist, but the general 𝔖-polar-topology construction is not packaged as in the article.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Convergence of a net of functionals",
+      "anchor": {
+        "section": "Topologies on the dual",
+        "snippet": "This means that a net of functionals"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The net-convergence characterization in a polar topology is not formalized as a named statement.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Conditions on the class of bounded subsets",
+      "anchor": {
+        "section": "Topologies on the dual",
+        "snippet": "is supposed to satisfy the following conditions"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The axioms on the class 𝔖 of bounded sets defining a polar topology are not isolated in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Resulting topology is Hausdorff with given local base",
+      "anchor": {
+        "section": "Topologies on the dual",
+        "snippet": "If these requirements are fulfilled then the corresponding topology on"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Hausdorffness/local-base description of the resulting polar topology is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Strong topology",
+      "anchor": {
+        "section": "Topologies on the dual",
+        "snippet": "is the topology of uniform convergence on bounded subsets in"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "StrongDual",
+        "module": "Mathlib.Topology.Algebra.Module.LinearMap",
+        "match_kind": "exact"
+      },
+      "note": "`StrongDual` carries the strong topology of uniform convergence on bounded subsets.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Strong topology is normed for normed spaces",
+      "anchor": {
+        "section": "Topologies on the dual",
+        "snippet": "is normed (in fact a Banach space if the field of scalars is complete)"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "ContinuousLinearMap.toNormedAddCommGroup",
+        "module": "Mathlib.Analysis.Normed.Operator.NormedSpace",
+        "match_kind": "special_case"
+      },
+      "note": "The operator norm makes `E →SL F` (hence the strong dual) a normed space, and it is complete (Banach) when the codomain is complete.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Topologies on the dual",
+          "snippet": "is normed (in fact a Banach space if the field of scalars is complete)"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\|\\varphi \\|=\\sup _{\\|x\\|\\leq 1}|\\varphi (x)|.}"
+        }
+      ]
+    },
+    {
+      "kind": "definition",
+      "label": "Stereotype topology",
+      "anchor": {
+        "section": "Topologies on the dual",
+        "snippet": "is the topology of uniform convergence on totally bounded sets in"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The stereotype/totally-bounded-convergence topology on the dual is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Weak topology",
+      "anchor": {
+        "section": "Topologies on the dual",
+        "snippet": "is the topology of uniform convergence on finite subsets in"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "WeakDual",
+        "module": "Mathlib.Topology.Algebra.Module.Spaces.WeakDual",
+        "match_kind": "exact"
+      },
+      "note": "`WeakDual` is the dual with the weak-* topology (pointwise / uniform convergence on finite sets).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Reflexivity variants from the three topologies",
+      "anchor": {
+        "section": "Topologies on the dual",
+        "snippet": "leads to a variant of reflexivity property for topological vector spaces"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "TVS reflexivity variants (incl. stereotype reflexivity) are not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Dual of ℓ^p is ℓ^q",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "be a real number and consider the Banach space"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No isometric isomorphism identifying the dual of `ℓ^p` with `ℓ^q` was found.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Duals of ℓ^1, c and c_0",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "In a similar manner, the continuous dual of"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The duals of `ℓ^1`, `c`, and `c_0` are not identified in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Riesz representation theorem (Hilbert dual)",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "By the Riesz representation theorem , the continuous dual of a Hilbert space is again a Hilbert space"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "InnerProductSpace.toDual",
+        "module": "Mathlib.Analysis.InnerProductSpace.Dual",
+        "match_kind": "exact"
+      },
+      "note": "`InnerProductSpace.toDual` is the Fréchet–Riesz conjugate-linear isometric equivalence `E ≃ₗᵢ⋆[𝕜] StrongDual 𝕜 E` for a Hilbert space.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Riesz–Markov–Kakutani representation theorem",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "By the Riesz–Markov–Kakutani representation theorem , the continuous dual of certain spaces of continuous functions can be described using measures."
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "RealRMK.integral_rieszMeasure",
+        "module": "Mathlib.MeasureTheory.Integral.RieszMarkovKakutani.Real",
+        "match_kind": "exact"
+      },
+      "note": "`RealRMK.integral_rieszMeasure` represents a positive linear functional on `C_c(X,ℝ)` as integration against `rieszMeasure`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Transpose of a continuous linear map",
+      "anchor": {
+        "section": "Transpose of a continuous linear map",
+        "snippet": "is defined by the same formula as before"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No general transpose/dual map of a continuous linear map between Banach spaces was found (only the Hilbert-space adjoint).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Norm of transpose equals norm of map",
+      "anchor": {
+        "section": "Transpose of a continuous linear map",
+        "snippet": "the norm of the transpose in"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Since the continuous transpose is not defined, `‖ᵗf‖ = ‖f‖` is not stated (the analogous adjoint isometry is separate).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Dense range iff transpose injective",
+      "anchor": {
+        "section": "Transpose of a continuous linear map",
+        "snippet": "has dense range if and only if the transpose"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No continuous transpose, so this duality between dense range and injectivity is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Transpose of a compact map is compact",
+      "anchor": {
+        "section": "Transpose of a continuous linear map",
+        "snippet": "is a compact linear map between two Banach spaces"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Schauder's theorem on transposes of compact operators between Banach spaces was not found.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Transpose and adjoint on a Hilbert space",
+      "anchor": {
+        "section": "Transpose of a continuous linear map",
+        "snippet": "there is an antilinear isomorphism"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "ContinuousLinearMap.adjoint",
+        "module": "Mathlib.Analysis.InnerProductSpace.Adjoint",
+        "match_kind": "special_case"
+      },
+      "note": "The Hilbert-space adjoint `ContinuousLinearMap.adjoint` is formalized, but its relation to the Banach transpose via the antilinear Riesz isomorphism is not stated.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Continuity of the transpose for compatible topologies",
+      "anchor": {
+        "section": "Transpose of a continuous linear map",
+        "snippet": "are equipped with \"compatible\" topologies"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Continuity of the transpose for compatible weak/strong topologies is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Duals of quotient and subspace via annihilator",
+      "anchor": {
+        "section": "Annihilators",
+        "snippet": "Then, the dual of the quotient"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Submodule.dualQuotEquivDualAnnihilator",
+        "module": "Mathlib.LinearAlgebra.Dual.Lemmas",
+        "match_kind": "special_case"
+      },
+      "note": "The purely algebraic `dualQuotEquivDualAnnihilator` exists, but the normed/closed-subspace versions (`M/N)' ≅ N^⊥`, `N' ≅ M'/N^⊥`) are not formalized.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Annihilators",
+          "snippet": "Then, the dual of the quotient"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\ker(j')=W^{\\perp }}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Separable dual implies separable space",
+      "anchor": {
+        "section": "Further properties",
+        "snippet": "is separable , then so is the space"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The implication 'separable dual ⇒ separable space' was not found in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Map into the continuous double dual",
+      "anchor": {
+        "section": "Double dual",
+        "snippet": "there is always a naturally defined continuous linear operator"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "NormedSpace.inclusionInDoubleDual",
+        "module": "Mathlib.Analysis.Normed.Module.DoubleDual",
+        "match_kind": "exact"
+      },
+      "note": "`NormedSpace.inclusionInDoubleDual` is the canonical continuous map `E →L[𝕜] StrongDual 𝕜 (StrongDual 𝕜 E)`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Double-dual map is an isometry",
+      "anchor": {
+        "section": "Double dual",
+        "snippet": "this map is in fact an isometry"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "NormedSpace.inclusionInDoubleDualLi",
+        "module": "Mathlib.Analysis.Normed.Module.DoubleDual",
+        "match_kind": "exact"
+      },
+      "note": "`NormedSpace.inclusionInDoubleDualLi` packages the inclusion as a linear isometry.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Reflexive normed space",
+      "anchor": {
+        "section": "Double dual",
+        "snippet": "are called reflexive"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No notion of reflexive normed/Banach space (surjectivity of the double-dual embedding) is defined in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Double-dual map injective for Hausdorff locally convex TVS",
+      "anchor": {
+        "section": "Double dual",
+        "snippet": "is Hausdorff and locally convex"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "SeparatingDual",
+        "module": "Mathlib.Analysis.LocallyConvex.SeparatingDual",
+        "match_kind": "special_case"
+      },
+      "note": "Injectivity of the double-dual map for normed spaces follows from `inclusionInDoubleDualLi`; for Hausdorff locally convex TVS the separating-dual property (`SeparatingDual.exists_ne_zero`) gives it, but it is not stated as a double-dual injectivity result.",
+      "provenance": "ai"
+    }
+  ]
+}

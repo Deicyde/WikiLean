@@ -1,0 +1,1243 @@
+{
+  "slug": "Inner_product_space",
+  "wikipedia_title": "Inner product space",
+  "display_title": "Inner product space",
+  "schema_version": 3,
+  "annotation_style": "theorem_article",
+  "annotations": [
+    {
+      "kind": "definition",
+      "label": "Inner product space",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "an inner product space"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "InnerProductSpace",
+        "module": "Mathlib.Analysis.InnerProductSpace.Defs",
+        "match_kind": "exact"
+      },
+      "note": "The class `InnerProductSpace 𝕜 E` (with `[RCLike 𝕜]`) is exactly Mathlib's notion of inner product space.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Hilbert space (as complete inner product space)",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "If this normed space is also complete"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "HilbertSpace",
+        "module": "Mathlib.Analysis.InnerProductSpace.Defs",
+        "match_kind": "exact"
+      },
+      "note": "The `variable_alias` structure `HilbertSpace 𝕜 E` bundles `InnerProductSpace` with `CompleteSpace`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Inner product (formal definition)",
+      "anchor": {
+        "section": "Definition",
+        "snippet": "An inner product space is a vector space"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Inner",
+        "module": "Mathlib.Analysis.InnerProductSpace.Defs",
+        "match_kind": "exact"
+      },
+      "note": "The `Inner 𝕜 E` class provides the inner product operation used by `InnerProductSpace`.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Definition",
+          "snippet": "An inner product space is a vector space"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\langle \\cdot \\operatorname {,} \\cdot \\rangle :V\\times V\\to F}"
+        }
+      ]
+    },
+    {
+      "kind": "definition",
+      "label": "Conjugate symmetry",
+      "anchor": {
+        "section": "Definition",
+        "snippet": "Conjugate symmetry"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "inner_conj_symm",
+        "module": "Mathlib.Analysis.InnerProductSpace.Basic",
+        "match_kind": "exact"
+      },
+      "note": "The axiom `conj_inner_symm` is a field of `InnerProductSpace` and is exposed as the theorem `inner_conj_symm`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Linearity in the first argument",
+      "anchor": {
+        "section": "Definition",
+        "snippet": "Linearity in the first argument"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "InnerProductSpace.add_left",
+        "module": "Mathlib.Analysis.InnerProductSpace.Defs",
+        "match_kind": "exact"
+      },
+      "note": "Mathlib's `add_left` + `smul_left` fields encode sesquilinearity (conjugate-linear in first argument), the same content modulo convention.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Definition",
+          "snippet": "Linearity in the first argument"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\langle ax+by,z\\rangle =a\\langle x,z\\rangle +b\\langle y,z\\rangle .}"
+        }
+      ]
+    },
+    {
+      "kind": "definition",
+      "label": "Positive-definiteness",
+      "anchor": {
+        "section": "Definition",
+        "snippet": "Positive-definiteness"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "InnerProductSpace.Core.definite",
+        "module": "Mathlib.Analysis.InnerProductSpace.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`InnerProductSpace.Core` requires `re_inner_nonneg` and `definite`, yielding positive-definiteness.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Positive semi-definite Hermitian form is an inner product iff",
+      "anchor": {
+        "section": "Definition",
+        "snippet": "A positive semi-definite Hermitian form"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "PreInnerProductSpace.Core",
+        "module": "Mathlib.Analysis.InnerProductSpace.Defs",
+        "match_kind": "generalization"
+      },
+      "note": "Mathlib distinguishes `PreInnerProductSpace.Core` (semi-definite) from `InnerProductSpace.Core` (adds `definite`), but does not state the explicit iff characterization.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Inner product is sesquilinear (conjugate-linearity in 2nd argument)",
+      "anchor": {
+        "section": "Basic properties",
+        "snippet": "that is conjugate-linearity"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "inner_smul_right",
+        "module": "Mathlib.Analysis.InnerProductSpace.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`inner_add_right` and `inner_smul_right` (with `inner_conj_symm`) give conjugate-linearity in the second slot under Mathlib's convention.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Real inner product is positive-definite symmetric bilinear form",
+      "anchor": {
+        "section": "Basic properties",
+        "snippet": "Hence an inner product on a real vector space is a positive-definite symmetric bilinear form"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "real_inner_comm",
+        "module": "Mathlib.Analysis.InnerProductSpace.Basic",
+        "match_kind": "exact"
+      },
+      "note": "Over ℝ, `real_inner_comm` plus `inner_add_left/inner_smul_left` plus `real_inner_self_eq_norm_mul_norm` yield a symmetric positive-definite bilinear form.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Basic properties",
+          "snippet": "Hence an inner product on a real vector space is a positive-definite symmetric bilinear form"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\langle x+y,x+y\\rangle =\\langle x,x\\rangle +2\\langle x,y\\rangle +\\langle y,y\\rangle .}"
+        }
+      ]
+    },
+    {
+      "kind": "example",
+      "label": "Real numbers as inner product space",
+      "anchor": {
+        "section": "Real and complex numbers",
+        "snippet": "The real numbers"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "RCLike.innerProductSpace",
+        "module": "Mathlib.Analysis.InnerProductSpace.Basic",
+        "match_kind": "exact"
+      },
+      "note": "The instance `RCLike.innerProductSpace` makes ℝ an inner product space over itself.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Real and complex numbers",
+          "snippet": "The real numbers"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\langle x,y\\rangle :=xy\\quad {\\text{ for }}x,y\\in \\mathbb {R} .}"
+        }
+      ]
+    },
+    {
+      "kind": "example",
+      "label": "Complex numbers as inner product space",
+      "anchor": {
+        "section": "Real and complex numbers",
+        "snippet": "The complex numbers"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "RCLike.innerProductSpace",
+        "module": "Mathlib.Analysis.InnerProductSpace.Basic",
+        "match_kind": "exact"
+      },
+      "note": "Same `RCLike.innerProductSpace` instance covers ℂ (since `RCLike ℂ`).",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Real and complex numbers",
+          "snippet": "The complex numbers"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\langle x,y\\rangle :=x{\\overline {y}}\\quad {\\text{ for }}x,y\\in \\mathbb {C} .}"
+        }
+      ]
+    },
+    {
+      "kind": "example",
+      "label": "Euclidean vector space with dot product",
+      "anchor": {
+        "section": "Euclidean vector space",
+        "snippet": "with the dot product is an inner product space"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "EuclideanSpace",
+        "module": "Mathlib.Analysis.InnerProductSpace.PiL2",
+        "match_kind": "exact"
+      },
+      "note": "`EuclideanSpace 𝕜 ι` is the standard L²/dot-product inner product space on `ι → 𝕜`.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Euclidean vector space",
+          "snippet": "with the dot product is an inner product space"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\left\\langle {\\begin{bmatrix}x_{1}\\\\\\vdots \\\\x_{n}\\end{bmatrix}},{\\begin{bmatrix}y_{1}\\\\\\vdots \\\\y_{n}\\end{bmatrix}}\\right\\rangle =x^{\\operatorname {T} }y=\\sum _{i=1}^{n}x_{i}y_{i}=x_{1}y_{1}+\\cdots +x_{n}y_{n},}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Characterization of inner products on R^n via symmetric positive-definite matrices",
+      "anchor": {
+        "section": "Euclidean vector space",
+        "snippet": "is an inner product on"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Matrix.PosDef.toInnerProductSpace",
+        "module": "Mathlib.Analysis.Matrix.PosDef",
+        "match_kind": "exact"
+      },
+      "note": "`Matrix.toInnerProductSpace` constructs the inner product on `n → 𝕜` induced by a positive-(semi)definite matrix.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Euclidean vector space",
+          "snippet": "is an inner product on"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\langle x,y\\rangle :=x^{\\operatorname {T} }\\mathbf {M} y=\\left[x_{1},x_{2}\\right]{\\begin{bmatrix}a&amp;b\\\\b&amp;d\\end{bmatrix}}{\\begin{bmatrix}y_{1}\\\\y_{2}\\end{bmatrix}}=ax_{1}y_{1}+bx_{1}y_{2}+bx_{2}y_{1}+dx_{2}y_{2}.}"
+        }
+      ]
+    },
+    {
+      "kind": "example",
+      "label": "Hermitian form on complex coordinate space",
+      "anchor": {
+        "section": "Complex coordinate space",
+        "snippet": "The general form of an inner product"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Matrix.PosDef.toInnerProductSpace",
+        "module": "Mathlib.Analysis.Matrix.PosDef",
+        "match_kind": "exact"
+      },
+      "note": "`Matrix.toInnerProductSpace` (over `RCLike 𝕜 = ℂ`) gives the general `⟪x, y⟫ = xᴴ M y` form on `n → ℂ`.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Complex coordinate space",
+          "snippet": "The general form of an inner product"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\langle x,y\\rangle =y^{\\dagger }\\mathbf {M} x={\\overline {x^{\\dagger }\\mathbf {M} y}},}"
+        }
+      ]
+    },
+    {
+      "kind": "example",
+      "label": "Space of continuous functions with L^2 inner product (incomplete)",
+      "anchor": {
+        "section": "Hilbert space",
+        "snippet": "An example of an inner product space which induces an incomplete metric"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "MeasureTheory.L2.innerProductSpace",
+        "module": "Mathlib.MeasureTheory.Function.L2Space",
+        "match_kind": "generalization"
+      },
+      "note": "Mathlib formalizes the (complete) `Lp E 2 μ` inner product space, but does not single out the incomplete subspace of continuous functions.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Hilbert space",
+          "snippet": "An example of an inner product space which induces an incomplete metric"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\langle f,g\\rangle =\\int _{a}^{b}f(t){\\overline {g(t)}}\\,\\mathrm {d} t.}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle f_{k}(t)={\\begin{cases}0&amp;t\\in [-1,0]\\\\1&amp;t\\in \\left[{\\tfrac {1}{k}},1\\right]\\\\kt&amp;t\\in \\left(0,{\\tfrac {1}{k}}\\right)\\end{cases}}}"
+        }
+      ]
+    },
+    {
+      "kind": "example",
+      "label": "Expectation as inner product on random variables",
+      "anchor": {
+        "section": "Random variables",
+        "snippet": "the expected value of their product"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "MeasureTheory.L2.innerProductSpace",
+        "module": "Mathlib.MeasureTheory.Function.L2Space",
+        "match_kind": "invocation"
+      },
+      "note": "On `Lp E 2 μ` the inner product is `∫ ⟪f, g⟫ dμ`, which specializes to `E[XY]`; no dedicated random-variable inner product instance exists.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Random variables",
+          "snippet": "the expected value of their product"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\langle X,Y\\rangle =\\mathbb {E} [XY]}"
+        }
+      ]
+    },
+    {
+      "kind": "example",
+      "label": "Frobenius inner product on complex matrices",
+      "anchor": {
+        "section": "Complex matrices",
+        "snippet": "The inner product for complex square matrices"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Matrix.toMatrixInnerProductSpace",
+        "module": "Mathlib.Analysis.Matrix.Order",
+        "match_kind": "generalization"
+      },
+      "note": "Mathlib has matrix-induced inner products and Matrix.trace, and EuclideanSpace gives a Frobenius-like form, but there is no dedicated `Matrix.frobeniusInner` decl.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Complex matrices",
+          "snippet": "The inner product for complex square matrices"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\langle A,B\\rangle =\\operatorname {tr} \\left(AB^{\\dagger }\\right)={\\overline {\\operatorname {tr} \\left(BA^{\\dagger }\\right)}}={\\overline {\\left\\langle B,A\\right\\rangle }}}"
+        }
+      ]
+    },
+    {
+      "kind": "definition",
+      "label": "Canonical norm induced by inner product",
+      "anchor": {
+        "section": "Norm properties",
+        "snippet": "induces a norm , called its canonical norm"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "InnerProductSpace.Core.toNormedAddCommGroup",
+        "module": "Mathlib.Analysis.InnerProductSpace.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`InnerProductSpace.Core.toNormedAddCommGroup` defines `‖x‖ = √(re ⟪x,x⟫)`; `norm_sq_eq_re_inner` enforces this on `InnerProductSpace`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Cauchy–Schwarz inequality",
+      "anchor": {
+        "section": "Norm properties",
+        "snippet": "with equality if and only if"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "norm_inner_le_norm",
+        "module": "Mathlib.Analysis.InnerProductSpace.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`norm_inner_le_norm` proves `‖⟪x,y⟫‖ ≤ ‖x‖ * ‖y‖`; equality case is not stated as a single iff.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Norm properties",
+          "snippet": "with equality if and only if"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\|ax\\|=|a|\\,\\|x\\|}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\|x+y\\|\\leq \\|x\\|+\\|y\\|}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle |\\langle x,y\\rangle |\\leq \\|x\\|\\,\\|y\\|}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\|x+y\\|^{2}+\\|x-y\\|^{2}=2\\|x\\|^{2}+2\\|y\\|^{2}}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\|x+y\\|^{2}=\\|x\\|^{2}+\\|y\\|^{2}+2\\operatorname {Re} \\langle x,y\\rangle }"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\|x-y\\|\\,\\|z\\|~+~\\|y-z\\|\\,\\|x\\|~\\geq ~\\|x-z\\|\\,\\|y\\|}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Parallelogram law characterizes inner-product norms",
+      "anchor": {
+        "section": "Norm properties",
+        "snippet": "The parallelogram law is a necessary and sufficient condition"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "InnerProductSpace.ofNorm",
+        "module": "Mathlib.Analysis.InnerProductSpace.OfNorm",
+        "match_kind": "exact"
+      },
+      "note": "`InnerProductSpace.ofNorm` constructs an inner product from a norm satisfying the parallelogram identity (`InnerProductSpaceable`), the necessary-and-sufficient direction.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Norm properties",
+          "snippet": "The parallelogram law is a necessary and sufficient condition"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\|ax\\|=|a|\\,\\|x\\|}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\|x+y\\|\\leq \\|x\\|+\\|y\\|}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle |\\langle x,y\\rangle |\\leq \\|x\\|\\,\\|y\\|}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\|x+y\\|^{2}+\\|x-y\\|^{2}=2\\|x\\|^{2}+2\\|y\\|^{2}}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\|x+y\\|^{2}=\\|x\\|^{2}+\\|y\\|^{2}+2\\operatorname {Re} \\langle x,y\\rangle }"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\|x-y\\|\\,\\|z\\|~+~\\|y-z\\|\\,\\|x\\|~\\geq ~\\|x-z\\|\\,\\|y\\|}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Polarization identity",
+      "anchor": {
+        "section": "Norm properties",
+        "snippet": "The inner product can be retrieved from the norm by the polarization identity"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "inner_eq_sum_norm_sq_div_four",
+        "module": "Mathlib.Analysis.InnerProductSpace.Basic",
+        "match_kind": "exact"
+      },
+      "note": "Mathlib has a family of polarization identities (`re_inner_eq_norm_add_mul_self_sub_norm_sub_mul_self_div_four`, `inner_eq_sum_norm_sq_div_four`).",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Norm properties",
+          "snippet": "The inner product can be retrieved from the norm by the polarization identity"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\|ax\\|=|a|\\,\\|x\\|}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\|x+y\\|\\leq \\|x\\|+\\|y\\|}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle |\\langle x,y\\rangle |\\leq \\|x\\|\\,\\|y\\|}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\|x+y\\|^{2}+\\|x-y\\|^{2}=2\\|x\\|^{2}+2\\|y\\|^{2}}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\|x+y\\|^{2}=\\|x\\|^{2}+\\|y\\|^{2}+2\\operatorname {Re} \\langle x,y\\rangle }"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\|x-y\\|\\,\\|z\\|~+~\\|y-z\\|\\,\\|x\\|~\\geq ~\\|x-z\\|\\,\\|y\\|}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Ptolemy's inequality characterizes inner-product norms",
+      "anchor": {
+        "section": "Norm properties",
+        "snippet": "Ptolemy's inequality is a necessary and sufficient condition"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "EuclideanGeometry.mul_dist_le_mul_dist_add_mul_dist",
+        "module": "Mathlib.Geometry.Euclidean.Sphere.Ptolemy",
+        "match_kind": "invocation"
+      },
+      "note": "Mathlib proves Ptolemy's inequality in Euclidean geometry but not the characterization that Ptolemy's inequality detects inner-product norms among general normed spaces.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Norm properties",
+          "snippet": "Ptolemy's inequality is a necessary and sufficient condition"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\|ax\\|=|a|\\,\\|x\\|}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\|x+y\\|\\leq \\|x\\|+\\|y\\|}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle |\\langle x,y\\rangle |\\leq \\|x\\|\\,\\|y\\|}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\|x+y\\|^{2}+\\|x-y\\|^{2}=2\\|x\\|^{2}+2\\|y\\|^{2}}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\|x+y\\|^{2}=\\|x\\|^{2}+\\|y\\|^{2}+2\\operatorname {Re} \\langle x,y\\rangle }"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\|x-y\\|\\,\\|z\\|~+~\\|y-z\\|\\,\\|x\\|~\\geq ~\\|x-z\\|\\,\\|y\\|}"
+        }
+      ]
+    },
+    {
+      "kind": "definition",
+      "label": "Orthogonal vectors",
+      "anchor": {
+        "section": "Orthogonality",
+        "snippet": "are said to be orthogonal"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Submodule.isOrtho",
+        "module": "Mathlib.Analysis.InnerProductSpace.Orthogonal",
+        "match_kind": "exact"
+      },
+      "note": "Orthogonality of two vectors is `⟪x, y⟫ = 0`; Mathlib has lemmas like `inner_eq_zero_symm` and `Submodule.isOrtho` for sets.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Orthogonality",
+          "snippet": "are said to be orthogonal"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle C^{\\bot }:=\\{\\,y\\in V:\\langle y,c\\rangle =0{\\text{ for all }}c\\in C\\,\\}.}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\|x\\|^{2}+\\|y\\|^{2}=\\|x+y\\|^{2}.}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\sum _{i=1}^{n}\\|x_{i}\\|^{2}=\\left\\|\\sum _{i=1}^{n}x_{i}\\right\\|^{2}.}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\angle (x,y)=\\arccos {\\frac {\\langle x,y\\rangle }{\\|x\\|\\,\\|y\\|}},}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Operator vanishing characterization via inner product (complex case)",
+      "anchor": {
+        "section": "Orthogonality",
+        "snippet": "a linear operator"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "inner_map_polarization",
+        "module": "Mathlib.Analysis.InnerProductSpace.LinearMap",
+        "match_kind": "exact"
+      },
+      "note": "`inner_map_polarization` plus the fact that `T = 0 ↔ ∀ x, ⟪T x, x⟫ = 0` over ℂ is established (cf. `Symmetric.lean` and `LinearMap.lean`).",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Orthogonality",
+          "snippet": "a linear operator"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle C^{\\bot }:=\\{\\,y\\in V:\\langle y,c\\rangle =0{\\text{ for all }}c\\in C\\,\\}.}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\|x\\|^{2}+\\|y\\|^{2}=\\|x+y\\|^{2}.}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\sum _{i=1}^{n}\\|x_{i}\\|^{2}=\\left\\|\\sum _{i=1}^{n}x_{i}\\right\\|^{2}.}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\angle (x,y)=\\arccos {\\frac {\\langle x,y\\rangle }{\\|x\\|\\,\\|y\\|}},}"
+        }
+      ]
+    },
+    {
+      "kind": "definition",
+      "label": "Orthogonal complement",
+      "anchor": {
+        "section": "Orthogonality",
+        "snippet": "The orthogonal complement of a subset"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Submodule.orthogonal",
+        "module": "Mathlib.Analysis.InnerProductSpace.Orthogonal",
+        "match_kind": "exact"
+      },
+      "note": "`Submodule.orthogonal K` (notated `Kᗮ`) is the orthogonal complement of `K`.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Orthogonality",
+          "snippet": "The orthogonal complement of a subset"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle C^{\\bot }:=\\{\\,y\\in V:\\langle y,c\\rangle =0{\\text{ for all }}c\\in C\\,\\}.}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\|x\\|^{2}+\\|y\\|^{2}=\\|x+y\\|^{2}.}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\sum _{i=1}^{n}\\|x_{i}\\|^{2}=\\left\\|\\sum _{i=1}^{n}x_{i}\\right\\|^{2}.}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\angle (x,y)=\\arccos {\\frac {\\langle x,y\\rangle }{\\|x\\|\\,\\|y\\|}},}"
+        }
+      ]
+    },
+    {
+      "kind": "theorem",
+      "label": "Pythagorean theorem",
+      "anchor": {
+        "section": "Orthogonality",
+        "snippet": "The name Pythagorean theorem arises"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "norm_add_sq_eq_norm_sq_add_norm_sq_of_inner_eq_zero",
+        "module": "Mathlib.Analysis.InnerProductSpace.Basic",
+        "match_kind": "exact"
+      },
+      "note": "Pythagorean theorem `‖x+y‖² = ‖x‖² + ‖y‖²` from `⟪x,y⟫ = 0` is directly available.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Orthogonality",
+          "snippet": "The name Pythagorean theorem arises"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle C^{\\bot }:=\\{\\,y\\in V:\\langle y,c\\rangle =0{\\text{ for all }}c\\in C\\,\\}.}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\|x\\|^{2}+\\|y\\|^{2}=\\|x+y\\|^{2}.}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\sum _{i=1}^{n}\\|x_{i}\\|^{2}=\\left\\|\\sum _{i=1}^{n}x_{i}\\right\\|^{2}.}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\angle (x,y)=\\arccos {\\frac {\\langle x,y\\rangle }{\\|x\\|\\,\\|y\\|}},}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Pythagorean theorem for pairwise orthogonal vectors",
+      "anchor": {
+        "section": "Orthogonality",
+        "snippet": "An induction on the Pythagorean theorem yields"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "OrthogonalFamily.norm_sum_sq",
+        "module": "Mathlib.Analysis.InnerProductSpace.Subspace",
+        "match_kind": "exact"
+      },
+      "note": "Mathlib's `OrthogonalFamily` / `Orthonormal.norm_sum_sq`-style lemmas extend Pythagoras to finite orthogonal sums.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Orthogonality",
+          "snippet": "An induction on the Pythagorean theorem yields"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle C^{\\bot }:=\\{\\,y\\in V:\\langle y,c\\rangle =0{\\text{ for all }}c\\in C\\,\\}.}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\|x\\|^{2}+\\|y\\|^{2}=\\|x+y\\|^{2}.}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\sum _{i=1}^{n}\\|x_{i}\\|^{2}=\\left\\|\\sum _{i=1}^{n}x_{i}\\right\\|^{2}.}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\angle (x,y)=\\arccos {\\frac {\\langle x,y\\rangle }{\\|x\\|\\,\\|y\\|}},}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Angle between vectors via Cauchy–Schwarz",
+      "anchor": {
+        "section": "Orthogonality",
+        "snippet": "the Cauchy–Schwarz inequality implies"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "InnerProductGeometry.angle",
+        "module": "Mathlib.Geometry.Euclidean.Angle.Unoriented.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`InnerProductGeometry.angle` defines the undirected angle via `arccos (⟪x,y⟫ / (‖x‖‖y‖))`, well-defined thanks to Cauchy–Schwarz.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Orthogonality",
+          "snippet": "the Cauchy–Schwarz inequality implies"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle C^{\\bot }:=\\{\\,y\\in V:\\langle y,c\\rangle =0{\\text{ for all }}c\\in C\\,\\}.}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\|x\\|^{2}+\\|y\\|^{2}=\\|x+y\\|^{2}.}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\sum _{i=1}^{n}\\|x_{i}\\|^{2}=\\left\\|\\sum _{i=1}^{n}x_{i}\\right\\|^{2}.}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\angle (x,y)=\\arccos {\\frac {\\langle x,y\\rangle }{\\|x\\|\\,\\|y\\|}},}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Real part of inner product via polarization identity",
+      "anchor": {
+        "section": "Real and complex parts of inner products",
+        "snippet": "The polarization identity shows that the real part"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "re_inner_eq_norm_add_mul_self_sub_norm_sub_mul_self_div_four",
+        "module": "Mathlib.Analysis.InnerProductSpace.Basic",
+        "match_kind": "exact"
+      },
+      "note": "This is the real-part polarization identity stated explicitly.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Real and complex parts of inner products",
+          "snippet": "The polarization identity shows that the real part"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\operatorname {Re} \\langle x,y\\rangle ={\\frac {1}{4}}\\left(\\|x+y\\|^{2}-\\|x-y\\|^{2}\\right).}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Polarization identity for complex inner products",
+      "anchor": {
+        "section": "Real and complex parts of inner products",
+        "snippet": "The polarization identity for complex vector spaces"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "inner_eq_sum_norm_sq_div_four",
+        "module": "Mathlib.Analysis.InnerProductSpace.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`inner_eq_sum_norm_sq_div_four` expresses the full complex inner product as a sum of four norms over 𝕜.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Real and complex parts of inner products",
+          "snippet": "The polarization identity for complex vector spaces"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle {\\begin{alignedat}{4}\\langle x,\\ y\\rangle &amp;={\\frac {1}{4}}\\left(\\|x+y\\|^{2}-\\|x-y\\|^{2}+i\\|x+iy\\|^{2}-i\\|x-iy\\|^{2}\\right)\\\\&amp;=\\operatorname {Re} \\langle x,y\\rangle +i\\operatorname {Re} \\langle x,iy\\rangle .\\\\\\end{alignedat}}}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Complex inner product determined by its real part",
+      "anchor": {
+        "section": "Real and complex parts of inner products",
+        "snippet": "every complex inner product is completely determined by its real part"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Inner.rclikeToReal",
+        "module": "Mathlib.Analysis.InnerProductSpace.Basic",
+        "match_kind": "generalization"
+      },
+      "note": "Mathlib defines `Inner.rclikeToReal` taking `re ⟪·,·⟫` and recovers `⟪x,y⟫` via polarization, but no single decl states the uniqueness theorem.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Complex inner product induced by dot product on C^n",
+      "anchor": {
+        "section": "Real and complex parts of inner products",
+        "snippet": "The unique complex inner product"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "EuclideanSpace",
+        "module": "Mathlib.Analysis.InnerProductSpace.PiL2",
+        "match_kind": "exact"
+      },
+      "note": "`EuclideanSpace ℂ (Fin n)` is exactly the standard inner product on `ℂⁿ`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Real part of complex inner product is real inner product",
+      "anchor": {
+        "section": "Real vs. complex inner products",
+        "snippet": "which necessarily forms a real inner product"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "InnerProductSpace.rclikeToReal",
+        "module": "Mathlib.Analysis.InnerProductSpace.Basic",
+        "match_kind": "exact"
+      },
+      "note": "The definition `Inner.rclikeToReal` and the resulting `InnerProductSpace ℝ E` instance turn a complex IP space into a real one via the real part.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "90° rotation counterexample on real inner product space",
+      "anchor": {
+        "section": "Real vs. complex inner products",
+        "snippet": "this rotation map"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No dedicated decl gives this specific counterexample; the related `Orientation.rightAngleRotation` exists but is not framed as a counterexample to the real-vs-complex inner product distinction.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Orthonormal basis (finite-dimensional)",
+      "anchor": {
+        "section": "Orthonormal sequences",
+        "snippet": "a basis"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "OrthonormalBasis",
+        "module": "Mathlib.Analysis.InnerProductSpace.PiL2",
+        "match_kind": "exact"
+      },
+      "note": "`OrthonormalBasis ι 𝕜 E` is Mathlib's finite-index orthonormal basis.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Orthonormal basis (infinite-dimensional)",
+      "anchor": {
+        "section": "Orthonormal sequences",
+        "snippet": "This definition of orthonormal basis generalizes"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "HilbertBasis",
+        "module": "Mathlib.Analysis.InnerProductSpace.l2Space",
+        "match_kind": "exact"
+      },
+      "note": "`HilbertBasis ι 𝕜 E` is an isometric isomorphism `E ≃ₗᵢ ℓ²(ι, 𝕜)`, the infinite-dimensional orthonormal basis.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Orthonormal sequences",
+          "snippet": "This definition of orthonormal basis generalizes"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle E=\\left\\{e_{a}\\right\\}_{a\\in A}}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\left\\langle e_{a},e_{b}\\right\\rangle =0}"
+        }
+      ]
+    },
+    {
+      "kind": "theorem",
+      "label": "Separable inner product space has orthonormal basis",
+      "anchor": {
+        "section": "Orthonormal sequences",
+        "snippet": "Any separable inner product space has an orthonormal basis"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has `exists_orthonormalBasis` only in finite dimensions; no general existence theorem for separable Hilbert spaces is stated.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Complete inner product space has orthonormal basis",
+      "anchor": {
+        "section": "Orthonormal sequences",
+        "snippet": "Any complete inner product space has an orthonormal basis"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "exists_orthonormalBasis",
+        "module": "Mathlib.Analysis.InnerProductSpace.PiL2",
+        "match_kind": "special_case"
+      },
+      "note": "`exists_orthonormalBasis` covers the finite-dimensional case; the general Zorn-based existence of a `HilbertBasis` in any Hilbert space is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Parseval isometry for separable inner product spaces",
+      "anchor": {
+        "section": "Orthonormal sequences",
+        "snippet": "is an isometric linear map"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "HilbertBasis.repr",
+        "module": "Mathlib.Analysis.InnerProductSpace.l2Space",
+        "match_kind": "exact"
+      },
+      "note": "`HilbertBasis.repr` is by definition a `LinearIsometryEquiv` between `E` and `ℓ²(ι, 𝕜)`, giving Parseval's identity.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Orthonormal sequences",
+          "snippet": "is an isometric linear map"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle x\\mapsto {\\bigl \\{}\\langle e_{k},x\\rangle {\\bigr \\}}_{k\\in \\mathbb {N} }}"
+        }
+      ]
+    },
+    {
+      "kind": "theorem",
+      "label": "Fourier series orthonormal basis on L^2",
+      "anchor": {
+        "section": "Orthonormal sequences",
+        "snippet": "is an orthonormal basis of the space"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "fourierBasis",
+        "module": "Mathlib.Analysis.Fourier.AddCircle",
+        "match_kind": "exact"
+      },
+      "note": "`fourierBasis : HilbertBasis ℤ ℂ (Lp ℂ 2 haarAddCircle)` is exactly the orthonormal Fourier basis.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Orthonormal sequences",
+          "snippet": "is an orthonormal basis of the space"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle e_{k}(t)={\\frac {e^{ikt}}{\\sqrt {2\\pi }}}}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle f\\mapsto {\\frac {1}{\\sqrt {2\\pi }}}\\left\\{\\int _{-\\pi }^{\\pi }f(t)e^{-ikt}\\,\\mathrm {d} t\\right\\}_{k\\in \\mathbb {Z} }}"
+        }
+      ]
+    },
+    {
+      "kind": "definition",
+      "label": "Continuous linear maps between inner product spaces",
+      "anchor": {
+        "section": "Operators on inner product spaces",
+        "snippet": "Continuous linear maps"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "ContinuousLinearMap",
+        "module": "Mathlib.Topology.Algebra.Module.Basic",
+        "match_kind": "generalization"
+      },
+      "note": "`E →L[𝕜] F` is the generic continuous linear map class; specialized usage on inner product spaces is throughout `Mathlib.Analysis.InnerProductSpace`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Symmetric linear operator",
+      "anchor": {
+        "section": "Operators on inner product spaces",
+        "snippet": "Symmetric linear operators"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "LinearMap.IsSymmetric",
+        "module": "Mathlib.Analysis.InnerProductSpace.Symmetric",
+        "match_kind": "exact"
+      },
+      "note": "`LinearMap.IsSymmetric T` says `∀ x y, ⟪T x, y⟫ = ⟪x, T y⟫`, matching the Wikipedia definition.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Isometry between inner product spaces",
+      "anchor": {
+        "section": "Operators on inner product spaces",
+        "snippet": "Isometries"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "LinearIsometry",
+        "module": "Mathlib.Analysis.NormedSpace.LinearIsometry",
+        "match_kind": "exact"
+      },
+      "note": "`LinearIsometry 𝕜 E F` (notation `E →ₗᵢ[𝕜] F`) is the norm-preserving linear map; `LinearIsometry.inner_map_map` gives inner-product preservation.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Mazur–Ulam theorem for isometries",
+      "anchor": {
+        "section": "Operators on inner product spaces",
+        "snippet": "The Mazur–Ulam theorem establishes"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Isometric.toAffineIsometryEquiv",
+        "module": "Mathlib.Analysis.Normed.Affine.MazurUlam",
+        "match_kind": "exact"
+      },
+      "note": "The Mazur–Ulam theorem is in `Mathlib.Analysis.Normed.Affine.MazurUlam`, asserting surjective isometries between normed real spaces are affine.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Isometrical isomorphism / unitary operator",
+      "anchor": {
+        "section": "Operators on inner product spaces",
+        "snippet": "Isometrical isomorphisms"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "LinearIsometryEquiv",
+        "module": "Mathlib.Analysis.NormedSpace.LinearIsometry",
+        "match_kind": "exact"
+      },
+      "note": "`LinearIsometryEquiv` (notation `E ≃ₗᵢ[𝕜] F`) is the surjective linear isometry, i.e. the unitary in the inner-product setting.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Spectral theorem",
+      "anchor": {
+        "section": "Operators on inner product spaces",
+        "snippet": "The spectral theorem provides a canonical form"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "LinearMap.IsSymmetric.diagonalization",
+        "module": "Mathlib.Analysis.InnerProductSpace.Spectrum",
+        "match_kind": "exact"
+      },
+      "note": "`LinearMap.IsSymmetric.diagonalization` gives the spectral / diagonalization theorem for self-adjoint operators on finite-dimensional inner product spaces.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Degenerate inner product / semi-norm quotient construction",
+      "anchor": {
+        "section": "Degenerate inner products",
+        "snippet": "a semi-definite sesquilinear form"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "PreInnerProductSpace.Core",
+        "module": "Mathlib.Analysis.InnerProductSpace.Defs",
+        "match_kind": "generalization"
+      },
+      "note": "`PreInnerProductSpace.Core` formalizes the semi-definite Hermitian form yielding a seminorm, but the explicit quotient-by-radical construction is not packaged.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Degenerate inner products",
+          "snippet": "a semi-definite sesquilinear form"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\|x\\|={\\sqrt {\\langle x,x\\rangle }}}"
+        }
+      ]
+    },
+    {
+      "kind": "definition",
+      "label": "Nondegenerate conjugate symmetric form",
+      "anchor": {
+        "section": "Nondegenerate conjugate symmetric forms",
+        "snippet": "one may require that the pairing be a nondegenerate form"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "LinearMap.BilinForm.Nondegenerate",
+        "module": "Mathlib.LinearAlgebra.BilinearForm.Basic",
+        "match_kind": "generalization"
+      },
+      "note": "Nondegeneracy is formalized at the level of bilinear/sesquilinear forms (`BilinForm.Nondegenerate`), but not as a dedicated 'nondegenerate Hermitian form' structure.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Sylvester's law of inertia",
+      "anchor": {
+        "section": "Nondegenerate conjugate symmetric forms",
+        "snippet": "By Sylvester's law of inertia"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "QuadraticForm.sigPos_eq_of_basis",
+        "module": "Mathlib.LinearAlgebra.QuadraticForm.Signature",
+        "match_kind": "exact"
+      },
+      "note": "Sylvester's law of inertia (uniqueness of the signature) is proved in `Mathlib.LinearAlgebra.QuadraticForm.Signature`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Minkowski space as indefinite inner product",
+      "anchor": {
+        "section": "Nondegenerate conjugate symmetric forms",
+        "snippet": "Product of vectors in Minkowski space"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib does not define Minkowski space or its indefinite inner product form.",
+      "provenance": "ai"
+    }
+  ]
+}

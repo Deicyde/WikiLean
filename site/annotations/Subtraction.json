@@ -1,0 +1,451 @@
+{
+  "slug": "Subtraction",
+  "wikipedia_title": "Subtraction",
+  "display_title": "Subtraction",
+  "schema_version": 3,
+  "annotation_style": "theorem_article",
+  "annotations": [
+    {
+      "kind": "definition",
+      "label": "Subtraction",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "Subtraction is an operation that represents removal of objects from a collection"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "SubNegMonoid",
+        "module": "Mathlib.Algebra.Group.Defs",
+        "match_kind": "generalization"
+      },
+      "note": "Subtraction is provided by the `Sub` typeclass and structured via `SubNegMonoid`/`SubtractionMonoid` in `Mathlib.Algebra.Group.Defs`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Subtraction as inverse of addition",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "subtraction is the inverse of addition"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "sub_eq_add_neg",
+        "module": "Mathlib.Algebra.Group.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`SubNegMonoid.sub_eq_add_neg` (and the unfolded `sub_eq_add_neg`) state `a - b = a + -b`, formalizing subtraction as the additive-inverse operation.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Anti-commutativity (lead)",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "Subtraction is anti-commutative, meaning that changing the order changes the sign of the answer"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "neg_sub",
+        "module": "Mathlib.Algebra.Group.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`neg_sub : -(a - b) = b - a` in `Mathlib.Algebra.Group.Basic` captures anti-commutativity of subtraction.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Non-associativity (lead)",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "It is also not associative , meaning that when one subtracts more than two numbers, the order in which subtraction is performed matters"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has lemmas like `sub_sub` rewriting iterated subtractions, but does not state non-associativity as a theorem.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Subtraction by zero",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "Because 0 is the additive identity , subtraction of it does not change a number"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "sub_zero",
+        "module": "Mathlib.Algebra.Group.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`sub_zero : a - 0 = a` is a standard lemma in `Mathlib.Algebra.Group.Basic`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Minuend, subtrahend, difference",
+      "anchor": {
+        "section": "Notation and terminology",
+        "snippet": "The number being subtracted is the subtrahend , while the number it is subtracted from is the minuend"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "These are purely linguistic terms for arguments of subtraction and have no corresponding Mathlib declaration.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Notation and terminology",
+          "snippet": "The number being subtracted is the subtrahend , while the number it is subtracted from is the minuend"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle {\\rm {minuend}}-{\\rm {subtrahend}}={\\rm {difference}}.}"
+        }
+      ]
+    },
+    {
+      "kind": "example",
+      "label": "Line segment subtraction model",
+      "anchor": {
+        "section": "Integers",
+        "snippet": "Imagine a line segment of length b with the left end labeled a and the right end labeled c"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "An informal geometric illustration with no specific Mathlib counterpart.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Subtraction on integer line",
+      "anchor": {
+        "section": "Integers",
+        "snippet": "it takes 4 steps to the left from 3 to get to"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "A specific numeric illustration not formalized as a named decl in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Non-closure of natural number subtraction",
+      "anchor": {
+        "section": "Natural numbers",
+        "snippet": "Subtraction of natural numbers is not closed"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Nat.sub_eq_zero_iff_le",
+        "module": "Mathlib.Data.Nat.Defs",
+        "match_kind": "invocation"
+      },
+      "note": "Mathlib uses the truncated `Nat.sub` (with `Nat.sub_eq_zero_iff_le` capturing saturation) rather than directly stating non-closure.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Subtraction of real numbers",
+      "anchor": {
+        "section": "Real numbers",
+        "snippet": "The subtraction of a real number (the subtrahend) from another (the minuend) can then be defined as the addition of the minuend and the additive inverse of the subtrahend"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "sub_eq_add_neg",
+        "module": "Mathlib.Algebra.Group.Defs",
+        "match_kind": "generalization"
+      },
+      "note": "`Real` inherits `SubNegMonoid`, so `sub_eq_add_neg` gives the stated definition on ℝ.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Anti-commutativity",
+      "anchor": {
+        "section": "Anti-commutativity",
+        "snippet": "Subtraction is anti-commutative , meaning that if one reverses the terms in a difference left-to-right, the result is the negative of the original result"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "neg_sub",
+        "module": "Mathlib.Algebra.Group.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`neg_sub : -(a - b) = b - a` directly states anti-commutativity.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Non-associativity",
+      "anchor": {
+        "section": "Non-associativity",
+        "snippet": "Subtraction is non-associative , which comes up when one tries to define repeated subtraction"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib provides `sub_sub` rewrites but does not formalize the meta-statement that subtraction is non-associative.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Predecessor",
+      "anchor": {
+        "section": "Predecessor",
+        "snippet": "the integer ( a − 1) is the largest integer less than a , also known as the predecessor of a"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Order.pred",
+        "module": "Mathlib.Order.SuccPred.Basic",
+        "match_kind": "generalization"
+      },
+      "note": "`PredOrder` and `Order.pred` in `Mathlib.Order.SuccPred.Basic` formalize the predecessor in any preorder, and on ℤ this is `a - 1`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Units in subtraction",
+      "anchor": {
+        "section": "Units of measurement",
+        "snippet": "When subtracting two numbers with units of measurement such as kilograms or pounds , they must have the same unit"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib does not model physical units of measurement.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Percentage change vs. percentage point change",
+      "anchor": {
+        "section": "Percentages",
+        "snippet": "Percentage change represents the relative change between the two quantities as a percentage, while percentage point change is simply the number obtained by subtracting the two percentages"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Percentage change is not a defined notion in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Defective widgets percentage",
+      "anchor": {
+        "section": "Percentages",
+        "snippet": "suppose that 30% of widgets made in a factory are defective"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "A pedagogical numerical example with no Mathlib counterpart.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Method of complements",
+      "anchor": {
+        "section": "In computing",
+        "snippet": "The method of complements is a technique used to subtract one number from another using only the addition of positive numbers"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The method of complements as an arithmetic technique is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Binary subtraction via complements",
+      "anchor": {
+        "section": "In computing",
+        "snippet": "the ones' complement of y is added to x and one is added to the sum"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib does not formalize ones'/twos' complement binary subtraction algorithms.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "American method worked example (704 − 512)",
+      "anchor": {
+        "section": "Comparing the two main methods",
+        "snippet": "The minuend is 704, the subtrahend is 512"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "A pedagogical worked example not present in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Austrian method example",
+      "anchor": {
+        "section": "Austrian method",
+        "snippet": "The required sum (5) is too small"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "A pedagogical example of an arithmetic method not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Subtraction from left to right example",
+      "anchor": {
+        "section": "Subtraction from left to right",
+        "snippet": "This result is only penciled in"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "A pedagogical algorithm example with no Mathlib analogue.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "American method (borrowing)",
+      "anchor": {
+        "section": "American method",
+        "snippet": "each digit of the subtrahend is subtracted from the digit above it starting from right to left"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib does not formalize the elementary borrowing algorithm for decimal subtraction.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Trade first method",
+      "anchor": {
+        "section": "Trade first",
+        "snippet": "A variant of the American method where all borrowing is done before all subtraction"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This pedagogical variant is not represented in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Partial differences method",
+      "anchor": {
+        "section": "Partial differences",
+        "snippet": "The partial differences method is different from other vertical subtraction methods because no borrowing or carrying takes place"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Not a formalized algorithm in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Counting up example",
+      "anchor": {
+        "section": "Counting up",
+        "snippet": "one can count up the numbers between the subtrahend and the minuend"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "An informal counting strategy with no Mathlib counterpart.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Breaking up the subtraction example",
+      "anchor": {
+        "section": "Breaking up the subtraction",
+        "snippet": "to split up the subtraction into small steps"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "A pedagogical strategy not represented as a Mathlib decl.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Same change method",
+      "anchor": {
+        "section": "Same change",
+        "snippet": "The same change method uses the fact that adding or subtracting the same number from the minuend and subtrahend does not change the answer"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "sub_add_sub_cancel",
+        "module": "Mathlib.Algebra.Group.Basic",
+        "match_kind": "invocation"
+      },
+      "note": "The underlying identity `(a + c) - (b + c) = a - b` follows from lemmas like `sub_add_sub_cancel`/`add_sub_add_right_eq_sub`, but the method itself is not formalized.",
+      "provenance": "ai"
+    }
+  ]
+}

@@ -1,0 +1,601 @@
+{
+  "slug": "Axiom",
+  "wikipedia_title": "Axiom",
+  "display_title": "Axiom",
+  "schema_version": 3,
+  "annotation_style": "theorem_article",
+  "annotations": [
+    {
+      "kind": "definition",
+      "label": "Axiom",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "is a statement that is taken to be true"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The general philosophical notion of an axiom has no Mathlib formalization.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Logical vs non-logical axioms",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "Logical axioms are taken to be true within the system of logic they define and are often shown in symbolic form"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has no proof calculus distinguishing logical from non-logical axioms.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Classical axiom",
+      "anchor": {
+        "section": "Early Greeks",
+        "snippet": "referred to a self-evident assumption common to many branches of science"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "A historical/philosophical definition with no Mathlib counterpart.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Axiom example (equals from equals)",
+      "anchor": {
+        "section": "Early Greeks",
+        "snippet": "When an equal amount is taken from equals, an equal amount results."
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This is a congruence property of equality under subtraction, handled by core-Lean substitution rather than a named Mathlib decl.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Postulate",
+      "anchor": {
+        "section": "Early Greeks",
+        "snippet": "Such a hypothesis was termed a postulate"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The historical notion of a postulate is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Euclid's postulates",
+      "anchor": {
+        "section": "Early Greeks",
+        "snippet": "It is possible to draw a straight line from any point to any other point"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib builds Euclidean geometry on inner-product/affine spaces, not from Euclid's postulates as an axiom system.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Common notion: equal to same thing",
+      "anchor": {
+        "section": "Early Greeks",
+        "snippet": "Things which are equal to the same thing are also equal to one another."
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Transitivity of equality is a core-Lean primitive (Eq.trans), not a Mathlib/ declaration.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Common notion: equals added to equals",
+      "anchor": {
+        "section": "Early Greeks",
+        "snippet": "If equals are added to equals, the wholes are equal."
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Congruence of addition under equality is automatic by substitution and has no dedicated Mathlib lemma.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Common notion: equals subtracted from equals",
+      "anchor": {
+        "section": "Early Greeks",
+        "snippet": "If equals are subtracted from equals, the remainders are equal."
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Congruence of subtraction under equality is automatic by substitution with no dedicated Mathlib decl.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Common notion: coinciding things",
+      "anchor": {
+        "section": "Early Greeks",
+        "snippet": "Things which coincide with one another are equal to one another."
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This is reflexivity/identity of equality, a core-Lean primitive rather than a Mathlib declaration.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Common notion: whole greater than part",
+      "anchor": {
+        "section": "Early Greeks",
+        "snippet": "The whole is greater than the part."
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The informal magnitude principle is not formalized as such, though many concrete instances (e.g. strict-subset cardinality) exist.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Set of axioms (modern)",
+      "anchor": {
+        "section": "Modern development",
+        "snippet": "a set of axioms is any collection of formally stated assertions"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "FirstOrder.Language.Theory",
+        "module": "Mathlib.ModelTheory.Syntax",
+        "match_kind": "exact"
+      },
+      "note": "A model-theoretic `Theory` is defined as a set of first-order sentences, i.e. a set of axioms.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Consistency",
+      "anchor": {
+        "section": "Modern development",
+        "snippet": "it should be impossible to derive a contradiction from the axioms"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "FirstOrder.Language.Theory.IsSatisfiable",
+        "module": "Mathlib.ModelTheory.Satisfiability",
+        "match_kind": null
+      },
+      "note": "Mathlib has the semantic analogue (a theory having a model) but no syntactic notion of deriving a contradiction since there is no proof calculus.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Non-redundancy",
+      "anchor": {
+        "section": "Modern development",
+        "snippet": "an assertion that can be deduced from other axioms need not be regarded as an axiom"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "There is no general Mathlib notion of independence/redundancy of an axiom within a theory.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Gödel's incompleteness (independent statement)",
+      "anchor": {
+        "section": "Modern development",
+        "snippet": "to construct a statement whose truth is independent of that set of axioms"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Nat.beta_unbeta_coe",
+        "module": "Mathlib.Logic.Godel.GodelBetaFunction",
+        "match_kind": null
+      },
+      "note": "Only the Gödel Beta Function Lemma (a stepping stone toward the First Incompleteness Theorem) is present; the incompleteness theorem itself is not proved.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Gödel's second incompleteness theorem",
+      "anchor": {
+        "section": "Modern development",
+        "snippet": "the consistency of a theory like Peano arithmetic is an unprovable assertion within the scope of that theory"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has no proof system for arithmetic and does not formalize the Second Incompleteness Theorem.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Independence of the continuum hypothesis",
+      "anchor": {
+        "section": "Modern development",
+        "snippet": "the continuum hypothesis (Cantor) is independent of the Zermelo–Fraenkel axioms"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib mentions (G)CH only in docstrings; it does not formalize forcing or any independence result.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Logical axioms",
+      "anchor": {
+        "section": "Logical axioms",
+        "snippet": "certain formulas in a formal language that are universally valid"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has no proof calculus with a designated set of logical axioms.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Propositional logic axiom schemata",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "it is common to take as logical axioms all formulae of the following forms"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No Hilbert-style propositional axiom schemata are formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Axiom schema",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "a rule for generating an infinite number of axioms"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib theories are plain sets of sentences with no dedicated axiom-schema mechanism.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Completeness of three schemata",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "one can prove all tautologies of the propositional calculus"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No propositional proof system or completeness-of-schemata result exists in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "No pair of schemata sufficient",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "no pair of these schemata is sufficient for proving all tautologies"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No such metatheorem about propositional axiom schemata is formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Axiom of equality",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "Axiom of equality"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has no first-order proof calculus containing an equality axiom scheme.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Universal instantiation",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "Axiom scheme for universal instantiation"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Universal instantiation as a logical axiom scheme is not formalized; Mathlib has only semantic realization of formulas.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Existential generalization",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "Axiom scheme for existential generalization"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Existential generalization as a logical axiom scheme is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Non-logical axioms",
+      "anchor": {
+        "section": "Non-logical axioms",
+        "snippet": "Non-logical axioms are formulas that play the role of theory-specific assumptions"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "FirstOrder.Language.Theory",
+        "module": "Mathlib.ModelTheory.Syntax",
+        "match_kind": "exact"
+      },
+      "note": "A `Theory` is precisely a set of non-logical axioms (theory-specific sentences) of a first-order language.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "ZFC set theory",
+      "anchor": {
+        "section": "Examples (2)",
+        "snippet": "the axioms being used are the axioms of Zermelo–Fraenkel set theory with choice, abbreviated ZFC"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "ZFSet",
+        "module": "Mathlib.SetTheory.ZFC.Basic",
+        "match_kind": null
+      },
+      "note": "Mathlib models ZFC via `ZFSet` and derives its axioms (e.g. `ZFSet.choice`) inside type theory, rather than adopting ZFC as a first-order axiom system.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Peano axioms",
+      "anchor": {
+        "section": "Examples (2)",
+        "snippet": "The Peano axioms are the most widely used axiomatization of first-order arithmetic"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has `Nat` and the weaker Presburger language but no first-order Peano arithmetic theory with its induction schema.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Euclid's 4 + 1 postulates",
+      "anchor": {
+        "section": "Examples (2)",
+        "snippet": "the 4 + 1 Euclid's postulates of plane geometry"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Euclid's postulates are not formalized as an axiom system in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Independence of the parallel postulate",
+      "anchor": {
+        "section": "Examples (2)",
+        "snippet": "the fifth postulate was found to be independent of the first four"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib does not formalize Euclid's postulates nor any independence result for the parallel postulate.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Characterization of the real numbers",
+      "anchor": {
+        "section": "Examples (2)",
+        "snippet": "The real numbers are uniquely picked out (up to isomorphism ) by the properties of a Dedekind complete ordered field"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "ConditionallyCompleteLinearOrderedField.uniqueOrderRingIso",
+        "module": "Mathlib.Algebra.Order.CompleteField",
+        "match_kind": "generalization"
+      },
+      "note": "Mathlib proves any two conditionally complete linear ordered fields are uniquely order-ring isomorphic, characterizing ℝ up to unique isomorphism.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Löwenheim–Skolem theorems",
+      "anchor": {
+        "section": "Examples (2)",
+        "snippet": "any axiom system for the reals admits other models"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "FirstOrder.Language.Theory.exists_elementaryEmbedding_card_eq",
+        "module": "Mathlib.ModelTheory.Satisfiability",
+        "match_kind": "exact"
+      },
+      "note": "Both the upward (this decl) and downward (`exists_elementarySubstructure_card_eq`) Löwenheim–Skolem theorems are formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Deductive system",
+      "anchor": {
+        "section": "Deductive systems and completeness",
+        "snippet": "A deductive system consists of a set"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib's ModelTheory provides semantics (⊨) but no syntactic deductive/proof system.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Completeness of a deductive system",
+      "anchor": {
+        "section": "Deductive systems and completeness",
+        "snippet": "A system is said to be complete if, for all formulas"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Without a proof calculus this notion is absent; Mathlib's `Theory.IsComplete` is a distinct, purely semantic notion of theory-completeness.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Gödel's completeness theorem",
+      "anchor": {
+        "section": "Deductive systems and completeness",
+        "snippet": "Gödel's completeness theorem establishes the completeness of a certain commonly used type of deductive system"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has the Compactness Theorem but no syntactic provability relation, so Gödel's completeness theorem is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Gödel's first incompleteness theorem",
+      "anchor": {
+        "section": "Deductive systems and completeness",
+        "snippet": "no recursive , consistent set of non-logical axioms"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Nat.beta_unbeta_coe",
+        "module": "Mathlib.Logic.Godel.GodelBetaFunction",
+        "match_kind": null
+      },
+      "note": "Only the Gödel Beta Function Lemma, an explicit step toward the First Incompleteness Theorem, is present; the theorem itself is not proved.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Axioms in the modern view",
+      "anchor": {
+        "section": "Further discussion",
+        "snippet": "axioms may be any set of formulas, as long as they are not known to be inconsistent"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "FirstOrder.Language.Theory",
+        "module": "Mathlib.ModelTheory.Syntax",
+        "match_kind": null
+      },
+      "note": "A `Theory` captures 'any set of formulas' but the attached consistency caveat relies on `IsSatisfiable`, which is only the semantic analogue of non-inconsistency.",
+      "provenance": "ai"
+    }
+  ]
+}

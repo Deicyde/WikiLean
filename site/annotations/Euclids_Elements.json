@@ -1,0 +1,451 @@
+{
+  "slug": "Euclids_Elements",
+  "wikipedia_title": "Euclid's Elements",
+  "display_title": "Euclid's Elements",
+  "schema_version": 3,
+  "annotation_style": "theorem_article",
+  "annotations": [
+    {
+      "kind": "proposition",
+      "label": "Postulate 1 (drawing a straight line)",
+      "anchor": {
+        "section": "Euclid's method and style of presentation",
+        "snippet": "To draw a straight line from any point to any point"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib defines affine spans/lines through points (e.g. AffineSubspace) but does not formalize Euclid's postulate of line construction as a stated axiom.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Postulate 3 (describing a circle)",
+      "anchor": {
+        "section": "Euclid's method and style of presentation",
+        "snippet": "To describe a circle with any center and distance"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has Sphere/Metric.sphere as the analytic notion of a circle, but Euclid's construction postulate itself is not stated.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Pons asinorum (Book I, Prop. 5)",
+      "anchor": {
+        "section": "Book I",
+        "snippet": "the base angles of an isosceles triangle are equal"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No declaration in Mathlib stating that the base angles of an isosceles triangle are equal.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Pythagorean theorem (Book I, Props. 47–48)",
+      "anchor": {
+        "section": "Book I",
+        "snippet": "the earliest surviving proof of the Pythagorean theorem"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "InnerProductGeometry.norm_add_sq_eq_norm_sq_add_norm_sq_iff_angle_eq_pi_div_two",
+        "module": "Mathlib.Geometry.Euclidean.Angle.Unoriented.RightAngle",
+        "match_kind": "generalization"
+      },
+      "note": "Mathlib formalizes the Pythagorean theorem in inner-product/Euclidean form as an iff with the right-angle condition.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Golden ratio / extreme and mean ratio (Book II, Prop. 11)",
+      "anchor": {
+        "section": "Book II",
+        "snippet": "subdivides a given line segment into extreme and mean proportions"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Real.goldenRatio",
+        "module": "Mathlib.NumberTheory.Real.GoldenRatio",
+        "match_kind": "exact"
+      },
+      "note": "Mathlib defines Real.goldenRatio := (1 + √5)/2 together with its irrationality and algebraic identities.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Inscribed angle theorem (Book III, Prop. 20)",
+      "anchor": {
+        "section": "Book III",
+        "snippet": "the inscribed angle theorem relating inscribed to central angles"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Orientation.oangle_eq_two_zsmul_oangle_sub_of_norm_eq",
+        "module": "Mathlib.Geometry.Euclidean.Angle.Sphere",
+        "match_kind": "exact"
+      },
+      "note": "Mathlib states the central-angle = 2·inscribed-angle relation for oriented angles on a circle.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Thales's theorem (Book III, Prop. 31)",
+      "anchor": {
+        "section": "Book III",
+        "snippet": "an angle inscribed in a semicircle is a right angle"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "EuclideanGeometry.Sphere.angle_eq_pi_div_two_iff_mem_sphere_of_isDiameter",
+        "module": "Mathlib.Geometry.Euclidean.Angle.Sphere",
+        "match_kind": "exact"
+      },
+      "note": "Mathlib's Thales' theorem states angle p₁ p₂ p₃ = π/2 iff p₂ lies on the sphere with diameter p₁p₃.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Intersecting chords theorem (Book III, Prop. 35)",
+      "anchor": {
+        "section": "Book III",
+        "snippet": "proposition 35 is the intersecting chords theorem"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "EuclideanGeometry.mul_dist_eq_mul_dist_of_cospherical_of_angle_eq_pi",
+        "module": "Mathlib.Geometry.Euclidean.Sphere.Power",
+        "match_kind": "exact"
+      },
+      "note": "Mathlib formalizes the intersecting chords theorem via cospherical points and the power-of-a-point file.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Tangent–secant theorem (Book III, Prop. 36)",
+      "anchor": {
+        "section": "Book III",
+        "snippet": "proposition 36 is the tangent–secant theorem"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "EuclideanGeometry.Sphere.dist_sq_eq_mul_dist_of_tangent_and_secant",
+        "module": "Mathlib.Geometry.Euclidean.Sphere.Power",
+        "match_kind": "exact"
+      },
+      "note": "Mathlib's Sphere.Power file proves the tangent–secant theorem.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Ratio of triangles/parallelograms of equal height (Book VI, Prop. 1)",
+      "anchor": {
+        "section": "Book VI",
+        "snippet": "Triangles and parallelograms which are under the same height are to one another as their bases"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has no synthetic statement that triangles/parallelograms of equal height have areas proportional to their bases.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Polygon similar to one and equal in area to another (Book VI, Prop. 25)",
+      "anchor": {
+        "section": "Book VI",
+        "snippet": "constructs, from any two polygons, a third polygon similar to the first and with the same area as the second"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This synthetic construction of a polygon similar to one and equal in area to another is not in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Definition of a number (Book VII, Def. 2)",
+      "anchor": {
+        "section": "Books VII to X: Number theory",
+        "snippet": "a number is a multitude composed of units"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Nat",
+        "module": "Init.Data.Nat",
+        "match_kind": null
+      },
+      "note": "Mathlib uses Lean core's inductive Nat (zero/succ) rather than formalizing Euclid's philosophical 'multitude of units' definition.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Euclid's theorem on infinitude of primes (Book IX, Prop. 20)",
+      "anchor": {
+        "section": "Book IX",
+        "snippet": "the infinitude of prime numbers"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Nat.exists_infinite_primes",
+        "module": "Mathlib.Data.Nat.Prime.Infinite",
+        "match_kind": "exact"
+      },
+      "note": "Nat.exists_infinite_primes proves that for every n there is a prime p ≥ n, the standard form of Euclid's theorem.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Sum of a finite geometric series (Book IX, Prop. 35)",
+      "anchor": {
+        "section": "Book IX",
+        "snippet": "the formula for the sum of a finite geometric series"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "geom_sum_eq",
+        "module": "Mathlib.Algebra.Field.GeomSum",
+        "match_kind": "exact"
+      },
+      "note": "geom_sum_eq gives ∑ xⁱ = (xⁿ − 1)/(x − 1) in a field, the standard finite geometric-series formula.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Construction of even perfect numbers (Book IX, Prop. 36)",
+      "anchor": {
+        "section": "Book IX",
+        "snippet": "a construction using this sum for even perfect numbers"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Euclid construction 2^(p−1)(2^p − 1) → perfect when 2^p − 1 is prime is not present in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Perfect number",
+      "anchor": {
+        "section": "Book IX",
+        "snippet": "a number is perfect if it equals the sum of its proper divisors"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Nat.Perfect",
+        "module": "Mathlib.NumberTheory.Divisors",
+        "match_kind": "exact"
+      },
+      "note": "Nat.Perfect n is defined exactly as the proper-divisor sum equalling n with n positive.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "28 as a perfect number",
+      "anchor": {
+        "section": "Book IX",
+        "snippet": "as for instance 28 = 1 + 2 + 4 + 7 + 14"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No declaration in Mathlib explicitly asserts Nat.Perfect 28.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Euclid–Euler theorem",
+      "anchor": {
+        "section": "Book IX",
+        "snippet": "This result is the Euclid–Euler theorem"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has Nat.Perfect and Mersenne primes but no theorem characterising even perfect numbers as 2^(p−1)·(2^p − 1).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Irrationality of square roots of non-square integers (Book X, Prop. 9)",
+      "anchor": {
+        "section": "Book X",
+        "snippet": "proves the irrationality of the square roots of all non-square integers"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "irrational_sqrt_intCast_iff_of_nonneg",
+        "module": "Mathlib.NumberTheory.Real.Irrational",
+        "match_kind": "exact"
+      },
+      "note": "Irrational (√z) ↔ ¬IsSquare z for nonneg integers, which is precisely Book X Prop 9.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Euclid's formula for Pythagorean triples (Book X, lemma to Prop. 29)",
+      "anchor": {
+        "section": "Book X",
+        "snippet": "Euclid's formula for producing all fundamental Pythagorean triples"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "PythagoreanTriple.isPrimitiveClassified_of_coprime",
+        "module": "Mathlib.NumberTheory.PythagoreanTriples",
+        "match_kind": "exact"
+      },
+      "note": "Mathlib classifies primitive Pythagorean triples in the (m²−n², 2mn, m²+n²) form attributed to Euclid.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Euclid's notion of a rational line segment (Book X)",
+      "anchor": {
+        "section": "Book X",
+        "snippet": "a line segment is rational when the square on its side has a rational area"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Euclid's specific notion of a 'rational' segment (square-area rational) is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Volume of cone is one-third volume of cylinder (Book XII)",
+      "anchor": {
+        "section": "Book XII",
+        "snippet": "the volume of a cone is a third of the volume of the corresponding cylinder"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No declaration of cone volume = (1/3)·cylinder volume appears in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Volume of sphere proportional to cube of radius (Book XII)",
+      "anchor": {
+        "section": "Book XII",
+        "snippet": "the volume of a sphere is proportional to the cube of its radius"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "EuclideanSpace.volume_ball_fin_three",
+        "module": "Mathlib.MeasureTheory.Measure.Lebesgue.VolumeOfBalls",
+        "match_kind": "generalization"
+      },
+      "note": "Mathlib computes the Lebesgue volume of the 3-dimensional Euclidean ball, exhibiting the r³ proportionality.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Classification of regular polyhedra (Book XIII)",
+      "anchor": {
+        "section": "Book XIII",
+        "snippet": "these are the only regular polyhedra"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has no formalization of regular polyhedra or the Platonic-solid classification.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Equal ratios of surfaces and volumes of dodecahedron and icosahedron (Book XIV)",
+      "anchor": {
+        "section": "Apocryphal books",
+        "snippet": "the ratio of their surface areas and the ratio of their volumes are equal"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No statement about dodecahedron/icosahedron surface and volume ratios is in Mathlib.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Apocryphal books",
+          "snippet": "the ratio of their surface areas and the ratio of their volumes are equal"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle {\\sqrt {\\frac {10}{3(5-{\\sqrt {5}})}}}={\\sqrt {\\frac {5+{\\sqrt {5}}}{6}}}.}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Parallel postulate (Book I, Postulate 5)",
+      "anchor": {
+        "section": "Non-Euclidean geometry",
+        "snippet": "if a straight line falling on two straight lines make the interior angles on the same side less than two right angles"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib develops Euclidean geometry over real inner-product spaces where the parallel property is implicit; the postulate is not stated as a theorem.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Construction of equilateral triangle (Book I, Prop. 1) and implicit circle-intersection assumption",
+      "anchor": {
+        "section": "Axiomatics",
+        "snippet": "two circles sharing the same line segment as a radius will cross each other in two points"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Neither the synthetic equilateral-triangle construction nor the two-circle intersection axiom is formalized in Mathlib.",
+      "provenance": "ai"
+    }
+  ]
+}

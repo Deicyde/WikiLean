@@ -1,0 +1,1129 @@
+{
+  "slug": "Algebra",
+  "wikipedia_title": "Algebra",
+  "display_title": "Algebra",
+  "schema_version": 3,
+  "annotation_style": "theorem_article",
+  "annotations": [
+    {
+      "kind": "definition",
+      "label": "Algebra",
+      "anchor": {
+        "section": "Definition and etymology",
+        "snippet": "the branch of mathematics that studies algebraic structures and the operations they use"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The meta-concept of the discipline 'algebra' is not a formalizable mathematical object.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Algebraic structure",
+      "anchor": {
+        "section": "Definition and etymology",
+        "snippet": "An algebraic structure is a non-empty set of mathematical objects"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has no general universal-algebra notion of 'an algebraic structure'; only specific classes (Group, Ring, etc.) exist.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Algebra (as a countable noun)",
+      "anchor": {
+        "section": "Definition and etymology",
+        "snippet": "an algebra is a specific type of algebraic structure that involves a vector space"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Algebra",
+        "module": "Mathlib.Algebra.Algebra.Defs",
+        "match_kind": "special_case"
+      },
+      "note": "`Algebra R A` formalizes an algebra, though Mathlib's is associative unital over a commutative semiring.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Elementary algebra",
+      "anchor": {
+        "section": "Elementary algebra",
+        "snippet": "is the oldest and most basic form of algebra"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "'Elementary algebra' is an expository subject heading, not a formalizable object.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Arithmetic",
+      "anchor": {
+        "section": "Elementary algebra",
+        "snippet": "Arithmetic is the study of numerical operations"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "'Arithmetic' as a field of study is a meta-concept, not a single Mathlib declaration.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Addition combines addends into a sum",
+      "anchor": {
+        "section": "Elementary algebra",
+        "snippet": "the operation of addition combines two numbers, called the addends"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Add",
+        "module": null,
+        "match_kind": "invocation"
+      },
+      "note": "The addition operation is the core `Add`/`HAdd` typeclass underlying every additive structure in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Variables",
+      "anchor": {
+        "section": "Elementary algebra",
+        "snippet": "Variables are symbols for unspecified or unknown quantities"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathematical 'variables' as symbols are a syntactic notion, not a formalized object in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Commutative property of multiplication",
+      "anchor": {
+        "section": "Elementary algebra",
+        "snippet": "the commutative property of multiplication"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "mul_comm",
+        "module": "Mathlib.Algebra.Group.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`mul_comm` states `a * b = b * a`, the commutativity axiom of `CommMonoid`/`CommMagma`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Algebraic expression",
+      "anchor": {
+        "section": "Elementary algebra",
+        "snippet": "Algebraic expressions are formed by using arithmetic operations to combine variables and numbers"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has no general 'algebraic expression' syntax object (polynomials are the closest specialized case).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Equation",
+      "anchor": {
+        "section": "Elementary algebra",
+        "snippet": "An equation is a statement formed by comparing two expressions"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Eq",
+        "module": null,
+        "match_kind": "generalization"
+      },
+      "note": "Equations are expressed via the equality relation `Eq` (`=`), a core foundational notion used throughout Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Inequation",
+      "anchor": {
+        "section": "Elementary algebra",
+        "snippet": "Inequations involve a different type of comparison"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "LT",
+        "module": null,
+        "match_kind": "generalization"
+      },
+      "note": "Inequalities use the order relations `LT`/`LE` (`<`,`≤`) and `Ne` (`≠`), all foundational typeclasses.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Truth value depends on variables",
+      "anchor": {
+        "section": "Elementary algebra",
+        "snippet": "their truth value usually depends on the values of the variables"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This is an informal observation about open predicates, not a stated theorem.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Identity equations",
+      "anchor": {
+        "section": "Elementary algebra",
+        "snippet": "Identity equations are true for all values that can be assigned to the variables"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Universally-true equations are stated as `∀`-theorems but 'identity equation' is not a defined object.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Conditional equations",
+      "anchor": {
+        "section": "Elementary algebra",
+        "snippet": "Conditional equations are only true for some values"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "'Conditional equation' is an expository classification, not a Mathlib declaration.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Solving an equation",
+      "anchor": {
+        "section": "Elementary algebra",
+        "snippet": "a process known as solving the equation for that variable"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Solving is a procedural technique, not a formalized mathematical object.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Simplification",
+      "anchor": {
+        "section": "Elementary algebra",
+        "snippet": "Simplification is employed to replace a complicated expression with an equivalent simpler one"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Simplification is realized by the `simp` tactic, not a formalized mathematical statement.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Substitution",
+      "anchor": {
+        "section": "Elementary algebra",
+        "snippet": "substitution is a common technique to replace one variable with an equivalent expression"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Substitution is a proof/solving technique rather than a formalized object.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Graph of an equation",
+      "anchor": {
+        "section": "Elementary algebra",
+        "snippet": "Algebraic equations can be interpreted geometrically to describe spatial figures"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The geometric interpretation of an equation as a figure is not formalized as such.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Polynomial",
+      "anchor": {
+        "section": "Polynomials",
+        "snippet": "A polynomial is an expression consisting of one or more terms"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Polynomial",
+        "module": "Mathlib.Algebra.Polynomial.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`Polynomial R` (`R[X]`) is the univariate polynomial type over a semiring.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Monomial, binomial, trinomial",
+      "anchor": {
+        "section": "Polynomials",
+        "snippet": "A monomial is a polynomial with one term"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Polynomial.monomial",
+        "module": "Mathlib.Algebra.Polynomial.Basic",
+        "match_kind": "special_case"
+      },
+      "note": "`Polynomial.monomial` formalizes a monomial, but binomial/trinomial are not separately named.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Degree of a polynomial",
+      "anchor": {
+        "section": "Polynomials",
+        "snippet": "The degree of a polynomial is the maximal value"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Polynomial.degree",
+        "module": "Mathlib.Algebra.Polynomial.Degree.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`Polynomial.degree` gives the polynomial degree as a `WithBot ℕ`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Linear polynomial",
+      "anchor": {
+        "section": "Polynomials",
+        "snippet": "Polynomials of degree one are called linear polynomials"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Polynomial.degree",
+        "module": "Mathlib.Algebra.Polynomial.Degree.Defs",
+        "match_kind": "special_case"
+      },
+      "note": "Degree-one polynomials are expressible via `degree p = 1` but there is no standalone 'linear polynomial' type.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Univariate / multivariate polynomial",
+      "anchor": {
+        "section": "Polynomials",
+        "snippet": "A polynomial is said to be univariate or multivariate"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "MvPolynomial",
+        "module": "Mathlib.Algebra.MvPolynomial.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`Polynomial` is univariate and `MvPolynomial σ R` is the multivariate polynomial type.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Factorization",
+      "anchor": {
+        "section": "Polynomials",
+        "snippet": "Factorization is a method used to simplify polynomials"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "UniqueFactorizationMonoid",
+        "module": "Mathlib.RingTheory.UniqueFactorizationDomain.Defs",
+        "match_kind": "generalization"
+      },
+      "note": "Existence/uniqueness of factorization into irreducibles is formalized via `UniqueFactorizationMonoid`, but 'factorization as a simplification method' is informal.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Polynomials",
+          "snippet": "Factorization is a method used to simplify polynomials"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle x={\\frac {-b\\pm {\\sqrt {b^{2}-4ac\\ }}}{2a}}.}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Zero product of factors",
+      "anchor": {
+        "section": "Polynomials",
+        "snippet": "The polynomial as a whole is zero if and only if one of its factors is zero"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "mul_eq_zero",
+        "module": "Mathlib.Algebra.GroupWithZero.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`mul_eq_zero` states `a * b = 0 ↔ a = 0 ∨ b = 0` in a structure with no zero divisors.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Polynomials",
+          "snippet": "The polynomial as a whole is zero if and only if one of its factors is zero"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle x={\\frac {-b\\pm {\\sqrt {b^{2}-4ac\\ }}}{2a}}.}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Quadratic formula",
+      "anchor": {
+        "section": "Polynomials",
+        "snippet": "is given by the quadratic formula"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "quadratic_eq_zero_iff",
+        "module": "Mathlib.Algebra.QuadraticDiscriminant",
+        "match_kind": "exact"
+      },
+      "note": "`quadratic_eq_zero_iff` gives the roots `(-b ± s)/(2a)` where `s² = discriminant`.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Polynomials",
+          "snippet": "is given by the quadratic formula"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle x={\\frac {-b\\pm {\\sqrt {b^{2}-4ac\\ }}}{2a}}.}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Cubic and quartic formulas",
+      "anchor": {
+        "section": "Polynomials",
+        "snippet": "Solutions for the degrees 3 and 4 are given by the cubic and quartic formulas"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No Cardano/Ferrari radical solution formula for cubics or quartics was found in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Abel–Ruffini theorem",
+      "anchor": {
+        "section": "Polynomials",
+        "snippet": "There are no general solutions for higher degrees"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "solvableByRad.isSolvable",
+        "module": "Mathlib.FieldTheory.AbelRuffini",
+        "match_kind": "special_case"
+      },
+      "note": "Only the direction 'solvable by radicals ⇒ solvable Galois group' is proved; no explicit unsolvable quintic giving the full statement.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Fundamental theorem of algebra",
+      "anchor": {
+        "section": "Polynomials",
+        "snippet": "asserts that every univariate polynomial equation of positive degree"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Complex.exists_root",
+        "module": "Mathlib.Analysis.Complex.Polynomial.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`Complex.exists_root` proves every nonconstant complex polynomial has a root (also `Complex.isAlgClosed`).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Linear equation",
+      "anchor": {
+        "section": "Linear algebra",
+        "snippet": "An equation is linear if it can be expressed in the form"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "There is no dedicated 'linear equation' object; linearity is handled via linear maps and matrix equations.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "System of linear equations",
+      "anchor": {
+        "section": "Linear algebra",
+        "snippet": "A system of linear equations is a set of linear equations"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Matrix",
+        "module": "Mathlib.LinearAlgebra.Matrix.Defs",
+        "match_kind": "special_case"
+      },
+      "note": "Systems are represented as matrix equations `A *ᵥ x = b` rather than via a dedicated 'linear system' type.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Matrix",
+      "anchor": {
+        "section": "Linear algebra",
+        "snippet": "Matrices are rectangular arrays of values"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Matrix",
+        "module": "Mathlib.LinearAlgebra.Matrix.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`Matrix m n α` is the type of `m × n` arrays indexed by `m` and `n`.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Linear algebra",
+          "snippet": "Matrices are rectangular arrays of values"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle {\\begin{aligned}9x_{1}+3x_{2}-13x_{3}&amp;=0\\\\2.3x_{1}+7x_{3}&amp;=9\\\\-5x_{1}-17x_{2}&amp;=-3\\end{aligned}}}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle AX=B,}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle A={\\begin{bmatrix}9&amp;3&amp;-13\\\\2.3&amp;0&amp;7\\\\-5&amp;-17&amp;0\\end{bmatrix}},\\quad X={\\begin{bmatrix}x_{1}\\\\x_{2}\\\\x_{3}\\end{bmatrix}},\\quad B={\\begin{bmatrix}0\\\\9\\\\-3\\end{bmatrix}}.}"
+        }
+      ]
+    },
+    {
+      "kind": "definition",
+      "label": "Inconsistent system",
+      "anchor": {
+        "section": "Linear algebra",
+        "snippet": "Some systems of equations are inconsistent"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No declaration captures the notion of an inconsistent linear system as such.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Consistent systems solutions",
+      "anchor": {
+        "section": "Linear algebra",
+        "snippet": "Consistent systems have either one unique solution or an infinite number of solutions"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The 'one or infinitely many solutions' dichotomy for consistent systems is not stated as a single theorem.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Vector space",
+      "anchor": {
+        "section": "Linear algebra",
+        "snippet": "A vector space is an algebraic structure formed by a set with an addition"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Module",
+        "module": "Mathlib.Algebra.Module.Defs",
+        "match_kind": "generalization"
+      },
+      "note": "Mathlib uses `Module R M`; a vector space is a module over a field/division ring.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Linear map",
+      "anchor": {
+        "section": "Linear algebra",
+        "snippet": "A linear map is a function between vector spaces"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "LinearMap",
+        "module": "Mathlib.Algebra.Module.LinearMap.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`LinearMap` bundles additive, scalar-multiplication-preserving maps between modules.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Matrices and finite-dimensional vector spaces",
+      "anchor": {
+        "section": "Linear algebra",
+        "snippet": "the theories of matrices and finite-dimensional vector spaces are essentially the same"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "LinearMap.toMatrix",
+        "module": "Mathlib.LinearAlgebra.Matrix.ToLin",
+        "match_kind": "exact"
+      },
+      "note": "`LinearMap.toMatrix` is a linear equivalence between linear maps and matrices given bases.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Equations as lines in two-dimensional space",
+      "anchor": {
+        "section": "Linear algebra",
+        "snippet": "each equation represents a line in two-dimensional space"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The interpretation of a linear equation as a line in the plane is not formalized as a statement.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Algebraic structure (formal)",
+      "anchor": {
+        "section": "Abstract algebra",
+        "snippet": "called the underlying set, together with one or several operations"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has no generic universal-algebra 'structure with operations' object, only specific typeclasses.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Binary operation",
+      "anchor": {
+        "section": "Abstract algebra",
+        "snippet": "which take any two objects from the underlying set as inputs"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Mul",
+        "module": null,
+        "match_kind": "special_case"
+      },
+      "note": "Binary operations are bundled by the core `Mul`/`Add` typeclasses (a set with `Mul` is a magma).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Natural numbers with addition",
+      "anchor": {
+        "section": "Abstract algebra",
+        "snippet": "as the underlying set and addition"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Nat.instAddCommMonoid",
+        "module": "Mathlib.Algebra.Group.Nat.Defs",
+        "match_kind": "invocation"
+      },
+      "note": "ℕ with addition is an `AddCommMonoid` instance in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Symmetry group of a geometric object",
+      "anchor": {
+        "section": "Abstract algebra",
+        "snippet": "the underlying set of the symmetry group of a geometric object"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Equiv.Perm",
+        "module": "Mathlib.Logic.Equiv.Defs",
+        "match_kind": "special_case"
+      },
+      "note": "`Equiv.Perm` is the full symmetric group; symmetry groups of figures are subgroups of permutations/isometries.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Group",
+      "anchor": {
+        "section": "Group theory",
+        "snippet": "which has one operation and requires that this operation is associative"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Group",
+        "module": "Mathlib.Algebra.Group.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`Group` is a monoid with inverses, exactly matching the group axioms.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Associativity",
+      "anchor": {
+        "section": "Group theory",
+        "snippet": "An operation is associative if the order of several applications does not matter"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "mul_assoc",
+        "module": "Mathlib.Algebra.Group.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`mul_assoc` states `a * b * c = a * (b * c)`, the `Semigroup` axiom.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Identity element",
+      "anchor": {
+        "section": "Group theory",
+        "snippet": "An operation has an identity element or a neutral element"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "MulOneClass",
+        "module": "Mathlib.Algebra.Group.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`MulOneClass` provides an identity `1` with the axioms `one_mul`/`mul_one`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Inverse elements",
+      "anchor": {
+        "section": "Group theory",
+        "snippet": "An operation has inverse elements if for any element"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Group",
+        "module": "Mathlib.Algebra.Group.Defs",
+        "match_kind": "special_case"
+      },
+      "note": "The existence of inverses is the defining axiom (`inv_mul_cancel`) of `Group`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Integers form a group under addition",
+      "anchor": {
+        "section": "Group theory",
+        "snippet": "is a group formed by the set of integers together with the operation of addition"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Int.instAddCommGroup",
+        "module": "Mathlib.Algebra.Group.Int.Defs",
+        "match_kind": "invocation"
+      },
+      "note": "ℤ with addition is an `AddCommGroup` instance.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Natural numbers are not a group",
+      "anchor": {
+        "section": "Group theory",
+        "snippet": "The natural numbers with addition, by contrast, do not form a group"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The negative claim that ℕ is not a group is not stated as a theorem (there is simply no group instance).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Fundamental theorem of finite abelian groups / Feit–Thompson",
+      "anchor": {
+        "section": "Group theory",
+        "snippet": "basic theorems such as the fundamental theorem of finite abelian groups"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "AddCommGroup.equiv_directSum_zmod_of_finite",
+        "module": "Mathlib.GroupTheory.FiniteAbelian.Basic",
+        "match_kind": "exact"
+      },
+      "note": "The structure theorem of finite abelian groups is formalized, but the Feit–Thompson theorem is not in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Classification of finite simple groups",
+      "anchor": {
+        "section": "Group theory",
+        "snippet": "culminated in a complete classification of finite simple groups"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The classification of finite simple groups is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Ring",
+      "anchor": {
+        "section": "Ring theory and field theory",
+        "snippet": "A ring is an algebraic structure with two operations"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Ring",
+        "module": "Mathlib.Algebra.Ring.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`Ring` is an additive abelian group with an associative distributive multiplication and unit.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Commutative ring",
+      "anchor": {
+        "section": "Ring theory and field theory",
+        "snippet": "if it is commutative, one has a commutative ring"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "CommRing",
+        "module": "Mathlib.Algebra.Ring.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`CommRing` extends `Ring` with commutative multiplication.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Field",
+      "anchor": {
+        "section": "Ring theory and field theory",
+        "snippet": "and each nonzero element has a multiplicative inverse"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Field",
+        "module": "Mathlib.Algebra.Field.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`Field` is a commutative division ring where every nonzero element is invertible.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Ring of integers is not a field",
+      "anchor": {
+        "section": "Ring theory and field theory",
+        "snippet": "The ring of integers does not form a field"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The negative claim that ℤ is not a field is not stated as a theorem (there is no field instance for ℤ).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Rationals, reals, complex numbers are fields",
+      "anchor": {
+        "section": "Ring theory and field theory",
+        "snippet": "each form a field with the operations of addition and multiplication"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Complex.instField",
+        "module": "Mathlib.Data.Complex.Basic",
+        "match_kind": "invocation"
+      },
+      "note": "Field instances exist for ℚ (`Rat.instField`), ℝ (`Real.instField`), and ℂ (`Complex.instField`).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Hilbert's basis theorem",
+      "anchor": {
+        "section": "Ring theory and field theory",
+        "snippet": "theorems such as Hilbert's basis theorem"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Polynomial.isNoetherianRing",
+        "module": "Mathlib.RingTheory.Polynomial.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`Polynomial.isNoetherianRing` is the Hilbert basis theorem: a polynomial ring over a Noetherian ring is Noetherian.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Fundamental theorem of Galois theory",
+      "anchor": {
+        "section": "Ring theory and field theory",
+        "snippet": "relying on the fundamental theorem of Galois theory"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "IsGalois.intermediateFieldEquivSubgroup",
+        "module": "Mathlib.FieldTheory.Galois.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`IsGalois.intermediateFieldEquivSubgroup` gives the Galois correspondence for finite Galois extensions.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Magma becomes a semigroup",
+      "anchor": {
+        "section": "Theories of interrelations among structures",
+        "snippet": "a magma becomes a semigroup if its operation is associative"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Semigroup",
+        "module": "Mathlib.Algebra.Group.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`Semigroup` extends `Mul` (a magma) with the associativity axiom.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Homomorphism",
+      "anchor": {
+        "section": "Theories of interrelations among structures",
+        "snippet": "A homomorphism is a function from the underlying set of one algebraic structure"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "MonoidHom",
+        "module": "Mathlib.Algebra.Group.Hom.Defs",
+        "match_kind": "special_case"
+      },
+      "note": "Structure-preserving maps are bundled per structure, e.g. `MulHom`/`MonoidHom` (and `RingHom`, etc.).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Isomorphism",
+      "anchor": {
+        "section": "Theories of interrelations among structures",
+        "snippet": "An isomorphism is a bijective homomorphism"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "MulEquiv",
+        "module": "Mathlib.Algebra.Group.Equiv.Defs",
+        "match_kind": "special_case"
+      },
+      "note": "`MulEquiv` (extending `Equiv`) is a bijective multiplicative homomorphism; analogous `RingEquiv` etc. exist.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Subalgebra",
+      "anchor": {
+        "section": "Theories of interrelations among structures",
+        "snippet": "All operations in the subalgebra are required to be closed in its underlying set"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Subalgebra",
+        "module": "Mathlib.Algebra.Algebra.Subalgebra.Basic",
+        "match_kind": "special_case"
+      },
+      "note": "The general substructure notion is realized by specific `Sub*` types; `Subalgebra` is the R-algebra case.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Even integers are a subalgebra",
+      "anchor": {
+        "section": "Theories of interrelations among structures",
+        "snippet": "the set of even integers together with addition is a subalgebra"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "AddSubgroup.zmultiples",
+        "module": "Mathlib.Algebra.Group.Subgroup.ZPowers.Basic",
+        "match_kind": "special_case"
+      },
+      "note": "The even integers are `AddSubgroup.zmultiples (2 : ℤ)`, an additive subgroup of ℤ.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Universal algebra",
+      "anchor": {
+        "section": "Theories of interrelations among structures",
+        "snippet": "Universal algebra is the study of algebraic structures in general"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib does not contain a general universal-algebra framework.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Identity (universal equation)",
+      "anchor": {
+        "section": "Theories of interrelations among structures",
+        "snippet": "an identity is a universal equation or an equation that is true for all elements"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The universal-algebra notion of an 'identity' is not formalized as an object in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Variety",
+      "anchor": {
+        "section": "Theories of interrelations among structures",
+        "snippet": "A variety is a class of all algebraic structures that satisfy certain identities"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "A variety in the universal-algebra sense is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Category",
+      "anchor": {
+        "section": "Theories of interrelations among structures",
+        "snippet": "A category is a collection of objects together with a collection of morphisms"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "CategoryTheory.Category",
+        "module": "Mathlib.CategoryTheory.Category.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`CategoryTheory.Category` defines objects, morphisms, composition, and identities.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Equation describing a sphere",
+      "anchor": {
+        "section": "Applications",
+        "snippet": "corresponds to a sphere in three-dimensional space"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Metric.sphere",
+        "module": "Mathlib.Topology.MetricSpace.Pseudo.Defs",
+        "match_kind": "special_case"
+      },
+      "note": "`Metric.sphere x r = {y | dist y x = r}` formalizes the sphere defined by the equation in Euclidean space.",
+      "provenance": "ai"
+    }
+  ]
+}

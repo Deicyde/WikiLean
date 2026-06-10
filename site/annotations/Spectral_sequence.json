@@ -1,0 +1,617 @@
+{
+  "slug": "Spectral_sequence",
+  "wikipedia_title": "Spectral sequence",
+  "display_title": "Spectral sequence",
+  "schema_version": 3,
+  "annotation_style": "theorem_article",
+  "annotations": [
+    {
+      "kind": "definition",
+      "label": "Cohomological spectral sequence",
+      "anchor": {
+        "section": "Cohomological spectral sequence",
+        "snippet": "A cohomological spectral sequence is a sequence"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "CategoryTheory.CohomologicalSpectralSequence",
+        "module": "Mathlib.Algebra.Homology.SpectralSequence.Basic",
+        "match_kind": "exact"
+      },
+      "note": "Mathlib defines `CohomologicalSpectralSequence` as a `SpectralSequence` with page-`r` differentials of degree (r, 1-r).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Sheet, page, and differential",
+      "anchor": {
+        "section": "Cohomological spectral sequence",
+        "snippet": "is called sheet (as in a sheet of paper )"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "CategoryTheory.SpectralSequence.page",
+        "module": "Mathlib.Algebra.Homology.SpectralSequence.Basic",
+        "match_kind": "exact"
+      },
+      "note": "Pages (sheets) are `SpectralSequence.page` (homological complexes) and the differentials d_r are the differentials of those page complexes.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Bigraded spectral sequence",
+      "anchor": {
+        "section": "Bigraded spectral sequence",
+        "snippet": "every sheet is a bigraded R-module"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "CategoryTheory.SpectralSequence",
+        "module": "Mathlib.Algebra.Homology.SpectralSequence.Basic",
+        "match_kind": "generalization"
+      },
+      "note": "`SpectralSequence C c r₀` with index type κ = ℤ × ℤ (as used by `CohomologicalSpectralSequence`) is exactly a bigraded spectral sequence.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Complementary degree",
+      "anchor": {
+        "section": "Bigraded spectral sequence",
+        "snippet": "The notation used here is called complementary degree"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This is naming/notation for the second index q (total degree being p+q); there is no dedicated Mathlib declaration.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Homological spectral sequence",
+      "anchor": {
+        "section": "Homological spectral sequence",
+        "snippet": "one receives the definition of a homological spectral sequence analogously to the cohomological case"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "CategoryTheory.SpectralSequence",
+        "module": "Mathlib.Algebra.Homology.SpectralSequence.Basic",
+        "match_kind": "generalization"
+      },
+      "note": "The general `SpectralSequence` covers homological grading, and `coreE₂HomologicalNat` builds homological E₂ spectral sequences (differentials of degree (-r, r-1)).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Spectral sequence from a chain complex",
+      "anchor": {
+        "section": "Spectral sequence from a chain complex",
+        "snippet": "The most elementary example in the ungraded situation is a chain complex"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No construction producing a spectral sequence directly from a (single ungraded) chain complex is present.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Morphism of spectral sequences",
+      "anchor": {
+        "section": "Categorical properties",
+        "snippet": "a morphism of spectral sequences"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "CategoryTheory.SpectralSequence.Hom",
+        "module": "Mathlib.Algebra.Homology.SpectralSequence.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`SpectralSequence.Hom` is a sequence of page morphisms commuting with the homology isomorphisms, making spectral sequences a category.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Multiplicative structure",
+      "anchor": {
+        "section": "Multiplicative structure",
+        "snippet": "We say it has multiplicative structure if"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No notion of a multiplicative/ring structure on spectral sequence pages exists in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Serre spectral sequence multiplicative structure",
+      "anchor": {
+        "section": "Multiplicative structure",
+        "snippet": "A typical example is the cohomological Serre spectral sequence for a fibration"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Serre spectral sequence of a fibration is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Exact couple",
+      "anchor": {
+        "section": "Spectral sequence of an exact couple",
+        "snippet": "An exact couple is a pair of objects"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Exact couples are not defined in Mathlib; spectral sequences are built from spectral objects instead.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Derived couple",
+      "anchor": {
+        "section": "Spectral sequence of an exact couple",
+        "snippet": "we will form the derived couple"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No derived-couple construction exists since exact couples are absent.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Spectral sequence of a filtered complex",
+      "anchor": {
+        "section": "The spectral sequence of a filtered complex",
+        "snippet": "Then there exists a spectral sequence with"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "CategoryTheory.Abelian.SpectralObject.spectralSequence",
+        "module": "Mathlib.Algebra.Homology.SpectralObject.SpectralSequence",
+        "match_kind": null
+      },
+      "note": "Spectral objects yield spectral sequences (`SpectralObject.spectralSequence`), but there is no construction taking a filtered complex to its spectral sequence.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Double complex",
+      "anchor": {
+        "section": "The spectral sequence of a double complex",
+        "snippet": "A double complex is a collection of objects C i,j for all integers i and j together with two differentials"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "HomologicalComplex₂",
+        "module": "Mathlib.Algebra.Homology.HomologicalBicomplex",
+        "match_kind": "exact"
+      },
+      "note": "`HomologicalComplex₂ C c₁ c₂` is a bicomplex with two differentials d₁, d₂, i.e. a double complex.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Total complex",
+      "anchor": {
+        "section": "The spectral sequence of a double complex",
+        "snippet": "We define the total complex T ( C •,• ) to be the complex whose n ′ th term is"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "HomologicalComplex₂.total",
+        "module": "Mathlib.Algebra.Homology.TotalComplex",
+        "match_kind": "exact"
+      },
+      "note": "`HomologicalComplex₂.total` builds the total complex whose degree-n term is the coproduct of the C_{p,q} with p+q=n.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Double complex E0, E1, E2 terms",
+      "anchor": {
+        "section": "The spectral sequence of a double complex",
+        "snippet": "we will work out the E 0 , E 1 , and E 2 terms of the I filtration on T ( C •,• )"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "There is no spectral sequence of a double complex, so its E0/E1/E2 terms are not computed in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Limiting term",
+      "anchor": {
+        "section": "Interpretation as a filtration of cycles and boundaries",
+        "snippet": "it is called the limiting term"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No E∞ / limiting-term object is defined for spectral sequences in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Weak convergence",
+      "anchor": {
+        "section": "Terms of convergence",
+        "snippet": "We say a spectral sequence converges weakly if"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No definition of weak convergence of a spectral sequence is present.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Convergence to a graded object",
+      "anchor": {
+        "section": "Terms of convergence",
+        "snippet": "is Hausdorff, i.e."
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Convergence of a spectral sequence to a (filtered) graded object is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Abutment",
+      "anchor": {
+        "section": "Terms of convergence",
+        "snippet": "(the spectral sequence abutment )"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The abutment of a spectral sequence is not defined in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Regular / degenerates",
+      "anchor": {
+        "section": "Terms of convergence",
+        "snippet": "The spectral sequence is regular or degenerates at"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No notion of a regular/degenerating spectral sequence exists.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Collapse",
+      "anchor": {
+        "section": "Terms of convergence",
+        "snippet": "then we say it collapses"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No notion of a collapsing spectral sequence is defined.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Degeneration for finite filtration",
+      "anchor": {
+        "section": "The spectral sequence of a filtered complex, continued",
+        "snippet": "then the spectral sequence degenerates after the r th sheet"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Degeneration after a finite page for a finite filtration is not stated, since convergence theory is absent.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Convergence for bounded filtration",
+      "anchor": {
+        "section": "The spectral sequence of a filtered complex, continued",
+        "snippet": "Convergence also occurs if the complex and the filtration are both bounded below or both bounded above"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No convergence criterion for bounded filtered complexes is formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Abutment of filtered complex spectral sequence",
+      "anchor": {
+        "section": "The spectral sequence of a filtered complex, continued",
+        "snippet": "the abutment of the spectral sequence is the p th graded part of the (p+q) th homology of C"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The identification of the abutment with the associated graded of the homology of a filtered complex is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Long exact sequence from filtered complex",
+      "anchor": {
+        "section": "Long exact sequences",
+        "snippet": "we can derive the existence of long exact sequences"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "CategoryTheory.ShortComplex.ShortExact.homology_exact₂",
+        "module": "Mathlib.Algebra.Homology.HomologySequence",
+        "match_kind": null
+      },
+      "note": "The homology long exact sequence of a short exact sequence of complexes (the two-step filtration case) exists, but it is not derived via spectral sequences.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Two gradings are distinct",
+      "anchor": {
+        "section": "The spectral sequence of a double complex, continued",
+        "snippet": "In general, the two gradings on"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This is an informal remark comparing the two double-complex filtrations on total homology; not a formal statement in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Commutativity of Tor",
+      "anchor": {
+        "section": "Commutativity of Tor",
+        "snippet": "However, it turns out that"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "CategoryTheory.Tor'",
+        "module": "Mathlib.CategoryTheory.Monoidal.Tor",
+        "match_kind": null
+      },
+      "note": "Mathlib defines `Tor` and `Tor'` (deriving in each factor) but explicitly leaves the isomorphism `Tor C n ≅ Tor' C n` unproven.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "First-quadrant spectral sequence",
+      "anchor": {
+        "section": "First-quadrant sheet",
+        "snippet": "this is called a first-quadrant spectral sequence"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "CategoryTheory.CohomologicalSpectralSequenceNat",
+        "module": "Mathlib.Algebra.Homology.SpectralSequence.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`CohomologicalSpectralSequenceNat` has pages indexed by ℕ × ℕ, i.e. a first-quadrant spectral sequence.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "First-quadrant sequence abuts",
+      "anchor": {
+        "section": "First-quadrant sheet",
+        "snippet": "The sequence abuts because"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "CategoryTheory.Abelian.SpectralObject.IsFirstQuadrant",
+        "module": "Mathlib.Algebra.Homology.SpectralObject.HasSpectralSequence",
+        "match_kind": null
+      },
+      "note": "`IsFirstQuadrant` is the vanishing condition giving a (convergent) first-quadrant spectral sequence, but the abutment/convergence theorem itself is not proven.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Two non-zero adjacent columns",
+      "anchor": {
+        "section": "2 non-zero adjacent columns",
+        "snippet": "for all p other than 0, 1"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The two-column collapse computation is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Two non-zero adjacent rows",
+      "anchor": {
+        "section": "2 non-zero adjacent columns",
+        "snippet": "whose second page consists only of two lines q = 0, 1"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The two-row (Gysin-type) collapse computation is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Wang sequence",
+      "anchor": {
+        "section": "Wang sequence",
+        "snippet": "Consider a fibration over a sphere"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Wang exact sequence for a fibration over a sphere is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Five-term exact sequence",
+      "anchor": {
+        "section": "Low-degree terms",
+        "snippet": "we get the so-called five-term exact sequence"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The five-term exact sequence of low-degree terms is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Edge maps (homological)",
+      "anchor": {
+        "section": "Homological spectral sequences",
+        "snippet": "They are called the edge maps"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Edge maps of a homological spectral sequence are not defined.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Transgression (homological)",
+      "anchor": {
+        "section": "Homological spectral sequences",
+        "snippet": "The transgression is a partially defined map"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The (homological) transgression map is not defined in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Edge maps (cohomological)",
+      "anchor": {
+        "section": "Cohomological spectral sequences",
+        "snippet": "then there is a sequence of epimorphisms"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Edge maps of a cohomological spectral sequence are not defined.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Transgression (cohomological)",
+      "anchor": {
+        "section": "Cohomological spectral sequences",
+        "snippet": "The transgression is a not necessarily well-defined map"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The (cohomological) transgression map is not defined in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Transgression determines differential",
+      "anchor": {
+        "section": "Application",
+        "snippet": "the transgression map determines the differential"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No statement relating the transgression to spectral sequence differentials exists, since transgression is absent.",
+      "provenance": "ai"
+    }
+  ]
+}

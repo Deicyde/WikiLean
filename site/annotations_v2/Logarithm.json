@@ -1,0 +1,489 @@
+{
+  "slug": "Logarithm",
+  "wikipedia_title": "Logarithm",
+  "display_title": "Logarithm",
+  "schema_version": 1,
+  "source": "claude-agent-sdk/annotate_articles.py",
+  "annotations": [
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\log _{b}(xy)=\\log _{b}x+\\log _{b}y,}"
+      },
+      "status": "formalized",
+      "decl": "Real.logb_mul",
+      "module": "Mathlib.Analysis.SpecialFunctions.Log.Base",
+      "note": "Product-to-sum identity for the base-b logarithm is exactly Real.logb_mul."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle b^{y}=x.}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Defining equation for exponentiation, not a standalone Mathlib statement."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\log _{b}(xy)=\\log _{b}x+\\log _{b}y,}"
+      },
+      "status": "formalized",
+      "decl": "Real.logb_mul",
+      "module": "Mathlib.Analysis.SpecialFunctions.Log.Base",
+      "note": "Same product-formula as above, captured by Real.logb_mul."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\log _{b}x={\\frac {\\log _{k}x}{\\log _{k}b}}.}"
+      },
+      "status": "formalized",
+      "decl": "Real.log_div_log",
+      "module": "Mathlib.Analysis.SpecialFunctions.Log.Base",
+      "note": "Change-of-base law `log x / log b = logb b x` matches the definition of Real.logb."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\log _{b}x={\\frac {\\log _{10}x}{\\log _{10}b}}={\\frac {\\log _{e}x}{\\log _{e}b}}.}"
+      },
+      "status": "formalized",
+      "decl": "Real.log_div_log",
+      "module": "Mathlib.Analysis.SpecialFunctions.Log.Base",
+      "note": "Specialization of change-of-base to bases 10 and e; same Real.log_div_log identity."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle b=x^{\\frac {1}{y}},}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Algebraic manipulation recovering the base; not a standalone Mathlib decl."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\log _{10}\\,(\\,10\\,x\\,)\\ =\\;\\log _{10}10\\ +\\;\\log _{10}x\\ =\\ 1\\,+\\,\\log _{10}x\\,.}"
+      },
+      "status": "partial",
+      "decl": "Real.logb_mul",
+      "module": "Mathlib.Analysis.SpecialFunctions.Log.Base",
+      "note": "Follows from Real.logb_mul together with Real.logb_self_eq_one; not a single lemma."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\log(\\cos \\theta +i\\sin \\theta )=i\\theta .}"
+      },
+      "status": "partial",
+      "decl": "Complex.log_exp",
+      "module": "Mathlib.Analysis.SpecialFunctions.Complex.Log",
+      "note": "Combines Complex.exp_mul_I and Complex.log_exp; no single decl for this identity."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle {\\begin{aligned}\\log _{10}3542&=\\log _{10}(1000\\cdot 3.542)\\\\&=3+\\log _{10}3.542\\\\&\\approx 3+\\log _{10}3.54\\end{aligned}}}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Numerical worked example using a log table, not a Mathlib statement."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\log _{10}3542\\approx {}3+\\log _{10}3.54+0.2(\\log _{10}3.55-\\log _{10}3.54)}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Linear interpolation in a log table; not formalized."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle cd=10^{\\,\\log _{10}c}\\,10^{\\,\\log _{10}d}=10^{\\,\\log _{10}c\\,+\\,\\log _{10}d}}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Computational rewrite of product via logarithms; not a stand-alone Mathlib lemma."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle {\\frac {c}{d}}=cd^{-1}=10^{\\,\\log _{10}c\\,-\\,\\log _{10}d}.}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Quotient version of the previous identity; no dedicated Mathlib decl."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle c^{d}=\\left(10^{\\,\\log _{10}c}\\right)^{d}=10^{\\,d\\log _{10}c}}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Power-by-log identity used in slide-rule arithmetic; not a Mathlib statement."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle {\\sqrt[{d}]{c}}=c^{\\frac {1}{d}}=10^{{\\frac {1}{d}}\\log _{10}c}.}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Computational identity for d-th roots; not formalized as such."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\log _{b}(xy)=\\log _{b}x+\\log _{b}y.}"
+      },
+      "status": "formalized",
+      "decl": "Real.logb_mul",
+      "module": "Mathlib.Analysis.SpecialFunctions.Log.Base",
+      "note": "Same product-formula, again captured by Real.logb_mul."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle f(xy)=f(x)+f(y).}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Abstract characterisation of log via product-to-sum; no such theorem in Mathlib."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle {\\frac {d}{dx}}\\log _{b}x={\\frac {1}{x\\ln b}}.}"
+      },
+      "status": "partial",
+      "decl": "Real.deriv_log",
+      "module": "Mathlib.Analysis.SpecialFunctions.Log.Deriv",
+      "note": "Real.deriv_log gives d/dx log x = 1/x; logb-version follows by Real.logb definition."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle {\\frac {d}{dx}}\\ln f(x)={\\frac {f'(x)}{f(x)}}.}"
+      },
+      "status": "formalized",
+      "decl": "HasDerivAt.log",
+      "module": "Mathlib.Analysis.SpecialFunctions.Log.Deriv",
+      "note": "Chain-rule statement HasDerivAt.log gives derivative of log ∘ f equals f'/f."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\int \\ln(x)\\,dx=x\\ln(x)-x+C.}"
+      },
+      "status": "formalized",
+      "decl": "integral_log",
+      "module": "Mathlib.Analysis.SpecialFunctions.Integrals.Basic",
+      "note": "integral_log evaluates ∫_a..b log s = b log b − a log a − b + a."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\ln t=\\int _{1}^{t}{\\frac {1}{x}}\\,dx.}"
+      },
+      "status": "formalized",
+      "decl": "integral_inv_of_pos",
+      "module": "Mathlib.Analysis.SpecialFunctions.Integrals.Basic",
+      "note": "Specializing integral_inv_of_pos to a = 1 gives log t = ∫₁^t x⁻¹ dx."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle {\\begin{aligned}\\ln(tu)&=\\int _{1}^{tu}{\\frac {1}{x}}\\,dx\\\\&{\\stackrel {(1)}{=}}\\int _{1}^{t}{\\frac {1}{x}}\\,dx+\\int _{t}^{tu}{\\frac {1}{x}}\\,dx\\\\&{\\stackrel {(2)}{=}}\\ln(t)+\\int _{1}^{u}{\\frac {1}{w}}\\,dw\\\\&=\\ln(t)+\\ln(u).\\end{aligned}}}"
+      },
+      "status": "partial",
+      "decl": "Real.log_mul",
+      "module": "Mathlib.Analysis.SpecialFunctions.Log.Basic",
+      "note": "Final identity is Real.log_mul; integral derivation chain itself is not packaged."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle {\\begin{aligned}\\ln(t^{r})&=\\int _{1}^{t^{r}}{\\frac {1}{x}}dx\\\\&=\\int _{1}^{t}{\\frac {1}{w^{r}}}\\left(rw^{r-1}\\,dw\\right)\\\\&=r\\int _{1}^{t}{\\frac {1}{w}}\\,dw\\\\&=r\\ln(t).\\end{aligned}}}"
+      },
+      "status": "formalized",
+      "decl": "Real.log_rpow",
+      "module": "Mathlib.Analysis.SpecialFunctions.Pow.Real",
+      "note": "Power-of-log identity log(t^r) = r log t is Real.log_rpow."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle 1+{\\frac {1}{2}}+{\\frac {1}{3}}+\\cdots +{\\frac {1}{n}}=\\sum _{k=1}^{n}{\\frac {1}{k}},}"
+      },
+      "status": "formalized",
+      "decl": "harmonic",
+      "module": "Mathlib.NumberTheory.Harmonic.Defs",
+      "note": "The harmonic series ∑_{k=1}^n 1/k is the Mathlib definition `harmonic`."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\sum _{k=1}^{n}{\\frac {1}{k}}-\\ln(n),}"
+      },
+      "status": "formalized",
+      "decl": "Real.tendsto_harmonic_sub_log",
+      "module": "Mathlib.NumberTheory.Harmonic.EulerMascheroni",
+      "note": "Real.tendsto_harmonic_sub_log states harmonic n − log n → γ, exactly this expression."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\log _{2}\\left(x^{2}\\right)=2\\log _{2}|x|.}"
+      },
+      "status": "partial",
+      "decl": "Real.log_pow",
+      "module": "Mathlib.Analysis.SpecialFunctions.Log.Basic",
+      "note": "Real.log_pow gives log(x^n) = n log x; the |x|-with-square variant needs combining with log_abs."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle {\\begin{aligned}\\ln(z)&={\\frac {(z-1)^{1}}{1}}-{\\frac {(z-1)^{2}}{2}}+{\\frac {(z-1)^{3}}{3}}-{\\frac {(z-1)^{4}}{4}}+\\cdots \\\\&=\\sum _{k=1}^{\\infty }(-1)^{k+1}{\\frac {(z-1)^{k}}{k}}.\\end{aligned}}}"
+      },
+      "status": "formalized",
+      "decl": "Real.hasSum_pow_div_log_of_abs_lt_one",
+      "module": "Mathlib.Analysis.SpecialFunctions.Log.Deriv",
+      "note": "Power series of log around 1: HasSum (x^(n+1)/(n+1)) (−log(1−x)), equivalent to this expansion."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle (z-1),\\ \\ (z-1)-{\\frac {(z-1)^{2}}{2}},\\ \\ (z-1)-{\\frac {(z-1)^{2}}{2}}+{\\frac {(z-1)^{3}}{3}},\\ \\ldots }"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Sequence of partial sums of Taylor series; not a distinct Mathlib decl."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\ln(1+z)=z-{\\frac {z^{2}}{2}}+{\\frac {z^{3}}{3}}-\\cdots \\approx z.}"
+      },
+      "status": "partial",
+      "decl": "Real.hasSum_pow_div_log_of_abs_lt_one",
+      "module": "Mathlib.Analysis.SpecialFunctions.Log.Deriv",
+      "note": "Series for log(1+z) is captured; the small-z approximation ≈ z has only related inequalities."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\ln(z)=2\\cdot \\operatorname {artanh} \\,{\\frac {z-1}{z+1}}=2\\left({\\frac {z-1}{z+1}}+{\\frac {1}{3}}{\\left({\\frac {z-1}{z+1}}\\right)}^{3}+{\\frac {1}{5}}{\\left({\\frac {z-1}{z+1}}\\right)}^{5}+\\cdots \\right),}"
+      },
+      "status": "formalized",
+      "decl": "Real.hasSum_log_sub_log_of_abs_lt_one",
+      "module": "Mathlib.Analysis.SpecialFunctions.Log.Deriv",
+      "note": "Gives HasSum (2/(2k+1) · x^(2k+1)) (log(1+x) − log(1−x)); substitute x = (z−1)/(z+1)."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\ln(z)=2\\sum _{k=0}^{\\infty }{\\frac {1}{2k+1}}\\left({\\frac {z-1}{z+1}}\\right)^{2k+1}.}"
+      },
+      "status": "formalized",
+      "decl": "Real.hasSum_log_sub_log_of_abs_lt_one",
+      "module": "Mathlib.Analysis.SpecialFunctions.Log.Deriv",
+      "note": "Same artanh series, encoded by hasSum_log_sub_log_of_abs_lt_one."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle A={\\frac {z}{\\exp(y)}},}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Auxiliary algebraic substitution in Newton-style log refinement; not a Mathlib decl."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\ln(z)=y+\\ln(A).}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Trivial consequence of the substitution above; not formalized as a lemma."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\ln(n+1)=\\ln(n)+2\\sum _{k=0}^{\\infty }{\\frac {1}{2k+1}}\\left({\\frac {1}{2n+1}}\\right)^{2k+1}.}"
+      },
+      "status": "formalized",
+      "decl": "Real.hasSum_log_one_add_inv",
+      "module": "Mathlib.Analysis.SpecialFunctions.Log.Deriv",
+      "note": "hasSum_log_one_add_inv gives the series for log(1 + 1/a), specializing to a = n."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\ln(x)\\approx {\\frac {\\pi }{2\\,\\mathrm {M} \\!\\left(1,2^{2-m}/x\\right)}}-m\\ln(2).}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Arithmetic-geometric mean approximation for log; AGM not in Mathlib."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle x\\,2^{m}>2^{p/2}.\\,}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Auxiliary precision condition for the AGM algorithm; not formalized."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle S=-k\\sum _{i}p_{i}\\ln(p_{i}).\\,}"
+      },
+      "status": "partial",
+      "decl": "Real.negMulLog",
+      "module": "Mathlib.Analysis.SpecialFunctions.Log.NegMulLog",
+      "note": "negMulLog x = −x log x is the per-term entropy function; the physical entropy sum is not packaged."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle {\\frac {466}{440}}\\approx {\\frac {493}{466}}\\approx 1.059\\approx {\\sqrt[{12}]{2}}.}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Numerical illustration of equal-temperament tuning; not a Mathlib statement."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle {\\frac {x}{\\ln(x)}},}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Prime-number-theorem approximation π(x) ∼ x/ln x is not in Mathlib."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\mathrm {Li} (x)=\\int _{2}^{x}{\\frac {1}{\\ln(t)}}\\,dt.}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Offset logarithmic integral Li(x) is not defined in Mathlib."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\ln(n!)=\\ln(1)+\\ln(2)+\\cdots +\\ln(n).}"
+      },
+      "status": "partial",
+      "decl": "Real.log_prod",
+      "module": "Mathlib.Analysis.SpecialFunctions.Log.Basic",
+      "note": "Real.log_prod gives log of a finite product as the sum of logs; applies to n!."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle e^{a}=z}"
+      },
+      "status": "partial",
+      "decl": "Complex.exp_log",
+      "module": "Mathlib.Analysis.SpecialFunctions.Complex.Log",
+      "note": "Complex.exp_log + Complex.exp_eq_exp_iff_exists_int parametrise solutions of e^a = z."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\textstyle r={\\sqrt {x^{2}+y^{2}}}.}"
+      },
+      "status": "formalized",
+      "decl": "Complex.norm_eq_sqrt_sq_add_sq",
+      "module": "Mathlib.Analysis.Complex.Norm",
+      "note": "Complex.norm_eq_sqrt_sq_add_sq expresses ‖z‖ as √(re² + im²)."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle {\\begin{aligned}z&=x+iy\\\\&=r(\\cos \\varphi +i\\sin \\varphi )\\\\&=r(\\cos(\\varphi +2k\\pi )+i\\sin(\\varphi +2k\\pi )),\\end{aligned}}}"
+      },
+      "status": "partial",
+      "decl": "Complex.abs_mul_cos_add_sin_mul_I",
+      "module": "Mathlib.Analysis.SpecialFunctions.Complex.Arg",
+      "note": "Polar form ‖z‖(cos arg z + I sin arg z) = z is in Mathlib; 2kπ periodicity is implicit."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle e^{i\\varphi }=\\cos \\varphi +i\\sin \\varphi .}"
+      },
+      "status": "formalized",
+      "decl": "Complex.exp_mul_I",
+      "module": "Mathlib.Analysis.Complex.Trigonometric",
+      "note": "Euler's formula is exactly Complex.exp_mul_I (and Complex.exp_ofReal_mul_I)."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle {\\begin{aligned}z&=r\\left(\\cos \\varphi +i\\sin \\varphi \\right)\\\\&=r\\left(\\cos(\\varphi +2k\\pi )+i\\sin(\\varphi +2k\\pi )\\right)\\\\&=re^{i(\\varphi +2k\\pi )}\\\\&=e^{\\ln(r)}e^{i(\\varphi +2k\\pi )}\\\\&=e^{\\ln(r)+i(\\varphi +2k\\pi )}=e^{a_{k}},\\end{aligned}}}"
+      },
+      "status": "partial",
+      "decl": "Complex.exp_mul_I",
+      "module": "Mathlib.Analysis.Complex.Trigonometric",
+      "note": "Chain of identities built from exp_mul_I, exp_add, Real.exp_log; not a single packaged lemma."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle a_{k}=\\ln(r)+i(\\varphi +2k\\pi ),}"
+      },
+      "status": "partial",
+      "decl": "Complex.log",
+      "module": "Mathlib.Analysis.SpecialFunctions.Complex.Log",
+      "note": "Complex.log picks the principal branch (k=0); the multi-valued family a_k is not separately defined."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle b^{n}=x,}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Discrete logarithm equation in a group; no Mathlib decl captures this."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\operatorname {Li} _{s}(z)=\\sum _{k=1}^{\\infty }{z^{k} \\over k^{s}}.}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Polylogarithm Li_s(z) is not defined in Mathlib."
+    }
+  ]
+}

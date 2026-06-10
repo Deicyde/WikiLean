@@ -1,0 +1,585 @@
+{
+  "slug": "Euclidean_geometry",
+  "wikipedia_title": "Euclidean geometry",
+  "display_title": "Euclidean geometry",
+  "schema_version": 3,
+  "annotation_style": "theorem_article",
+  "annotations": [
+    {
+      "kind": "proposition",
+      "label": "Sum of two angles of a triangle (Elements I.17)",
+      "anchor": {
+        "section": "The Elements",
+        "snippet": "two angles taken together in any manner are less than two right angles"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "EuclideanGeometry.angle_add_angle_add_angle_eq_pi",
+        "module": "Mathlib.Geometry.Euclidean.Triangle",
+        "match_kind": null
+      },
+      "note": "Mathlib proves the triangle angle sum equals π and each angle is positive, which together imply I.17, but the explicit 'two angles sum to less than π' statement is not stated.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Pythagorean theorem (Elements I.47)",
+      "anchor": {
+        "section": "The Elements",
+        "snippet": "In right-angled triangles the square on the side subtending the right angle"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "EuclideanGeometry.dist_sq_eq_dist_sq_add_dist_sq_iff_angle_eq_pi_div_two",
+        "module": "Mathlib.Geometry.Euclidean.Angle.Unoriented.RightAngle",
+        "match_kind": "exact"
+      },
+      "note": "Directly states that the squared hypotenuse equals the sum of squared legs iff the angle is a right angle.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Infinitude of primes",
+      "anchor": {
+        "section": "The Elements",
+        "snippet": "It is proved that there are infinitely many prime numbers."
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Nat.exists_infinite_primes",
+        "module": "Mathlib.Data.Nat.Prime.Infinite",
+        "match_kind": "exact"
+      },
+      "note": "States that for every n there is a prime p ≥ n, i.e. infinitely many primes.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Cone–cylinder volume ratio 1:3",
+      "anchor": {
+        "section": "The Elements",
+        "snippet": "the 1:3 ratio between the volume of a cone and a cylinder with the same height and base"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No declaration computing or comparing the volumes of a cone and cylinder is present in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Postulate 1 (line through two points)",
+      "anchor": {
+        "section": "Axioms",
+        "snippet": "To draw a straight line from any point to any point."
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "affineSpan",
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has the affine span of two points (the line through them) but does not axiomatize Euclid's postulate synthetically.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Postulate 2 (extend a line)",
+      "anchor": {
+        "section": "Axioms",
+        "snippet": "To produce (extend) a finite straight line continuously in a straight line."
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib builds geometry analytically and has no statement of segment extensibility as a postulate.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Postulate 3 (circle with any center and radius)",
+      "anchor": {
+        "section": "Axioms",
+        "snippet": "To describe a circle with any centre and distance (radius)."
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "EuclideanGeometry.Sphere",
+        "module": "Mathlib.Geometry.Euclidean.Sphere.Basic",
+        "match_kind": null
+      },
+      "note": "Spheres/circles with arbitrary center and radius exist as objects (EuclideanGeometry.Sphere over Metric.sphere) but the postulate itself is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Postulate 4 (all right angles equal)",
+      "anchor": {
+        "section": "Axioms",
+        "snippet": "That all right angles are equal to one another."
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "A right angle is defined as π/2 so equality is definitional; there is no stated postulate-form theorem.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Postulate 5 (parallel postulate)",
+      "anchor": {
+        "section": "Axioms",
+        "snippet": "if a straight line falling on two straight lines makes the interior angles on the same side less than two right angles"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib does not axiomatize Euclid's fifth postulate.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Common notions",
+      "anchor": {
+        "section": "Axioms",
+        "snippet": "Things that are equal to the same thing are also equal to one another"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Eq.trans",
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Individual common notions like transitivity of equality are core (Eq.trans), but the bundle is not formalized as Euclid's common notions.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Playfair's axiom",
+      "anchor": {
+        "section": "Parallel postulate",
+        "snippet": "through a point not on a given straight line, at most one line can be drawn that never meets the given line"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No formalization of Playfair's uniqueness-of-parallels axiom is present.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Complementary angles",
+      "anchor": {
+        "section": "Complementary and supplementary angles",
+        "snippet": "Angles whose sum is a right angle are called complementary"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has no dedicated definition of complementary angles.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Supplementary angles",
+      "anchor": {
+        "section": "Complementary and supplementary angles",
+        "snippet": "Angles whose sum is a straight angle are supplementary"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has no dedicated definition of supplementary angles.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Pons asinorum (overview)",
+      "anchor": {
+        "section": "Some important or well known results",
+        "snippet": "The pons asinorum or bridge of asses theorem states that in an isosceles triangle"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "EuclideanGeometry.angle_eq_angle_of_dist_eq",
+        "module": "Mathlib.Geometry.Euclidean.Triangle",
+        "match_kind": "exact"
+      },
+      "note": "States that equal sides from the apex give equal base angles, the isosceles triangle theorem.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Triangle angle sum (overview)",
+      "anchor": {
+        "section": "Some important or well known results",
+        "snippet": "the sum of the three angles of any triangle"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "EuclideanGeometry.angle_add_angle_add_angle_eq_pi",
+        "module": "Mathlib.Geometry.Euclidean.Triangle",
+        "match_kind": "exact"
+      },
+      "note": "States the three interior angles of a (non-degenerate) triangle sum to π.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Pythagorean theorem (overview)",
+      "anchor": {
+        "section": "Some important or well known results",
+        "snippet": "the sum of the areas of the two squares on the legs"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "EuclideanGeometry.dist_sq_eq_dist_sq_add_dist_sq_iff_angle_eq_pi_div_two",
+        "module": "Mathlib.Geometry.Euclidean.Angle.Unoriented.RightAngle",
+        "match_kind": "exact"
+      },
+      "note": "Same right-angle squared-distance characterization gives the Pythagorean relation.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Thales' theorem (overview)",
+      "anchor": {
+        "section": "Some important or well known results",
+        "snippet": "if AC is a diameter, then the angle at B is a right angle"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "EuclideanGeometry.angle_eq_pi_div_two_iff_mem_sphere_of_isDiameter",
+        "module": "Mathlib.Geometry.Euclidean.Angle.Sphere",
+        "match_kind": "exact"
+      },
+      "note": "Aliased as thales_theorem: the angle inscribed in a semicircle (on a diameter) is a right angle.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Pons asinorum",
+      "anchor": {
+        "section": "Pons asinorum",
+        "snippet": "in isosceles triangles the angles at the base equal one another"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "EuclideanGeometry.angle_eq_angle_of_dist_eq",
+        "module": "Mathlib.Geometry.Euclidean.Triangle",
+        "match_kind": "exact"
+      },
+      "note": "States that an isosceles triangle's two base angles are equal.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Triangle congruence criteria (SSS, SAS, ASA)",
+      "anchor": {
+        "section": "Congruence of triangles",
+        "snippet": "Triangles are congruent if they have all three sides equal (SSS)"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "EuclideanGeometry.side_side_side",
+        "module": "Mathlib.Geometry.Euclidean.Congruence",
+        "match_kind": "exact"
+      },
+      "note": "Mathlib proves SSS (side_side_side), SAS (side_angle_side), and ASA (angle_side_angle) congruence criteria.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "AAA gives similarity not congruence",
+      "anchor": {
+        "section": "Congruence of triangles",
+        "snippet": "Triangles with three equal angles (AAA) are similar, but not necessarily congruent."
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "EuclideanGeometry.similar_of_angle_angle",
+        "module": "Mathlib.Geometry.Euclidean.Similarity",
+        "match_kind": "exact"
+      },
+      "note": "Proves equal angles imply similar triangles (similarity, not congruence), matching the AAA claim.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Triangle angle sum theorem",
+      "anchor": {
+        "section": "Triangle angle sum",
+        "snippet": "The sum of the angles of a triangle is equal to a straight angle (180 degrees)."
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "EuclideanGeometry.angle_add_angle_add_angle_eq_pi",
+        "module": "Mathlib.Geometry.Euclidean.Triangle",
+        "match_kind": "exact"
+      },
+      "note": "States the interior angles of a triangle sum to π (a straight angle).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Pythagorean theorem",
+      "anchor": {
+        "section": "Pythagorean theorem",
+        "snippet": "in any right triangle, the area of the square whose side is the hypotenuse"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "EuclideanGeometry.dist_sq_eq_dist_sq_add_dist_sq_iff_angle_eq_pi_div_two",
+        "module": "Mathlib.Geometry.Euclidean.Angle.Unoriented.RightAngle",
+        "match_kind": "exact"
+      },
+      "note": "Characterizes the right angle by the squared-hypotenuse-equals-sum-of-squared-legs identity.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Thales' theorem",
+      "anchor": {
+        "section": "Thales' theorem",
+        "snippet": "if A, B, and C are points on a circle where the line AC is a diameter of the circle, then the angle ABC is a right angle"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "EuclideanGeometry.angle_eq_pi_div_two_iff_mem_sphere_of_isDiameter",
+        "module": "Mathlib.Geometry.Euclidean.Angle.Sphere",
+        "match_kind": "exact"
+      },
+      "note": "Directly formalizes Thales' theorem about the right angle subtended by a diameter.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Area scales as square of linear dimension",
+      "anchor": {
+        "section": "Scaling of area and volume",
+        "snippet": "the area of a plane figure is proportional to the square of any of its linear dimensions"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "MeasureTheory.Measure.addHaar_smul",
+        "module": "Mathlib.MeasureTheory.Measure.Lebesgue.EqHaar",
+        "match_kind": "generalization"
+      },
+      "note": "Proves μ(r • s) = |r|^(finrank) · μ(s), which for dimension 2 gives the square-scaling of area as a special case.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Sphere is 2/3 volume of circumscribing cylinder",
+      "anchor": {
+        "section": "Scaling of area and volume",
+        "snippet": "a sphere has 2/3 the volume of the circumscribing cylinder"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has no statement of the sphere-to-cylinder volume ratio.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Congruence of figures",
+      "anchor": {
+        "section": "System of measurement and arithmetic",
+        "snippet": "two figures are congruent if one can be moved on top of the other so that it matches up with it exactly"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Congruent",
+        "module": "Mathlib.Topology.MetricSpace.Congruence",
+        "match_kind": "exact"
+      },
+      "note": "Defines Congruent as distance-preserving correspondence between indexed point sets, the metric notion of congruence.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Similarity of figures",
+      "anchor": {
+        "section": "System of measurement and arithmetic",
+        "snippet": "Figures that would be congruent except for their differing sizes are referred to as similar"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Similar",
+        "module": "Mathlib.Topology.MetricSpace.Similarity",
+        "match_kind": "exact"
+      },
+      "note": "Defines Similar as proportionality of all distances between indexed point sets.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Euclidean metric",
+      "anchor": {
+        "section": "17th century: Descartes",
+        "snippet": "is then known as the Euclidean metric"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "EuclideanSpace.dist_eq",
+        "module": "Mathlib.Analysis.InnerProductSpace.PiL2",
+        "match_kind": "exact"
+      },
+      "note": "Gives the L2 distance formula on EuclideanSpace, i.e. the Euclidean metric.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Affine geometry",
+      "anchor": {
+        "section": "18th century",
+        "snippet": "a generalization of Euclidean geometry called affine geometry"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "AffineSpace",
+        "module": "Mathlib.LinearAlgebra.AffineSpace.Defs",
+        "match_kind": null
+      },
+      "note": "AffineSpace (notation for AddTorsor) and a full affine geometry library exist, capturing the field but not a single 'affine geometry' statement.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Impossibility of angle trisection",
+      "anchor": {
+        "section": "18th century",
+        "snippet": "Pierre Wantzel published a proof in 1837 that such a construction was impossible"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has no theory of compass-and-straightedge constructible numbers proving angle trisection impossible.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Number of regular convex polytopes by dimension",
+      "anchor": {
+        "section": "Higher dimensions",
+        "snippet": "there are six regular convex polytopes in dimension four , and three in all higher dimensions"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib does not classify or count regular convex polytopes.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Independence of the parallel postulate",
+      "anchor": {
+        "section": "Non-Euclidean geometry",
+        "snippet": "the parallel postulate cannot be proved from the other postulates"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No formalization of the independence (unprovability) of the parallel postulate exists.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "A line segment is part of a triangle",
+      "anchor": {
+        "section": "Non-Euclidean geometry",
+        "snippet": "any line segment is part of a triangle"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No such statement embedding a segment in a triangle is present in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Law of contradiction",
+      "anchor": {
+        "section": "Classical logic",
+        "snippet": "if S is any statement, then S and a contradiction (that is, the denial) of S cannot both hold"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "and_not_self_iff",
+        "module": null,
+        "match_kind": "exact"
+      },
+      "note": "The lemma and_not_self_iff : (a ∧ ¬a) ↔ False expresses non-contradiction, though it is a core/Batteries lemma rather than Mathlib-defined.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Law of the excluded middle",
+      "anchor": {
+        "section": "Classical logic",
+        "snippet": "either S or the denial of S must hold"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "em",
+        "module": "Mathlib.Logic.Basic",
+        "match_kind": "exact"
+      },
+      "note": "em (alias of Classical.em) states p ∨ ¬p for every proposition.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Completeness/decidability of elementary Euclidean geometry (Tarski)",
+      "anchor": {
+        "section": "Axiomatic formulations",
+        "snippet": "there is an algorithm that, for every proposition, can be shown either true or false"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib does not formalize Tarski's completeness/decidability result for elementary Euclidean geometry.",
+      "provenance": "ai"
+    }
+  ]
+}

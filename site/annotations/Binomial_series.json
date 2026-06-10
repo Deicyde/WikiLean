@@ -1,0 +1,359 @@
+{
+  "slug": "Binomial_series",
+  "wikipedia_title": "Binomial series",
+  "display_title": "Binomial series",
+  "schema_version": 3,
+  "annotation_style": "theorem_article",
+  "annotations": [
+    {
+      "kind": "definition",
+      "label": "Binomial series",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "the binomial series is a generalization of the binomial formula"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "binomialSeries",
+        "module": "Mathlib.Analysis.Analytic.Binomial",
+        "match_kind": "exact"
+      },
+      "note": "`binomialSeries` is the scalar formal multilinear series with coefficients `Ring.choose a`, directly formalizing the binomial series.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Generalized binomial coefficients",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "expressed in terms of the (generalized) binomial coefficients"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Ring.choose",
+        "module": "Mathlib.RingTheory.Binomial",
+        "match_kind": "exact"
+      },
+      "note": "`Ring.choose r n` generalizes `Nat.choose` via descending Pochhammer over `n!`, exactly the generalized binomial coefficient.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Binomial series as MacLaurin series",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "The binomial series is the MacLaurin series for the function"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Complex.one_add_cpow_hasFPowerSeriesOnBall_zero",
+        "module": "Mathlib.Analysis.Analytic.Binomial",
+        "match_kind": "exact"
+      },
+      "note": "This states `(1+x)^a` has `binomialSeries ℂ a` as its power-series (Maclaurin) expansion on the unit ball (real version `Real.one_add_rpow_hasFPowerSeriesOnBall_zero`).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Nonnegative integer exponent gives finite polynomial",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "all later terms in the series are 0"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "binomialSeries_radius_eq_top_of_nat",
+        "module": "Mathlib.Analysis.Analytic.Binomial",
+        "match_kind": null
+      },
+      "note": "Radius `⊤` for natural `a` reflects finiteness, and `Ring.choose_natCast` plus `Nat.choose_eq_zero_of_lt` give the vanishing of later terms, but no single lemma states the series reduces to the finite polynomial.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Conditions for convergence",
+      "anchor": {
+        "section": "Conditions for convergence",
+        "snippet": "converges depends on the values of the complex numbers"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "binomialSeries_radius_eq_one",
+        "module": "Mathlib.Analysis.Analytic.Binomial",
+        "match_kind": "exact"
+      },
+      "note": "Radius of convergence is `1` for non-natural `a` and `⊤` for natural `a` (`binomialSeries_radius_eq_top_of_nat`), determining convergence on the open disk.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Behavior on the boundary |x| = 1",
+      "anchor": {
+        "section": "Conditions for convergence",
+        "snippet": "the situation at the boundary of the disk of convergence"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The detailed boundary-convergence classification depending on Re(α) and the points x = ±1 is not present in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Binomial coefficient identities",
+      "anchor": {
+        "section": "Identities to be used in the proof",
+        "snippet": "The following hold for any complex number"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Ring.choose_succ_succ",
+        "module": "Mathlib.RingTheory.Binomial",
+        "match_kind": null
+      },
+      "note": "Pascal's recurrence (`Ring.choose_succ_succ`) and Chu–Vandermonde (`Ring.add_choose_eq`) are formalized, but not the full collection of identities (e.g. `k·C(α,k)=α·C(α−1,k−1)`) used in the article's proof.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Asymptotic relationship for binomial coefficients",
+      "anchor": {
+        "section": "Identities to be used in the proof",
+        "snippet": "a useful asymptotic relationship for the binomial coefficients is, in Landau notation"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The asymptotic estimate for `C(α,k)` in terms of `k^{-(1+α)}/Γ(-α)` is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Equivalence with Euler's Gamma definition",
+      "anchor": {
+        "section": "Identities to be used in the proof",
+        "snippet": "Euler's definition of the Gamma function"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Complex.GammaSeq_tendsto_Gamma",
+        "module": "Mathlib.Analysis.SpecialFunctions.Gamma.Beta",
+        "match_kind": "exact"
+      },
+      "note": "`Complex.GammaSeq_tendsto_Gamma` proves the Euler/Gauss limit `nˢ n!/(s(s+1)⋯(s+n)) → Γ(s)` (real version `Real.GammaSeq_tendsto_Gamma`).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Coarser bounds for the coefficients",
+      "anchor": {
+        "section": "Identities to be used in the proof",
+        "snippet": "implies immediately the coarser bounds"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Explicit growth/size bounds on the generalized binomial coefficients are not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Rewriting of the generalized binomial coefficient",
+      "anchor": {
+        "section": "Identities to be used in the proof",
+        "snippet": "Formula ( 2 ) for the generalized binomial coefficient can be rewritten as"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Ring.choose_eq_smul",
+        "module": "Mathlib.RingTheory.Binomial",
+        "match_kind": null
+      },
+      "note": "`Ring.choose_eq_smul` rewrites `choose a n = (n!)⁻¹ • (descPochhammer ℤ n).smeval a`, but the Gamma-function rewriting in the article is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Sum solves an ODE",
+      "anchor": {
+        "section": "Summation of the binomial series",
+        "snippet": "the sum of the series is an analytic function solving the ordinary differential equation"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has the derivative machinery used in the proof but no statement that the binomial-series sum solves the ODE `(1+x)u' = αu`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Sum of the binomial series",
+      "anchor": {
+        "section": "Summation of the binomial series",
+        "snippet": "The unique solution of this problem is the function"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Complex.one_add_cpow_hasFPowerSeriesOnBall_zero",
+        "module": "Mathlib.Analysis.Analytic.Binomial",
+        "match_kind": "exact"
+      },
+      "note": "The sum of the binomial series equals `(1+x)^a` on the unit ball, exactly `Complex.one_add_cpow_hasFPowerSeriesOnBall_zero` (and `Real.one_add_rpow_hasFPowerSeriesOnBall_zero`).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Extension to the boundary via Abel's theorem",
+      "anchor": {
+        "section": "Summation of the binomial series",
+        "snippet": "as a consequence of Abel's theorem"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Complex.tendsto_tsum_powerSeries_nhdsWithin_stolzCone",
+        "module": "Mathlib.Analysis.Complex.AbelLimit",
+        "match_kind": null
+      },
+      "note": "Abel's limit theorem for power series is formalized in general, but it is not applied to extend the binomial series to the boundary.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Negative binomial series",
+      "anchor": {
+        "section": "Negative binomial series",
+        "snippet": "the negative binomial series defined by the MacLaurin series for the function"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Complex.one_div_one_sub_cpow_hasFPowerSeriesOnBall_zero",
+        "module": "Mathlib.Analysis.Analytic.Binomial",
+        "match_kind": "exact"
+      },
+      "note": "`Complex.one_div_one_sub_cpow_hasFPowerSeriesOnBall_zero` gives `1/(1-x)^a = Σ choose(a+n-1,n) xⁿ`, the negative binomial series (real version also present).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Multiset coefficient",
+      "anchor": {
+        "section": "Negative binomial series",
+        "snippet": "which is written in terms of the multiset coefficient"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Ring.multichoose",
+        "module": "Mathlib.RingTheory.Binomial",
+        "match_kind": "exact"
+      },
+      "note": "`Ring.multichoose r n` is the multiset coefficient (choosing with replacement), with `Ring.multichoose_eq` relating it to `choose (r+n-1) n`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Case α = 1",
+      "anchor": {
+        "section": "Negative binomial series",
+        "snippet": "The case α = 1 gives the series"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Complex.one_div_one_sub_hasFPowerSeriesOnBall_zero",
+        "module": "Mathlib.Analysis.Analytic.Binomial",
+        "match_kind": "exact"
+      },
+      "note": "`1/(1-x) = Σ xⁿ` is `Complex.one_div_one_sub_hasFPowerSeriesOnBall_zero` (with `.ofScalars 1`), the α=1 case.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Case α = 2 (counting numbers)",
+      "anchor": {
+        "section": "Negative binomial series",
+        "snippet": "The case α = 2 gives the series"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Complex.one_div_one_sub_sq_hasFPowerSeriesOnBall_zero",
+        "module": "Mathlib.Analysis.Analytic.Binomial",
+        "match_kind": "exact"
+      },
+      "note": "`1/(1-x)^2 = Σ (n+1) xⁿ` is `Complex.one_div_one_sub_sq_hasFPowerSeriesOnBall_zero`, exactly the α=2 case.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Case α = 3 (triangle numbers)",
+      "anchor": {
+        "section": "Negative binomial series",
+        "snippet": "The case α = 3 gives the series"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Complex.one_div_one_sub_pow_hasFPowerSeriesOnBall_zero",
+        "module": "Mathlib.Analysis.Analytic.Binomial",
+        "match_kind": "special_case"
+      },
+      "note": "The general lemma `1/(1-x)^(a+1) = Σ choose(a+n,a) xⁿ` instantiated at `a=2` gives `1/(1-x)^3` with triangular-number coefficients.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Case α = 4 (tetrahedral numbers)",
+      "anchor": {
+        "section": "Negative binomial series",
+        "snippet": "The case α = 4 gives the series"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Complex.one_div_one_sub_pow_hasFPowerSeriesOnBall_zero",
+        "module": "Mathlib.Analysis.Analytic.Binomial",
+        "match_kind": "special_case"
+      },
+      "note": "Instantiating the general lemma at `a=3` gives `1/(1-x)^4` with tetrahedral-number coefficients `choose(3+n,3)`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Geometric series special case",
+      "anchor": {
+        "section": "Negative binomial series",
+        "snippet": "The negative binomial series includes the case of the geometric series"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Complex.one_div_one_sub_hasFPowerSeriesOnBall_zero",
+        "module": "Mathlib.Analysis.Analytic.Binomial",
+        "match_kind": "special_case"
+      },
+      "note": "The geometric series `1/(1-x) = Σ xⁿ` is the α=1 instance, formalized as `Complex.one_div_one_sub_hasFPowerSeriesOnBall_zero`.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Negative binomial series",
+          "snippet": "The negative binomial series includes the case of the geometric series"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle {\\frac {1}{1-x}}=\\sum _{n=0}^{\\infty }x^{n}}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle {\\frac {1}{(1-x)^{n}}}={\\frac {1}{(n-1)!}}{\\frac {d^{n-1}}{dx^{n-1}}}{\\frac {1}{1-x}}}"
+        }
+      ]
+    }
+  ]
+}

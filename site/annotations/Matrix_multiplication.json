@@ -1,0 +1,703 @@
+{
+  "slug": "Matrix_multiplication",
+  "wikipedia_title": "Matrix multiplication",
+  "display_title": "Matrix multiplication",
+  "schema_version": 3,
+  "annotation_style": "theorem_article",
+  "annotations": [
+    {
+      "kind": "definition",
+      "label": "Matrix multiplication",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "matrix multiplication is a binary operation that produces a matrix from two matrices"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Matrix.instHMul",
+        "module": "Mathlib.Data.Matrix.Mul",
+        "match_kind": "exact"
+      },
+      "note": "The heterogeneous matrix multiplication instance `HMul (Matrix l m α) (Matrix m n α) (Matrix l n α)` is defined directly in `Mathlib/Data/Matrix/Mul.lean`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Matrix product (m×n times n×p)",
+      "anchor": {
+        "section": "Matrix times matrix",
+        "snippet": "the matrix product C = AB (denoted without multiplication signs or dots) is defined to be the m × p matrix"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Matrix.instHMul",
+        "module": "Mathlib.Data.Matrix.Mul",
+        "match_kind": "exact"
+      },
+      "note": "The `HMul` instance and `Matrix.mul_apply` give exactly the m×p product matrix of an m×n and n×p matrix.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Matrix times matrix",
+          "snippet": "the matrix product C = AB (denoted without multiplication signs or dots) is defined to be the m × p matrix"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\mathbf {A} ={\\begin{pmatrix}a_{11}&amp;a_{12}&amp;\\cdots &amp;a_{1n}\\\\a_{21}&amp;a_{22}&amp;\\cdots &amp;a_{2n}\\\\\\vdots &amp;\\vdots &amp;\\ddots &amp;\\vdots \\\\a_{m1}&amp;a_{m2}&amp;\\cdots &amp;a_{mn}\\\\\\end{pmatrix}},\\quad \\mathbf {B} ={\\begin{pmatrix}b_{11}&amp;b_{12}&amp;\\cdots &amp;b_{1p}\\\\b_{21}&amp;b_{22}&amp;\\cdots &amp;b_{2p}\\\\\\vdots &amp;\\vdots &amp;\\ddots &amp;\\vdots \\\\b_{n1}&amp;b_{n2}&amp;\\cdots &amp;b_{np}\\\\\\end{pmatrix}}}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\mathbf {C} ={\\begin{pmatrix}c_{11}&amp;c_{12}&amp;\\cdots &amp;c_{1p}\\\\c_{21}&amp;c_{22}&amp;\\cdots &amp;c_{2p}\\\\\\vdots &amp;\\vdots &amp;\\ddots &amp;\\vdots \\\\c_{m1}&amp;c_{m2}&amp;\\cdots &amp;c_{mp}\\\\\\end{pmatrix}}}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle c_{ij}=a_{i1}b_{1j}+a_{i2}b_{2j}+\\cdots +a_{in}b_{nj}=\\sum _{k=1}^{n}a_{ik}b_{kj},}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Entry of product is dot product of row and column",
+      "anchor": {
+        "section": "Matrix times matrix",
+        "snippet": "is the dot product of the i th row of A and the j th column of B"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Matrix.mul_apply",
+        "module": "Mathlib.Data.Matrix.Mul",
+        "match_kind": "exact"
+      },
+      "note": "`Matrix.mul_apply` states `(M * N) i k = ∑ j, M i j * N j k`, exactly the row-times-column dot product.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Existence condition for matrix product",
+      "anchor": {
+        "section": "Matrix times matrix",
+        "snippet": "the product AB is defined if and only if the number of columns in A equals the number of rows in B"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Matrix.instHMul",
+        "module": "Mathlib.Data.Matrix.Mul",
+        "match_kind": "invocation"
+      },
+      "note": "The dimension-matching condition is enforced at the type level via the `HMul (Matrix l m α) (Matrix m n α)` instance rather than stated as a proposition.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Matrix-times-vector product",
+      "anchor": {
+        "section": "Matrix times vector",
+        "snippet": "the matrix-times-vector product denoted by"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Matrix.mulVec",
+        "module": "Mathlib.Data.Matrix.Mul",
+        "match_kind": "exact"
+      },
+      "note": "`Matrix.mulVec` (notation `M *ᵥ v`) is defined as the row-wise dot product of `M` against `v`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Vector-times-matrix product",
+      "anchor": {
+        "section": "Vector times matrix",
+        "snippet": "can be viewed as a row vector"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Matrix.vecMul",
+        "module": "Mathlib.Data.Matrix.Mul",
+        "match_kind": "exact"
+      },
+      "note": "`Matrix.vecMul` (notation `v ᵥ* M`) is defined as the column-wise dot product of `v` against `M`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Dot product as matrix multiplication",
+      "anchor": {
+        "section": "Vector times vector",
+        "snippet": "the dot product (or inner product)"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Matrix.dotProduct",
+        "module": "Mathlib.Data.Matrix.Mul",
+        "match_kind": "exact"
+      },
+      "note": "`Matrix.dotProduct v w = ∑ i, v i * w i` is defined and `Matrix.mul_apply` ties it back to the 1×1 matrix entry of the product.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Outer product of vectors",
+      "anchor": {
+        "section": "Vector times vector",
+        "snippet": "also known as outer-product"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Matrix.vecMulVec",
+        "module": "Mathlib.Data.Matrix.Mul",
+        "match_kind": "exact"
+      },
+      "note": "`Matrix.vecMulVec w v i j = w i * v j` is exactly the outer product.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Illustration of matrix product",
+      "anchor": {
+        "section": "Illustration",
+        "snippet": "illustrates diagrammatically the product of two matrices"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "A diagrammatic illustration with no formal mathematical content to formalize.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Illustration",
+          "snippet": "illustrates diagrammatically the product of two matrices"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle {\\overset {4\\times 2{\\text{ matrix}}}{\\begin{bmatrix}a_{11}&amp;a_{12}\\\\\\cdot &amp;\\cdot \\\\a_{31}&amp;a_{32}\\\\\\cdot &amp;\\cdot \\\\\\end{bmatrix}}}{\\overset {2\\times 3{\\text{ matrix}}}{\\begin{bmatrix}\\cdot &amp;b_{12}&amp;b_{13}\\\\\\cdot &amp;b_{22}&amp;b_{23}\\\\\\end{bmatrix}}}={\\overset {4\\times 3{\\text{ matrix}}}{\\begin{bmatrix}\\cdot &amp;c_{12}&amp;\\cdot \\\\\\cdot &amp;\\cdot &amp;\\cdot \\\\\\cdot &amp;\\cdot &amp;c_{33}\\\\\\cdot &amp;\\cdot &amp;\\cdot \\\\\\end{bmatrix}}}}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Matrix product represents composition of linear maps",
+      "anchor": {
+        "section": "Linear maps",
+        "snippet": "the matrix of the composite map"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Matrix.toLin_mul",
+        "module": "Mathlib.LinearAlgebra.Matrix.ToLin",
+        "match_kind": "exact"
+      },
+      "note": "`Matrix.toLin_mul` and `Matrix.toLin'_mul` show that `toLin (A * B) = toLin A ∘ₗ toLin B`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Composition of rotations",
+      "anchor": {
+        "section": "Geometric rotations",
+        "snippet": "the composition corresponds to the rotation by angle"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Matrix.planeConformalMatrix",
+        "module": "Mathlib.LinearAlgebra.Matrix.GeneralLinearGroup.FinTwo",
+        "match_kind": "generalization"
+      },
+      "note": "Mathlib has conformal/rotation matrices and angle-addition formulas, but the specific worked example of multiplying two 2D rotation matrices is not given as a single declaration.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Geometric rotations",
+          "snippet": "the composition corresponds to the rotation by angle"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle {\\begin{bmatrix}\\cos \\beta &amp;-\\sin \\beta \\\\\\sin \\beta &amp;\\cos \\beta \\end{bmatrix}}{\\begin{bmatrix}\\cos \\alpha &amp;-\\sin \\alpha \\\\\\sin \\alpha &amp;\\cos \\alpha \\end{bmatrix}}={\\begin{bmatrix}\\cos \\beta \\cos \\alpha -\\sin \\beta \\sin \\alpha &amp;-\\cos \\beta \\sin \\alpha -\\sin \\beta \\cos \\alpha \\\\\\sin \\beta \\cos \\alpha +\\cos \\beta \\sin \\alpha &amp;-\\sin \\beta \\sin \\alpha +\\cos \\beta \\cos \\alpha \\end{bmatrix}}={\\begin{bmatrix}\\cos(\\alpha +\\beta )&amp;-\\sin(\\alpha +\\beta )\\\\\\sin(\\alpha +\\beta )&amp;\\cos(\\alpha +\\beta )\\end{bmatrix}},}"
+        }
+      ]
+    },
+    {
+      "kind": "example",
+      "label": "Resource allocation factory example",
+      "anchor": {
+        "section": "Resource allocation in economics",
+        "snippet": "a fictitious factory uses 4 kinds of basic commodities"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "An applied numerical example without a corresponding Mathlib statement.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "System of linear equations as matrix equation",
+      "anchor": {
+        "section": "System of linear equations",
+        "snippet": "such a system is equivalent with the single matrix equation"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Matrix.mulVec",
+        "module": "Mathlib.Data.Matrix.Mul",
+        "match_kind": "invocation"
+      },
+      "note": "`Matrix.mulVec` encodes `Ax`, so a linear system becomes `A *ᵥ x = b`, but there is no explicit equivalence theorem between sum-of-equations form and matrix-equation form.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Dot product as matrix product",
+      "anchor": {
+        "section": "Dot product, bilinear form and sesquilinear form",
+        "snippet": "The dot product of two column vectors is the unique entry of the matrix product"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Matrix.dotProduct",
+        "module": "Mathlib.Data.Matrix.Mul",
+        "match_kind": "invocation"
+      },
+      "note": "`Matrix.dotProduct` plus `Matrix.mul_apply` yield this identification, but no single lemma states the dot product equals the unique entry of `xᵀ y`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Bilinear form as matrix product",
+      "anchor": {
+        "section": "Dot product, bilinear form and sesquilinear form",
+        "snippet": "any bilinear form over a vector space of finite dimension may be expressed as a matrix product"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Matrix.toBilin",
+        "module": "Mathlib.LinearAlgebra.Matrix.BilinearForm",
+        "match_kind": "exact"
+      },
+      "note": "`Matrix.toBilin` gives a linear equivalence between matrices and bilinear forms on a finite-dim space, with `Matrix.toBilin_apply` expressing the form as `xᵀ M y`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Sesquilinear form as matrix product",
+      "anchor": {
+        "section": "Dot product, bilinear form and sesquilinear form",
+        "snippet": "any sesquilinear form may be expressed as"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "LinearMap.toMatrix₂",
+        "module": "Mathlib.LinearAlgebra.Matrix.SesquilinearForm",
+        "match_kind": "exact"
+      },
+      "note": "`LinearMap.toMatrix₂` and `Matrix.toLinearMap₂` give the matrix representation of sesquilinear forms in `Mathlib/LinearAlgebra/Matrix/SesquilinearForm.lean`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Non-commutativity of matrix multiplication",
+      "anchor": {
+        "section": "Non-commutativity",
+        "snippet": "if A and B are square matrices of the same size, are both products defined and of the same size"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Matrix.instMul",
+        "module": "Mathlib.Data.Matrix.Mul",
+        "match_kind": "invocation"
+      },
+      "note": "Mathlib's `Matrix.instRing` deliberately does not provide commutativity for `n ≥ 2`, but there is no explicit `¬ Commute A B` example as a named lemma.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Center characterization via commuting with all matrices",
+      "anchor": {
+        "section": "Non-commutativity",
+        "snippet": "This example may be expanded for showing that"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Matrix.center_eq_scalar_image",
+        "module": "Mathlib.Data.Matrix.Basis",
+        "match_kind": "exact"
+      },
+      "note": "`Matrix.center_eq_scalar_image` (and `Matrix.subalgebraCenter_eq_scalarAlgHom_map`) state that the center of the matrix ring is exactly the scalar matrices.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Diagonal matrices commute",
+      "anchor": {
+        "section": "Non-commutativity",
+        "snippet": "when D and E are two (square) diagonal matrices (of the same size); then DE = ED"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Matrix.commute_diagonal",
+        "module": "Mathlib.Data.Matrix.Mul",
+        "match_kind": "exact"
+      },
+      "note": "`Matrix.commute_diagonal` proves `Commute (diagonal d₁) (diagonal d₂)` over a commutative semiring, with `Matrix.diagonal_mul_diagonal` giving the explicit product.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Distributivity of matrix product over addition",
+      "anchor": {
+        "section": "Distributivity",
+        "snippet": "The matrix product is distributive with respect to matrix addition"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Matrix.mul_add",
+        "module": "Mathlib.Data.Matrix.Mul",
+        "match_kind": "exact"
+      },
+      "note": "`Matrix.mul_add` and `Matrix.add_mul` provide left- and right-distributivity of matrix multiplication.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Product with a scalar",
+      "anchor": {
+        "section": "Product with a scalar",
+        "snippet": "are obtained by left or right multiplying all entries of A by c"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Matrix.smul_mul",
+        "module": "Mathlib.Data.Matrix.Mul",
+        "match_kind": "exact"
+      },
+      "note": "`Matrix.smul_mul` and `Matrix.mul_smul` express `(a • M) * N = a • (M * N) = M * (a • N)`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Transpose of a product",
+      "anchor": {
+        "section": "Transpose",
+        "snippet": "the transpose of a product of matrices is the product, in the reverse order, of the transposes of the factors"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Matrix.transpose_mul",
+        "module": "Mathlib.Data.Matrix.Mul",
+        "match_kind": "exact"
+      },
+      "note": "`Matrix.transpose_mul` proves `(M * N)ᵀ = Nᵀ * Mᵀ`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Conjugate of a product",
+      "anchor": {
+        "section": "Complex conjugate",
+        "snippet": "If A and B have complex entries"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Matrix.map_mul",
+        "module": "Mathlib.Data.Matrix.Mul",
+        "match_kind": "generalization"
+      },
+      "note": "`Matrix.map_mul` states `(L * M).map f = L.map f * M.map f` for any (non-unital) ring hom, so applying it to `starRingEnd ℂ` gives the entry-wise conjugate-of-a-product identity.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Conjugate transpose of a product",
+      "anchor": {
+        "section": "Complex conjugate",
+        "snippet": "Transposition acts on the indices of the entries, while conjugation acts independently on the entries themselves"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Matrix.conjTranspose_mul",
+        "module": "Mathlib.LinearAlgebra.Matrix.ConjTranspose",
+        "match_kind": "exact"
+      },
+      "note": "`Matrix.conjTranspose_mul` proves `(M * N)ᴴ = Nᴴ * Mᴴ`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Associativity of matrix multiplication",
+      "anchor": {
+        "section": "Associativity",
+        "snippet": "one has the associative property"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Matrix.mul_assoc",
+        "module": "Mathlib.Data.Matrix.Mul",
+        "match_kind": "exact"
+      },
+      "note": "`Matrix.mul_assoc` proves `L * M * N = L * (M * N)`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Parenthesization affects computational cost",
+      "anchor": {
+        "section": "Computational complexity depends on parenthesization",
+        "snippet": "if A , B and C are matrices of respective sizes 10×30, 30×5, 5×60"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "An arithmetic remark about flop counts with no corresponding Mathlib statement.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Similarity transformation",
+      "anchor": {
+        "section": "Application to similarity",
+        "snippet": "defines a similarity transformation"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Matrix.charpoly_units_conj",
+        "module": "Mathlib.LinearAlgebra.Matrix.Charpoly.Basic",
+        "match_kind": "invocation"
+      },
+      "note": "Mathlib uses unit conjugation `P⁻¹ * A * P` directly (e.g. in `Matrix.charpoly_units_conj`, `Matrix.trace_units_conj`) but does not introduce a named `Matrix.Similar` relation.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Similarity transformations preserve products",
+      "anchor": {
+        "section": "Application to similarity",
+        "snippet": "Similarity transformations map product to products"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Matrix.mul_assoc",
+        "module": "Mathlib.Data.Matrix.Mul",
+        "match_kind": "invocation"
+      },
+      "note": "Follows from `Matrix.mul_assoc` together with `Matrix.nonsing_inv_mul`, but is not stated as a single dedicated lemma.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Square matrices form a ring",
+      "anchor": {
+        "section": "Square matrices",
+        "snippet": "This makes"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Matrix.instRing",
+        "module": "Mathlib.Data.Matrix.Mul",
+        "match_kind": "exact"
+      },
+      "note": "`Matrix.instRing` (and `Matrix.semiring`, `Matrix.nonAssocSemiring`) make `Matrix n n α` a ring whenever `α` is.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Invertible and singular matrices",
+      "anchor": {
+        "section": "Square matrices",
+        "snippet": "A matrix that has an inverse is an invertible matrix"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Matrix.isUnit_iff_isUnit_det",
+        "module": "Mathlib.LinearAlgebra.Matrix.NonsingularInverse",
+        "match_kind": "exact"
+      },
+      "note": "`Matrix.isUnit_iff_isUnit_det` and `Matrix.Invertible` capture the invertible/singular distinction via `IsUnit`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Invertibility of a product",
+      "anchor": {
+        "section": "Square matrices",
+        "snippet": "A product of matrices is invertible if and only if each factor is invertible"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Matrix.isUnit_iff_isUnit_det",
+        "module": "Mathlib.LinearAlgebra.Matrix.NonsingularInverse",
+        "match_kind": "invocation"
+      },
+      "note": "Provable by combining `Matrix.isUnit_iff_isUnit_det` with `Matrix.det_mul` and `IsUnit.mul_iff`, but no dedicated `Matrix.isUnit_mul_iff` lemma was located.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Determinant of a product",
+      "anchor": {
+        "section": "Square matrices",
+        "snippet": "the determinant of a product is the product of the determinants"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Matrix.det_mul",
+        "module": "Mathlib.LinearAlgebra.Matrix.Determinant.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`Matrix.det_mul` proves `det (M * N) = det M * det N`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "AB and BA share invariants",
+      "anchor": {
+        "section": "Square matrices",
+        "snippet": "AB and BA have the same trace , the same characteristic polynomial , and the same eigenvalues with the same multiplicities"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Matrix.charpoly_mul_comm",
+        "module": "Mathlib.LinearAlgebra.Matrix.Charpoly.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`Matrix.trace_mul_comm` gives equal traces and `Matrix.charpoly_mul_comm` gives equal characteristic polynomials (and hence equal eigenvalue multiplicities).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Powers of a matrix",
+      "anchor": {
+        "section": "Powers of a matrix",
+        "snippet": "One may raise a square matrix to any nonnegative integer power multiplying it by itself repeatedly"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Matrix.semiring",
+        "module": "Mathlib.Data.Matrix.Mul",
+        "match_kind": "invocation"
+      },
+      "note": "Since `Matrix n n α` is a `Monoid`/`Semiring`, the generic `Monoid.npow` and `pow_succ` give natural-number powers of square matrices.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Power of a diagonal matrix",
+      "anchor": {
+        "section": "Powers of a matrix",
+        "snippet": "the k th power of a diagonal matrix is obtained by raising the entries to the power k"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Matrix.diagonal_pow",
+        "module": "Mathlib.Data.Matrix.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`Matrix.diagonal_pow` states `(diagonal v) ^ k = diagonal (v ^ k)`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Matrices over a ring form a ring",
+      "anchor": {
+        "section": "Abstract algebra",
+        "snippet": "the n × n matrices over a ring form a ring"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Matrix.instRing",
+        "module": "Mathlib.Data.Matrix.Mul",
+        "match_kind": "exact"
+      },
+      "note": "`Matrix.instRing` provides the ring structure on `Matrix n n α` for `α` a ring.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Invertibility via determinant over commutative ring",
+      "anchor": {
+        "section": "Abstract algebra",
+        "snippet": "a matrix has an inverse if and only if its determinant has a multiplicative inverse in R"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Matrix.isUnit_iff_isUnit_det",
+        "module": "Mathlib.LinearAlgebra.Matrix.NonsingularInverse",
+        "match_kind": "exact"
+      },
+      "note": "`Matrix.isUnit_iff_isUnit_det` proves `IsUnit A ↔ IsUnit A.det` over a commutative ring.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Matrix groups",
+      "anchor": {
+        "section": "Abstract algebra",
+        "snippet": "form a group under matrix multiplication, the subgroups of which are called matrix groups"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Matrix.GeneralLinearGroup",
+        "module": "Mathlib.LinearAlgebra.Matrix.GeneralLinearGroup.Defs",
+        "match_kind": "invocation"
+      },
+      "note": "`Matrix.GeneralLinearGroup` (notation `GL n R`) is defined as the units of the matrix ring; the general notion of a matrix group as an arbitrary subgroup of `GL` is not given its own definition.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Category of matrices",
+      "anchor": {
+        "section": "Abstract algebra",
+        "snippet": "Matrices are the morphisms of a category , the category of matrices"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "CategoryTheory.Mat_",
+        "module": "Mathlib.CategoryTheory.Preadditive.Mat",
+        "match_kind": "generalization"
+      },
+      "note": "`CategoryTheory.Mat_ C` is the additive envelope where morphisms are matrices of morphisms in a preadditive category; the file's docstring notes that a more convenient `Mat R` over a ring is future work.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Naive matrix multiplication complexity",
+      "anchor": {
+        "section": "Computational complexity",
+        "snippet": "The matrix multiplication algorithm that results from the definition requires"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "A complexity claim about the naive O(n³) algorithm with no corresponding declaration in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Strassen's algorithm",
+      "anchor": {
+        "section": "Computational complexity",
+        "snippet": "shown in 1969 by Volker Strassen , who provided an algorithm, now called Strassen's algorithm"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Strassen's algorithm is only mentioned in a comment in `Mathlib/Computability/AkraBazzi/AkraBazzi.lean`; it is not formalized.",
+      "provenance": "ai"
+    }
+  ]
+}

@@ -1,0 +1,108 @@
+/* WikiLean review-mode editor overlay */
+
+#wlr-bar {
+  position: fixed; top: 0; left: 0; right: 0; height: 36px;
+  background: #0969da; color: #fff; z-index: 5000;
+  display: flex; align-items: center; gap: 12px; padding: 0 14px;
+  font: 13px -apple-system, sans-serif;
+}
+#wlr-bar b { font-weight: 700; }
+#wlr-bar .wlr-spacer { margin-left: auto; }
+#wlr-bar button {
+  background: rgba(255,255,255,0.15); color: #fff; border: 1px solid rgba(255,255,255,0.4);
+  border-radius: 4px; padding: 3px 10px; cursor: pointer; font: inherit;
+}
+#wlr-bar button.armed { background: #fff; color: #0969da; }
+body { margin-top: 36px !important; }
+
+/* clicking a highlight shows it's interactive */
+.anno { cursor: pointer !important; }
+.anno.wlr-selected { outline: 2px solid #0969da; outline-offset: 1px; }
+
+#wlr-panel {
+  position: fixed; top: 48px; right: 16px; width: 340px; z-index: 5001;
+  background: #fff; border: 1px solid #d0d7de; border-radius: 8px;
+  box-shadow: 0 8px 28px rgba(0,0,0,0.18); padding: 14px; display: none;
+  font: 13px -apple-system, sans-serif; max-height: 84vh; overflow: auto;
+}
+#wlr-panel.open { display: block; }
+#wlr-panel h3 { margin: 0 0 8px; font-size: 14px; padding-right: 24px; }
+#wlr-close {
+  position: absolute; top: 8px; right: 8px; width: 26px; height: 26px;
+  border: none; background: transparent; color: #57606a; font-size: 20px;
+  line-height: 1; cursor: pointer; border-radius: 6px; padding: 0;
+}
+#wlr-close:hover { background: #f0f1f3; color: #1f2328; }
+#wlr-panel label { display: block; margin: 8px 0 2px; font-weight: 600; color: #444; }
+#wlr-panel input, #wlr-panel select, #wlr-panel textarea {
+  width: 100%; box-sizing: border-box; padding: 5px 7px; font: inherit;
+  border: 1px solid #ccc; border-radius: 4px;
+}
+#wlr-panel textarea { min-height: 64px; resize: vertical; }
+#wlr-panel .wlr-quote {
+  background: #f6f8fa; border-left: 3px solid #0969da; padding: 6px 8px;
+  margin: 4px 0 8px; font-size: 12px; color: #444; max-height: 80px; overflow: auto;
+}
+#wlr-panel .wlr-actions { display: flex; gap: 8px; margin-top: 12px; }
+#wlr-panel .wlr-actions button { flex: 1; padding: 7px; border-radius: 5px; cursor: pointer; font: inherit; border: 1px solid #ccc; }
+#wlr-save { background: #1f883d; color: #fff; border-color: #1f883d !important; font-weight: 600; }
+#wlr-del  { background: #fff; color: #cf222e; border-color: #cf222e !important; }
+#wlr-mark-reviewed { background: #fff; color: #0969da; border-color: #0969da !important; font-size: 12px; }
+#wlr-status-msg { margin-top: 8px; font-size: 12px; color: #57606a; min-height: 16px; }
+
+/* Unobtrusive data-collection / attribution notice in the panel footer. */
+#wlr-panel .wlr-notice {
+  margin: 8px 0 0; padding-top: 8px; border-top: 1px solid #eaeef2;
+  font-size: 11px; line-height: 1.4; color: #8c959f;
+}
+
+/* Per-field help line shown under each label. Short, conventions + examples. */
+#wlr-panel .wlr-help {
+  display: block;
+  font-size: 11px;
+  color: #57606a;
+  margin: -2px 0 4px;
+  line-height: 1.4;
+  font-weight: 400;
+}
+
+/* First-edit onboarding card. Shown once per browser (localStorage flag). */
+#wlr-intro {
+  position: fixed; inset: 0; z-index: 7000;
+  background: rgba(20,25,35,0.65);
+  display: flex; align-items: center; justify-content: center;
+  padding: 16px;
+  font: 14px -apple-system, sans-serif;
+}
+#wlr-intro .card {
+  background: #fff; border-radius: 12px; padding: 22px 26px;
+  max-width: 480px; box-shadow: 0 8px 32px rgba(0,0,0,0.3); line-height: 1.5;
+}
+#wlr-intro h2 { margin: 0 0 12px; font-size: 18px; }
+#wlr-intro p { margin: 0 0 10px; }
+#wlr-intro ul { padding-left: 1.2em; margin: 8px 0 12px; }
+#wlr-intro li { margin: 6px 0; }
+#wlr-intro code { background: #f6f8fa; padding: 1px 5px; border-radius: 3px; font-size: 0.92em; }
+#wlr-intro .footer {
+  color: #57606a; font-size: 13px; margin-top: 12px;
+  padding-top: 12px; border-top: 1px solid #eaeef2;
+}
+#wlr-intro .actions { display: flex; justify-content: flex-end; gap: 8px; margin-top: 16px; }
+#wlr-intro button {
+  background: #0969da; color: #fff; border: none; border-radius: 6px;
+  padding: 8px 18px; font: inherit; cursor: pointer; font-weight: 500;
+}
+#wlr-intro button:hover { background: #054ea6; }
+
+/* ---- Mobile: turn the side panel into a bottom sheet and let the top bar
+   wrap so the editor is usable on a phone. */
+@media (max-width: 640px) {
+  #wlr-bar {
+    flex-wrap: wrap; height: auto; padding: 6px 12px; gap: 8px;
+  }
+  #wlr-panel {
+    left: 0; right: 0; bottom: 0; top: auto; width: auto;
+    max-height: 70vh; border-radius: 12px 12px 0 0;
+  }
+  #wlr-close { top: 10px; right: 10px; width: 32px; height: 32px; font-size: 22px; }
+}

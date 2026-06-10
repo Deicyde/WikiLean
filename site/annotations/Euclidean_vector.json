@@ -1,0 +1,907 @@
+{
+  "slug": "Euclidean_vector",
+  "wikipedia_title": "Euclidean vector",
+  "display_title": "Euclidean vector",
+  "schema_version": 3,
+  "annotation_style": "theorem_article",
+  "annotations": [
+    {
+      "kind": "definition",
+      "label": "Euclidean vector",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "is a geometric object that has magnitude (or length ) and direction"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "EuclideanSpace",
+        "module": "Mathlib.Analysis.InnerProductSpace.PiL2",
+        "match_kind": "generalization"
+      },
+      "note": "`EuclideanSpace 𝕜 n := PiLp 2 (n → 𝕜)` formalizes the standard Euclidean space whose elements are Euclidean vectors.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Vector quantity",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "A vector quantity is a vector-valued physical quantity"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No Mathlib formalization of physical vector quantities was found.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Equipollence of bipoints",
+      "anchor": {
+        "section": "History",
+        "snippet": "he made equipollent any pair of parallel line segments of the same length and orientation"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Grepping for `equipoll`/`bipoint` returns no relevant Mathlib decls.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Bound vector",
+      "anchor": {
+        "section": "Overview",
+        "snippet": "such a condition may be emphasized calling the result a bound vector"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No `BoundVector` notion was found; affine spaces give points but no explicit bound-vector definition.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Free vector",
+      "anchor": {
+        "section": "Overview",
+        "snippet": "the particular initial or terminal points are of no importance, the vector is called a free vector"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "EuclideanSpace",
+        "module": "Mathlib.Analysis.InnerProductSpace.PiL2",
+        "match_kind": "generalization"
+      },
+      "note": "Vectors in Mathlib (e.g. elements of `EuclideanSpace`) are inherently free vectors with no associated base point.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Equipollent arrows (same free vector)",
+      "anchor": {
+        "section": "Overview",
+        "snippet": "represent the same free vector if they have the same magnitude and direction"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No formalization of equipollence of geometric arrows was found in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Vector as equivalence class of equipollent bipoints",
+      "anchor": {
+        "section": "Further information",
+        "snippet": "vectors were introduced (during the 19th century) as equivalence classes under equipollence of ordered pairs of points"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This historical quotient construction is not present; Mathlib defines vectors via the abstract module/affine-space axioms instead.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Euclidean space via inner product space and group action",
+      "anchor": {
+        "section": "Further information",
+        "snippet": "a Euclidean space E is defined as a set to which is associated an inner product space of finite dimension over the reals"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "InnerProductSpace",
+        "module": "Mathlib.Analysis.InnerProductSpace.Defs",
+        "match_kind": "generalization"
+      },
+      "note": "`InnerProductSpace 𝕜 E` together with finite-dimensionality captures this definition; the affine variant is given by `EuclideanAffineSpace`/`AffineSpace`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Euclidean vector without reference to a Euclidean space",
+      "anchor": {
+        "section": "Further information",
+        "snippet": "a Euclidean vector is an element of a normed vector space of finite dimension over the reals"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "EuclideanSpace",
+        "module": "Mathlib.Analysis.InnerProductSpace.PiL2",
+        "match_kind": "exact"
+      },
+      "note": "Captured by `EuclideanSpace ℝ (Fin n)`, a finite-dimensional real normed/inner product space.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Every n-dim Euclidean space is isomorphic to standard",
+      "anchor": {
+        "section": "Further information",
+        "snippet": "every Euclidean space of dimension n is isomorphic to the Euclidean space"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "stdOrthonormalBasis",
+        "module": "Mathlib.Analysis.InnerProductSpace.PiL2",
+        "match_kind": "exact"
+      },
+      "note": "`stdOrthonormalBasis 𝕜 E` yields `E ≃ₗᵢ[𝕜] EuclideanSpace 𝕜 (Fin (finrank 𝕜 E))` for any finite-dimensional inner product space.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Force as a one-dimensional vector",
+      "anchor": {
+        "section": "Examples in one dimension",
+        "snippet": "consider a rightward force F of 15 newtons"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Physical examples (forces in newtons) are not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Velocity as a vector",
+      "anchor": {
+        "section": "In physics and engineering",
+        "snippet": "the velocity 5 meters per second upward could be represented by the vector"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Velocity as a physical example is not present in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Bound vector from two Cartesian points",
+      "anchor": {
+        "section": "In Cartesian space",
+        "snippet": "the points A = (1, 0, 0) and B = (0, 1, 0) in space determine the bound vector"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "VSub.vsub",
+        "module": "Mathlib.Algebra.AddTorsor.Defs",
+        "match_kind": "generalization"
+      },
+      "note": "Affine `-ᵥ` produces a vector from two points, but no decl for this specific Cartesian example is found.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Sum of two free vectors in coordinates",
+      "anchor": {
+        "section": "In Cartesian space",
+        "snippet": "the sum of the two (free) vectors (1, 2, 3) and (−2, 0, 4)"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Pi.add_apply",
+        "module": "Mathlib.Data.Pi.Algebra",
+        "match_kind": "generalization"
+      },
+      "note": "Componentwise addition of vectors in `Fin n → ℝ` / `EuclideanSpace` is given by `Pi.add_apply`.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "In Cartesian space",
+          "snippet": "the sum of the two (free) vectors (1, 2, 3) and (−2, 0, 4)"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle (1,2,3)+(-2,0,4)=(1-2,2+0,3+4)=(-1,2,7)\\,.}"
+        }
+      ]
+    },
+    {
+      "kind": "definition",
+      "label": "Covariant and contravariant vectors",
+      "anchor": {
+        "section": "Generalizations",
+        "snippet": "The vector is called covariant or contravariant , depending on how the transformation"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No covariant/contravariant vector classification by transformation behavior was found in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Equality of vectors",
+      "anchor": {
+        "section": "Equality",
+        "snippet": "Two vectors are said to be equal if they have the same magnitude and direction"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Eq",
+        "module": "Init.Prelude",
+        "match_kind": "generalization"
+      },
+      "note": "Equality of vectors is just propositional equality `Eq` in Lean core.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Equality",
+          "snippet": "Two vectors are said to be equal if they have the same magnitude and direction"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle {\\mathbf {a} }=a_{1}{\\mathbf {e} }_{1}+a_{2}{\\mathbf {e} }_{2}+a_{3}{\\mathbf {e} }_{3}}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle {\\mathbf {b} }=b_{1}{\\mathbf {e} }_{1}+b_{2}{\\mathbf {e} }_{2}+b_{3}{\\mathbf {e} }_{3}}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle a_{1}=b_{1},\\quad a_{2}=b_{2},\\quad a_{3}=b_{3}.\\,}"
+        }
+      ]
+    },
+    {
+      "kind": "definition",
+      "label": "Opposite vectors",
+      "anchor": {
+        "section": "Opposite, parallel, and antiparallel vectors",
+        "snippet": "Two vectors are opposite if they have the same magnitude but opposite direction"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Neg.neg",
+        "module": "Init.Prelude",
+        "match_kind": "generalization"
+      },
+      "note": "Opposite vector is the additive inverse `-v` in any `AddGroup`/module.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Equidirectional, parallel, antiparallel vectors",
+      "anchor": {
+        "section": "Opposite, parallel, and antiparallel vectors",
+        "snippet": "Two vectors are equidirectional (or codirectional ) if they have the same direction but not necessarily the same magnitude"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "SameRay",
+        "module": "Mathlib.LinearAlgebra.Ray",
+        "match_kind": "generalization"
+      },
+      "note": "`SameRay` captures codirectionality (equidirectional vectors); antiparallel can be expressed as `SameRay R x (-y)`, but no dedicated `Parallel`/`Antiparallel` predicate is provided.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Vector addition",
+      "anchor": {
+        "section": "Addition and subtraction",
+        "snippet": "The sum of a and b of two vectors may be defined as"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "HAdd.hAdd",
+        "module": "Init.Prelude",
+        "match_kind": "generalization"
+      },
+      "note": "Vector addition is the `Add` operation of the underlying `AddCommGroup` / module.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Addition and subtraction",
+          "snippet": "The sum of a and b of two vectors may be defined as"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\mathbf {a} +\\mathbf {b} =(a_{1}+b_{1})\\mathbf {e} _{1}+(a_{2}+b_{2})\\mathbf {e} _{2}+(a_{3}+b_{3})\\mathbf {e} _{3}.}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Commutativity and associativity of vector addition",
+      "anchor": {
+        "section": "Addition and subtraction",
+        "snippet": "One can check geometrically that a + b = b + a and ( a + b ) + c = a + ( b + c )"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "add_comm",
+        "module": "Mathlib.Algebra.Group.Defs",
+        "match_kind": "generalization"
+      },
+      "note": "`add_comm` and `add_assoc` hold in any `AddCommGroup`, hence on `EuclideanSpace`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Vector subtraction",
+      "anchor": {
+        "section": "Addition and subtraction",
+        "snippet": "The difference of a and b is"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "HSub.hSub",
+        "module": "Init.Prelude",
+        "match_kind": "generalization"
+      },
+      "note": "Vector subtraction is the `Sub` operation on the underlying additive group.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Scalar multiplication",
+      "anchor": {
+        "section": "Scalar multiplication",
+        "snippet": "The operation of multiplying a vector by a scalar is called scalar multiplication"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "SMul.smul",
+        "module": "Mathlib.Algebra.SMul",
+        "match_kind": "generalization"
+      },
+      "note": "Scalar multiplication is the `SMul`/`Module` action, present on any vector space including `EuclideanSpace`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Distributivity of scalar multiplication over addition",
+      "anchor": {
+        "section": "Scalar multiplication",
+        "snippet": "Scalar multiplication is distributive over vector addition in the following sense"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "smul_add",
+        "module": "Mathlib.Algebra.Module.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`smul_add` (and `add_smul`) directly state distributivity of scalar multiplication over vector and scalar addition.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Length / norm of a vector",
+      "anchor": {
+        "section": "Length",
+        "snippet": "The length , magnitude or norm of the vector a is denoted by"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Norm.norm",
+        "module": "Mathlib.Analysis.Normed.Group.Basic",
+        "match_kind": "generalization"
+      },
+      "note": "The norm `‖·‖` from `NormedAddCommGroup`/`EuclideanSpace.norm_eq` formalizes the length of a vector.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Length equals square root of dot product with itself",
+      "anchor": {
+        "section": "Length",
+        "snippet": "This happens to be equal to the square root of the dot product"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "norm_eq_sqrt_re_inner",
+        "module": "Mathlib.Analysis.InnerProductSpace.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`norm_eq_sqrt_re_inner` states `‖x‖ = √(re ⟪x, x⟫)`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Unit vector",
+      "anchor": {
+        "section": "Unit vector",
+        "snippet": "A unit vector is any vector with a length of one"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Metric.sphere",
+        "module": "Mathlib.Topology.MetricSpace.Basic",
+        "match_kind": "generalization"
+      },
+      "note": "Vectors with `‖v‖ = 1` appear pervasively (e.g. `OrthonormalBasis.norm_eq_one`, `Metric.sphere 0 1`) but Mathlib has no standalone `UnitVector` type.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Normalizing a vector",
+      "anchor": {
+        "section": "Unit vector",
+        "snippet": "To normalize a vector a = ( a 1 , a 2 , a 3 ) , scale the vector by the reciprocal of its length"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "NormedSpace.normalize",
+        "module": "Mathlib.Analysis.Normed.Module.Normalize",
+        "match_kind": "exact"
+      },
+      "note": "`NormedSpace.normalize x := ‖x‖⁻¹ • x` exactly matches the article.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Zero vector",
+      "anchor": {
+        "section": "Zero vector",
+        "snippet": "The zero vector is the vector with length zero"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Zero.zero",
+        "module": "Init.Prelude",
+        "match_kind": "generalization"
+      },
+      "note": "The zero element of an `AddCommGroup`; its norm is zero by `norm_zero`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Additive identity property of zero vector",
+      "anchor": {
+        "section": "Zero vector",
+        "snippet": "The sum of the zero vector with any vector a is a"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "zero_add",
+        "module": "Mathlib.Algebra.Group.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`zero_add a : 0 + a = a` (and `add_zero`) hold in any `AddMonoid`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Dot product",
+      "anchor": {
+        "section": "Dot product",
+        "snippet": "The dot product of two vectors a and b (sometimes called the inner product"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Inner",
+        "module": "Mathlib.Analysis.InnerProductSpace.Defs",
+        "match_kind": "generalization"
+      },
+      "note": "The inner product on `EuclideanSpace` (via the `Inner` class / `PiLp.inner_apply`) is exactly the dot product over ℝ.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Dot product in components",
+      "anchor": {
+        "section": "Dot product",
+        "snippet": "The dot product can also be defined as the sum of the products of the components of each vector"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "PiLp.inner_apply",
+        "module": "Mathlib.Analysis.InnerProductSpace.PiL2",
+        "match_kind": "exact"
+      },
+      "note": "`PiLp.inner_apply` expresses the Euclidean inner product as the (conjugated) componentwise sum.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Cross product",
+      "anchor": {
+        "section": "Cross product",
+        "snippet": "The cross product, denoted a × b , is a vector perpendicular to both a and b"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "crossProduct",
+        "module": "Mathlib.LinearAlgebra.CrossProduct",
+        "match_kind": "exact"
+      },
+      "note": "`crossProduct : (Fin 3 → R) →ₗ[R] (Fin 3 → R) →ₗ[R] Fin 3 → R` formalizes the 3D cross product; perpendicularity is `dot_self_cross`/`dot_cross_self`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Length of cross product is parallelogram area",
+      "anchor": {
+        "section": "Cross product",
+        "snippet": "The length of a × b can be interpreted as the area of the parallelogram having a and b as sides"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "norm_crossProduct",
+        "module": "Mathlib.Geometry.Euclidean.Angle.Unoriented.CrossProduct",
+        "match_kind": "exact"
+      },
+      "note": "The identity `‖a ⨯₃ b‖ = ‖a‖ * ‖b‖ * sin (angle a b)` is formalized, but Mathlib does not separately define the parallelogram's area to equate with it.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Scalar triple product",
+      "anchor": {
+        "section": "Scalar triple product",
+        "snippet": "The scalar triple product is sometimes denoted by ( a b c ) and defined as"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "triple_product_eq_det",
+        "module": "Mathlib.LinearAlgebra.CrossProduct",
+        "match_kind": "exact"
+      },
+      "note": "`u ⬝ᵥ v ⨯₃ w` is the scalar triple product, with `triple_product_eq_det` and `triple_product_permutation`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Box product equals parallelepiped volume",
+      "anchor": {
+        "section": "Scalar triple product",
+        "snippet": "the absolute value of the box product is the volume of the parallelepiped"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No Mathlib statement equating `|u ⬝ᵥ v ⨯₃ w|` with the (Lebesgue) volume of the spanned parallelepiped was found.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Triple product zero iff linearly dependent",
+      "anchor": {
+        "section": "Scalar triple product",
+        "snippet": "the scalar triple product is zero if and only if the three vectors are linearly dependent"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Matrix.det_eq_zero_iff_not_linearIndependent_rows",
+        "module": "Mathlib.LinearAlgebra.Matrix.NonsingularInverse",
+        "match_kind": "generalization"
+      },
+      "note": "Combining `triple_product_eq_det` with determinant-linear-dependence characterizations gives the result, but it is not stated explicitly for the triple product.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Triple product positive iff right-handed",
+      "anchor": {
+        "section": "Scalar triple product",
+        "snippet": "the box product is positive if and only if the three vectors a , b and c are right-handed"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Orientation by sign of det exists abstractly (`Orientation`) but no theorem ties triple-product positivity to right-handedness.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Triple product as 3x3 determinant",
+      "anchor": {
+        "section": "Scalar triple product",
+        "snippet": "the scalar triple product is simply the determinant of the 3-by-3 matrix"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "triple_product_eq_det",
+        "module": "Mathlib.LinearAlgebra.CrossProduct",
+        "match_kind": "exact"
+      },
+      "note": "`triple_product_eq_det : u ⬝ᵥ v ⨯₃ w = Matrix.det ![u, v, w]` is exactly this statement.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Scalar triple product",
+          "snippet": "the scalar triple product is simply the determinant of the 3-by-3 matrix"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle (\\mathbf {a} \\ \\mathbf {b} \\ \\mathbf {c} )={\\begin{vmatrix}a_{1}&amp;a_{2}&amp;a_{3}\\\\b_{1}&amp;b_{2}&amp;b_{3}\\\\c_{1}&amp;c_{2}&amp;c_{3}\\\\\\end{vmatrix}}}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Triple product multilinear and antisymmetric",
+      "anchor": {
+        "section": "Scalar triple product",
+        "snippet": "The scalar triple product is linear in all three entries and anti-symmetric"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Matrix.det_row_alternating",
+        "module": "Mathlib.LinearAlgebra.Matrix.Determinant.Basic",
+        "match_kind": "generalization"
+      },
+      "note": "Multilinearity/alternation follow via `triple_product_eq_det` from determinant properties, but are not stated directly on the triple product.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Scalar triple product",
+          "snippet": "The scalar triple product is linear in all three entries and anti-symmetric"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle (\\mathbf {a} \\ \\mathbf {b} \\ \\mathbf {c} )=(\\mathbf {c} \\ \\mathbf {a} \\ \\mathbf {b} )=(\\mathbf {b} \\ \\mathbf {c} \\ \\mathbf {a} )=-(\\mathbf {a} \\ \\mathbf {c} \\ \\mathbf {b} )=-(\\mathbf {b} \\ \\mathbf {a} \\ \\mathbf {c} )=-(\\mathbf {c} \\ \\mathbf {b} \\ \\mathbf {a} ).}"
+        }
+      ]
+    },
+    {
+      "kind": "definition",
+      "label": "Direction cosine matrix",
+      "anchor": {
+        "section": "Conversion between multiple Cartesian bases",
+        "snippet": "the matrix containing all the c jk is known as the \" transformation matrix from e to n \""
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No `directionCosine`/DCM declaration found in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Properties of a direction cosine matrix",
+      "anchor": {
+        "section": "Conversion between multiple Cartesian bases",
+        "snippet": "The properties of a direction cosine matrix, C are"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No DCM-specific properties are formalized; orthogonal-matrix facts in `Mathlib.LinearAlgebra.UnitaryGroup` are at a more abstract level.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Seven-dimensional cross product",
+      "anchor": {
+        "section": "Other dimensions",
+        "snippet": "A seven-dimensional cross product is similar to the cross product"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Grep for `seven`/`cross7` finds no 7-dimensional cross product in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Position vector",
+      "anchor": {
+        "section": "Position, velocity and acceleration",
+        "snippet": "can be represented as a position vector whose base point is the origin"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "VSub.vsub",
+        "module": "Mathlib.Algebra.AddTorsor.Defs",
+        "match_kind": "generalization"
+      },
+      "note": "A position vector relative to an origin is `p -ᵥ o` in an affine space, but Mathlib has no specific `positionVector` name.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Position, velocity and acceleration",
+          "snippet": "can be represented as a position vector whose base point is the origin"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle {\\mathbf {x} }=x_{1}{\\mathbf {e} }_{1}+x_{2}{\\mathbf {e} }_{2}+x_{3}{\\mathbf {e} }_{3}.}"
+        }
+      ]
+    },
+    {
+      "kind": "definition",
+      "label": "Displacement vector",
+      "anchor": {
+        "section": "Position, velocity and acceleration",
+        "snippet": "their displacement is a vector"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "VSub.vsub",
+        "module": "Mathlib.Algebra.AddTorsor.Defs",
+        "match_kind": "generalization"
+      },
+      "note": "`q -ᵥ p` in an `AddTorsor`/`AffineSpace` gives the displacement vector between two points.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Position, velocity and acceleration",
+          "snippet": "their displacement is a vector"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle {\\mathbf {y} }-{\\mathbf {x} }=(y_{1}-x_{1}){\\mathbf {e} }_{1}+(y_{2}-x_{2}){\\mathbf {e} }_{2}+(y_{3}-x_{3}){\\mathbf {e} }_{3}.}"
+        }
+      ]
+    },
+    {
+      "kind": "definition",
+      "label": "Velocity",
+      "anchor": {
+        "section": "Position, velocity and acceleration",
+        "snippet": "The velocity v of a point or particle is a vector, its length gives the speed"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has the abstract derivative `deriv`/`fderiv`, but no `Velocity` of a particle trajectory.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Position, velocity and acceleration",
+          "snippet": "The velocity v of a point or particle is a vector, its length gives the speed"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle {\\mathbf {x} }_{t}=t{\\mathbf {v} }+{\\mathbf {x} }_{0},}"
+        }
+      ]
+    },
+    {
+      "kind": "definition",
+      "label": "Acceleration",
+      "anchor": {
+        "section": "Position, velocity and acceleration",
+        "snippet": "Acceleration a of a point is vector which is the time derivative of velocity"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Acceleration as the second time-derivative of position is not formalized as a named concept in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Work as dot product",
+      "anchor": {
+        "section": "Force, energy, work",
+        "snippet": "Work is the dot product of force and displacement"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mechanical work is a physics concept absent from Mathlib.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Force, energy, work",
+          "snippet": "Work is the dot product of force and displacement"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle W={\\mathbf {F} }\\cdot ({\\mathbf {x} }_{2}-{\\mathbf {x} }_{1}).}"
+        }
+      ]
+    },
+    {
+      "kind": "definition",
+      "label": "Contravariant vector via transformation rule",
+      "anchor": {
+        "section": "Vectors, pseudovectors, and transformations",
+        "snippet": "A contravariant vector is required to have components that \"transform opposite to the basis\""
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No covariant/contravariant transformation rule formalization was found.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Pseudovector / axial vector",
+      "anchor": {
+        "section": "Vectors, pseudovectors, and transformations",
+        "snippet": "A vector which gains a minus sign when the orientation of space changes is called a pseudovector"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No `pseudovector`/`axialVector` notion is present in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Angular velocity as pseudovector",
+      "anchor": {
+        "section": "Vectors, pseudovectors, and transformations",
+        "snippet": "One example of a pseudovector is angular velocity"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Angular velocity as a physical pseudovector example is not formalized.",
+      "provenance": "ai"
+    }
+  ]
+}

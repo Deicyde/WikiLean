@@ -1,0 +1,297 @@
+{
+  "slug": "3",
+  "wikipedia_title": "3",
+  "display_title": "3",
+  "schema_version": 3,
+  "annotation_style": "theorem_article",
+  "annotations": [
+    {
+      "kind": "definition",
+      "label": "Divisibility rule of 3",
+      "anchor": {
+        "section": "Divisibility rule",
+        "snippet": "A natural number is divisible by 3 if the sum of its digits in base 10 is also divisible by 3."
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Nat.three_dvd_iff",
+        "module": "Mathlib.Data.Nat.Digits.Div",
+        "match_kind": "exact"
+      },
+      "note": "`Nat.three_dvd_iff` states `3 ∣ n ↔ 3 ∣ (digits 10 n).sum`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Reverse/permutation divisible by 3",
+      "anchor": {
+        "section": "Divisibility rule",
+        "snippet": "the reverse of any number that is divisible by three (or indeed, any permutation of its digits) is also divisible by three"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Nat.three_dvd_iff",
+        "module": "Mathlib.Data.Nat.Digits.Div",
+        "match_kind": "invocation"
+      },
+      "note": "Mathlib has the divisibility-by-3 ↔ digit-sum criterion, from which permutation invariance follows, but no statement specifically about reversed/permuted digits.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Divisibility rule generalizes to bases ≡ 1 (mod 3)",
+      "anchor": {
+        "section": "Divisibility rule",
+        "snippet": "This divisibility rule works in any positional numeral system whose base divided by three leaves a remainder of one"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Nat.dvd_iff_dvd_digits_sum",
+        "module": "Mathlib.Data.Nat.Digits.Div",
+        "match_kind": "generalization"
+      },
+      "note": "`Nat.dvd_iff_dvd_digits_sum b b' (h : b' % b = 1)` gives `b ∣ n ↔ b ∣ (digits b' n).sum` for any base `b'` with `b' ≡ 1 (mod b)`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "3 is the second smallest prime, first odd prime",
+      "anchor": {
+        "section": "Properties",
+        "snippet": "3 is the second smallest prime number and the first odd prime number."
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has `Nat.prime_three` but no statement ranking it as the second prime or first odd prime.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "3 is twin prime with 5, cousin prime with 7",
+      "anchor": {
+        "section": "Properties",
+        "snippet": "It is a twin prime with 5 , and a cousin prime with 7"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib does not define twin primes or cousin primes.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Triangle is smallest non-self-intersecting polygon",
+      "anchor": {
+        "section": "Properties",
+        "snippet": "It is the smallest non-self-intersecting polygon and the only polygon not to have proper diagonals"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has `Polygon` and `Affine.Triangle` but no theorem that 3 is the minimum vertex count for non-self-intersecting polygons.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "3 is the first Mersenne prime",
+      "anchor": {
+        "section": "Properties",
+        "snippet": "3 is the first Mersenne prime"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "mersenne",
+        "module": "Mathlib.NumberTheory.LucasLehmer",
+        "match_kind": "invocation"
+      },
+      "note": "Mathlib defines `mersenne` (with `mersenne 2 = 3`) and primality tests, but does not state that 3 is the smallest Mersenne prime.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "3 is the first of five known Fermat primes",
+      "anchor": {
+        "section": "Properties",
+        "snippet": "It is also the first of five known Fermat primes"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Nat.fermatNumber",
+        "module": "Mathlib.NumberTheory.Fermat",
+        "match_kind": "invocation"
+      },
+      "note": "Mathlib defines `Nat.fermatNumber` with `fermatNumber_zero : fermatNumber 0 = 3`, but does not enumerate the known Fermat primes.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "3 is the second Fibonacci/Lucas/Sophie Germain/factorial prime",
+      "anchor": {
+        "section": "Properties",
+        "snippet": "It is the second Fibonacci prime (and the second Lucas prime ), the second Sophie Germain prime , and the second factorial prime"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has no definitions of Sophie Germain primes, Fibonacci primes, Lucas primes, or factorial primes.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "3 is the second and only prime triangular number",
+      "anchor": {
+        "section": "Properties",
+        "snippet": "3 is the second and only prime triangular number"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has no definition of triangular numbers as such and no statement classifying prime triangular numbers.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Gauss's three-triangular-number theorem",
+      "anchor": {
+        "section": "Properties",
+        "snippet": "Carl Friedrich Gauss proved that every integer is the sum of at most three triangular numbers"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib does not contain Gauss's three-triangular-number theorem.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "3 is the only prime one less than a perfect square",
+      "anchor": {
+        "section": "Properties",
+        "snippet": "Three is the only prime which is one less than a perfect square"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No direct statement found that 3 is the unique prime of the form n²−1.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Integers modulo 3 form the smallest finite field of odd characteristic",
+      "anchor": {
+        "section": "Properties",
+        "snippet": "The integers modulo 3 form the finite field"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "ZMod.instField",
+        "module": "Mathlib.Algebra.Field.ZMod",
+        "match_kind": "generalization"
+      },
+      "note": "`Mathlib/Algebra/Field/ZMod.lean` provides `instance : Field (ZMod p)` for prime `p`, but minimality among odd-characteristic finite fields is not separately stated.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Elliptic curves in characteristics 2 and 3",
+      "anchor": {
+        "section": "Properties",
+        "snippet": "elliptic curves in characteristics 2 and 3 do not always admit short Weierstrass equations"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "WeierstrassCurve",
+        "module": "Mathlib.AlgebraicGeometry.EllipticCurve.Weierstrass",
+        "match_kind": "invocation"
+      },
+      "note": "Mathlib defines general `WeierstrassCurve` over any commutative ring but does not isolate the characteristic-2/3 obstruction to a short form.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Three non-collinear points determine a plane and a circle",
+      "anchor": {
+        "section": "Geometry",
+        "snippet": "Three non-collinear points determine a unique plane in a three dimensional affine space, and a unique circle in a Euclidean plane."
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Affine.Simplex.circumcenter",
+        "module": "Mathlib.Geometry.Euclidean.Circumcenter",
+        "match_kind": "invocation"
+      },
+      "note": "Mathlib defines `circumcenter`/`circumsphere` of an affinely independent simplex (including triangles), giving the unique circle through three non-collinear points, but the plane-determination statement is not packaged as a named lemma.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Rotational symmetry of order 3",
+      "anchor": {
+        "section": "Geometry",
+        "snippet": "An object has rotational symmetry of order 3 if it is unchanged by a rotation of one third of a full turn, or 120 degrees."
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has rotation maps but no general definition of an object's rotational symmetry of order n.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Triangle as a polygon with three edges and vertices",
+      "anchor": {
+        "section": "Engineering",
+        "snippet": "The triangle , a polygon with three edges and three vertices , is the most stable physical shape."
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Affine.Triangle",
+        "module": "Mathlib.LinearAlgebra.AffineSpace.Simplex.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`Affine.Triangle k P := Simplex k P 2` defines a triangle as three affinely independent points.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Pythagorean characterization of the triad",
+      "anchor": {
+        "section": "Religion and beliefs",
+        "snippet": "the number 3, which they called triad , is the only number to equal the sum of all the terms below it, and the only number whose sum with those below equals the product of them and itself"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This Pythagorean numerological characterization of 3 is not formalized in Mathlib.",
+      "provenance": "ai"
+    }
+  ]
+}

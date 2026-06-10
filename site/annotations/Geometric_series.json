@@ -1,0 +1,409 @@
+{
+  "slug": "Geometric_series",
+  "wikipedia_title": "Geometric series",
+  "display_title": "Geometric series",
+  "schema_version": 3,
+  "annotation_style": "theorem_article",
+  "annotations": [
+    {
+      "kind": "definition",
+      "label": "Geometric series",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "a geometric series is a series summing the terms of an infinite geometric sequence"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "formalMultilinearSeries_geometric",
+        "module": "Mathlib.Analysis.Analytic.Constructions",
+        "match_kind": "generalization"
+      },
+      "note": "Mathlib has no standalone `GeometricSeries` type, but the series `∑ x^n` is encoded via `formalMultilinearSeries_geometric` and via `∑' n, x^n` in summability lemmas.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Geometric mean property of terms",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "Each term in a geometric series is the geometric mean of the term before it and the term after it"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No Mathlib lemma was found stating that each term `a r^n` is the geometric mean of its neighbors `a r^(n-1)` and `a r^(n+1)`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Geometric progression and common ratio",
+      "anchor": {
+        "section": "Definition: finite geometric series",
+        "snippet": "A geometric progression is a sequence obtained from an initial term, producing the next term by multiplying it by a constant from the previous term"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib does not define `GeometricProgression` as a named structure; `fun n => a * r^n` is used directly without a dedicated abstraction.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Finite geometric series",
+      "anchor": {
+        "section": "Definition: finite geometric series",
+        "snippet": "Summing all terms above produces a finite geometric series"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "geom_sum_mul",
+        "module": "Mathlib.Algebra.Ring.GeomSum",
+        "match_kind": "exact"
+      },
+      "note": "The finite geometric sum `∑ i ∈ range n, x^i` is the central object of `Mathlib/Algebra/Ring/GeomSum.lean` and `Mathlib/Algebra/Field/GeomSum.lean`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Closed form for finite geometric series sum",
+      "anchor": {
+        "section": "Definition: finite geometric series",
+        "snippet": "the sum of a finite geometric series"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "geom_sum_eq",
+        "module": "Mathlib.Algebra.Field.GeomSum",
+        "match_kind": "exact"
+      },
+      "note": "`geom_sum_eq` states `∑ i ∈ range n, x^i = (x^n - 1)/(x - 1)` for `x ≠ 1` in a field.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Infinite geometric series",
+      "anchor": {
+        "section": "Infinite geometric series and convergence",
+        "snippet": "When there are infinitely many terms in a geometric progression, the geometric series is"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "hasSum_geometric_of_norm_lt_one",
+        "module": "Mathlib.Analysis.SpecificLimits.Normed",
+        "match_kind": "exact"
+      },
+      "note": "The infinite geometric series is captured as `∑' n, ξ^n` with summability/value lemmas like `hasSum_geometric_of_norm_lt_one` and `tsum_geometric_of_norm_lt_one`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Grandi's series as divergent geometric series",
+      "anchor": {
+        "section": "Infinite geometric series and convergence",
+        "snippet": "Grandi's series is a divergent geometric series"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "A search for `Grandi` in Mathlib returned no matches; the divergence of `∑ (-1)^n` is not stated as a named result.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Repeated decimal as geometric series",
+      "anchor": {
+        "section": "Infinite geometric series and convergence",
+        "snippet": "the repeated decimal fraction"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Real.ofDigits",
+        "module": "Mathlib.Analysis.Real.OfDigits",
+        "match_kind": "generalization"
+      },
+      "note": "`Real.ofDigits` formalizes `0.d₀d₁d₂... = ∑' n, dₙ/b^(n+1)` via a geometric-like sum, but there is no dedicated lemma identifying repeating decimals with a geometric-series closed form.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Convergence criterion by common ratio magnitude",
+      "anchor": {
+        "section": "Infinite geometric series and convergence",
+        "snippet": "the terms of the series approach zero (becoming smaller and smaller in magnitude) and the sequence of partial sums"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "summable_geometric_iff_norm_lt_one",
+        "module": "Mathlib.Analysis.SpecificLimits.Normed",
+        "match_kind": "exact"
+      },
+      "note": "`summable_geometric_iff_norm_lt_one` characterizes summability of `ξ^n` exactly by `‖ξ‖ < 1`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Root of unity ratio gives periodic partial sums",
+      "anchor": {
+        "section": "Infinite geometric series and convergence",
+        "snippet": "When the common ratio is a root of unity"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No Mathlib lemma states periodicity of geometric partial sums when `r` is a root of unity.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Rate of convergence of geometric series",
+      "anchor": {
+        "section": "Infinite geometric series and convergence",
+        "snippet": "The rate of convergence shows how the sequence quickly approaches its limit"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No specific Mathlib statement about the rate (`|r|^n` decay) of geometric-series convergence as a named result was found.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Pattern of convergence by sign/argument",
+      "anchor": {
+        "section": "Infinite geometric series and convergence",
+        "snippet": "The pattern of convergence also depends on the sign or complex argument of the common ratio"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No Mathlib statement classifies the qualitative convergence pattern (monotone vs alternating vs spiraling) of geometric series by `arg r`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Closed-form partial sum formula",
+      "anchor": {
+        "section": "Proof of convergence",
+        "snippet": "The partial sum of the first"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "geom_sum_eq",
+        "module": "Mathlib.Algebra.Field.GeomSum",
+        "match_kind": "exact"
+      },
+      "note": "`geom_sum_eq` gives `∑ i ∈ range n, x^i = (x^n - 1)/(x - 1)`, the standard closed-form partial sum.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Absolute convergence of infinite geometric series",
+      "anchor": {
+        "section": "Proof of convergence",
+        "snippet": "the absolute value of r must be less than one for this sequence of partial sums to converge to a limit"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "hasSum_geometric_of_norm_lt_one",
+        "module": "Mathlib.Analysis.SpecificLimits.Normed",
+        "match_kind": "exact"
+      },
+      "note": "`hasSum_geometric_of_norm_lt_one` states `HasSum (ξ^·) (1-ξ)⁻¹` when `‖ξ‖ < 1`, which is absolute convergence in normed fields.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Geometric series as a power series",
+      "anchor": {
+        "section": "Connection to the power series",
+        "snippet": "The geometric series can therefore be considered a class of power series in which the sequence of coefficients satisfies"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "formalMultilinearSeries_geometric",
+        "module": "Mathlib.Analysis.Analytic.Constructions",
+        "match_kind": "exact"
+      },
+      "note": "`formalMultilinearSeries_geometric` packages `1 + x + x² + …` as a `FormalMultilinearSeries`, i.e. a power series.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Radius of convergence equals 1",
+      "anchor": {
+        "section": "Connection to the power series",
+        "snippet": "As a power series, the geometric series has a radius of convergence of 1"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "formalMultilinearSeries_geometric_radius",
+        "module": "Mathlib.Analysis.Analytic.Constructions",
+        "match_kind": "exact"
+      },
+      "note": "`formalMultilinearSeries_geometric_radius` proves `(formalMultilinearSeries_geometric 𝕜 A).radius = 1` under `NormOneClass A`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Koch snowflake area via geometric series",
+      "anchor": {
+        "section": "Applications",
+        "snippet": "the geometric series may also be applied in finding the Koch snowflake"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "A search for `Koch`/`snowflake` only turned up `Mathlib/Topology/MetricSpace/Snowflaking.lean` (a different concept); the Koch snowflake area is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Zeno's paradox of walking",
+      "anchor": {
+        "section": "Background",
+        "snippet": "in order to walk from one place to another, one must first walk half the distance there"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Zeno's dichotomy as a worked example is not in Mathlib, although `tsum_geometric_two : ∑' n, (1/2)^n = 2` provides the underlying identity.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Euclid Elements Book IX Proposition 35",
+      "anchor": {
+        "section": "Background",
+        "snippet": "If there is any multitude whatsoever of continually proportional numbers"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "geom_sum_mul",
+        "module": "Mathlib.Algebra.Ring.GeomSum",
+        "match_kind": "exact"
+      },
+      "note": "Euclid IX.35 in modern form is `(∑ i ∈ range n, x^i)·(x - 1) = x^n - 1`, which is exactly `geom_sum_mul`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Archimedes' parabola quadrature",
+      "anchor": {
+        "section": "Background",
+        "snippet": "Archimedes' theorem states that the total area under the parabola"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "A grep for `Archimedes`/`parabola` found no formalization of the parabola area = (4/3)·triangle result.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Two-dimensional geometric series decomposition",
+      "anchor": {
+        "section": "Background",
+        "snippet": "The first dimension is horizontal, in the bottom row, representing the geometric series"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This pedagogical 2D geometric-series picture is not formalized as a Mathlib statement.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Oresme's Gabriel's Staircase sum",
+      "anchor": {
+        "section": "Background",
+        "snippet": "Nicole Oresme"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "hasSum_coe_mul_geometric_of_norm_lt_one",
+        "module": "Mathlib.Analysis.SpecificLimits.Normed",
+        "match_kind": "generalization"
+      },
+      "note": "`hasSum_coe_mul_geometric_of_norm_lt_one` formalizes `∑ n · r^n = r/(1-r)²` for `‖r‖ < 1`, which specializes (at `r = 1/2`) to Oresme's `∑ n/2^n = 2`, but Oresme's exact case is not a named lemma.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Geometric series over rings, fields, semirings",
+      "anchor": {
+        "section": "Beyond real and complex numbers",
+        "snippet": "it is natural, in the context of modern algebra , to define geometric series with parameters from any ring or field"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "geom_sum_mul",
+        "module": "Mathlib.Algebra.Ring.GeomSum",
+        "match_kind": "exact"
+      },
+      "note": "`geom_sum_mul` and the rest of `Mathlib/Algebra/Ring/GeomSum.lean` develop the finite geometric series over an arbitrary (commutative) ring.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "2-adic convergence of geometric series",
+      "anchor": {
+        "section": "Beyond real and complex numbers",
+        "snippet": "in the convergence of the series"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "summable_geometric_of_norm_lt_one",
+        "module": "Mathlib.Analysis.SpecificLimits.Normed",
+        "match_kind": "generalization"
+      },
+      "note": "The general `summable_geometric_of_norm_lt_one` for `HasSummableGeomSeries` normed rings instantiates to the p-adic case, but no specific 2-adic geometric-series example is recorded.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Non-commutative geometric series variants",
+      "anchor": {
+        "section": "Beyond real and complex numbers",
+        "snippet": "When the multiplication of the parameters is not commutative"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "geom_sum_mul",
+        "module": "Mathlib.Algebra.Ring.GeomSum",
+        "match_kind": "exact"
+      },
+      "note": "`geom_sum_mul` and `Commute.geom_sum₂_mul` in `Mathlib/Algebra/Ring/GeomSum.lean` are stated for general (possibly non-commutative) rings.",
+      "provenance": "ai"
+    }
+  ]
+}

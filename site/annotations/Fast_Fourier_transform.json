@@ -1,0 +1,457 @@
+{
+  "slug": "Fast_Fourier_transform",
+  "wikipedia_title": "Fast Fourier transform",
+  "display_title": "Fast Fourier transform",
+  "schema_version": 3,
+  "annotation_style": "theorem_article",
+  "annotations": [
+    {
+      "kind": "definition",
+      "label": "Discrete Fourier transform (DFT)",
+      "anchor": {
+        "section": "Definition",
+        "snippet": "The DFT is defined by the formula"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "ZMod.dft",
+        "module": "Mathlib.Analysis.Fourier.ZMod",
+        "match_kind": "exact"
+      },
+      "note": "`ZMod.dft` defines the discrete Fourier transform on `ZMod N` via the standard additive character, matching the DFT formula.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Fast Fourier transform (FFT)",
+      "anchor": {
+        "section": "Definition",
+        "snippet": "An FFT is any method to compute the same results"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has no FFT algorithm or computational complexity formalization; only the mathematical DFT is defined.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Direct DFT evaluation cost",
+      "anchor": {
+        "section": "Definition",
+        "snippet": "Evaluating this definition directly requires"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib does not formalize arithmetic operation counts or computational complexity of the DFT.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Cooley–Tukey algorithm",
+      "anchor": {
+        "section": "Cooley–Tukey algorithm",
+        "snippet": "This is a divide-and-conquer algorithm that recursively breaks down a DFT of any composite size"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No grep hits for `Cooley` or `Tukey` in any FFT context in `Mathlib/`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Prime-factor (Good–Thomas) algorithm",
+      "anchor": {
+        "section": "Other FFT algorithms",
+        "snippet": "one can use the prime-factor (Good–Thomas) algorithm (PFA), based on the Chinese remainder theorem"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has CRT but no formalization of the Good–Thomas PFA decomposition of the DFT.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Rader–Brenner algorithm",
+      "anchor": {
+        "section": "Other FFT algorithms",
+        "snippet": "The Rader–Brenner algorithm (1976)"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No occurrences of Rader–Brenner in `Mathlib/`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Bruun's algorithm",
+      "anchor": {
+        "section": "Other FFT algorithms",
+        "snippet": "Bruun's algorithm , in particular, is based on interpreting the FFT as a recursive factorization"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No occurrences of Bruun's algorithm in `Mathlib/`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Winograd FFT algorithm",
+      "anchor": {
+        "section": "Other FFT algorithms",
+        "snippet": "Another polynomial viewpoint is exploited by the Winograd FFT algorithm"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No occurrences of Winograd in `Mathlib/`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Winograd minimal-multiplication bound",
+      "anchor": {
+        "section": "Other FFT algorithms",
+        "snippet": "Winograd showed that the DFT can be computed with only"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib does not formalize multiplication-count lower bounds for the DFT.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Rader's algorithm",
+      "anchor": {
+        "section": "Other FFT algorithms",
+        "snippet": "Rader's algorithm , exploiting the existence of a generator for the multiplicative group modulo prime"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has primitive roots modulo p but no formalization of Rader's prime-size FFT reduction.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Bluestein's chirp-z algorithm",
+      "anchor": {
+        "section": "Other FFT algorithms",
+        "snippet": "Another prime-size FFT is due to L. I. Bluestein, and is sometimes called the chirp-z algorithm"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No occurrences of Bluestein or chirp-z in `Mathlib/`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Hexagonal FFT (HFFT)",
+      "anchor": {
+        "section": "Other FFT algorithms",
+        "snippet": "Hexagonal fast Fourier transform (HFFT) aims at computing an efficient FFT for the hexagonally-sampled data"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No hexagonal FFT formalization in `Mathlib/`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Real-input DFT symmetry",
+      "anchor": {
+        "section": "FFT algorithms specialized for real or symmetric data",
+        "snippet": "the input data for the DFT are purely real, in which case the outputs satisfy the symmetry"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "`Mathlib/Analysis/Fourier/ZMod.lean` has `dft_even_iff`/`dft_odd_iff` but no conjugate-symmetry lemma for real-valued inputs.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Winograd lower bound on real multiplications",
+      "anchor": {
+        "section": "Bounds on complexity and operation counts",
+        "snippet": "tight"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib does not contain complexity lower bounds for arithmetic circuits computing the DFT.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Morgenstern lower bound on additions",
+      "anchor": {
+        "section": "Bounds on complexity and operation counts",
+        "snippet": "Morgenstern"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No formalization of Morgenstern's Ω(N log N) addition lower bound in `Mathlib/`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Pan asynchronicity lower bound",
+      "anchor": {
+        "section": "Bounds on complexity and operation counts",
+        "snippet": "Pan (1986)"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib does not formalize Pan's asynchronicity-based FFT lower bound.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Papadimitriou optimality of Cooley–Tukey additions",
+      "anchor": {
+        "section": "Bounds on complexity and operation counts",
+        "snippet": "Papadimitriou (1979)"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No formalization of Papadimitriou's optimality result for Cooley–Tukey additions.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Split-radix arithmetic complexity",
+      "anchor": {
+        "section": "Bounds on complexity and operation counts",
+        "snippet": "the lowest published count for power-of-two"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib does not formalize split-radix FFTs or their operation counts.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Sparse-input FFT complexity",
+      "anchor": {
+        "section": "Approximations",
+        "snippet": "if the data are sparse"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Sparse FFT complexity (sFFT) is not present in `Mathlib/`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Cooley–Tukey relative error bound",
+      "anchor": {
+        "section": "Accuracy",
+        "snippet": "The upper bound on the relative error for the Cooley–Tukey algorithm"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib does not formalize floating-point error analysis of FFT algorithms.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Fixed-point Cooley–Tukey error growth",
+      "anchor": {
+        "section": "Accuracy",
+        "snippet": "the finite-precision errors accumulated by FFT algorithms are worse"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib does not formalize fixed-point arithmetic error bounds for FFTs.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Randomized FFT correctness verification",
+      "anchor": {
+        "section": "Accuracy",
+        "snippet": "rigorous guarantees can be obtained in"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No randomized FFT verification procedure is formalized in `Mathlib/`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Multidimensional DFT",
+      "anchor": {
+        "section": "Multidimensional FFTs",
+        "snippet": "the multidimensional DFT"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "`Mathlib/Analysis/Fourier/` defines DFT on `ZMod N` but not on products `ZMod N₁ × … × ZMod Nₖ`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Row-column algorithm",
+      "anchor": {
+        "section": "Multidimensional FFTs",
+        "snippet": "the simplest and most common multidimensional DFT algorithm, known as the row-column algorithm"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No row-column multidimensional DFT algorithm is formalized in `Mathlib/`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Vector-radix FFT algorithm",
+      "anchor": {
+        "section": "Multidimensional FFTs",
+        "snippet": "the vector-radix FFT algorithm , which is a generalization of the ordinary Cooley–Tukey algorithm"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No vector-radix FFT in `Mathlib/`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Spherical harmonic FFT on S²",
+      "anchor": {
+        "section": "Other generalizations",
+        "snippet": "generalization to spherical harmonics on the sphere"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has no FFT formalization for spherical-harmonic expansions on the sphere.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Fast folding algorithm",
+      "anchor": {
+        "section": "Other generalizations",
+        "snippet": "The fast folding algorithm is analogous to the FFT"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No fast folding algorithm is formalized in `Mathlib/`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Quantum FFT",
+      "anchor": {
+        "section": "Research areas",
+        "snippet": "This is implemented as a sequence of 1- or 2-bit quantum gates now known as quantum FFT"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib does not formalize quantum circuits or the quantum Fourier transform.",
+      "provenance": "ai"
+    }
+  ]
+}

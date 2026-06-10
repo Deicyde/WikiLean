@@ -1,0 +1,159 @@
+{
+  "slug": "Derivative",
+  "wikipedia_title": "Derivative",
+  "display_title": "Derivative",
+  "schema_version": 1,
+  "source": "claude-agent-sdk/annotate_articles.py",
+  "annotations": [
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle L=\\lim _{h\\to 0}{\\frac {f(a+h)-f(a)}{h}}}"
+      },
+      "status": "formalized",
+      "decl": "deriv",
+      "module": "Mathlib.Analysis.Calculus.Deriv.Basic",
+      "note": "`deriv` is the scalar derivative; `hasDerivAt_iff_tendsto` expresses it as exactly this limit."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\left|L-{\\frac {f(a+h)-f(a)}{h}}\\right|<\\varepsilon ,}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Epsilon-style unfolding of the limit; not a standalone Mathlib declaration."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle {\\frac {f(a+h)-f(a)}{h}}={\\frac {(a+h)^{2}-a^{2}}{h}}={\\frac {a^{2}+2ah+h^{2}-a^{2}}{h}}=2a+h.}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Worked algebraic computation for f(x)=x²; not a stated theorem."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle f'(x)=\\operatorname {st} \\left({\\frac {f(x+dx)-f(x)}{dx}}\\right)}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Mathlib has hyperreals and `st`, but no nonstandard-analysis definition of the derivative."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle {\\begin{aligned}f'(x)&=\\operatorname {st} \\left({\\frac {x^{2}+2x\\cdot dx+(dx)^{2}-x^{2}}{dx}}\\right)\\\\&=\\operatorname {st} \\left({\\frac {2x\\cdot dx+(dx)^{2}}{dx}}\\right)\\\\&=\\operatorname {st} \\left({\\frac {2x\\cdot dx}{dx}}+{\\frac {(dx)^{2}}{dx}}\\right)\\\\&=\\operatorname {st} \\left(2x+dx\\right)\\\\&=2x.\\end{aligned}}}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Step-by-step infinitesimal computation; ad-hoc, not a Mathlib lemma."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle {\\begin{aligned}f'(x)&=4x^{(4-1)}+{\\frac {d\\left(x^{2}\\right)}{dx}}\\cos \\left(x^{2}\\right)-{\\frac {d\\left(\\ln {x}\\right)}{dx}}e^{x}-\\ln(x){\\frac {d\\left(e^{x}\\right)}{dx}}+0\\\\&=4x^{3}+2x\\cos \\left(x^{2}\\right)-{\\frac {1}{x}}e^{x}-\\ln(x)e^{x}.\\end{aligned}}}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Worked computation combining individual derivative rules; not a standalone theorem."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\mathbf {y} '(t)=\\lim _{h\\to 0}{\\frac {\\mathbf {y} (t+h)-\\mathbf {y} (t)}{h}},}"
+      },
+      "status": "formalized",
+      "decl": "deriv",
+      "module": "Mathlib.Analysis.Calculus.Deriv.Basic",
+      "note": "`deriv : (𝕜 → F) → 𝕜 → F` covers vector-valued (F-valued) functions of a scalar variable."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle {\\frac {\\partial f}{\\partial x}}=2x+y,\\qquad {\\frac {\\partial f}{\\partial y}}=x+2y.}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Concrete partial-derivative computation, not a Mathlib lemma."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle {\\frac {\\partial f}{\\partial x_{i}}}(a_{1},\\ldots ,a_{n})=\\lim _{h\\to 0}{\\frac {f(a_{1},\\ldots ,a_{i}+h,\\ldots ,a_{n})-f(a_{1},\\ldots ,a_{i},\\ldots ,a_{n})}{h}}.}"
+      },
+      "status": "partial",
+      "decl": "fderiv",
+      "module": "Mathlib.Analysis.Calculus.FDeriv.Defs",
+      "note": "Mathlib expresses partials via `fderiv` applied to basis vectors; no standalone `partialDeriv` definition."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\nabla f(a_{1},\\ldots ,a_{n})=\\left({\\frac {\\partial f}{\\partial x_{1}}}(a_{1},\\ldots ,a_{n}),\\ldots ,{\\frac {\\partial f}{\\partial x_{n}}}(a_{1},\\ldots ,a_{n})\\right),}"
+      },
+      "status": "partial",
+      "decl": "gradient",
+      "module": "Mathlib.Analysis.Calculus.Gradient.Basic",
+      "note": "`gradient` is defined via the Riesz representation of fderiv, not as a coordinate tuple of partials."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle D_{\\mathbf {v} }{f}(\\mathbf {x} )=\\lim _{h\\rightarrow 0}{\\frac {f(\\mathbf {x} +h\\mathbf {v} )-f(\\mathbf {x} )}{h}}.}"
+      },
+      "status": "partial",
+      "decl": "HasFDerivAt.lim",
+      "module": "Mathlib.Analysis.Calculus.FDeriv.Basic",
+      "note": "Theorem `HasFDerivAt.lim` shows the directional limit equals `f' v`, but no standalone `directionalDeriv` exists."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle D_{\\mathbf {v} }{f}(\\mathbf {x} )=\\sum _{j=1}^{n}v_{j}{\\frac {\\partial f}{\\partial x_{j}}}.}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Directional-in-terms-of-partials formula has no dedicated Mathlib lemma; follows from `fderiv` linearity."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle f(\\mathbf {a} +\\mathbf {v} )\\approx f(\\mathbf {a} )+f'(\\mathbf {a} )\\mathbf {v} .}"
+      },
+      "status": "partial",
+      "decl": "HasFDerivAt",
+      "module": "Mathlib.Analysis.Calculus.FDeriv.Defs",
+      "note": "Informal linear-approximation statement; `HasFDerivAt` makes this precise via a little-o remainder."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\lim _{\\mathbf {h} \\to 0}{\\frac {\\lVert f(\\mathbf {a} +\\mathbf {h} )-(f(\\mathbf {a} )+f'(\\mathbf {a} )\\mathbf {h} )\\rVert }{\\lVert \\mathbf {h} \\rVert }}=0.}"
+      },
+      "status": "formalized",
+      "decl": "HasFDerivAt",
+      "module": "Mathlib.Analysis.Calculus.FDeriv.Defs",
+      "note": "This is exactly the Fréchet derivative; equivalent to `hasFDerivAt_iff_isLittleO`."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle f'(\\mathbf {a} )=\\operatorname {Jac} _{\\mathbf {a} }=\\left({\\frac {\\partial f_{i}}{\\partial x_{j}}}\\right)_{ij}.}"
+      },
+      "status": "partial",
+      "decl": "fderiv",
+      "module": "Mathlib.Analysis.Calculus.FDeriv.Defs",
+      "note": "Mathlib treats the total derivative as a continuous linear map; no named `Jacobian` matrix declaration."
+    }
+  ]
+}

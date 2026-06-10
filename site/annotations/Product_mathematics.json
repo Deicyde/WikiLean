@@ -1,0 +1,483 @@
+{
+  "slug": "Product_mathematics",
+  "wikipedia_title": "Product (mathematics)",
+  "display_title": "Product (mathematics)",
+  "schema_version": 3,
+  "annotation_style": "theorem_article",
+  "annotations": [
+    {
+      "kind": "definition",
+      "label": "Product (multiplication result)",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "a product is the result of multiplication"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Mul",
+        "module": "Mathlib.Algebra.Group.Defs",
+        "match_kind": "generalization"
+      },
+      "note": "Mathlib uses the core `Mul`/`HMul` typeclass with bundled structures `Semigroup`/`Monoid`/`CommMonoid` providing the multiplication operation; there is no standalone definition of 'product as result of multiplication'.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Multiple",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "When one factor is an integer , the product is called a multiple"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Dvd.dvd",
+        "module": "Mathlib.Algebra.Group.Defs",
+        "match_kind": "generalization"
+      },
+      "note": "Mathlib's `Dvd.dvd` and integer scalar multiplication (`zsmul`) capture 'multiple of', but there is no named definition specifically for 'multiple'.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Commutative law of multiplication",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "The order in which real or complex numbers are multiplied has no bearing on the product"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "mul_comm",
+        "module": "Mathlib.Algebra.Group.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`mul_comm` states `a * b = b * a` for `CommMagma`/`CommMonoid`, instantiating to real and complex numbers.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Fundamental theorem of arithmetic",
+      "anchor": {
+        "section": "Product of two numbers",
+        "snippet": "The fundamental theorem of arithmetic states that every composite number is a product of prime numbers"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Nat.prod_primeFactorsList",
+        "module": "Mathlib.RingTheory.UniqueFactorizationDomain.Nat",
+        "match_kind": "exact"
+      },
+      "note": "`Nat.prod_primeFactorsList` expresses every positive natural as the product of its prime factors, and `UniqueFactorizationMonoid` provides the general statement.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Product in linear equation",
+      "anchor": {
+        "section": "Product of two numbers",
+        "snippet": "in the linear equation"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Illustrative example of multiplication; no specific Mathlib declaration corresponds to this.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Product of a sequence (Π notation)",
+      "anchor": {
+        "section": "Product of a sequence",
+        "snippet": "The product operator for the product of a sequence is denoted by the capital Greek letter pi"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Finset.prod",
+        "module": "Mathlib.Algebra.BigOperators.Group.Finset.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`Finset.prod` with `∏` notation formalizes the product of a sequence over a finset.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Product of a sequence",
+          "snippet": "The product operator for the product of a sequence is denoted by the capital Greek letter pi"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\prod _{i=1}^{6}i^{2}}"
+        }
+      ]
+    },
+    {
+      "kind": "definition",
+      "label": "Empty product",
+      "anchor": {
+        "section": "Product of a sequence",
+        "snippet": "the product of no factors at all is known as the empty product , and is equal to 1"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Finset.prod_empty",
+        "module": "Mathlib.Algebra.BigOperators.Group.Finset.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`Finset.prod_empty` states `∏ x ∈ ∅, f x = 1`, exactly the empty-product convention.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Addition of residue classes",
+      "anchor": {
+        "section": "Residue classes of integers",
+        "snippet": "Residue classes in the rings"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "ZMod",
+        "module": "Mathlib.Data.ZMod.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`ZMod n` formalizes the ring of residue classes of integers mod n with its ring structure (including multiplication).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Convolution of two functions",
+      "anchor": {
+        "section": "Convolution",
+        "snippet": "Two functions from the reals to itself can be multiplied in another way, called the convolution"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "MeasureTheory.convolution",
+        "module": "Mathlib.Analysis.Convolution",
+        "match_kind": "exact"
+      },
+      "note": "`MeasureTheory.convolution` formalizes the convolution of two functions with respect to a measure.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Convolution under Fourier transform",
+      "anchor": {
+        "section": "Convolution",
+        "snippet": "Under the Fourier transform , convolution becomes point-wise function multiplication"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Real.fourier_mul_convolution_eq",
+        "module": "Mathlib.Analysis.Fourier.Convolution",
+        "match_kind": "exact"
+      },
+      "note": "`Real.fourier_mul_convolution_eq` (and `SchwartzMap.fourier_convolution`) state the Fourier transform converts convolution into pointwise multiplication.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Product of two polynomials",
+      "anchor": {
+        "section": "Polynomial rings",
+        "snippet": "The product of two polynomials is given by the following"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Polynomial.mul_def",
+        "module": "Mathlib.Algebra.Polynomial.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`Polynomial` carries a `Semiring`/`CommRing` instance and `Polynomial.mul_def` defines polynomial multiplication via finitely supported convolution of coefficients.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Scalar multiplication",
+      "anchor": {
+        "section": "Scalar multiplication",
+        "snippet": "one can form the product of any scalar with any vector"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Module",
+        "module": "Mathlib.Algebra.Module.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`SMul`/`HSMul` provide the scalar-multiplication operation, and `Module` bundles it with the vector-space axioms.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Scalar product",
+      "anchor": {
+        "section": "Scalar product",
+        "snippet": "A scalar product is a bi-linear map"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "InnerProductSpace",
+        "module": "Mathlib.Analysis.InnerProductSpace.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`InnerProductSpace` formalizes a bilinear (sesquilinear over ℂ) inner product on a vector space.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Norm from scalar product",
+      "anchor": {
+        "section": "Scalar product",
+        "snippet": "From the scalar product, one can define a norm by letting"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "norm_eq_sqrt_re_inner",
+        "module": "Mathlib.Analysis.InnerProductSpace.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`norm_eq_sqrt_re_inner` (and `InnerProductSpace.toNormedAddCommGroup`) build the norm `‖x‖ = sqrt ⟨x,x⟩` from the inner product.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Angle between two vectors",
+      "anchor": {
+        "section": "Scalar product",
+        "snippet": "The scalar product also allows one to define an angle between two vectors"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "InnerProductGeometry.angle",
+        "module": "Mathlib.Geometry.Euclidean.Angle.Unoriented.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`InnerProductGeometry.angle` defines the unoriented angle via `arccos` of the normalized inner product.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Standard dot product in Euclidean space",
+      "anchor": {
+        "section": "Scalar product",
+        "snippet": "the standard scalar product (called the dot product ) is given by"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "EuclideanSpace.inner_eq_star_dotProduct",
+        "module": "Mathlib.Analysis.InnerProductSpace.PiL2",
+        "match_kind": "exact"
+      },
+      "note": "`EuclideanSpace.inner_eq_star_dotProduct` (with `Matrix.dotProduct`) gives the standard sum-of-products dot product on `EuclideanSpace`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Cross product in 3-dimensional space",
+      "anchor": {
+        "section": "Cross product in 3-dimensional space",
+        "snippet": "The cross product of two vectors in 3-dimensions is a vector perpendicular to the two factors"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "crossProduct",
+        "module": "Mathlib.LinearAlgebra.CrossProduct",
+        "match_kind": "exact"
+      },
+      "note": "`crossProduct : (Fin 3 → R) →ₗ[R] (Fin 3 → R) →ₗ[R] Fin 3 → R` formalizes the 3-D cross product.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Cross product as formal determinant",
+      "anchor": {
+        "section": "Cross product in 3-dimensional space",
+        "snippet": "The cross product can also be expressed as the formal"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "triple_product_eq_det",
+        "module": "Mathlib.LinearAlgebra.CrossProduct",
+        "match_kind": "exact"
+      },
+      "note": "`triple_product_eq_det` states `u ⬝ᵥ (v ⨯₃ w) = det ![u,v,w]`, the determinant expression for the cross/triple product.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Linear mapping",
+      "anchor": {
+        "section": "Composition of linear mappings",
+        "snippet": "A linear mapping can be defined as a function f between two vector spaces V and W"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "LinearMap",
+        "module": "Mathlib.Algebra.Module.LinearMap.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`LinearMap` is the bundled structure of additive maps preserving scalar multiplication between modules/vector spaces.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Composition of linear mappings",
+      "anchor": {
+        "section": "Composition of linear mappings",
+        "snippet": "Now we consider the composition of two linear mappings between finite dimensional vector spaces"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "LinearMap.comp",
+        "module": "Mathlib.Algebra.Module.LinearMap.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`LinearMap.comp` defines the composition of two linear maps, yielding another linear map.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Product of two matrices",
+      "anchor": {
+        "section": "Product of two matrices",
+        "snippet": "their product is a matrix"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Matrix.mul",
+        "module": "Mathlib.Data.Matrix.Mul",
+        "match_kind": "exact"
+      },
+      "note": "Matrix multiplication is defined via the `HMul`/`Mul` instances on `Matrix m n α` in `Mathlib.Data.Matrix.Mul`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Matrix product as composition of linear functions",
+      "anchor": {
+        "section": "Composition of linear functions as matrix product",
+        "snippet": "the matrix product is the description in coordinates of the composition of linear functions"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "LinearMap.toMatrix_comp",
+        "module": "Mathlib.LinearAlgebra.Matrix.ToLin",
+        "match_kind": "exact"
+      },
+      "note": "`LinearMap.toMatrix_comp` proves that the matrix of a composition of linear maps equals the matrix product of their individual matrices.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Tensor product of vector spaces",
+      "anchor": {
+        "section": "Tensor product of vector spaces",
+        "snippet": "the tensor product of them can be defined as a (2,0)-tensor satisfying"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "TensorProduct",
+        "module": "Mathlib.LinearAlgebra.TensorProduct.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`TensorProduct R M N` formalizes the tensor product of two modules/vector spaces with its universal `lift` property.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Monoidal category as class with tensor product",
+      "anchor": {
+        "section": "The class of all objects with a tensor product",
+        "snippet": "a monoidal category is the class of all things (of a given type ) that have a tensor product"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "CategoryTheory.MonoidalCategory",
+        "module": "Mathlib.CategoryTheory.Monoidal.Category",
+        "match_kind": "exact"
+      },
+      "note": "`MonoidalCategory` formalizes a category equipped with a tensor product, unit, associator and unitor isomorphisms.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Cartesian product of sets",
+      "anchor": {
+        "section": "Cartesian product",
+        "snippet": "the Cartesian product A × B is the set of all ordered pairs"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Set.prod",
+        "module": "Mathlib.Data.Set.Prod",
+        "match_kind": "exact"
+      },
+      "note": "`Set.prod` (notation `s ×ˢ t`) defines the Cartesian product of two sets as the set of ordered pairs.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Cartesian category",
+      "anchor": {
+        "section": "Cartesian product",
+        "snippet": "The class of all things (of a given type ) that have Cartesian products is called a Cartesian category"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "CategoryTheory.CartesianMonoidalCategory",
+        "module": "Mathlib.CategoryTheory.Monoidal.OfHasFiniteProducts",
+        "match_kind": "exact"
+      },
+      "note": "`CartesianMonoidalCategory` (related: `ChosenFiniteProducts`) formalizes categories whose monoidal structure is given by binary products and a terminal object.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Empty product equals identity",
+      "anchor": {
+        "section": "Empty product",
+        "snippet": "The empty product on numbers and most algebraic structures has the value of 1"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Finset.prod_empty",
+        "module": "Mathlib.Algebra.BigOperators.Group.Finset.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`Finset.prod_empty : ∏ x ∈ ∅, f x = 1` codifies the empty-product-equals-one convention.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Product integral",
+      "anchor": {
+        "section": "Other products",
+        "snippet": "A function's product integral"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Searches for `productIntegral` and 'product integral' found no matches in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Complex multiplication",
+      "anchor": {
+        "section": "Other products",
+        "snippet": "Complex multiplication , a theory of elliptic curves"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Searches for `ComplexMultiplication`/CM theory of elliptic curves found no matches in Mathlib.",
+      "provenance": "ai"
+    }
+  ]
+}

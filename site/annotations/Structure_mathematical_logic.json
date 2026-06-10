@@ -1,0 +1,827 @@
+{
+  "slug": "Structure_mathematical_logic",
+  "wikipedia_title": "Structure (mathematical logic)",
+  "display_title": "Structure (mathematical logic)",
+  "schema_version": 3,
+  "annotation_style": "theorem_article",
+  "annotations": [
+    {
+      "kind": "definition",
+      "label": "Structure (informal)",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "a structure consists of a set along with a collection of finitary operations and relations"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "FirstOrder.Language.Structure",
+        "module": "Mathlib.ModelTheory.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`Structure` interprets each n-ary function symbol as `(Fin n → M) → M` and each relation as `(Fin n → M) → Prop`, matching the informal notion.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Model",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "a structure is called a model if it satisfies all the sentences of that theory"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "FirstOrder.Language.Theory.Model",
+        "module": "Mathlib.ModelTheory.Semantics",
+        "match_kind": "exact"
+      },
+      "note": "`Theory.Model T M` holds exactly when `M` realizes every sentence of `T`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Structure (formal triple)",
+      "anchor": {
+        "section": "Definition",
+        "snippet": "a structure can be defined as a triple"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "FirstOrder.Language.Structure",
+        "module": "Mathlib.ModelTheory.Basic",
+        "match_kind": "exact"
+      },
+      "note": "Mathlib splits the triple into domain `M`, signature `L`, and the `Structure` interpretation rather than one bundled object, but captures the same data.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Domain",
+      "anchor": {
+        "section": "Domain",
+        "snippet": "The domain of a structure is an arbitrary set"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": null,
+        "module": "Mathlib.ModelTheory.Basic",
+        "match_kind": null
+      },
+      "note": "The domain is represented directly by the carrier type `M` in `[L.Structure M]`, with no dedicated declaration.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Signature",
+      "anchor": {
+        "section": "Signature",
+        "snippet": "of a structure consists of: a set"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "FirstOrder.Language",
+        "module": "Mathlib.ModelTheory.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`Language` is a pair `Functions, Relations : ℕ → Type` giving the function and relation symbols of each arity.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Arity",
+      "anchor": {
+        "section": "Signature",
+        "snippet": "is called the arity of"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": null,
+        "module": "Mathlib.ModelTheory.Basic",
+        "match_kind": null
+      },
+      "note": "Arity is encoded as the natural-number index `n` in `L.Functions n`/`L.Relations n` rather than as a separate arity function.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Algebraic signature / algebra",
+      "anchor": {
+        "section": "Signature",
+        "snippet": "a signature with no relation symbols is called an algebraic signature"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "FirstOrder.Language.IsAlgebraic",
+        "module": "Mathlib.ModelTheory.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`IsAlgebraic L` states every `L.Relations n` is empty, i.e. the signature has no relation symbols.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Interpretation function",
+      "anchor": {
+        "section": "Interpretation function",
+        "snippet": "assigns functions and relations to the symbols of the signature"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "FirstOrder.Language.Structure",
+        "module": "Mathlib.ModelTheory.Basic",
+        "match_kind": "exact"
+      },
+      "note": "The `funMap` and `RelMap` fields of `Structure` are precisely the interpretation assigning concrete functions/relations to symbols.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Constant symbol",
+      "anchor": {
+        "section": "Interpretation function",
+        "snippet": "is called a constant symbol"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "FirstOrder.Language.Constants",
+        "module": "Mathlib.ModelTheory.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`L.Constants` is defined as `L.Functions 0`, the nullary (constant) function symbols, with interpretation `constantMap`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Standard signature for fields",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "for fields consists of two binary function symbols"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "FirstOrder.Language.ring",
+        "module": "Mathlib.ModelTheory.Algebra.Ring.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`Language.ring` has exactly the symbols `+`, `*`, `-`, `0`, `1`, which is the standard field/ring signature used for the theory of fields.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Examples",
+          "snippet": "for fields consists of two binary function symbols"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle {\\begin{alignedat}{3}{\\mathcal {Q}}&amp;=(\\mathbb {Q} ,\\sigma _{f},I_{\\mathcal {Q}})\\\\{\\mathcal {R}}&amp;=(\\mathbb {R} ,\\sigma _{f},I_{\\mathcal {R}})\\\\{\\mathcal {C}}&amp;=(\\mathbb {C} ,\\sigma _{f},I_{\\mathcal {C}})\\\\\\end{alignedat}}}"
+        }
+      ]
+    },
+    {
+      "kind": "example",
+      "label": "Integers as a structure",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "of integers , which is not a field, is also a"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "FirstOrder.Ring.compatibleRingOfRing",
+        "module": "Mathlib.ModelTheory.Algebra.Ring.Basic",
+        "match_kind": "invocation"
+      },
+      "note": "`compatibleRingOfRing` turns any ring (including `ℤ`) into a `Language.ring` structure, but `ℤ` is not given as a dedicated worked example.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Signature for ordered fields",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "A signature for ordered fields needs an additional binary relation"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "FirstOrder.Language.order",
+        "module": "Mathlib.ModelTheory.Order",
+        "match_kind": null
+      },
+      "note": "`Language.order` supplies the extra `≤` relation and `Language.sum` could combine it with `Language.ring`, but no dedicated ordered-field signature is defined.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Signature for set theory",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "The ordinary signature for set theory includes a single binary relation"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No first-order language with a single membership relation `∈` for set theory exists in Mathlib's ModelTheory.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Induced substructure",
+      "anchor": {
+        "section": "Induced substructures and closed subsets",
+        "snippet": "is called an (induced) substructure of"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "FirstOrder.Language.Substructure",
+        "module": "Mathlib.ModelTheory.Substructures",
+        "match_kind": "exact"
+      },
+      "note": "`Substructure` is a subset closed under all function symbols, inheriting the interpretations from the ambient structure.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Closed subset",
+      "anchor": {
+        "section": "Induced substructures and closed subsets",
+        "snippet": "is called closed if it is closed under the functions of"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "FirstOrder.Language.ClosedUnder",
+        "module": "Mathlib.ModelTheory.Substructures",
+        "match_kind": "exact"
+      },
+      "note": "`ClosedUnder f s` expresses closure under a function symbol, and `Substructure.fun_mem`/`mem_closed_iff` require closure under all of them.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Generated closed subset (hull)",
+      "anchor": {
+        "section": "Induced substructures and closed subsets",
+        "snippet": "there is a smallest closed subset of"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "FirstOrder.Language.Substructure.closure",
+        "module": "Mathlib.ModelTheory.Substructures",
+        "match_kind": "exact"
+      },
+      "note": "`Substructure.closure L s` is the least substructure containing `s`, characterized by `closure_le` and `subset_closure`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Hull is a finitary closure operator",
+      "anchor": {
+        "section": "Induced substructures and closed subsets",
+        "snippet": "is a finitary closure operator on the set of subsets of"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "FirstOrder.Language.Substructure.closure",
+        "module": "Mathlib.ModelTheory.Substructures",
+        "match_kind": null
+      },
+      "note": "`closure` is built as a `LowerAdjoint`/`GaloisInsertion` closure operator and `mem_closure_iff_exists_term` implies finitarity, but it is not stated as a `finitary` closure operator.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Closed subsets correspond to induced substructures",
+      "anchor": {
+        "section": "Induced substructures and closed subsets",
+        "snippet": "is a closed subset, then"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "FirstOrder.Language.Substructure.mem_closed_iff",
+        "module": "Mathlib.ModelTheory.Substructures",
+        "match_kind": "exact"
+      },
+      "note": "`mem_closed_iff` shows a set is closure-closed iff closed under every function symbol, which is exactly being a substructure's carrier.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Substructures form a lattice",
+      "anchor": {
+        "section": "Induced substructures and closed subsets",
+        "snippet": "of a structure form a lattice"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "FirstOrder.Language.Substructure.instCompleteLattice",
+        "module": "Mathlib.ModelTheory.Substructures",
+        "match_kind": "generalization"
+      },
+      "note": "`L.Substructure M` is given a `CompleteLattice` instance, stronger than the asserted lattice.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Rationals, reals, complexes as substructures",
+      "anchor": {
+        "section": "Examples (2)",
+        "snippet": "the rational numbers form a substructure of the real numbers"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The general `Substructure` framework exists but these specific `ℚ ⊆ ℝ ⊆ ℂ` field-language substructures are not worked out in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Integers as a substructure",
+      "anchor": {
+        "section": "Examples (2)",
+        "snippet": "The set of integers gives an even smaller substructure of the real numbers"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib does not formalize `ℤ` as a model-theoretic substructure of `ℝ` in the field signature.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Graphs as structures",
+      "anchor": {
+        "section": "Examples (2)",
+        "snippet": "The most obvious way to define a graph is a structure with a signature"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "SimpleGraph.structure",
+        "module": "Mathlib.ModelTheory.Graph",
+        "match_kind": "exact"
+      },
+      "note": "`Language.graph` has one binary relation `adj` and `SimpleGraph.structure` makes any simple graph a structure for it.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Homomorphism",
+      "anchor": {
+        "section": "Homomorphisms",
+        "snippet": "that preserves the functions and relations"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "FirstOrder.Language.Hom",
+        "module": "Mathlib.ModelTheory.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`Hom` (`M →[L] N`) is a map commuting with function interpretations and forward-preserving relations.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Category σ-Hom",
+      "anchor": {
+        "section": "Homomorphisms",
+        "snippet": "there is a concrete category"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "FirstOrder.Language.Hom",
+        "module": "Mathlib.ModelTheory.Basic",
+        "match_kind": null
+      },
+      "note": "`Hom.id`, `Hom.comp`, and `Hom.comp_assoc` give all the categorical data, but no `CategoryTheory.Category` instance on `L`-structures is registered.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Strong homomorphism",
+      "anchor": {
+        "section": "Homomorphisms",
+        "snippet": "is sometimes called a strong homomorphism if the converse implication from above also holds"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "FirstOrder.Language.StrongHomClass",
+        "module": "Mathlib.ModelTheory.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`StrongHomClass.map_rel` requires the relation-preservation to hold as an iff (both directions).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Strong homomorphisms form a subcategory",
+      "anchor": {
+        "section": "Homomorphisms",
+        "snippet": "The strong homomorphisms give rise to a subcategory"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "FirstOrder.Language.StrongHomClass",
+        "module": "Mathlib.ModelTheory.Basic",
+        "match_kind": null
+      },
+      "note": "`StrongHomClass` captures strong homomorphisms, but with no category of structures there is no formalized subcategory.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Embedding",
+      "anchor": {
+        "section": "Embeddings",
+        "snippet": "is called a (σ-) embedding if it is injective and"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "FirstOrder.Language.Embedding",
+        "module": "Mathlib.ModelTheory.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`Embedding` (`M ↪[L] N`) is an injection commuting with functions and preserving relations in both directions.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Embedding = injective strong homomorphism",
+      "anchor": {
+        "section": "Embeddings",
+        "snippet": "Thus an embedding is the same thing as a strong homomorphism which is injective"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "FirstOrder.Language.StrongHomClass.toEmbedding",
+        "module": "Mathlib.ModelTheory.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`Embedding.strongHomClass` makes embeddings strong homs and `StrongHomClass.toEmbedding` builds an embedding from an injective strong hom, giving the equivalence.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Induced substructures are subobjects in σ-Emb",
+      "anchor": {
+        "section": "Embeddings",
+        "snippet": "Induced substructures correspond to subobjects in"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "FirstOrder.Language.Substructure.subtype",
+        "module": "Mathlib.ModelTheory.Substructures",
+        "match_kind": null
+      },
+      "note": "`Substructure.subtype`/`inclusion` realize substructures via embeddings, but there is no category to phrase the subobject correspondence.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Subgraph identity is a homomorphism",
+      "anchor": {
+        "section": "Example",
+        "snippet": "the identity map id: H → G is a homomorphism"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "FirstOrder.Language.Substructure.inclusion",
+        "module": "Mathlib.ModelTheory.Substructures",
+        "match_kind": null
+      },
+      "note": "The general substructure `inclusion` is an embedding (hence homomorphism), but the specific subgraph inclusion as a graph-language homomorphism is not stated.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Homomorphism problem",
+      "anchor": {
+        "section": "Homomorphism problem",
+        "snippet": "of a finite relational signature, find a homomorphism"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The computational homomorphism decision problem is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "CSP translates to homomorphism problem",
+      "anchor": {
+        "section": "Homomorphism problem",
+        "snippet": "Every constraint satisfaction problem (CSP) has a translation into the homomorphism problem"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Constraint satisfaction problems and their reduction to the homomorphism problem are not in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Conjunctive query equivalent to homomorphism problem",
+      "anchor": {
+        "section": "Homomorphism problem",
+        "snippet": "the conjunctive query problem is also equivalent to the homomorphism problem"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Database conjunctive query evaluation and its equivalence to the homomorphism problem are not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Satisfaction relation",
+      "anchor": {
+        "section": "Satisfaction relation",
+        "snippet": "defined for all formulas"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "FirstOrder.Language.BoundedFormula.Realize",
+        "module": "Mathlib.ModelTheory.Semantics",
+        "match_kind": "exact"
+      },
+      "note": "`BoundedFormula.Realize` (with `Formula.Realize`/`Sentence.Realize`, notation `M ⊨ φ`) is the inductively defined satisfaction relation.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Model of a theory",
+      "anchor": {
+        "section": "Satisfaction relation",
+        "snippet": "is said to be a model of a theory"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "FirstOrder.Language.Theory.Model",
+        "module": "Mathlib.ModelTheory.Semantics",
+        "match_kind": "exact"
+      },
+      "note": "`Theory.Model T M` (notation `M ⊨ T`) holds iff `M` satisfies every sentence of `T`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Definable relation",
+      "anchor": {
+        "section": "Definable relations",
+        "snippet": "is said to be definable (or explicitly definable"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Set.Definable",
+        "module": "Mathlib.ModelTheory.Definability",
+        "match_kind": "generalization"
+      },
+      "note": "`Set.Definable A L s` defines definability by a formula with parameters in `A`; the explicit (parameter-free) case is `A = ∅` via `empty_definable_iff`.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Definable relations",
+          "snippet": "is said to be definable (or explicitly definable"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle R=\\{(a_{1},\\ldots ,a_{n})\\in M^{n}:{\\mathcal {M}}\\vDash \\varphi (a_{1},\\ldots ,a_{n})\\}.}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle (a_{1},\\ldots ,a_{n})\\in R\\Leftrightarrow {\\mathcal {M}}\\vDash \\varphi (a_{1},\\ldots ,a_{n})}"
+        }
+      ]
+    },
+    {
+      "kind": "definition",
+      "label": "Definable element",
+      "anchor": {
+        "section": "Definable relations",
+        "snippet": "An important special case is the definability of specific elements"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Set.Definable₁",
+        "module": "Mathlib.ModelTheory.Definability",
+        "match_kind": null
+      },
+      "note": "Definability of elements is handled through `Definable₁`/`Definable.singleton`, but parameter-free definability of a single element is not given its own notion.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Definable relations",
+          "snippet": "An important special case is the definability of specific elements"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle {\\mathcal {M}}\\vDash \\forall x(x=m\\leftrightarrow \\varphi (x)).}"
+        }
+      ]
+    },
+    {
+      "kind": "definition",
+      "label": "Definable with parameters",
+      "anchor": {
+        "section": "Definability with parameters",
+        "snippet": "is said to be definable with parameters"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Set.Definable",
+        "module": "Mathlib.ModelTheory.Definability",
+        "match_kind": "exact"
+      },
+      "note": "`Set.Definable A L s` is literally definability with parameters drawn from the set `A`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Every element is definable with itself as parameter",
+      "anchor": {
+        "section": "Definability with parameters",
+        "snippet": "Every element of a structure is definable using the element itself as a parameter"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Set.Definable.singleton",
+        "module": "Mathlib.ModelTheory.Definability",
+        "match_kind": "exact"
+      },
+      "note": "`Definable.singleton` proves `{a}` is definable over `{a}`, i.e. each element is definable using itself as a parameter.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Implicit definability",
+      "anchor": {
+        "section": "Implicit definability",
+        "snippet": "is said to be implicitly definable over"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Implicit definability of a relation is not defined in Mathlib's ModelTheory.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Beth's theorem",
+      "anchor": {
+        "section": "Implicit definability",
+        "snippet": "By Beth's theorem , every implicitly definable relation is explicitly definable"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Beth's definability theorem is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Many-sorted structure",
+      "anchor": {
+        "section": "Many-sorted structures",
+        "snippet": "A many-sorted structure can have an arbitrary number of domains"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib's first-order model theory is single-sorted; many-sorted structures are not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Vector spaces as two-sorted structures",
+      "anchor": {
+        "section": "Many-sorted structures",
+        "snippet": "can be regarded as two-sorted structures in the following way"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "There is no two-sorted model-theoretic treatment of vector spaces in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Groups: elementary class but not a variety",
+      "anchor": {
+        "section": "Partial algebras",
+        "snippet": "is an elementary class , but it is not a variety"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has no first-order theory of groups nor the notions of elementary class versus variety in model theory.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Partial functions / partial algebra",
+      "anchor": {
+        "section": "Partial algebras",
+        "snippet": "one is naturally led to allow partial functions, i.e., functions that are defined only on a subset of their domain"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Model-theoretic structures use total `funMap`; partial algebras are not formalized in ModelTheory.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Inductively defined types",
+      "anchor": {
+        "section": "Structures for typed languages",
+        "snippet": "Types are inductively defined"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The inductive type hierarchy for typed object languages is not formalized as a model-theoretic notion.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Structure for a typed language",
+      "anchor": {
+        "section": "Structures for typed languages",
+        "snippet": "must include a separate set of objects of each type"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Typed-language structures with a separate domain per type are not formalized in Mathlib's ModelTheory.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Structure under full higher-order semantics",
+      "anchor": {
+        "section": "Higher-order languages",
+        "snippet": "a structure need only have a universe for objects of type 0"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Higher-order structures with full semantics are not formalized in Mathlib's model theory.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Class models",
+      "anchor": {
+        "section": "Structures that are proper classes",
+        "snippet": "These structures are sometimes called class models"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib structures are over a `Type`, so proper-class models are not formalized.",
+      "provenance": "ai"
+    }
+  ]
+}

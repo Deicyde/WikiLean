@@ -1,0 +1,393 @@
+{
+  "slug": "Outer_product",
+  "wikipedia_title": "Outer product",
+  "display_title": "Outer product",
+  "schema_version": 3,
+  "annotation_style": "theorem_article",
+  "annotations": [
+    {
+      "kind": "definition",
+      "label": "Outer product (lead)",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "the outer product of two coordinate vectors is the matrix whose entries are all products of an element in the first vector with an element in the second vector"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Matrix.vecMulVec",
+        "module": "Mathlib.Data.Matrix.Mul",
+        "match_kind": "exact"
+      },
+      "note": "`Matrix.vecMulVec w v i j = w i * v j` is exactly the entrywise outer product of two vectors as a matrix.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Outer product of tensors (lead)",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "given two tensors (multidimensional arrays of numbers), their outer product is a tensor"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "TensorProduct.tmul",
+        "module": "Mathlib.LinearAlgebra.TensorProduct.Basic",
+        "match_kind": "generalization"
+      },
+      "note": "Mathlib has the abstract tensor product `⊗ₜ` but no concrete entrywise outer product of multidimensional arrays.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Outer product of two vectors",
+      "anchor": {
+        "section": "Definition",
+        "snippet": "their outer product, denoted"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Matrix.vecMulVec",
+        "module": "Mathlib.Data.Matrix.Mul",
+        "match_kind": "exact"
+      },
+      "note": "`Matrix.vecMulVec` directly defines the outer product `u ⊗ v` of two vectors as a matrix.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Outer product as matrix multiplication",
+      "anchor": {
+        "section": "Definition",
+        "snippet": "is equivalent to a matrix multiplication"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Matrix.vecMulVec_eq",
+        "module": "Mathlib.LinearAlgebra.Matrix.RowCol",
+        "match_kind": "exact"
+      },
+      "note": "`Matrix.vecMulVec_eq` proves `vecMulVec w v = replicateCol ι w * replicateRow ι v`, identifying the outer product with the column-row matrix product.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Outer product example",
+      "anchor": {
+        "section": "Definition",
+        "snippet": "For instance, if"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "A specific numerical instance of an outer product is not a standalone lemma in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Conjugate transpose form",
+      "anchor": {
+        "section": "Definition",
+        "snippet": "For complex vectors, it is often useful to take the conjugate transpose"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Matrix.conjTranspose_vecMulVec",
+        "module": "Mathlib.LinearAlgebra.Matrix.ConjTranspose",
+        "match_kind": "exact"
+      },
+      "note": "`Matrix.conjTranspose_vecMulVec` computes `(vecMulVec w v)ᴴ`, capturing the conjugate-transpose form of the outer product.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Dot product as trace of outer product",
+      "anchor": {
+        "section": "Contrast with Euclidean inner product",
+        "snippet": "The dot product is the trace of the outer product"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Matrix.trace_vecMulVec",
+        "module": "Mathlib.LinearAlgebra.Matrix.Trace",
+        "match_kind": "exact"
+      },
+      "note": "`Matrix.trace_vecMulVec` proves `trace (vecMulVec a b) = a ⬝ᵥ b`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Non-commutativity of outer product",
+      "anchor": {
+        "section": "Contrast with Euclidean inner product",
+        "snippet": "Unlike the dot product, the outer product is not commutative"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No standalone statement asserting `vecMulVec u v ≠ vecMulVec v u` in general was found.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Vector-matrix multiplication via inner product",
+      "anchor": {
+        "section": "Contrast with Euclidean inner product",
+        "snippet": "Multiplication of a vector"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Matrix.vecMulVec_mulVec",
+        "module": "Mathlib.Data.Matrix.Mul",
+        "match_kind": "exact"
+      },
+      "note": "`vecMulVec u v *ᵥ w = (v ⬝ᵥ w) • u` (and the dual `vecMul_vecMulVec`) express precisely that an outer-product matrix times a vector collapses to a scalar inner product times the other vector.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Outer product of tensors",
+      "anchor": {
+        "section": "The outer product of tensors",
+        "snippet": "their outer product"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "TensorProduct.tmul",
+        "module": "Mathlib.LinearAlgebra.TensorProduct.Basic",
+        "match_kind": "generalization"
+      },
+      "note": "The abstract `⊗ₜ` exists but Mathlib has no entrywise outer product of multi-index arrays as described in the article.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Tensor outer product example",
+      "anchor": {
+        "section": "The outer product of tensors",
+        "snippet": "For example, if"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "A specific numerical tensor-outer-product example is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Kronecker product as vectorization of outer product",
+      "anchor": {
+        "section": "Connection with the Kronecker product",
+        "snippet": "the Kronecker product can be viewed as a form of vectorization (or flattening) of the outer product"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Matrix.kroneckerMap",
+        "module": "Mathlib.LinearAlgebra.Matrix.Kronecker",
+        "match_kind": "generalization"
+      },
+      "note": "Mathlib defines both `Matrix.vec` and `Matrix.kroneckerMap` but has no lemma equating `vec(vecMulVec u v)` with a Kronecker product of `u` and `v`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Matrix product as sum of outer products",
+      "anchor": {
+        "section": "Connection with the matrix product",
+        "snippet": "can be expressed as a sum of column-by-row outer products"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Matrix.fromCols_mul_fromRows",
+        "module": "Mathlib.Data.Matrix.ColumnRowPartitioned",
+        "match_kind": "special_case"
+      },
+      "note": "The block version `fromCols_mul_fromRows` expresses AB as a sum of block outer products, but the column-by-row decomposition `A * B = ∑ i, vecMulVec (Aᵀ i) (B i)` is not stated.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "SVD as sum of outer products",
+      "anchor": {
+        "section": "Connection with the matrix product",
+        "snippet": "the decomposition can be interpreted as the sum of outer products of each left"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib defines `LinearMap.singularValues` but the SVD decomposition as a sum of rank-one outer products is not proved.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Rank-1 decomposition motivates truncated SVD",
+      "anchor": {
+        "section": "Connection with the matrix product",
+        "snippet": "can be expressed as a sum of rank-1 matrices with spectral norm"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Truncated SVD and its spectral-norm error bound are not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Properties of outer product of vectors",
+      "anchor": {
+        "section": "Properties",
+        "snippet": "The outer product of vectors satisfies the following properties"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Matrix.vecMulVecBilin",
+        "module": "Mathlib.LinearAlgebra.Matrix.ToLin",
+        "match_kind": "exact"
+      },
+      "note": "Bilinearity is packaged as `vecMulVecBilin`, with `add_vecMulVec`, `vecMulVec_add`, `smul_vecMulVec`, `transpose_vecMulVec` covering the listed algebraic identities.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Associativity of tensor outer product",
+      "anchor": {
+        "section": "Properties",
+        "snippet": "The outer product of tensors satisfies the additional associativity property"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "TensorProduct.assoc",
+        "module": "Mathlib.LinearAlgebra.TensorProduct.Basic",
+        "match_kind": "generalization"
+      },
+      "note": "Associativity holds abstractly via `TensorProduct.assoc`, but there is no concrete statement for the entrywise tensor outer product.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Rank of outer product is 1",
+      "anchor": {
+        "section": "Rank of an outer product",
+        "snippet": "the outer product matrix uv T always has matrix rank 1"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Matrix.rank_vecMulVec_le",
+        "module": "Mathlib.LinearAlgebra.Matrix.Rank",
+        "match_kind": "exact"
+      },
+      "note": "`rank_vecMulVec_le` proves `(vecMulVec w v).rank ≤ 1`, matching the rank-≤-1 statement (rank-1 when both vectors are nonzero).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Abstract outer product",
+      "anchor": {
+        "section": "Definition (abstract)",
+        "snippet": "The outer product of"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "TensorProduct.tmul",
+        "module": "Mathlib.LinearAlgebra.TensorProduct.Basic",
+        "match_kind": "exact"
+      },
+      "note": "The abstract outer product `u ⊗ v ∈ V ⊗ W` is exactly `TensorProduct.tmul` (notation `⊗ₜ`).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Outer product as linear map (inner product space)",
+      "anchor": {
+        "section": "Definition (abstract)",
+        "snippet": "it is possible to define the outer product as a linear map"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "InnerProductSpace.rankOne",
+        "module": "Mathlib.Analysis.InnerProductSpace.LinearMap",
+        "match_kind": "exact"
+      },
+      "note": "`InnerProductSpace.rankOne 𝕜 x y` is `z ↦ ⟪y, z⟫ • x`, the rank-one operator the article describes.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Outer product in programming languages",
+      "anchor": {
+        "section": "In programming languages",
+        "snippet": "the outer product, f , of two one-dimensional arrays"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Programming-language treatment of outer products is out of scope for Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Outer product of complex 2-vectors (spinors)",
+      "anchor": {
+        "section": "Spinors",
+        "snippet": "the outer product of these complex 2-vectors is an element of M(2,"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The spinor-specific outer-product example is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Determinant of spinor outer product is zero",
+      "anchor": {
+        "section": "Spinors",
+        "snippet": "The determinant of this matrix is swtz"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Matrix.det_vecMulVec",
+        "module": "Mathlib.LinearAlgebra.Matrix.Determinant.Basic",
+        "match_kind": "generalization"
+      },
+      "note": "`Matrix.det_vecMulVec` shows `(vecMulVec u v).det = 0` whenever the index type has at least two elements, which specializes to the 2×2 spinor case.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Outer product of logical vectors",
+      "anchor": {
+        "section": "Concepts",
+        "snippet": "The outer product of two logical vectors"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "An outer product specialized to Boolean/logical vectors is not formalized in Mathlib.",
+      "provenance": "ai"
+    }
+  ]
+}

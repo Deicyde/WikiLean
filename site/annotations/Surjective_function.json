@@ -1,0 +1,473 @@
+{
+  "slug": "Surjective_function",
+  "wikipedia_title": "Surjective function",
+  "display_title": "Surjective function",
+  "schema_version": 3,
+  "annotation_style": "theorem_article",
+  "annotations": [
+    {
+      "kind": "definition",
+      "label": "Surjective function",
+      "anchor": {
+        "section": "Definition",
+        "snippet": "A surjective function is a function whose image is equal to its codomain"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Function.Surjective",
+        "module": "Mathlib.Logic.Function.Defs",
+        "match_kind": "exact"
+      },
+      "note": "Function.Surjective f is defined as ∀ b, ∃ a, f a = b, i.e. image equals codomain.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Identity function is surjective",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "the identity function id X on X is surjective"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Function.surjective_id",
+        "module": "Mathlib.Logic.Function.Defs",
+        "match_kind": "exact"
+      },
+      "note": "Function.surjective_id states the identity map is surjective.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Parity map onto {0,1}",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "even integers are mapped to 0 and odd integers to 1"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "ZMod.intCast_surjective",
+        "module": "Mathlib.Data.ZMod.Basic",
+        "match_kind": "special_case"
+      },
+      "note": "The parity map ℤ→{0,1} is the n=2 case of surjectivity of the cast ℤ→ZMod n, but no dedicated parity example exists.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Affine map 2x+1 is surjective",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "because for every real number y"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No named lemma formalizes surjectivity of this specific real affine map x↦2x+1.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Cubic x^3-3x is surjective not injective",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "every cubic polynomial with real coefficients has at least one real root"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This specific cubic example (surjective but not injective) is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Square map not surjective on R",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "since there is no real number x such that"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The non-surjectivity of x↦x² on ℝ is not stated as a named lemma.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Natural logarithm is surjective",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "The natural logarithm function"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Real.log_surjective",
+        "module": "Mathlib.Analysis.SpecialFunctions.Log.Basic",
+        "match_kind": "exact"
+      },
+      "note": "Real.log_surjective proves Surjective Real.log.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Matrix exponential surjectivity",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "The matrix exponential is not surjective when seen as a map"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Matrix.exp exists but its (non-)surjectivity onto general/special linear groups is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Projection from a product is surjective",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "The projection from a cartesian product"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Prod.fst_surjective",
+        "module": "Mathlib.Data.Prod.Basic",
+        "match_kind": "exact"
+      },
+      "note": "Prod.fst_surjective (and Prod.snd_surjective) prove the coordinate projections are surjective for nonempty factors.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "3D-to-2D screen projection",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "vectors are projected onto a 2D flat screen"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This computer-graphics projection example is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Bijective iff surjective and injective",
+      "anchor": {
+        "section": "Properties",
+        "snippet": "A function is bijective if and only if it is both surjective and injective"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Function.Bijective",
+        "module": "Mathlib.Logic.Function.Defs",
+        "match_kind": "exact"
+      },
+      "note": "Function.Bijective is defined definitionally as Injective f ∧ Surjective f.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Surjectivity is a property of the mapping",
+      "anchor": {
+        "section": "Properties",
+        "snippet": "surjectivity is not a property of the function itself, but rather a property of the mapping"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This is a metamathematical remark about codomain-dependence, not a formal theorem.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Right inverse of a function",
+      "anchor": {
+        "section": "Surjections as right invertible functions",
+        "snippet": "is said to be a right inverse of the function"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Function.RightInverse",
+        "module": "Mathlib.Logic.Function.Defs",
+        "match_kind": "exact"
+      },
+      "note": "Function.RightInverse g f means f ∘ g = id, the right-inverse notion.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Right inverse iff surjection (axiom of choice)",
+      "anchor": {
+        "section": "Surjections as right invertible functions",
+        "snippet": "Every function with a right inverse is necessarily a surjection"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Function.surjective_iff_hasRightInverse",
+        "module": "Mathlib.Logic.Function.Basic",
+        "match_kind": "exact"
+      },
+      "note": "Function.surjective_iff_hasRightInverse proves Surjective f ↔ HasRightInverse f (using choice).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Recovering a subset from its preimage",
+      "anchor": {
+        "section": "Surjections as right invertible functions",
+        "snippet": "Thus, B can be recovered from its preimage"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Set.image_preimage_eq",
+        "module": "Mathlib.Data.Set.Image",
+        "match_kind": "exact"
+      },
+      "note": "Set.image_preimage_eq gives f '' (f ⁻¹' s) = s when f is surjective.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Right inverse illustration",
+      "anchor": {
+        "section": "Surjections as right invertible functions",
+        "snippet": "in the first illustration in the gallery"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This is a pictorial illustration, not a formalizable statement.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Surjective iff right-cancellative",
+      "anchor": {
+        "section": "Surjections as epimorphisms",
+        "snippet": "is surjective if and only if it is right-cancellative"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Function.injective_comp_right_iff_surjective",
+        "module": "Mathlib.Logic.Function.Basic",
+        "match_kind": "exact"
+      },
+      "note": "injective_comp_right_iff_surjective characterizes surjectivity as right-cancellability of g↦g∘f (over a nontrivial target).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Surjections are epimorphisms in Set",
+      "anchor": {
+        "section": "Surjections as epimorphisms",
+        "snippet": "surjective functions are precisely the epimorphisms in the category of sets"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "CategoryTheory.Types.epi_iff_surjective",
+        "module": "Mathlib.CategoryTheory.Types.Basic",
+        "match_kind": "exact"
+      },
+      "note": "epi_iff_surjective proves a morphism in Type is an epimorphism iff it is surjective.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Right inverse implies epimorphism",
+      "anchor": {
+        "section": "Surjections as epimorphisms",
+        "snippet": "Any morphism with a right inverse is an epimorphism"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "CategoryTheory.IsSplitEpi.epi",
+        "module": "Mathlib.CategoryTheory.EpiMono",
+        "match_kind": "exact"
+      },
+      "note": "IsSplitEpi.epi shows any morphism admitting a section (right inverse) is an epimorphism.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Section of a morphism",
+      "anchor": {
+        "section": "Surjections as epimorphisms",
+        "snippet": "is called a section of f"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "CategoryTheory.SplitEpi.section_",
+        "module": "Mathlib.CategoryTheory.EpiMono",
+        "match_kind": "exact"
+      },
+      "note": "SplitEpi.section_ is the section morphism satisfying section_ ≫ f = 𝟙.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Split epimorphism",
+      "anchor": {
+        "section": "Surjections as epimorphisms",
+        "snippet": "is called a split epimorphism"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "CategoryTheory.IsSplitEpi",
+        "module": "Mathlib.CategoryTheory.EpiMono",
+        "match_kind": "exact"
+      },
+      "note": "IsSplitEpi (and the structure SplitEpi) formalize a morphism admitting a section, i.e. a split epimorphism.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Surjection as a binary relation",
+      "anchor": {
+        "section": "Surjections as binary relations",
+        "snippet": "is then a binary relation between X and Y that is right-unique and both left-total and right-total"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib does not characterize surjections as right-unique, left- and right-total binary relations.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Cardinality of domain dominates codomain",
+      "anchor": {
+        "section": "Cardinality of the domain of a surjection",
+        "snippet": "The cardinality of the domain of a surjective function is greater than or equal to the cardinality of its codomain"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Cardinal.mk_le_of_surjective",
+        "module": "Mathlib.SetTheory.Cardinal.Order",
+        "match_kind": "exact"
+      },
+      "note": "Cardinal.mk_le_of_surjective gives #β ≤ #α for a surjection f : α → β.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Finite equal-size: surjective iff injective",
+      "anchor": {
+        "section": "Cardinality of the domain of a surjection",
+        "snippet": "if both X and Y are finite with the same number of elements"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Fintype.injective_iff_surjective_of_equiv",
+        "module": "Mathlib.Data.Fintype.Card",
+        "match_kind": "exact"
+      },
+      "note": "injective_iff_surjective_of_equiv proves Injective f ↔ Surjective f for f between finite types of equal cardinality.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Composition of surjections is surjective",
+      "anchor": {
+        "section": "Composition and decomposition",
+        "snippet": "The composition of surjective functions is always surjective"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Function.Surjective.comp",
+        "module": "Mathlib.Logic.Function.Defs",
+        "match_kind": "exact"
+      },
+      "note": "Function.Surjective.comp shows the composite of two surjective functions is surjective.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Surjection-injection decomposition",
+      "anchor": {
+        "section": "Composition and decomposition",
+        "snippet": "Any function can be decomposed into a surjection and an injection"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Set.rangeFactorization_surjective",
+        "module": "Mathlib.Data.Set.Operations",
+        "match_kind": null
+      },
+      "note": "The pieces (rangeFactorization surjective, subtype inclusion injective, coe_comp_rangeFactorization = f) exist but there is no single packaged surjection–injection factorization lemma for plain functions.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Induced surjection onto range",
+      "anchor": {
+        "section": "Induced surjection and induced bijection",
+        "snippet": "Any function induces a surjection by restricting its codomain to its range"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Set.rangeFactorization_surjective",
+        "module": "Mathlib.Data.Set.Operations",
+        "match_kind": "exact"
+      },
+      "note": "Set.rangeFactorization corestricts f to its range and rangeFactorization_surjective proves it is surjective.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Induced bijection on a quotient",
+      "anchor": {
+        "section": "Induced surjection and induced bijection",
+        "snippet": "Any surjective function induces a bijection defined on a quotient of its domain"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Setoid.quotientKerEquivOfSurjective",
+        "module": "Mathlib.Data.Setoid.Basic",
+        "match_kind": "exact"
+      },
+      "note": "Setoid.quotientKerEquivOfSurjective gives an equiv (bijection) Quotient (ker f) ≃ β for surjective f.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Number of surjections (Twelvefold way)",
+      "anchor": {
+        "section": "The set of surjections",
+        "snippet": "The cardinality of this set is one of the twelve aspects of Rota's Twelvefold way"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Nat.stirlingSecond",
+        "module": "Mathlib.Combinatorics.Enumerative.Stirling",
+        "match_kind": null
+      },
+      "note": "Stirling numbers of the second kind are defined, but the formula counting surjections between finite sets is neither connected to them nor proven.",
+      "provenance": "ai"
+    }
+  ]
+}

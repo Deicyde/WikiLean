@@ -1,0 +1,1745 @@
+{
+  "slug": "Permutation",
+  "wikipedia_title": "Permutation",
+  "display_title": "Permutation",
+  "schema_version": 3,
+  "annotation_style": "theorem_article",
+  "annotations": [
+    {
+      "kind": "definition",
+      "label": "Permutation (two meanings)",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "a permutation of a set can mean one of two different things"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Equiv.Perm",
+        "module": "Mathlib.Logic.Equiv.Defs",
+        "match_kind": null
+      },
+      "note": "Mathlib formalizes the bijection meaning as `Equiv.Perm`, but the informal second meaning (ordered arrangement) has no single named counterpart.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Six permutations of {1,2,3}",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "An example of the first meaning is the six permutations"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This is an illustrative worked example, not a declaration; the general count is `Fintype.card_perm`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Number of permutations is n!",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "The number of permutations of n distinct objects is n factorial"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Fintype.card_perm",
+        "module": "Mathlib.Data.Fintype.Perm",
+        "match_kind": "exact"
+      },
+      "note": "`Fintype.card_perm` states `Fintype.card (Perm α) = (Fintype.card α)!`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Permutation as bijection",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "a permutation of a set S is defined as a bijection from S to itself"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Equiv.Perm",
+        "module": "Mathlib.Logic.Equiv.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`Equiv.Perm α` is defined as the type of bijections `α ≃ α`.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "(Lead)",
+          "snippet": "a permutation of a set S is defined as a bijection from S to itself"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\sigma (1)=3,\\quad \\sigma (2)=1,\\quad \\sigma (3)=2.}"
+        }
+      ]
+    },
+    {
+      "kind": "example",
+      "label": "Permutation (3,1,2) as function",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "the permutation (3, 1, 2) corresponds to the function"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "A concrete illustrative example, not a Mathlib declaration.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "(Lead)",
+          "snippet": "the permutation (3, 1, 2) corresponds to the function"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\sigma (1)=3,\\quad \\sigma (2)=1,\\quad \\sigma (3)=2.}"
+        }
+      ]
+    },
+    {
+      "kind": "definition",
+      "label": "Symmetric group",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "The collection of all permutations of a set form a group called the symmetric group of the set"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Equiv.permGroup",
+        "module": "Mathlib.Algebra.Group.End",
+        "match_kind": "exact"
+      },
+      "note": "`Equiv.permGroup` gives the group structure on `Equiv.Perm α`, i.e. the symmetric group.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "(Lead)",
+          "snippet": "The collection of all permutations of a set form a group called the symmetric group of the set"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\sigma (1)=3,\\quad \\sigma (2)=1,\\quad \\sigma (3)=2.}"
+        }
+      ]
+    },
+    {
+      "kind": "definition",
+      "label": "k-permutations",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "the k -permutations , or partial permutations , are the ordered arrangements of k distinct elements selected from a set"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Fintype.card_embedding_eq",
+        "module": "Mathlib.Data.Fintype.CardEmbedding",
+        "match_kind": null
+      },
+      "note": "k-permutations correspond to embeddings `Fin k ↪ S`, counted by `Fintype.card_embedding_eq`, but there is no dedicated named definition.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Permutation as bijection",
+      "anchor": {
+        "section": "Definition",
+        "snippet": "A permutation can be defined as a bijection"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Equiv.Perm",
+        "module": "Mathlib.Logic.Equiv.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`Equiv.Perm α` is exactly a bijection from a set to itself.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Definition",
+          "snippet": "A permutation can be defined as a bijection"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\sigma :S\\ {\\stackrel {\\sim }{\\longrightarrow }}\\ S.}"
+        }
+      ]
+    },
+    {
+      "kind": "definition",
+      "label": "Identity permutation",
+      "anchor": {
+        "section": "Definition",
+        "snippet": "The identity permutation is defined by"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Equiv.Perm.one_def",
+        "module": "Mathlib.GroupTheory.Perm.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`Equiv.Perm.one_def` identifies the group identity `1` with `Equiv.refl α`, the identity permutation.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Definition",
+          "snippet": "The identity permutation is defined by"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\sigma :S\\ {\\stackrel {\\sim }{\\longrightarrow }}\\ S.}"
+        }
+      ]
+    },
+    {
+      "kind": "definition",
+      "label": "Symmetric group structure",
+      "anchor": {
+        "section": "Definition",
+        "snippet": "The set of all permutations of a set with n elements forms the symmetric group"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Equiv.permGroup",
+        "module": "Mathlib.Algebra.Group.End",
+        "match_kind": "exact"
+      },
+      "note": "`Equiv.permGroup` provides the symmetric-group structure on permutations of a finite set.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Definition",
+          "snippet": "The set of all permutations of a set with n elements forms the symmetric group"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\pi (i)=\\sigma (\\tau (i)).}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Composition not commutative",
+      "anchor": {
+        "section": "Definition",
+        "snippet": "composition of two permutations is not commutative"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has no lemma asserting that permutation composition fails to commute in general.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Definition",
+          "snippet": "composition of two permutations is not commutative"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\pi (i)=\\sigma (\\tau (i)).}"
+        }
+      ]
+    },
+    {
+      "kind": "definition",
+      "label": "Active permutation",
+      "anchor": {
+        "section": "Definition",
+        "snippet": "termed an active permutation or substitution"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This is informal terminology with no corresponding Mathlib declaration.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Passive permutation",
+      "anchor": {
+        "section": "Definition",
+        "snippet": "called a passive permutation"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Informal terminology with no corresponding Mathlib declaration.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Decomposition into disjoint cycles",
+      "anchor": {
+        "section": "Definition",
+        "snippet": "can be decomposed into one or more disjoint cycles"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Equiv.Perm.cycleFactorsFinset_noncommProd",
+        "module": "Mathlib.GroupTheory.Perm.Cycle.Factors",
+        "match_kind": "exact"
+      },
+      "note": "`cycleFactorsFinset_noncommProd` shows a permutation equals the product of its disjoint cycle factors.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "k-cycle",
+      "anchor": {
+        "section": "Definition",
+        "snippet": "A cycle consisting of k elements is called a k -cycle"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Equiv.Perm.IsCycle",
+        "module": "Mathlib.GroupTheory.Perm.Cycle.Basic",
+        "match_kind": "generalization"
+      },
+      "note": "`Equiv.Perm.IsCycle` captures cycles; the parameter k is recorded as the support cardinality / cycleType entry.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Fixed point",
+      "anchor": {
+        "section": "Definition",
+        "snippet": "A fixed point of a permutation"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Function.IsFixedPt",
+        "module": "Mathlib.Logic.Function.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`Function.IsFixedPt f x` is defined as `f x = x`, a fixed point.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Derangement",
+      "anchor": {
+        "section": "Definition",
+        "snippet": "A permutation with no fixed points is called a derangement"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "derangements",
+        "module": "Mathlib.Combinatorics.Derangements.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`derangements α` is the set of permutations with no fixed points.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Transposition",
+      "anchor": {
+        "section": "Definition",
+        "snippet": "is called a transposition"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Equiv.swap",
+        "module": "Mathlib.Logic.Equiv.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`Equiv.swap a b` is the transposition exchanging two elements (also `Equiv.Perm.IsSwap`).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Two-line notation",
+      "anchor": {
+        "section": "Two-line notation",
+        "snippet": "lists the elements of S in the first row"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "A notational convention with no Mathlib formalization.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Two-line notation example",
+      "anchor": {
+        "section": "Two-line notation",
+        "snippet": "the permutation of S = {1, 2, 3, 4, 5, 6} given by the function"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "An illustrative example of notation, not a declaration.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "One-line notation",
+      "anchor": {
+        "section": "One-line notation",
+        "snippet": "write the permutation in one-line notation as"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "A notational convention with no Mathlib formalization.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Cycle notation",
+      "anchor": {
+        "section": "Cycle notation",
+        "snippet": "with an orbit being called a cycle"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Equiv.Perm.cycleOf",
+        "module": "Mathlib.GroupTheory.Perm.Cycle.Factors",
+        "match_kind": null
+      },
+      "note": "The orbit/cycle structure is formalized (`cycleOf`, `SameCycle`, `Cycle`), but cycle notation itself is not.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Disjoint cycles commute",
+      "anchor": {
+        "section": "Cycle notation",
+        "snippet": "While permutations in general do not commute, disjoint cycles do"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Equiv.Perm.Disjoint.commute",
+        "module": "Mathlib.GroupTheory.Perm.Support",
+        "match_kind": "exact"
+      },
+      "note": "`Equiv.Perm.Disjoint.commute` proves disjoint permutations commute.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Cycle notation",
+          "snippet": "While permutations in general do not commute, disjoint cycles do"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\sigma =(126)(35)(4)=(126)(35).}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\kappa _{1}=(126)=(126)(3)(4)(5),\\quad \\kappa _{2}=(35)=(35)(1)(2)(4)(6).}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\sigma =(126)(35)=(35)(126).}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\sigma =(126)(35)=(261)(53).}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Inverse via reversing cycles",
+      "anchor": {
+        "section": "Cycle notation",
+        "snippet": "inverting the permutation is given by reversing the order of the elements in each cycle"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Equiv.Perm.formPerm_reverse",
+        "module": "Mathlib.GroupTheory.Perm.Cycle.Concrete",
+        "match_kind": "exact"
+      },
+      "note": "`formPerm_reverse` shows reversing a cycle yields the inverse permutation.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Cycle notation",
+          "snippet": "inverting the permutation is given by reversing the order of the elements in each cycle"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\sigma ^{-1}=\\left({\\vphantom {A^{2}}}(126)(35)\\right)^{-1}=(621)(53).}"
+        }
+      ]
+    },
+    {
+      "kind": "definition",
+      "label": "Canonical cycle notation",
+      "anchor": {
+        "section": "Canonical cycle notation",
+        "snippet": "The canonical cycle notation is defined by"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "A notational convention with no Mathlib formalization.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Composition (rightmost first)",
+      "anchor": {
+        "section": "Composition of permutations",
+        "snippet": "The rightmost permutation is applied to the argument first"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Equiv.Perm.mul_apply",
+        "module": "Mathlib.GroupTheory.Perm.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`Equiv.Perm.mul_apply` gives `(f * g) x = f (g x)`, i.e. rightmost-first composition.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Composition (leftmost first)",
+      "anchor": {
+        "section": "Composition of permutations",
+        "snippet": "the leftmost permutation acts first"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Equiv.trans",
+        "module": "Mathlib.Logic.Equiv.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`Equiv.trans` composes leftmost-first: `(e₁.trans e₂) x = e₂ (e₁ x)`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Composition satisfies group axioms",
+      "anchor": {
+        "section": "Composition of permutations",
+        "snippet": "The function composition operation satisfies the axioms of a group"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Equiv.permGroup",
+        "module": "Mathlib.Algebra.Group.End",
+        "match_kind": "exact"
+      },
+      "note": "`Equiv.permGroup` is the `Group` instance for permutations under composition.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "k-permutation of n",
+      "anchor": {
+        "section": "k -permutations of n",
+        "snippet": "means an ordered arrangement (list) of a k -element subset of an n -set"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Fintype.card_embedding_eq",
+        "module": "Mathlib.Data.Fintype.CardEmbedding",
+        "match_kind": null
+      },
+      "note": "k-permutations of n correspond to embeddings `Fin k ↪ Fin n`; no dedicated named definition exists but their count is formalized.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "k -permutations of n",
+          "snippet": "means an ordered arrangement (list) of a k -element subset of an n -set"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle P(n,k)=\\underbrace {n\\cdot (n-1)\\cdot (n-2)\\cdots (n-k+1)} _{k\\ \\mathrm {factors} },}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Number of k-permutations",
+      "anchor": {
+        "section": "k -permutations of n",
+        "snippet": "The number of such k -permutations"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Fintype.card_embedding_eq",
+        "module": "Mathlib.Data.Fintype.CardEmbedding",
+        "match_kind": "exact"
+      },
+      "note": "`card_embedding_eq` gives `‖α ↪ β‖ = ‖β‖.descFactorial ‖α‖`, the falling-factorial count of k-permutations.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "k -permutations of n",
+          "snippet": "The number of such k -permutations"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle P(n,k)=\\underbrace {n\\cdot (n-1)\\cdot (n-2)\\cdots (n-k+1)} _{k\\ \\mathrm {factors} },}"
+        }
+      ]
+    },
+    {
+      "kind": "definition",
+      "label": "Pochhammer / falling factorial",
+      "anchor": {
+        "section": "k -permutations of n",
+        "snippet": "it is known as the Pochhammer symbol"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "descPochhammer",
+        "module": "Mathlib.RingTheory.Polynomial.Pochhammer",
+        "match_kind": "exact"
+      },
+      "note": "`descPochhammer` is the falling-factorial polynomial (with `Nat.descFactorial` as the numeric version).",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "k -permutations of n",
+          "snippet": "it is known as the Pochhammer symbol"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle P(n,k)={_{n}}P_{k}=(n)_{k}=n^{\\underline {k}}.}"
+        }
+      ]
+    },
+    {
+      "kind": "definition",
+      "label": "k-combination",
+      "anchor": {
+        "section": "k -permutations of n",
+        "snippet": "a k-combination of a set S is a k- element (unordered) subset of S"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Finset.powersetCard",
+        "module": "Mathlib.Data.Finset.Powerset",
+        "match_kind": "exact"
+      },
+      "note": "`Finset.powersetCard k s` is the set of k-element subsets of s.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "k -permutations of n",
+          "snippet": "a k-combination of a set S is a k- element (unordered) subset of S"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle C(n,k)={\\frac {P(n,k)}{P(k,k)}}={\\frac {n^{\\underline {k}}}{k!}}={\\frac {n!}{(n-k)!\\,k!}}.}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Relation of combinations to permutations",
+      "anchor": {
+        "section": "k -permutations of n",
+        "snippet": "The number of k -combinations of an n -set"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Finset.card_powersetCard",
+        "module": "Mathlib.Data.Finset.Powerset",
+        "match_kind": "exact"
+      },
+      "note": "`card_powersetCard` gives `#(powersetCard n s) = s.card.choose n`.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "k -permutations of n",
+          "snippet": "The number of k -combinations of an n -set"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle C(n,k)={\\frac {P(n,k)}{P(k,k)}}={\\frac {n^{\\underline {k}}}{k!}}={\\frac {n!}{(n-k)!\\,k!}}.}"
+        }
+      ]
+    },
+    {
+      "kind": "definition",
+      "label": "Binomial coefficients",
+      "anchor": {
+        "section": "k -permutations of n",
+        "snippet": "These numbers are also known as binomial coefficients"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Nat.choose",
+        "module": "Mathlib.Data.Nat.Choose.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`Nat.choose n k` is the binomial coefficient.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "k -permutations of n",
+          "snippet": "These numbers are also known as binomial coefficients"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle C(n,k)={_{n}}C_{k}={\\binom {n}{k}}.}"
+        }
+      ]
+    },
+    {
+      "kind": "definition",
+      "label": "k-tuples",
+      "anchor": {
+        "section": "Permutations with repetition",
+        "snippet": "are called k -tuples"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "k-tuples over S are simply elements of `Fin k → S` (or `S^k`), a basic type that is not separately named.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Number of k-tuples",
+      "anchor": {
+        "section": "Permutations with repetition",
+        "snippet": "the number of k -tuples over S is"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Fintype.card_pi_const",
+        "module": "Mathlib.Data.Fintype.BigOperators",
+        "match_kind": "exact"
+      },
+      "note": "`card_pi_const` gives `card (Fin n → α) = card α ^ n`, the count of k-tuples.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Multiset permutation",
+      "anchor": {
+        "section": "Permutations of multisets",
+        "snippet": "a multiset permutation is an ordered arrangement of elements of M"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "List.permutations",
+        "module": "Mathlib.Data.List.Permutation",
+        "match_kind": null
+      },
+      "note": "Mathlib has `List.permutations` for orderings of lists but no dedicated multiset-permutation definition.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Permutations of multisets",
+          "snippet": "a multiset permutation is an ordered arrangement of elements of M"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle {n \\choose m_{1},m_{2},\\ldots ,m_{l}}={\\frac {n!}{m_{1}!\\,m_{2}!\\,\\cdots \\,m_{l}!}}={\\frac {\\left(\\sum _{i=1}^{l}{m_{i}}\\right)!}{\\prod _{i=1}^{l}{m_{i}!}}}.}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle {\\frac {11!}{1!\\,4!\\,4!\\,2!}}=34650.}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Multinomial count of multiset permutations",
+      "anchor": {
+        "section": "Permutations of multisets",
+        "snippet": "the number of multiset permutations of M is given by a multinomial coefficient"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Multiset.countPerms",
+        "module": "Mathlib.Data.Nat.Choose.Multinomial",
+        "match_kind": null
+      },
+      "note": "`Multiset.countPerms` is defined as the multinomial coefficient, but its equality to the cardinality of distinct arrangements is not established.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Permutations of multisets",
+          "snippet": "the number of multiset permutations of M is given by a multinomial coefficient"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle {n \\choose m_{1},m_{2},\\ldots ,m_{l}}={\\frac {n!}{m_{1}!\\,m_{2}!\\,\\cdots \\,m_{l}!}}={\\frac {\\left(\\sum _{i=1}^{l}{m_{i}}\\right)!}{\\prod _{i=1}^{l}{m_{i}!}}}.}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle {\\frac {11!}{1!\\,4!\\,4!\\,2!}}=34650.}"
+        }
+      ]
+    },
+    {
+      "kind": "example",
+      "label": "Anagrams of MISSISSIPPI",
+      "anchor": {
+        "section": "Permutations of multisets",
+        "snippet": "the number of distinct anagrams of the word MISSISSIPPI is"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "A concrete numerical example, not a Mathlib declaration.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Permutations of multisets",
+          "snippet": "the number of distinct anagrams of the word MISSISSIPPI is"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle {n \\choose m_{1},m_{2},\\ldots ,m_{l}}={\\frac {n!}{m_{1}!\\,m_{2}!\\,\\cdots \\,m_{l}!}}={\\frac {\\left(\\sum _{i=1}^{l}{m_{i}}\\right)!}{\\prod _{i=1}^{l}{m_{i}!}}}.}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle {\\frac {11!}{1!\\,4!\\,4!\\,2!}}=34650.}"
+        }
+      ]
+    },
+    {
+      "kind": "definition",
+      "label": "k-permutation of a multiset",
+      "anchor": {
+        "section": "Permutations of multisets",
+        "snippet": "A k -permutation of a multiset M is a sequence of k elements of M"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No Mathlib definition for k-permutations of a multiset.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Generating function count",
+      "anchor": {
+        "section": "Permutations of multisets",
+        "snippet": "the number of permutations can be determined with generating functions"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The generating-function approach to counting multiset permutations is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "MISSISSIPPI generating function",
+      "anchor": {
+        "section": "Permutations of multisets",
+        "snippet": "in the case of the multiset of letters in MISSISSIPPI"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "A worked generating-function example, not a declaration.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Permutations of multisets",
+          "snippet": "in the case of the multiset of letters in MISSISSIPPI"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle {\\begin{aligned}&amp;(1+x)\\cdot (1+x+x^{2}/2)\\cdot (1+x+x^{2}/2+x^{3}/6+x^{4}/24)^{2}=\\\\&amp;1+4x+{\\frac {15}{2!}}x^{2}+{\\frac {53}{3!}}x^{3}+{\\frac {176}{4!}}x^{4}+{\\frac {550}{5!}}x^{5}+{\\frac {1610}{6!}}x^{6}+{\\frac {4340}{7!}}x^{7}+{\\frac {10430}{8!}}x^{8}+{\\frac {21420}{9!}}x^{9}+{\\frac {34650}{10!}}x^{10}+{\\frac {34650}{11!}}x^{11}.\\end{aligned}}}"
+        }
+      ]
+    },
+    {
+      "kind": "definition",
+      "label": "Circular permutation",
+      "anchor": {
+        "section": "Circular permutations",
+        "snippet": "An arrangement of distinct objects in a circular manner is called a circular permutation"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has no definition of circular permutations.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Equivalence of circular permutations",
+      "anchor": {
+        "section": "Circular permutations",
+        "snippet": "Two circular permutations are equivalent if one can be rotated into the other"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No formalization of rotational equivalence of circular permutations.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Count of circular permutations",
+      "anchor": {
+        "section": "Circular permutations",
+        "snippet": "circular permutations of a set with n elements"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The (n-1)! count of circular permutations is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Number of permutations is n!",
+      "anchor": {
+        "section": "Properties",
+        "snippet": "The number of permutations of n distinct objects is n !"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Fintype.card_perm",
+        "module": "Mathlib.Data.Fintype.Perm",
+        "match_kind": "exact"
+      },
+      "note": "`Fintype.card_perm` states `Fintype.card (Perm α) = (Fintype.card α)!`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Stirling number of the first kind",
+      "anchor": {
+        "section": "Properties",
+        "snippet": "The number of n -permutations with k disjoint cycles is the signless Stirling number of the first kind"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Nat.stirlingFirst",
+        "module": "Mathlib.Combinatorics.Enumerative.Stirling",
+        "match_kind": null
+      },
+      "note": "`Nat.stirlingFirst` defines the unsigned Stirling numbers by recurrence but is not proven to count permutations with k cycles.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Cycle type",
+      "anchor": {
+        "section": "Cycle type",
+        "snippet": "which is called the cycle type"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Equiv.Perm.cycleType",
+        "module": "Mathlib.GroupTheory.Perm.Cycle.Type",
+        "match_kind": "exact"
+      },
+      "note": "`Equiv.Perm.cycleType` is the multiset of cycle lengths of a permutation.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Count of permutations of given cycle type",
+      "anchor": {
+        "section": "Cycle type",
+        "snippet": "The number of permutations of a given cycle type is"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Equiv.Perm.card_of_cycleType",
+        "module": "Mathlib.GroupTheory.Perm.Centralizer",
+        "match_kind": "exact"
+      },
+      "note": "`card_of_cycleType` gives the exact count `n!/(...)` of permutations of a prescribed cycle type.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Number of cycle types is partition function",
+      "anchor": {
+        "section": "Cycle type",
+        "snippet": "The number of cycle types of a set with n elements equals the value of the partition function"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Equiv.Perm.partition",
+        "module": "Mathlib.GroupTheory.Perm.Cycle.Type",
+        "match_kind": null
+      },
+      "note": "`Equiv.Perm.partition` maps a permutation to a `Nat.Partition`, but the explicit count of cycle types as p(n) is not stated.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Cycle index polynomial",
+      "anchor": {
+        "section": "Cycle type",
+        "snippet": "Polya 's cycle index polynomial is a generating function which counts permutations by their cycle type"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Pólya's cycle index polynomial is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Conjugate of a permutation",
+      "anchor": {
+        "section": "Conjugating permutations",
+        "snippet": "is the conjugate of"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "IsConj",
+        "module": "Mathlib.Algebra.Group.Conj",
+        "match_kind": "generalization"
+      },
+      "note": "Conjugation τστ⁻¹ is the general group notion `IsConj`, applicable to permutations.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Conjugacy iff same cycle type",
+      "anchor": {
+        "section": "Conjugating permutations",
+        "snippet": "two permutations are conjugate exactly when they have the same cycle type"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Equiv.Perm.isConj_iff_cycleType_eq",
+        "module": "Mathlib.GroupTheory.Perm.Cycle.Type",
+        "match_kind": "exact"
+      },
+      "note": "`isConj_iff_cycleType_eq` proves two permutations are conjugate iff they have equal cycle type.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Order of a permutation",
+      "anchor": {
+        "section": "Order of a permutation",
+        "snippet": "The order of a permutation"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "orderOf",
+        "module": "Mathlib.GroupTheory.OrderOfElement",
+        "match_kind": "generalization"
+      },
+      "note": "The order of a permutation is the general group-element order `orderOf`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Order is lcm of cycle lengths",
+      "anchor": {
+        "section": "Order of a permutation",
+        "snippet": "It is the least common multiple of the lengths of its cycles"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Equiv.Perm.lcm_cycleType",
+        "module": "Mathlib.GroupTheory.Perm.Cycle.Type",
+        "match_kind": "exact"
+      },
+      "note": "`lcm_cycleType` proves `σ.cycleType.lcm = orderOf σ`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Order example",
+      "anchor": {
+        "section": "Order of a permutation",
+        "snippet": "For example, the order of"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "A concrete numerical example, not a declaration.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Permutation as product of transpositions",
+      "anchor": {
+        "section": "Parity of a permutation",
+        "snippet": "Every permutation of a finite set can be expressed as the product of transpositions"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Equiv.Perm.truncSwapFactors",
+        "module": "Mathlib.GroupTheory.Perm.Sign",
+        "match_kind": "exact"
+      },
+      "note": "`truncSwapFactors` produces a list of transpositions whose product is the given permutation.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Parity well-defined (even/odd)",
+      "anchor": {
+        "section": "Parity of a permutation",
+        "snippet": "all permutations can be classified as even or odd"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Equiv.Perm.sign",
+        "module": "Mathlib.GroupTheory.Perm.Sign",
+        "match_kind": "exact"
+      },
+      "note": "`Equiv.Perm.sign` is a well-defined monoid hom to `ℤˣ`, encoding the even/odd parity.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Sign of a permutation",
+      "anchor": {
+        "section": "Parity of a permutation",
+        "snippet": "assign a sign , written"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Equiv.Perm.sign",
+        "module": "Mathlib.GroupTheory.Perm.Sign",
+        "match_kind": "exact"
+      },
+      "note": "`Equiv.Perm.sign` assigns the sign ±1 to each permutation.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Sign equals determinant of matrix",
+      "anchor": {
+        "section": "Parity of a permutation",
+        "snippet": "The sign of a permutation is equal to the determinant of its permutation matrix"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Matrix.det_permutation",
+        "module": "Mathlib.LinearAlgebra.Matrix.Permutation",
+        "match_kind": "exact"
+      },
+      "note": "`det_permutation` proves `det (σ.permMatrix R) = Perm.sign σ`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Permutation matrix",
+      "anchor": {
+        "section": "Matrix representation",
+        "snippet": "A permutation matrix is an n × n matrix"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Equiv.Perm.permMatrix",
+        "module": "Mathlib.LinearAlgebra.Matrix.Permutation",
+        "match_kind": "exact"
+      },
+      "note": "`Equiv.Perm.permMatrix` is the permutation matrix associated to a permutation.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Matrix representation",
+          "snippet": "A permutation matrix is an n × n matrix"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle M_{\\sigma }M_{\\tau }=M_{\\sigma \\tau }.}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle M_{\\sigma }M_{\\tau }={\\begin{pmatrix}0&amp;1&amp;0\\\\1&amp;0&amp;0\\\\0&amp;0&amp;1\\end{pmatrix}}{\\begin{pmatrix}0&amp;0&amp;1\\\\1&amp;0&amp;0\\\\0&amp;1&amp;0\\end{pmatrix}}={\\begin{pmatrix}1&amp;0&amp;0\\\\0&amp;0&amp;1\\\\0&amp;1&amp;0\\end{pmatrix}}=M_{\\sigma \\tau }.}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Matrix construction respects composition",
+      "anchor": {
+        "section": "Matrix representation",
+        "snippet": "this construction is compatible with composition of permutations"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Matrix.permMatrixHom",
+        "module": "Mathlib.LinearAlgebra.Matrix.Permutation",
+        "match_kind": "exact"
+      },
+      "note": "`permMatrixHom` is a monoid hom and `permMatrix_mul` shows compatibility with composition.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Matrix representation",
+          "snippet": "this construction is compatible with composition of permutations"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle M_{\\sigma }M_{\\tau }=M_{\\sigma \\tau }.}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle M_{\\sigma }M_{\\tau }={\\begin{pmatrix}0&amp;1&amp;0\\\\1&amp;0&amp;0\\\\0&amp;0&amp;1\\end{pmatrix}}{\\begin{pmatrix}0&amp;0&amp;1\\\\1&amp;0&amp;0\\\\0&amp;1&amp;0\\end{pmatrix}}={\\begin{pmatrix}1&amp;0&amp;0\\\\0&amp;0&amp;1\\\\0&amp;1&amp;0\\end{pmatrix}}=M_{\\sigma \\tau }.}"
+        }
+      ]
+    },
+    {
+      "kind": "example",
+      "label": "Product of permutation matrices",
+      "anchor": {
+        "section": "Matrix representation",
+        "snippet": "For example, the one-line permutations"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "A concrete worked example, not a declaration.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Matrix representation",
+          "snippet": "For example, the one-line permutations"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle M_{\\sigma }M_{\\tau }=M_{\\sigma \\tau }.}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle M_{\\sigma }M_{\\tau }={\\begin{pmatrix}0&amp;1&amp;0\\\\1&amp;0&amp;0\\\\0&amp;0&amp;1\\end{pmatrix}}{\\begin{pmatrix}0&amp;0&amp;1\\\\1&amp;0&amp;0\\\\0&amp;1&amp;0\\end{pmatrix}}={\\begin{pmatrix}1&amp;0&amp;0\\\\0&amp;0&amp;1\\\\0&amp;1&amp;0\\end{pmatrix}}=M_{\\sigma \\tau }.}"
+        }
+      ]
+    },
+    {
+      "kind": "definition",
+      "label": "Inverse matrix convention",
+      "anchor": {
+        "section": "Matrix representation",
+        "snippet": "to find the inverse convention"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Equiv.Perm.transpose_permMatrix",
+        "module": "Mathlib.LinearAlgebra.Matrix.Permutation",
+        "match_kind": null
+      },
+      "note": "`transpose_permMatrix` gives `(σ.permMatrix)ᵀ = σ⁻¹.permMatrix`, the math behind the inverse convention, but the notational discussion is informal.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Ascent",
+      "anchor": {
+        "section": "Ascents, descents, runs, exceedances, records",
+        "snippet": "An ascent of a permutation"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Permutation ascents are not defined in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Ascents of 3452167",
+      "anchor": {
+        "section": "Ascents, descents, runs, exceedances, records",
+        "snippet": "the permutation 3452167 has ascents"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "An illustrative example for an unformalized concept.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Descent",
+      "anchor": {
+        "section": "Ascents, descents, runs, exceedances, records",
+        "snippet": "a descent is a position i < n with"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Permutation descents are not defined in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Ascending run",
+      "anchor": {
+        "section": "Ascents, descents, runs, exceedances, records",
+        "snippet": "An ascending run of a permutation is a nonempty increasing contiguous subsequence"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Ascending runs of permutations are not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Increasing subsequence",
+      "anchor": {
+        "section": "Ascents, descents, runs, exceedances, records",
+        "snippet": "an increasing subsequence of a permutation is not necessarily contiguous"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Increasing subsequences of permutations are not formalized as a definition in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Runs of 2453167",
+      "anchor": {
+        "section": "Ascents, descents, runs, exceedances, records",
+        "snippet": "the permutation 2453167 has the ascending runs"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "An illustrative example for an unformalized concept.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Descents and ascending runs",
+      "anchor": {
+        "section": "Ascents, descents, runs, exceedances, records",
+        "snippet": "then it must be the union of k ascending runs"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The relation between descents and ascending runs is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Eulerian number",
+      "anchor": {
+        "section": "Ascents, descents, runs, exceedances, records",
+        "snippet": "is (by definition) the Eulerian number"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Eulerian numbers are not formalized (Mathlib's `Eulerian` refers to graph trails).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Exceedance",
+      "anchor": {
+        "section": "Ascents, descents, runs, exceedances, records",
+        "snippet": "An exceedance of a permutation"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Exceedances of permutations are not defined in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Weak exceedance",
+      "anchor": {
+        "section": "Ascents, descents, runs, exceedances, records",
+        "snippet": "then j is called a weak exceedance"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Weak exceedances are not defined in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Exceedances equal descents",
+      "anchor": {
+        "section": "Ascents, descents, runs, exceedances, records",
+        "snippet": "The number of n -permutations with k exceedances coincides with the number of n -permutations with k descents"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This equidistribution result is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Record (left-to-right maximum)",
+      "anchor": {
+        "section": "Ascents, descents, runs, exceedances, records",
+        "snippet": "A record or left-to-right maximum of a permutation"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Records / left-to-right maxima of permutations are not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Foata's fundamental bijection",
+      "anchor": {
+        "section": "Foata's transition lemma",
+        "snippet": "Foata 's fundamental bijection transforms a permutation"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Foata's fundamental bijection is not formalized in Mathlib.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Foata's transition lemma",
+          "snippet": "Foata 's fundamental bijection transforms a permutation"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\sigma =(513)(6)(827)(94)={\\begin{pmatrix}1&amp;2&amp;3&amp;4&amp;5&amp;6&amp;7&amp;8&amp;9\\\\3&amp;7&amp;5&amp;9&amp;1&amp;6&amp;8&amp;2&amp;4\\end{pmatrix}},}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Records equal cycles",
+      "anchor": {
+        "section": "Foata's transition lemma",
+        "snippet": "the number of n -permutations with exactly k records is equal to the number of n -permutations with exactly k cycles"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This equidistribution of records and cycles is not formalized.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Foata's transition lemma",
+          "snippet": "the number of n -permutations with exactly k records is equal to the number of n -permutations with exactly k cycles"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle {\\begin{array}{l|l}{\\hat {\\sigma }}=f(\\sigma )&amp;\\sigma =f^{-1}({\\hat {\\sigma }})\\\\\\hline \\mathbf {123} =(\\,1\\,)(\\,2\\,)(\\,3\\,)&amp;123=\\mathbf {(\\,1\\,)(\\,2\\,)(\\,3\\,)} \\\\\\mathbf {132} =(\\,1\\,)(\\,3\\,2\\,)&amp;132=\\mathbf {(\\,1\\,)(\\,3\\,2\\,)} \\\\\\mathbf {213} =(\\,2\\,1\\,)(\\,3\\,)&amp;213=\\mathbf {(\\,2\\,1\\,)(\\,3\\,)} \\\\\\mathbf {231} =(\\,3\\,1\\,2\\,)&amp;321=\\mathbf {(\\,2\\,)(\\,3\\,1\\,)} \\\\\\mathbf {312} =(\\,3\\,2\\,1\\,)&amp;231=\\mathbf {(\\,3\\,1\\,2\\,)} \\\\\\mathbf {321} =(\\,2\\,)(\\,3\\,1\\,)&amp;312=\\mathbf {(\\,3\\,2\\,1\\,)} \\end{array}}}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Foata maps weak exceedances to ascents",
+      "anchor": {
+        "section": "Foata's transition lemma",
+        "snippet": "Foata's mapping takes an n -permutation with k weak exceedances to an n -permutation with k − 1 ascents"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This property of Foata's mapping is not formalized.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Foata's transition lemma",
+          "snippet": "Foata's mapping takes an n -permutation with k weak exceedances to an n -permutation with k − 1 ascents"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle {\\begin{array}{l|l}{\\hat {\\sigma }}=f(\\sigma )&amp;\\sigma =f^{-1}({\\hat {\\sigma }})\\\\\\hline \\mathbf {123} =(\\,1\\,)(\\,2\\,)(\\,3\\,)&amp;123=\\mathbf {(\\,1\\,)(\\,2\\,)(\\,3\\,)} \\\\\\mathbf {132} =(\\,1\\,)(\\,3\\,2\\,)&amp;132=\\mathbf {(\\,1\\,)(\\,3\\,2\\,)} \\\\\\mathbf {213} =(\\,2\\,1\\,)(\\,3\\,)&amp;213=\\mathbf {(\\,2\\,1\\,)(\\,3\\,)} \\\\\\mathbf {231} =(\\,3\\,1\\,2\\,)&amp;321=\\mathbf {(\\,2\\,)(\\,3\\,1\\,)} \\\\\\mathbf {312} =(\\,3\\,2\\,1\\,)&amp;231=\\mathbf {(\\,3\\,1\\,2\\,)} \\\\\\mathbf {321} =(\\,2\\,)(\\,3\\,1\\,)&amp;312=\\mathbf {(\\,3\\,2\\,1\\,)} \\end{array}}}"
+        }
+      ]
+    },
+    {
+      "kind": "definition",
+      "label": "Inversion",
+      "anchor": {
+        "section": "Inversions",
+        "snippet": "An inversion of a permutation"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Permutation inversions are not a named definition; `sign` is built on inversion-counting internally but the count itself is not exposed.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Inversions of 23154",
+      "anchor": {
+        "section": "Inversions",
+        "snippet": "For example, σ = 23154 has"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "An illustrative example for an unformalized concept.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Inversions equal for σ and σ⁻¹",
+      "anchor": {
+        "section": "Inversions",
+        "snippet": "it is the same for σ and for σ −1"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Without a formalized inversion count, this equality is not stated in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Sorting via adjacent transpositions",
+      "anchor": {
+        "section": "Inversions",
+        "snippet": "is always possible and requires a sequence of k such operations"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The bubble-sort result linking inversion count to adjacent transpositions is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Mahonian number",
+      "anchor": {
+        "section": "Inversions",
+        "snippet": "The number of permutations of n with k inversions is expressed by a Mahonian number"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mahonian numbers are not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Kobayashi enumeration formula",
+      "anchor": {
+        "section": "Inversions",
+        "snippet": "Kobayashi (2011) proved the enumeration formula"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Kobayashi's enumeration formula is not formalized.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Inversions",
+          "snippet": "Kobayashi (2011) proved the enumeration formula"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\sum _{i&lt;j,\\sigma (i)&gt;\\sigma (j)}(\\sigma (i)-\\sigma (j))=|\\{\\tau \\in S_{n}\\mid \\tau \\leq \\sigma ,\\tau {\\text{ is bigrassmannian}}\\}}"
+        }
+      ]
+    },
+    {
+      "kind": "definition",
+      "label": "Lehmer code",
+      "anchor": {
+        "section": "Numbering permutations",
+        "snippet": "In the Lehmer code for a permutation"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Lehmer code is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Inversion table",
+      "anchor": {
+        "section": "Numbering permutations",
+        "snippet": "The inversion table for σ is quite similar"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The inversion table is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Ascent criterion from Lehmer code",
+      "anchor": {
+        "section": "Numbering permutations",
+        "snippet": "has an ascent n − i if and only if"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This Lehmer-code ascent criterion is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Next permutation example",
+      "anchor": {
+        "section": "Generation in lexicographic order",
+        "snippet": "given the sequence [1, 2, 3, 4]"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Lexicographic next-permutation generation is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Steinhaus–Johnson–Trotter property",
+      "anchor": {
+        "section": "Generation with minimal changes",
+        "snippet": "any two consecutive permutations in its output differ by swapping two adjacent values"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Steinhaus–Johnson–Trotter algorithm is not formalized in Mathlib.",
+      "provenance": "ai"
+    }
+  ]
+}

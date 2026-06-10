@@ -1,0 +1,217 @@
+{
+  "slug": "Data_structure",
+  "wikipedia_title": "Data structure",
+  "display_title": "Data structure",
+  "schema_version": 3,
+  "annotation_style": "theorem_article",
+  "annotations": [
+    {
+      "kind": "definition",
+      "label": "Data structure (organizing data)",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "a data structure is a way to organize and store data"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib is a mathematics library and does not formalize the general informal CS notion of a data structure.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Data structure as physical implementation of a data type",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "a data structure is the physical implementation of a data type"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This is an informal implementation-level definition with no corresponding declaration in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Rob Pike: data structure impact on efficiency",
+      "anchor": {
+        "section": "Usage",
+        "snippet": "the choice of data structure almost always has a greater impact on efficiency than the choice of algorithm"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "An informal programming aphorism, not a mathematical statement present in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Data structure corresponds to a single concrete implementation",
+      "anchor": {
+        "section": "Implementation",
+        "snippet": "A data structure corresponds directly to a single concrete implementation"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "A claim about software implementation with no formal counterpart in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Multiple data structures for the same ADT",
+      "anchor": {
+        "section": "Implementation",
+        "snippet": "There may be multiple concrete data structures for the same ADT"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "A statement about abstract data types versus implementations, outside Mathlib's scope.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Array",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "An array is a number of elements in a specific order"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The `Array` type is defined in Lean core/Batteries, not in `Mathlib/`, where no `Array` definition exists.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Linked list",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "is a linear collection of data elements of any type, called nodes"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Lists are provided by Lean core's `List`; Mathlib only adds lemmas and does not define the linked-list structure itself.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Record",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "is an aggregate data structure"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Records are a Lean language feature (`structure`), not a formalized object in `Mathlib/`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Hash table",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "are data structures that provide fast retrieval of values based on keys"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No `HashMap`/hash-table definition is present in `Mathlib/` (it lives in Lean core/Batteries).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Graph",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "Graphs are collections of nodes connected by edges"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "SimpleGraph",
+        "module": "Mathlib.Combinatorics.SimpleGraph.Basic",
+        "match_kind": "special_case"
+      },
+      "note": "`SimpleGraph` formalizes graphs as a symmetric irreflexive adjacency relation, but as a mathematical (simple, undirected) object rather than the general directed/multigraph data structure.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Stacks and queues",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "Stacks and queues are abstract data types that can be implemented"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No stack or queue data-structure definition exists in `Mathlib/` (only incidental string matches like `StackTuringMachine`).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Tree",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "Trees represent a hierarchical organization of elements"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Tree",
+        "module": "Mathlib.Data.Tree.Basic",
+        "match_kind": "special_case"
+      },
+      "note": "`Tree` is an inductive binary tree with values at nodes, a specific instance of the general hierarchical tree data structure.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Trie",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "A trie , or prefix tree, is a special type of tree"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No trie/prefix-tree definition exists in `Mathlib/`; the discrimination-tree (`DiscrTree`) metaprogramming utility is unrelated infrastructure, not a formalized trie.",
+      "provenance": "ai"
+    }
+  ]
+}

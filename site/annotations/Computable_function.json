@@ -1,0 +1,553 @@
+{
+  "slug": "Computable_function",
+  "wikipedia_title": "Computable function",
+  "display_title": "Computable function",
+  "schema_version": 3,
+  "annotation_style": "theorem_article",
+  "annotations": [
+    {
+      "kind": "definition",
+      "label": "Computable function (informal)",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "a function is computable if there is an algorithm that computes the value of the function"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Computable",
+        "module": "Mathlib.Computability.Partrec",
+        "match_kind": "exact"
+      },
+      "note": "`Computable f` defines a total function as computable iff it is partial recursive, the formal counterpart of this informal notion.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Church–Turing thesis (lead)",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "The Church–Turing thesis is the unprovable assertion that every notion of computability"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "An informal/unprovable thesis, not a mathematical statement formalizable in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Function problem",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "the problem of computing the value of a function is known as a function problem"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The complexity-theory notion of a function problem is not defined in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Computable function (formal)",
+      "anchor": {
+        "section": "Definition",
+        "snippet": "is computable if there is an effective procedure that, given any"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Computable",
+        "module": "Mathlib.Computability.Partrec",
+        "match_kind": "exact"
+      },
+      "note": "`Computable f := Partrec (f : α →. σ)` is exactly the formal definition of a computable function between `Primcodable` types.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "μ-recursive functions",
+      "anchor": {
+        "section": "Definition",
+        "snippet": "one can formalize computable functions as μ-recursive functions"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Nat.Partrec",
+        "module": "Mathlib.Computability.Partrec",
+        "match_kind": "exact"
+      },
+      "note": "The inductive `Nat.Partrec` is built from zero/succ/projections/pairing/composition/primitive recursion and `rfind` (unbounded minimization), i.e. the μ-recursive functions.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Calculability via a program",
+      "anchor": {
+        "section": "Definition",
+        "snippet": "can be calculated if there exists a computer program with the following properties"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Computable",
+        "module": "Mathlib.Computability.Partrec",
+        "match_kind": "exact"
+      },
+      "note": "The program-based characterization corresponds to `Computable`, which Mathlib also proves equivalent to Turing-machine computation elsewhere.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Basic characteristic of a computable function",
+      "anchor": {
+        "section": "Characteristics of computable functions",
+        "snippet": "The basic characteristic of a computable function is that there must be a finite procedure"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Computable",
+        "module": "Mathlib.Computability.Partrec",
+        "match_kind": "exact"
+      },
+      "note": "The 'finite procedure' characterization is captured by `Computable` via partial recursive functions.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Summary characterization of computability",
+      "anchor": {
+        "section": "Characteristics of computable functions",
+        "snippet": "based on this view a function is computable if"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Computable",
+        "module": "Mathlib.Computability.Partrec",
+        "match_kind": "exact"
+      },
+      "note": "This restated summary of computability is the `Computable` predicate.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Computable set",
+      "anchor": {
+        "section": "Computable sets and relations",
+        "snippet": "A set A of natural numbers is called computable"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "ComputablePred",
+        "module": "Mathlib.Computability.RE",
+        "match_kind": "generalization"
+      },
+      "note": "`ComputablePred p` (computable indicator function) formalizes a computable set, generalized from ℕ to any `Primcodable` type.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Computably enumerable set",
+      "anchor": {
+        "section": "Computable sets and relations",
+        "snippet": "A set of natural numbers is called computably enumerable"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "REPred",
+        "module": "Mathlib.Computability.RE",
+        "match_kind": "generalization"
+      },
+      "note": "`REPred p` is defined as the domain of a partial computable function, the standard formalization of a c.e. set, generalized to `Primcodable` types.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Equivalent characterizations of c.e. sets",
+      "anchor": {
+        "section": "Computable sets and relations",
+        "snippet": "the following are equivalent for a nonempty subset B of the natural numbers"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Partrec.dom_re",
+        "module": "Mathlib.Computability.RE",
+        "match_kind": null
+      },
+      "note": "Mathlib has the domain-of-partial-recursive characterization (`REPred`/`Partrec.dom_re`) but not the full list of equivalent conditions (range of a computable function, etc.).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Computable and c.e. relations",
+      "anchor": {
+        "section": "Computable sets and relations",
+        "snippet": "the notions of computable relation and computably enumerable relation can be defined from their analogues for sets"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "ComputablePred",
+        "module": "Mathlib.Computability.RE",
+        "match_kind": null
+      },
+      "note": "Relations can be expressed as `ComputablePred`/`REPred` over product `Primcodable` types, but there is no dedicated computable/c.e. relation definition.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Alphabet",
+      "anchor": {
+        "section": "Formal languages",
+        "snippet": "An alphabet is an arbitrary set"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Language",
+        "module": "Mathlib.Computability.Language",
+        "match_kind": null
+      },
+      "note": "The alphabet appears only as the implicit type parameter `α` of `Language α`; there is no standalone 'alphabet' declaration.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Word",
+      "anchor": {
+        "section": "Formal languages",
+        "snippet": "A word on an alphabet is a finite sequence of symbols from the alphabet"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": null,
+        "module": "Mathlib.Computability.Language",
+        "match_kind": null
+      },
+      "note": "Words are represented as `List α` (a core type used by `Language`), not by a dedicated Mathlib 'word' declaration.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Language",
+      "anchor": {
+        "section": "Formal languages",
+        "snippet": "A language is a subset of the collection of all words on a fixed alphabet"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Language",
+        "module": "Mathlib.Computability.Language",
+        "match_kind": "exact"
+      },
+      "note": "`Language α := Set (List α)` is exactly a set of words over an alphabet.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Computable language",
+      "anchor": {
+        "section": "Formal languages",
+        "snippet": "A language is called computable"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "ComputablePred",
+        "module": "Mathlib.Computability.RE",
+        "match_kind": null
+      },
+      "note": "A computable language would be `ComputablePred` over `List α`, but Mathlib has no specific 'computable language' definition tying this to `Language`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Computably enumerable language",
+      "anchor": {
+        "section": "Formal languages",
+        "snippet": "A language is computably enumerable"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "REPred",
+        "module": "Mathlib.Computability.RE",
+        "match_kind": null
+      },
+      "note": "A c.e. language would be `REPred` over `List α`, but no dedicated definition connects this to the `Language` type.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Examples of computable functions",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "The following functions are computable"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Nat.Primrec.add",
+        "module": "Mathlib.Computability.Primrec.Basic",
+        "match_kind": "special_case"
+      },
+      "note": "Basic examples like successor, addition and multiplication are proven primitive recursive (`Nat.Primrec.succ/add/mul`), hence computable.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Closure of computable functions",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "If f and g are computable, then so are"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Computable.comp",
+        "module": "Mathlib.Computability.Partrec",
+        "match_kind": "exact"
+      },
+      "note": "`Computable.comp` (with companion closure lemmas) establishes that computable functions are closed under composition.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Runs of fives in π",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "if there is a sequence of at least n consecutive fives in the decimal expansion of π"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This specific illustrative example about decimal runs in π is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Finite segment of an uncomputable sequence",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "Each finite segment of an un computable sequence of natural numbers"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This illustrative remark about finite segments being computable is not stated as a result in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Church–Turing thesis (statement)",
+      "anchor": {
+        "section": "Church–Turing thesis",
+        "snippet": "any function computable from a procedure possessing the three properties listed above is a computable function"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Church–Turing thesis is an informal claim, not a formalizable theorem.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Provably total function",
+      "anchor": {
+        "section": "Provability",
+        "snippet": "A function that can be proven to be computable is called provably total"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The metamathematical notion of a provably total function relative to a proof system is not defined in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Provably total functions are r.e.",
+      "anchor": {
+        "section": "Provability",
+        "snippet": "The set of provably total functions is recursively enumerable"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This metatheorem about a proof system's provably total functions is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Recursive definition",
+      "anchor": {
+        "section": "Relation to recursively defined functions",
+        "snippet": "In a function defined by a recursive definition , each value is defined by a fixed first-order formula"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib uses well-founded/structural recursion pervasively but has no decl capturing this descriptive meta-notion of 'recursive definition'.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Ackermann function",
+      "anchor": {
+        "section": "Relation to recursively defined functions",
+        "snippet": "the Ackermann function , which is recursively defined but not primitive recursive"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "ack",
+        "module": "Mathlib.Computability.Ackermann",
+        "match_kind": "exact"
+      },
+      "note": "`ack` defines the Ackermann function and `not_primrec₂_ack`/`computable₂_ack` prove it is computable but not primitive recursive.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Well-ordered recursive functions are computable",
+      "anchor": {
+        "section": "Relation to recursively defined functions",
+        "snippet": "Any function defined recursively in a well-ordered way is computable"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No general Mathlib theorem states that functions defined by well-ordered recursion are computable.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Total functions not provably total exist",
+      "anchor": {
+        "section": "Total functions that are not provably total",
+        "snippet": "the existence of total functions that cannot be proven total in the proof system"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This metalogical existence result about provability of totality is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Countably many computable functions",
+      "anchor": {
+        "section": "Uncomputable functions and unsolvable problems",
+        "snippet": "there are only countably many computable functions"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Nat.Partrec.Code.instDenumerable",
+        "module": "Mathlib.Computability.PartrecCode",
+        "match_kind": null
+      },
+      "note": "`Code` is `Denumerable`, giving countably many partial recursive programs, but Mathlib has no direct theorem stating the set of computable functions is countable.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Most real numbers are not computable",
+      "anchor": {
+        "section": "Uncomputable functions and unsolvable problems",
+        "snippet": "The real numbers are uncountable so most real numbers are not computable"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib lacks a notion of computable real number, so this statement is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Most subsets of naturals not computable",
+      "anchor": {
+        "section": "Uncomputable functions and unsolvable problems",
+        "snippet": "most subsets of the natural numbers are not computable"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "There is no Mathlib theorem comparing the cardinalities of computable versus all subsets of ℕ.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Entscheidungsproblem is undecidable",
+      "anchor": {
+        "section": "Uncomputable functions and unsolvable problems",
+        "snippet": "Turing and Church independently showed in the 1930s that this set of natural numbers is not computable"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "ComputablePred.halting_problem",
+        "module": "Mathlib.Computability.Halting",
+        "match_kind": null
+      },
+      "note": "Mathlib proves the closely related halting problem is undecidable (`ComputablePred.halting_problem`, plus `rice`), but not the undecidability of first-order validity itself.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Computability relative to A",
+      "anchor": {
+        "section": "Relative computability",
+        "snippet": "A function f is defined to be computable in A"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "ComputableIn",
+        "module": "Mathlib.Computability.RecursiveIn",
+        "match_kind": "generalization"
+      },
+      "note": "`ComputableIn O f` (built on `Nat.RecursiveIn`) defines computability relative to oracles, generalizing computability relative to a single set A.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Hyperarithmetical theory",
+      "anchor": {
+        "section": "Higher recursion theory",
+        "snippet": "Hyperarithmetical theory studies those sets that can be computed from a computable ordinal number"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Hyperarithmetical theory and computation from computable ordinals are not developed in Mathlib.",
+      "provenance": "ai"
+    }
+  ]
+}

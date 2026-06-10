@@ -1,0 +1,259 @@
+{
+  "slug": "Combination",
+  "wikipedia_title": "Combination",
+  "display_title": "Combination",
+  "schema_version": 1,
+  "source": "claude-agent-sdk/annotate_articles.py",
+  "annotations": [
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle {\\binom {n}{k}}={\\frac {n(n-1)\\dotsb (n-k+1)}{k(k-1)\\dotsb 1}},}"
+      },
+      "status": "formalized",
+      "decl": "Nat.choose_eq_descFactorial_div_factorial",
+      "module": "Mathlib.Data.Nat.Choose.Basic",
+      "note": "Expresses choose as descending factorial over k!, matching the article's numerator and denominator."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle {\\binom {n}{k}}={\\frac {n!}{k!(n-k)!}}}"
+      },
+      "status": "formalized",
+      "decl": "Nat.choose_eq_factorial_div_factorial",
+      "module": "Mathlib.Data.Nat.Choose.Basic",
+      "note": "Exactly the factorial formula n!/(k!(n-k)!) for k ≤ n."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle (1+X)^{n}=\\sum _{k\\geq 0}{\\binom {n}{k}}X^{k},}"
+      },
+      "status": "formalized",
+      "decl": "add_pow",
+      "module": "Mathlib.Data.Nat.Choose.Sum",
+      "note": "Binomial theorem (x+y)^n = ∑ choose n k · x^k y^(n-k) specializes with x = 1."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle {\\binom {n}{0}}={\\binom {n}{n}}=1,}"
+      },
+      "status": "formalized",
+      "decl": "Nat.choose_self",
+      "module": "Mathlib.Data.Nat.Choose.Basic",
+      "note": "Nat.choose_self and Nat.choose_zero_right give both edge identities equal to 1."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle {\\binom {n}{k}}=0}"
+      },
+      "status": "formalized",
+      "decl": "Nat.choose_eq_zero_of_lt",
+      "module": "Mathlib.Data.Nat.Choose.Basic",
+      "note": "Gives choose n k = 0 whenever n < k, matching the vanishing claim."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\prod _{s\\in S}(1+X_{s});}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Auxiliary generating-function product used in an informal proof, not a standalone Mathlib decl."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle {\\binom {n}{k}}={\\binom {n-1}{k-1}}+{\\binom {n-1}{k}},}"
+      },
+      "status": "formalized",
+      "decl": "Nat.choose_succ_succ",
+      "module": "Mathlib.Data.Nat.Choose.Basic",
+      "note": "Pascal's recurrence choose (n+1) (k+1) = choose n k + choose n (k+1)."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle {\\binom {n}{k}}={\\frac {n(n-1)(n-2)\\cdots (n-k+1)}{k!}}.}"
+      },
+      "status": "formalized",
+      "decl": "Nat.choose_eq_descFactorial_div_factorial",
+      "module": "Mathlib.Data.Nat.Choose.Basic",
+      "note": "Identifies choose n k with descFactorial n k / k!, the displayed practical formula."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle {\\binom {n}{k}}={\\binom {n}{n-k}},}"
+      },
+      "status": "formalized",
+      "decl": "Nat.choose_symm",
+      "module": "Mathlib.Data.Nat.Choose.Basic",
+      "note": "Exact symmetry identity choose n (n - k) = choose n k for k ≤ n."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle {\\binom {n}{k}}={\\frac {n!}{k!(n-k)!}},}"
+      },
+      "status": "formalized",
+      "decl": "Nat.choose_eq_factorial_div_factorial",
+      "module": "Mathlib.Data.Nat.Choose.Basic",
+      "note": "Symmetric factorial formula n!/(k!(n-k)!) is exactly this theorem."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle {\\binom {n}{k}}={\\begin{cases}\\displaystyle {\\binom {n}{k-1}}{\\frac {n-k+1}{k}}&\\quad {\\text{if }}k>0\\\\\\displaystyle {\\binom {n-1}{k}}{\\frac {n}{n-k}}&\\quad {\\text{if }}k<n\\\\\\displaystyle {\\binom {n-1}{k-1}}{\\frac {n}{k}}&\\quad {\\text{if }}n,k>0\\end{cases}}.}"
+      },
+      "status": "partial",
+      "decl": "Nat.choose_succ_right_eq",
+      "module": "Mathlib.Data.Nat.Choose.Basic",
+      "note": "Mathlib has individual multiplicative relations (choose_succ_right_eq, add_one_mul_choose_eq) but not this bundled three-way case-split."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle {\\binom {52}{5}}={\\frac {52\\times 51\\times 50\\times 49\\times 48}{5\\times 4\\times 3\\times 2\\times 1}}={\\frac {311{,}875{,}200}{120}}=2{,}598{,}960.}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Specific numerical example computation, not a standalone Mathlib lemma."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle {\\begin{alignedat}{2}{\\binom {52}{5}}&={\\frac {52!}{5!47!}}\\\\[5pt]&={\\frac {52\\times 51\\times 50\\times 49\\times 48\\times {\\cancel {47!}}}{5\\times 4\\times 3\\times 2\\times {\\cancel {1}}\\times {\\cancel {47!}}}}\\\\[5pt]&={\\frac {52\\times 51\\times 50\\times 49\\times 48}{5\\times 4\\times 3\\times 2}}\\\\[5pt]&={\\frac {(26\\times {\\cancel {2}})\\times (17\\times {\\cancel {3}})\\times (10\\times {\\cancel {5}})\\times 49\\times (12\\times {\\cancel {4}})}{{\\cancel {5}}\\times {\\cancel {4}}\\times {\\cancel {3}}\\times {\\cancel {2}}}}\\\\[5pt]&={26\\times 17\\times 10\\times 49\\times 12}\\\\[5pt]&=2{,}598{,}960.\\end{alignedat}}}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Step-by-step numerical simplification of choose(52,5), not a Mathlib statement."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle {\\binom {n}{k}}={\\frac {(n-0)}{1}}\\times {\\frac {(n-1)}{2}}\\times {\\frac {(n-2)}{3}}\\times \\cdots \\times {\\frac {(n-(k-1))}{k}},}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Iterative product reformulation of the descending-factorial formula; not a standalone Mathlib decl."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle {\\binom {52}{5}}={\\frac {52}{1}}\\times {\\frac {51}{2}}\\times {\\frac {50}{3}}\\times {\\frac {49}{4}}\\times {\\frac {48}{5}}=2{,}598{,}960.}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Specific numerical evaluation of choose(52,5), not formalized as a lemma."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle {\\begin{aligned}{\\binom {52}{5}}&={\\frac {n!}{k!(n-k)!}}={\\frac {52!}{5!(52-5)!}}={\\frac {52!}{5!47!}}\\\\[6pt]&={\\tfrac {80,658,175,170,943,878,571,660,636,856,403,766,975,289,505,440,883,277,824,000,000,000,000}{120\\times 258,623,241,511,168,180,642,964,355,153,611,979,969,197,632,389,120,000,000,000}}\\\\[6pt]&=2{,}598{,}960.\\end{aligned}}}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Extended unsimplified numerical computation; not a Mathlib statement."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle x_{1}+x_{2}+\\ldots +x_{n}=k.}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Diophantine equation used informally to characterize multisubsets; no standalone Mathlib decl."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\left(\\!\\!{\\binom {n}{k}}\\!\\!\\right),}"
+      },
+      "status": "formalized",
+      "decl": "Nat.multichoose",
+      "module": "Mathlib.Data.Nat.Choose.Basic",
+      "note": "Nat.multichoose is the multiset-coefficient n multichoose k denoted ((n k))."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\left(\\!\\!{\\binom {n}{k}}\\!\\!\\right)={\\binom {n+k-1}{k}}.}"
+      },
+      "status": "formalized",
+      "decl": "Nat.multichoose_eq",
+      "module": "Mathlib.Data.Nat.Choose.Basic",
+      "note": "Exactly multichoose n k = (n + k - 1).choose k."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\bigstar \\bigstar \\bigstar |\\bigstar \\bigstar ||\\bigstar \\bigstar \\bigstar \\bigstar \\bigstar .}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Pictorial stars-and-bars illustration, not a mathematical statement to formalize."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\left(\\!\\!{\\binom {n}{k}}\\!\\!\\right)=\\left(\\!\\!{\\binom {k+1}{n-1}}\\!\\!\\right).}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Multichoose duality ((n,k)) = ((k+1,n-1)) has no dedicated Mathlib lemma."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\left(\\!\\!{\\binom {4}{3}}\\!\\!\\right)={\\binom {4+3-1}{3}}={\\binom {6}{3}}={\\frac {6\\times 5\\times 4}{3\\times 2\\times 1}}=20.}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Specific numerical donut-counting example, not a standalone Mathlib decl."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle |\\{\\{\\};\\{1\\};\\{2\\};\\{1,2\\};\\{3\\};\\{1,3\\};\\{2,3\\};\\{1,2,3\\}\\}|=2^{3}=8}"
+      },
+      "status": "formalized",
+      "decl": "Finset.card_powerset",
+      "module": "Mathlib.Data.Finset.Powerset",
+      "note": "Finset.card_powerset gives card (powerset s) = 2 ^ card s, the claim for n = 3."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle {\\binom {n}{k_{1},k_{2},\\ldots ,k_{m}}}={\\frac {n!}{k_{1}!\\,k_{2}!\\cdots k_{m}!}},}"
+      },
+      "status": "formalized",
+      "decl": "Nat.multinomial",
+      "module": "Mathlib.Data.Nat.Choose.Multinomial",
+      "note": "Nat.multinomial is defined as (∑ f i)! / ∏ (f i)!, matching the displayed formula."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle {\\binom {n}{k}}={\\binom {n}{k,n-k}}={\\frac {n!}{k!(n-k)!}}.}"
+      },
+      "status": "formalized",
+      "decl": "Nat.binomial_eq_choose",
+      "module": "Mathlib.Data.Nat.Choose.Multinomial",
+      "note": "Identifies the two-element multinomial with the binomial coefficient, exactly this identity."
+    }
+  ]
+}

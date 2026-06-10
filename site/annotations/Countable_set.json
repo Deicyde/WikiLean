@@ -1,0 +1,733 @@
+{
+  "slug": "Countable_set",
+  "wikipedia_title": "Countable set",
+  "display_title": "Countable set",
+  "schema_version": 3,
+  "annotation_style": "theorem_article",
+  "annotations": [
+    {
+      "kind": "definition",
+      "label": "Countable set",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "a set is countable if either it is finite or it can be made in one to one correspondence"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Set.Countable",
+        "module": "Mathlib.Data.Set.Countable",
+        "match_kind": "exact"
+      },
+      "note": "`Set.Countable s` (and the type-level `Countable`) is exactly the notion of a countable set, via an injection into ℕ.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Countably infinite set",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "A countable set that is not finite is said to be countably infinite"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Denumerable",
+        "module": "Mathlib.Logic.Denumerable",
+        "match_kind": "generalization"
+      },
+      "note": "`Denumerable` is a type constructively in bijection with ℕ, i.e. countably infinite (and `nonempty_denumerable_iff` shows this equals Countable ∧ Infinite).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Existence of uncountable sets",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "who proved the existence of uncountable sets , that is, sets that are not countable"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Function.cantor_surjective",
+        "module": "Mathlib.Logic.Function.Basic",
+        "match_kind": "invocation"
+      },
+      "note": "Cantor's diagonal `Function.cantor_surjective` proves no surjection α → Set α exists, witnessing uncountable types (also `Uncountable ℝ`).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Countable set (equivalent definitions)",
+      "anchor": {
+        "section": "Definition",
+        "snippet": "is countable if"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "countable_iff_exists_injective",
+        "module": "Mathlib.Data.Countable.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`countable_iff_exists_injective` characterizes countability by an injection into ℕ.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Definitions are equivalent",
+      "anchor": {
+        "section": "Definition",
+        "snippet": "All of these definitions are equivalent"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "countable_iff_exists_surjective",
+        "module": "Mathlib.Data.Countable.Defs",
+        "match_kind": "exact"
+      },
+      "note": "The injection/surjection characterizations are proved equivalent via `countable_iff_exists_injective` and `countable_iff_exists_surjective`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Countably infinite set",
+      "anchor": {
+        "section": "Definition",
+        "snippet": "is countably infinite if"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Denumerable",
+        "module": "Mathlib.Logic.Denumerable",
+        "match_kind": "generalization"
+      },
+      "note": "`Denumerable` captures countably infinite as a constructive bijection with ℕ.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Uncountable set",
+      "anchor": {
+        "section": "Definition",
+        "snippet": "A set is uncountable if it is not countable"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Uncountable",
+        "module": "Mathlib.Data.Countable.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`Uncountable` is defined as `¬Countable α` (`uncountable_iff_not_countable`).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Roster form",
+      "anchor": {
+        "section": "Introduction",
+        "snippet": "called roster form"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Roster/list notation for sets is informal and has no corresponding Mathlib declaration.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Infinite set",
+      "anchor": {
+        "section": "Introduction",
+        "snippet": "Some sets are infinite"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Infinite",
+        "module": "Mathlib.Data.Finite.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`Infinite` (and `Set.Infinite`) formalizes the notion of an infinite set/type.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Introduction",
+          "snippet": "Some sets are infinite"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\ldots \\,-\\!2\\!\\rightarrow \\!-\\!4,\\,-\\!1\\!\\rightarrow \\!-\\!2,\\,0\\!\\rightarrow \\!0,\\,1\\!\\rightarrow \\!2,\\,2\\!\\rightarrow \\!4\\,\\cdots }"
+        }
+      ]
+    },
+    {
+      "kind": "example",
+      "label": "Integers and even integers in correspondence",
+      "anchor": {
+        "section": "Introduction",
+        "snippet": "for every integer, there is a distinct even integer"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This specific illustrative bijection between ℤ and the even integers is not stated as a named declaration in Mathlib.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Introduction",
+          "snippet": "for every integer, there is a distinct even integer"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\ldots \\,-\\!2\\!\\rightarrow \\!-\\!4,\\,-\\!1\\!\\rightarrow \\!-\\!2,\\,0\\!\\rightarrow \\!0,\\,1\\!\\rightarrow \\!2,\\,2\\!\\rightarrow \\!4\\,\\cdots }"
+        }
+      ]
+    },
+    {
+      "kind": "definition",
+      "label": "Bijection / one-to-one correspondence",
+      "anchor": {
+        "section": "Introduction",
+        "snippet": "which is a function that maps between two sets such that each element of each set corresponds to a single element in the other set"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Equiv",
+        "module": "Mathlib.Logic.Equiv.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`Equiv` (and `Function.Bijective`) formalizes a one-to-one correspondence between two types.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Introduction",
+          "snippet": "which is a function that maps between two sets such that each element of each set corresponds to a single element in the other set"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\ldots \\,-\\!2\\!\\rightarrow \\!-\\!4,\\,-\\!1\\!\\rightarrow \\!-\\!2,\\,0\\!\\rightarrow \\!0,\\,1\\!\\rightarrow \\!2,\\,2\\!\\rightarrow \\!4\\,\\cdots }"
+        }
+      ]
+    },
+    {
+      "kind": "definition",
+      "label": "Same cardinality",
+      "anchor": {
+        "section": "Introduction",
+        "snippet": "two sets are of the same size if and only if there is a bijection between them"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Cardinal.eq",
+        "module": "Mathlib.SetTheory.Cardinal.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`Cardinal.eq` states `#α = #β ↔ Nonempty (α ≃ β)`, i.e. equal cardinality iff a bijection exists.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Introduction",
+          "snippet": "two sets are of the same size if and only if there is a bijection between them"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\ldots \\,-\\!2\\!\\rightarrow \\!-\\!4,\\,-\\!1\\!\\rightarrow \\!-\\!2,\\,0\\!\\rightarrow \\!0,\\,1\\!\\rightarrow \\!2,\\,2\\!\\rightarrow \\!4\\,\\cdots }"
+        }
+      ]
+    },
+    {
+      "kind": "definition",
+      "label": "Countably infinite (naming)",
+      "anchor": {
+        "section": "Introduction",
+        "snippet": "We call all sets that are in one-to-one correspondence with the integers countably infinite"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Denumerable",
+        "module": "Mathlib.Logic.Denumerable",
+        "match_kind": "generalization"
+      },
+      "note": "`Denumerable` is exactly the typeclass for types in bijection with ℕ.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Introduction",
+          "snippet": "We call all sets that are in one-to-one correspondence with the integers countably infinite"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\ldots \\,-\\!2\\!\\rightarrow \\!-\\!4,\\,-\\!1\\!\\rightarrow \\!-\\!2,\\,0\\!\\rightarrow \\!0,\\,1\\!\\rightarrow \\!2,\\,2\\!\\rightarrow \\!4\\,\\cdots }"
+        }
+      ]
+    },
+    {
+      "kind": "theorem",
+      "label": "Not all infinite sets are countably infinite",
+      "anchor": {
+        "section": "Introduction",
+        "snippet": "not all infinite sets are countably infinite"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Cardinal.not_countable_real",
+        "module": "Mathlib.Analysis.Real.Cardinality",
+        "match_kind": "special_case"
+      },
+      "note": "ℝ is infinite yet `Cardinal.not_countable_real`/`Uncountable ℝ` shows it is not countable, witnessing the claim.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Real numbers are uncountable",
+      "anchor": {
+        "section": "Introduction",
+        "snippet": "The set of real numbers has a greater cardinality than the set of natural numbers"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Cardinal.mk_real",
+        "module": "Mathlib.Analysis.Real.Cardinality",
+        "match_kind": "exact"
+      },
+      "note": "`Cardinal.mk_real` gives `#ℝ = 𝔠` and `Cardinal.not_countable_real` that ℝ exceeds ℵ₀.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Countable set (formal)",
+      "anchor": {
+        "section": "Formal overview",
+        "snippet": "is countable if there exists a bijection between"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "countable_iff_exists_injective",
+        "module": "Mathlib.Data.Countable.Defs",
+        "match_kind": "exact"
+      },
+      "note": "Countability via an injection (bijection onto a subset of ℕ) is `countable_iff_exists_injective`.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Formal overview",
+          "snippet": "is countable if there exists a bijection between"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle a\\leftrightarrow 1,\\ b\\leftrightarrow 2,\\ c\\leftrightarrow 3}"
+        }
+      ]
+    },
+    {
+      "kind": "example",
+      "label": "Finite sets are countable",
+      "anchor": {
+        "section": "Formal overview",
+        "snippet": "Similarly we can show all finite sets to be countable"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Set.Finite.countable",
+        "module": "Mathlib.Data.Set.Countable",
+        "match_kind": "exact"
+      },
+      "note": "`Set.Finite.countable` (and instance `Finite.to_countable`) shows every finite set/type is countable.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Formal overview",
+          "snippet": "Similarly we can show all finite sets to be countable"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle a\\leftrightarrow 1,\\ b\\leftrightarrow 2,\\ c\\leftrightarrow 3}"
+        }
+      ]
+    },
+    {
+      "kind": "definition",
+      "label": "Countably infinite set (formal)",
+      "anchor": {
+        "section": "Formal overview",
+        "snippet": "is countably infinite if there is a bijection between"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Denumerable",
+        "module": "Mathlib.Logic.Denumerable",
+        "match_kind": "generalization"
+      },
+      "note": "`Denumerable` is the formal bijection-with-ℕ notion of countably infinite.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Formal overview",
+          "snippet": "is countably infinite if there is a bijection between"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle {\\begin{matrix}0\\leftrightarrow 1,&amp;1\\leftrightarrow 2,&amp;2\\leftrightarrow 3,&amp;3\\leftrightarrow 4,&amp;4\\leftrightarrow 5,&amp;\\ldots \\\\[6pt]0\\leftrightarrow 0,&amp;1\\leftrightarrow 2,&amp;2\\leftrightarrow 4,&amp;3\\leftrightarrow 6,&amp;4\\leftrightarrow 8,&amp;\\ldots \\end{matrix}}}"
+        }
+      ]
+    },
+    {
+      "kind": "example",
+      "label": "Positive integers and even integers are countably infinite",
+      "anchor": {
+        "section": "Formal overview",
+        "snippet": "We can show these sets are countably infinite by exhibiting a bijection to the natural numbers"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Denumerable.pnat",
+        "module": "Mathlib.Logic.Denumerable",
+        "match_kind": "special_case"
+      },
+      "note": "`Denumerable ℕ+` gives positive integers countably infinite, but the even-integers example set is not a separately named declaration.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Formal overview",
+          "snippet": "We can show these sets are countably infinite by exhibiting a bijection to the natural numbers"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle {\\begin{matrix}0\\leftrightarrow 1,&amp;1\\leftrightarrow 2,&amp;2\\leftrightarrow 3,&amp;3\\leftrightarrow 4,&amp;4\\leftrightarrow 5,&amp;\\ldots \\\\[6pt]0\\leftrightarrow 0,&amp;1\\leftrightarrow 2,&amp;2\\leftrightarrow 4,&amp;3\\leftrightarrow 6,&amp;4\\leftrightarrow 8,&amp;\\ldots \\end{matrix}}}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Countable iff countably infinite or finite",
+      "anchor": {
+        "section": "Formal overview",
+        "snippet": "Every countably infinite set is countable, and every infinite countable set is countably infinite"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Set.countable_infinite_iff_nonempty_denumerable",
+        "module": "Mathlib.SetTheory.Cardinal.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`Set.countable_infinite_iff_nonempty_denumerable` proves an infinite countable set is denumerable (countably infinite).",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Formal overview",
+          "snippet": "Every countably infinite set is countable, and every infinite countable set is countably infinite"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle {\\begin{matrix}0\\leftrightarrow 1,&amp;1\\leftrightarrow 2,&amp;2\\leftrightarrow 3,&amp;3\\leftrightarrow 4,&amp;4\\leftrightarrow 5,&amp;\\ldots \\\\[6pt]0\\leftrightarrow 0,&amp;1\\leftrightarrow 2,&amp;2\\leftrightarrow 4,&amp;3\\leftrightarrow 6,&amp;4\\leftrightarrow 8,&amp;\\ldots \\end{matrix}}}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "N×N is countably infinite",
+      "anchor": {
+        "section": "Formal overview",
+        "snippet": "The set of all ordered pairs of natural numbers"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Denumerable.prod",
+        "module": "Mathlib.Logic.Denumerable",
+        "match_kind": "special_case"
+      },
+      "note": "`Denumerable.prod` (and `Nat.pairEquiv : ℕ × ℕ ≃ ℕ`) gives that ℕ × ℕ is countably infinite.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Algebraic numbers are countable",
+      "anchor": {
+        "section": "Formal overview",
+        "snippet": "the set of algebraic numbers is countable"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Algebraic.countable",
+        "module": "Mathlib.Algebra.AlgebraicCard",
+        "match_kind": "generalization"
+      },
+      "note": "`Algebraic.countable` shows `{x | IsAlgebraic R x}` is countable for countable R, generalizing the algebraic numbers.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Positive rationals are countable",
+      "anchor": {
+        "section": "Formal overview",
+        "snippet": "the set of positive rational numbers can easily be one-to-one mapped to the set of natural number pairs"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Subtype.countable",
+        "module": "Mathlib.Data.Countable.Defs",
+        "match_kind": "special_case"
+      },
+      "note": "ℚ is countable (`Rat.instDenumerable`), so the positive-rationals subtype is countable by `Subtype.countable`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Cantor's theorem",
+      "anchor": {
+        "section": "Formal overview",
+        "snippet": "Cantor's theorem asserts that if"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Function.cantor_surjective",
+        "module": "Mathlib.Logic.Function.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`Function.cantor_surjective` proves no map α → Set α is surjective; `Cardinal.cantor` states `a < 2^a`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Reals and infinite sequences of naturals are uncountable",
+      "anchor": {
+        "section": "Formal overview",
+        "snippet": "The set of real numbers is uncountable"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Cardinal.not_countable_real",
+        "module": "Mathlib.Analysis.Real.Cardinality",
+        "match_kind": "special_case"
+      },
+      "note": "`Cardinal.not_countable_real`/`Uncountable ℝ` give the reals uncountable; the ℕ→ℕ sequence case follows from Cantor/cardinality.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Subset of a countable set is countable",
+      "anchor": {
+        "type": "theorem_box",
+        "value": "Theorem"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Set.Countable.mono",
+        "module": "Mathlib.Data.Set.Countable",
+        "match_kind": "exact"
+      },
+      "note": "`Set.Countable.mono` shows any subset of a countable set is countable.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Cartesian product of finitely many countable sets is countable",
+      "anchor": {
+        "type": "theorem_box",
+        "value": "Theorem"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Set.Countable.prod",
+        "module": "Mathlib.Data.Set.Countable",
+        "match_kind": "exact"
+      },
+      "note": "`Set.Countable.prod` covers binary products and `countable_univ_pi` covers finite products of countable sets.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Z and Q are countable",
+      "anchor": {
+        "type": "theorem_box",
+        "value": "Theorem"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Denumerable.int",
+        "module": "Mathlib.Logic.Denumerable",
+        "match_kind": "special_case"
+      },
+      "note": "`Denumerable.int` and `Rat.instDenumerable` make ℤ and ℚ denumerable, hence countable.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Finite union of countable sets is countable",
+      "anchor": {
+        "type": "theorem_box",
+        "value": "Theorem"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Set.Countable.union",
+        "module": "Mathlib.Data.Set.Countable",
+        "match_kind": "special_case"
+      },
+      "note": "`Set.Countable.union` handles binary unions; `countable_iUnion` over a `Countable` (hence finite) index covers finite unions.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Union of countably many countable sets is countable",
+      "anchor": {
+        "type": "theorem_box",
+        "value": "Theorem"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Set.countable_iUnion",
+        "module": "Mathlib.Data.Set.Countable",
+        "match_kind": "exact"
+      },
+      "note": "`Set.countable_iUnion` (with `Countable.biUnion`/`sUnion`) shows a countable union of countable sets is countable.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Set of finite-length sequences of naturals is countable",
+      "anchor": {
+        "type": "theorem_box",
+        "value": "Theorem"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "denumerableList",
+        "module": "Mathlib.Logic.Equiv.List",
+        "match_kind": "special_case"
+      },
+      "note": "`denumerableList` makes `List α` denumerable for denumerable α, so `List ℕ` (finite sequences of naturals) is countable.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Set of finite subsets of naturals is countable",
+      "anchor": {
+        "type": "theorem_box",
+        "value": "Theorem"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Set.countable_setOf_finite_subset",
+        "module": "Mathlib.Data.Set.Countable",
+        "match_kind": "exact"
+      },
+      "note": "`Set.countable_setOf_finite_subset` shows the finite subsets of a countable set form a countable set (also `Denumerable (Finset ℕ)`).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Injection/surjection with a countable set",
+      "anchor": {
+        "type": "theorem_box",
+        "value": "Theorem"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Function.Injective.countable",
+        "module": "Mathlib.Data.Countable.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`Function.Injective.countable` and `Function.Surjective.countable` transfer countability along injections/surjections.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "The set is uncountable",
+      "anchor": {
+        "type": "theorem_box",
+        "value": "Proposition"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Cardinal.cantor",
+        "module": "Mathlib.SetTheory.Cardinal.Order",
+        "match_kind": "generalization"
+      },
+      "note": "`Cardinal.cantor` (`a < 2^a`) and `Function.cantor_surjective` give that the power set / 2^ℕ is uncountable.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Minimal standard model is countable",
+      "anchor": {
+        "section": "Minimal model of set theory is countable",
+        "snippet": "this minimal model is countable"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib does not formalize minimal standard models of ZF or the Löwenheim–Skolem countable model result.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Contents of the minimal standard model",
+      "anchor": {
+        "section": "Minimal model of set theory is countable",
+        "snippet": "The minimal standard model includes all the algebraic numbers and all effectively computable transcendental numbers"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The structure/contents of the minimal standard model of set theory is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Total orders on countable sets",
+      "anchor": {
+        "section": "Total orders",
+        "snippet": "Countable sets can be totally ordered in various ways"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "LinearOrder",
+        "module": "Mathlib.Order.Defs",
+        "match_kind": "generalization"
+      },
+      "note": "Total orders are formalized as `LinearOrder`, but the informal observation that countable sets admit various total orders is not a stated theorem.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Usual order of rationals is not a list",
+      "anchor": {
+        "section": "Total orders",
+        "snippet": "The usual order of rational numbers"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "DenselyOrdered",
+        "module": "Mathlib.Order.Defs",
+        "match_kind": "generalization"
+      },
+      "note": "Density of an order is formalized as `DenselyOrdered` (ℚ is an instance), but the informal 'not a list / not a well-order' remark is not a named result.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Well order (least element)",
+      "anchor": {
+        "section": "Total orders",
+        "snippet": "any subset has a least element"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "IsWellOrder",
+        "module": "Mathlib.Order.RelClasses",
+        "match_kind": "generalization"
+      },
+      "note": "`IsWellOrder` (built on `IsWellFounded`) formalizes a well order, in which every nonempty subset has a least element.",
+      "provenance": "ai"
+    }
+  ]
+}

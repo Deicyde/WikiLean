@@ -1,0 +1,697 @@
+{
+  "slug": "Eulers_totient_function",
+  "wikipedia_title": "Euler's totient function",
+  "display_title": "Euler's totient function",
+  "schema_version": 3,
+  "annotation_style": "theorem_article",
+  "annotations": [
+    {
+      "kind": "definition",
+      "label": "Euler's totient function",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "counts the positive integers up to a given integer"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Nat.totient",
+        "module": "Mathlib.Data.Nat.Totient",
+        "match_kind": "exact"
+      },
+      "note": "Mathlib defines `Nat.totient n` as the cardinality of naturals less than `n` coprime to `n`, with notation `φ`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Totatives of 9",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "the totatives of"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Nat.totient_eq_card_coprime",
+        "module": "Mathlib.Data.Nat.Totient",
+        "match_kind": null
+      },
+      "note": "The set of totatives is realized as `{a ∈ range n | n.Coprime a}` but the concrete example of the totatives of 9 is not stated.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Multiplicativity of phi",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "Euler's totient function is a multiplicative function"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Nat.totient_mul",
+        "module": "Mathlib.Data.Nat.Totient",
+        "match_kind": "exact"
+      },
+      "note": "`Nat.totient_mul` proves `φ(m*n) = φ m * φ n` whenever `m.Coprime n`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Cototient",
+      "anchor": {
+        "section": "History, terminology, and notation",
+        "snippet": "The cototient of"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No definition of `n - φ(n)` as a named cototient function appears in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Euler's product formula",
+      "anchor": {
+        "section": "Euler's product formula",
+        "snippet": "where the product is over the distinct prime numbers dividing n"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Nat.totient_eq_prod_factorization",
+        "module": "Mathlib.Data.Nat.Totient",
+        "match_kind": "exact"
+      },
+      "note": "`Nat.totient_eq_prod_factorization` expresses `φ n` as a product over prime factors `p^(k-1)(p-1)`, equivalent to the stated formula.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Equivalent product formulation",
+      "anchor": {
+        "section": "Euler's product formula",
+        "snippet": "An equivalent formulation is"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Nat.totient_eq_mul_prod_factors",
+        "module": "Mathlib.Data.Nat.Totient",
+        "match_kind": "exact"
+      },
+      "note": "`Nat.totient_eq_mul_prod_factors` states `(φ n : ℚ) = n * ∏ p ∈ n.primeFactors, (1 - p⁻¹)`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Phi is multiplicative",
+      "anchor": {
+        "section": "Phi is a multiplicative function",
+        "snippet": "This means that if"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Nat.totient_mul",
+        "module": "Mathlib.Data.Nat.Totient",
+        "match_kind": "exact"
+      },
+      "note": "`Nat.totient_mul` gives `φ(m n) = φ m * φ n` for coprime `m`, `n`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Phi of a prime power",
+      "anchor": {
+        "section": "Value of phi for a prime power argument",
+        "snippet": "If p is prime and"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Nat.totient_prime_pow",
+        "module": "Mathlib.Data.Nat.Totient",
+        "match_kind": "exact"
+      },
+      "note": "`Nat.totient_prime_pow` proves `φ(p^n) = p^(n-1)(p-1)` for prime `p` and `0 < n`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "phi(20) computation",
+      "anchor": {
+        "section": "Example",
+        "snippet": "the distinct prime factors of 20 are 2 and 5"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Nat.totient_eq_prod_factorization",
+        "module": "Mathlib.Data.Nat.Totient",
+        "match_kind": null
+      },
+      "note": "The general product formula is available so `φ 20 = 8` is decidable, but the concrete numerical example is not stated as a lemma.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Totient as Fourier transform of gcd",
+      "anchor": {
+        "section": "Fourier transform",
+        "snippet": "The totient is the discrete Fourier transform of the gcd"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No representation of the totient as a discrete Fourier transform of `gcd` was found in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Gauss divisor sum identity",
+      "anchor": {
+        "section": "Divisor sum",
+        "snippet": "The property established by Gauss"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Nat.sum_totient",
+        "module": "Mathlib.Data.Nat.Totient",
+        "match_kind": "exact"
+      },
+      "note": "`Nat.sum_totient` proves `∑ d ∈ n.divisors, φ d = n`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Möbius inversion of divisor sum",
+      "anchor": {
+        "section": "Divisor sum",
+        "snippet": "Möbius inversion applied to the divisor sum formula gives"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "ArithmeticFunction.sum_eq_iff_sum_mul_moebius_eq",
+        "module": "Mathlib.NumberTheory.ArithmeticFunction.Moebius",
+        "match_kind": null
+      },
+      "note": "Möbius inversion is available in general (`sum_eq_iff_sum_mul_moebius_eq`), but the specific consequence `φ(n) = ∑ d∣n μ(d) n/d` is not stated.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Möbius function",
+      "anchor": {
+        "section": "Divisor sum",
+        "snippet": "is the Möbius function , the multiplicative function defined by"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "ArithmeticFunction.moebius",
+        "module": "Mathlib.NumberTheory.ArithmeticFunction.Moebius",
+        "match_kind": "exact"
+      },
+      "note": "`ArithmeticFunction.moebius` (notation `μ`) is the standard Möbius function defined via squarefreeness and the parity of the number of prime factors.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Upper and lower bounds for phi(n)",
+      "anchor": {
+        "section": "Some values",
+        "snippet": "the top line y = n − 1 is an upper bound valid for all n other than one"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Nat.totient_lt",
+        "module": "Mathlib.Data.Nat.Totient",
+        "match_kind": "special_case"
+      },
+      "note": "The upper bound `φ n < n` (for `1 < n`) is `Nat.totient_lt`, but the article's lower bound `φ(n) ≥ √n` is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Euler's theorem",
+      "anchor": {
+        "section": "Euler's theorem",
+        "snippet": "This states that if a and n are relatively prime then"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Nat.ModEq.pow_totient",
+        "module": "Mathlib.FieldTheory.Finite.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`Nat.ModEq.pow_totient` proves `x^(φ n) ≡ 1 [MOD n]` when `Nat.Coprime x n`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Parity and divisibility of phi(n)",
+      "anchor": {
+        "section": "Other formulae",
+        "snippet": "is even for n ≥ 3"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Nat.totient_even",
+        "module": "Mathlib.Data.Nat.Totient",
+        "match_kind": "special_case"
+      },
+      "note": "`Nat.totient_even` proves `φ n` is even for `2 < n`; finer divisibility properties (e.g. `2^k | φ n`) are not isolated as lemmas.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Divisibility of phi(a^n - 1)",
+      "anchor": {
+        "section": "Other formulae",
+        "snippet": "For any a > 1 and n > 6 such that"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No statement that `n ∣ φ(a^n - 1)` (or its sharper variant) was found in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Menon's identity",
+      "anchor": {
+        "section": "Menon's identity",
+        "snippet": "In 1965 P. Kesava Menon proved"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Menon's identity does not appear in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Divisibility by any fixed positive integer",
+      "anchor": {
+        "section": "Divisibility by any fixed positive integer",
+        "snippet": "For every fixed positive integer"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The asymptotic density result for `d ∣ φ(n)` is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Dirichlet series for phi",
+      "anchor": {
+        "section": "Generating functions",
+        "snippet": "The Dirichlet series for"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The L-series identity `∑ φ(n)/n^s = ζ(s-1)/ζ(s)` is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Lambert series generating function",
+      "anchor": {
+        "section": "Generating functions",
+        "snippet": "The Lambert series generating function is"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No Lambert series representation of the totient appears in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Growth: limsup phi(n)/n^(1-delta)",
+      "anchor": {
+        "section": "Growth rate",
+        "snippet": "but as n goes to infinity"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No asymptotic `limsup` bound for `φ(n)/n^{1-δ}` is in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Inequality between phi and sigma",
+      "anchor": {
+        "section": "Growth rate",
+        "snippet": "the inequality"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The combined `φ(n)·σ(n)` inequality is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Liminf phi(n) log log n / n",
+      "anchor": {
+        "section": "Growth rate",
+        "snippet": "We also have"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Mertens-type `liminf` for `φ(n) log log n / n` is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Nicolas inequality",
+      "anchor": {
+        "section": "Growth rate",
+        "snippet": "The second inequality was shown by Jean-Louis Nicolas"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Nicolas's inequality for the totient is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Walfisz average order",
+      "anchor": {
+        "section": "Growth rate",
+        "snippet": "For the average order, we have"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Walfisz's asymptotic for `∑ φ(k)` is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Liu's improved error term",
+      "anchor": {
+        "section": "Growth rate",
+        "snippet": "By a combination of van der Corput's and Vinogradov's methods"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Liu's improved error term is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Coprimality probability",
+      "anchor": {
+        "section": "Growth rate",
+        "snippet": "the probability of two randomly chosen numbers being relatively prime"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The `6/π²` density result for coprime pairs is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Somayajulu's result",
+      "anchor": {
+        "section": "Ratio of consecutive values",
+        "snippet": "In 1950 Somayajulu proved"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Somayajulu's `liminf`/`limsup` for `φ(n+1)/φ(n)` is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Schinzel–Sierpiński density",
+      "anchor": {
+        "section": "Ratio of consecutive values",
+        "snippet": "In 1954 Schinzel and Sierpiński strengthened this"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Schinzel–Sierpiński density strengthening is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Totient number and nontotient",
+      "anchor": {
+        "section": "Totient number",
+        "snippet": "A totient number is a value of Euler's totient function"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The image/non-image set of the totient is not defined in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Count of totient numbers up to x",
+      "anchor": {
+        "section": "Totient number",
+        "snippet": "The number of totient numbers up to a given limit x is"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Erdős's asymptotic for the count of totient numbers is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Count with multiplicity",
+      "anchor": {
+        "section": "Totient number",
+        "snippet": "If counted accordingly to multiplicity"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No counting-with-multiplicity asymptotic for totient values is formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Multiplicity lower bound",
+      "anchor": {
+        "section": "Totient number",
+        "snippet": "It is known that the multiplicity of m exceeds"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Multiplicity lower bounds for totient values are not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Ford's theorem",
+      "anchor": {
+        "section": "Ford's theorem",
+        "snippet": "Ford (1999) proved that for every integer"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Ford's theorem on totient multiplicities is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Perfect totient number",
+      "anchor": {
+        "section": "Perfect totient numbers",
+        "snippet": "A perfect totient number is an integer that is equal to the sum of its iterated totients"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No definition of perfect totient numbers appears in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Gauss constructibility criterion",
+      "anchor": {
+        "section": "Cyclotomy",
+        "snippet": "Gauss proves"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Gauss's constructibility criterion via the totient is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Regular n-gon construction",
+      "anchor": {
+        "section": "Cyclotomy",
+        "snippet": "a regular n -gon has a straightedge-and-compass construction if n is a product of distinct Fermat primes"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Gauss–Wantzel theorem on regular-polygon constructibility is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "RSA cryptosystem",
+      "anchor": {
+        "section": "The RSA cryptosystem",
+        "snippet": "Setting up an RSA system involves choosing large prime numbers"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "RSA is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Lehmer's conjecture",
+      "anchor": {
+        "section": "Lehmer's conjecture",
+        "snippet": "In 1932 D. H. Lehmer asked if there are any composite numbers"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Lehmer's totient conjecture is not stated in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Lehmer's lower bounds",
+      "anchor": {
+        "section": "Lehmer's conjecture",
+        "snippet": "In 1933 he proved that if any such"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Lehmer's lower bounds for hypothetical counterexamples are not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Carmichael's conjecture",
+      "anchor": {
+        "section": "Carmichael's conjecture",
+        "snippet": "This states that there is no number"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Carmichael's totient conjecture is not stated (Mathlib's `ArithmeticFunction.carmichael` is the unrelated reduced-totient function).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Riemann hypothesis equivalence",
+      "anchor": {
+        "section": "Riemann hypothesis",
+        "snippet": "The Riemann hypothesis is true if and only if the inequality"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib defines `RiemannHypothesis` but does not state its equivalence with a totient inequality.",
+      "provenance": "ai"
+    }
+  ]
+}

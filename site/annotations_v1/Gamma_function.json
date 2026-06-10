@@ -1,0 +1,1309 @@
+{
+  "slug": "Gamma_function",
+  "wikipedia_title": "Gamma function",
+  "display_title": "Gamma function",
+  "schema_version": 1,
+  "source": "claude-agent-sdk/annotate_articles.py",
+  "annotations": [
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\Gamma (z)=\\int _{0}^{\\infty }t^{z-1}e^{-t}\\,dt,\\ \\qquad \\Re (z)>0.}"
+      },
+      "status": "formalized",
+      "decl": "Complex.GammaIntegral",
+      "module": "Mathlib.Analysis.SpecialFunctions.Gamma.Basic",
+      "note": "Mathlib's GammaIntegral defines exactly this integral for Re(z) > 0."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\Gamma (z)={\\mathcal {M}}\\{e^{-x}\\}(z)\\,.}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Mellin transform identification of Gamma not among the provided decls."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle f(x+1)=xf(x)\\ {\\text{ for all }}x>0,\\qquad f(1)=1.}"
+      },
+      "status": "partial",
+      "decl": "Complex.Gamma_add_one",
+      "module": "Mathlib.Analysis.SpecialFunctions.Gamma.Basic",
+      "note": "The functional equation is captured by Gamma_add_one; the characterization as a whole isn't a single decl."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\Gamma (z)=\\int _{0}^{\\infty }t^{z-1}e^{-t}\\,dt}"
+      },
+      "status": "formalized",
+      "decl": "Complex.GammaIntegral",
+      "module": "Mathlib.Analysis.SpecialFunctions.Gamma.Basic",
+      "note": "Direct integral definition matches Mathlib's GammaIntegral."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle {\\begin{aligned}\\Gamma (1)&=\\int _{0}^{\\infty }t^{1-1}e^{-t}\\,dt\\\\[6pt]&=\\int _{0}^{\\infty }e^{-t}\\,dt=1.\\end{aligned}}}"
+      },
+      "status": "partial",
+      "decl": "Complex.Gamma_nat_eq_factorial",
+      "module": "Mathlib.Analysis.SpecialFunctions.Gamma.Basic",
+      "note": "Γ(1)=1 is the n=0 case of Gamma_nat_eq_factorial; not a standalone decl in the provided list."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle {\\begin{aligned}\\Gamma (z+1)&=\\int _{0}^{\\infty }t^{z}e^{-t}\\,dt\\\\[6pt]&={\\Bigl [}-t^{z}e^{-t}{\\Bigr ]}_{0}^{\\infty }+\\int _{0}^{\\infty }z\\,t^{z-1}e^{-t}\\,dt.\\end{aligned}}}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Intermediate integration-by-parts calculation; not a standalone Mathlib decl."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle {\\begin{aligned}\\Gamma (z+1)&=z\\int _{0}^{\\infty }t^{z-1}e^{-t}\\,dt\\\\[6pt]&=z\\,\\Gamma (z).\\end{aligned}}}"
+      },
+      "status": "formalized",
+      "decl": "Complex.Gamma_add_one",
+      "module": "Mathlib.Analysis.SpecialFunctions.Gamma.Basic",
+      "note": "The functional equation Γ(z+1)=zΓ(z) is Gamma_add_one."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\lim _{n\\to \\infty }{\\frac {n!\\,\\left(n+1\\right)^{m}}{(n+m)!}}=1\\,.}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Motivational limit for integer m; no matching decl provided."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\lim _{n\\to \\infty }{\\frac {n!\\,\\left(n+1\\right)^{z}}{(n+z)!}}=1\\,.}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Asymptotic limit underlying Euler's product; no decl in provided list."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle {\\begin{aligned}(z-1)!&={\\frac {1}{z}}\\lim _{n\\to \\infty }n!{\\frac {z!}{(n+z)!}}(n+1)^{z}\\\\[6pt]&={\\frac {1}{z}}\\lim _{n\\to \\infty }(1\\cdot 2\\cdots n){\\frac {1}{(1+z)\\cdots (n+z)}}\\left({\\frac {2}{1}}\\cdot {\\frac {3}{2}}\\cdots {\\frac {n+1}{n}}\\right)^{z}\\\\[6pt]&={\\frac {1}{z}}\\prod _{n=1}^{\\infty }\\left[{\\frac {1}{1+{\\frac {z}{n}}}}\\left(1+{\\frac {1}{n}}\\right)^{z}\\right].\\end{aligned}}}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Derivation of Euler's product formula; no matching standalone decl provided."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle {\\frac {1}{\\Gamma (z)}}=z\\prod _{n=1}^{\\infty }\\left[\\left(1+{\\frac {z}{n}}\\right)/{\\left(1+{\\frac {1}{n}}\\right)^{z}}\\right]}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Euler product for 1/Γ; no matching decl in provided list."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\Gamma (z)={\\frac {e^{-\\gamma z}}{z}}\\prod _{n=1}^{\\infty }\\left(1+{\\frac {z}{n}}\\right)^{-1}e^{z/n},}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Weierstrass product representation; no matching decl in provided list."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle {\\frac {1}{\\Gamma (z)}}=ze^{c_{1}z+c_{2}}\\prod _{n=1}^{\\infty }e^{-{\\frac {z}{n}}}\\left(1+{\\frac {z}{n}}\\right)}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Generic Hadamard factorization form; no matching decl provided."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle {\\begin{aligned}e^{-c_{1}}&=\\prod _{n=1}^{\\infty }e^{-{\\frac {1}{n}}}\\left(1+{\\frac {1}{n}}\\right)\\\\&=\\exp \\left(\\lim _{N\\to \\infty }\\sum _{n=1}^{N}\\left(\\log \\left(1+{\\frac {1}{n}}\\right)-{\\frac {1}{n}}\\right)\\right)\\\\&=\\exp \\left(\\lim _{N\\to \\infty }\\left(\\log(N+1)-\\sum _{n=1}^{N}{\\frac {1}{n}}\\right)\\right).\\end{aligned}}}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Proof step identifying constant with Euler-Mascheroni; not a standalone decl."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle {\\frac {1}{\\Gamma (z)}}=ze^{\\gamma z}\\prod _{n=1}^{\\infty }e^{-{\\frac {z}{n}}}\\left(1+{\\frac {z}{n}}\\right)}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Weierstrass product for 1/Γ; no matching decl provided."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle {\\begin{aligned}\\Gamma (z)&={\\frac {e^{-\\gamma z}}{z}}\\prod _{n=1}^{\\infty }\\left(1+{\\frac {z}{n}}\\right)^{-1}e^{z/n}\\\\&={\\frac {1}{z}}\\lim _{n\\to \\infty }e^{z\\left(\\log(n+1)-1-{\\frac {1}{2}}-{\\frac {1}{3}}-\\cdots -{\\frac {1}{n}}\\right)}{\\frac {e^{z\\left(1+{\\frac {1}{2}}+{\\frac {1}{3}}+\\cdots +{\\frac {1}{n}}\\right)}}{\\left(1+z\\right)\\left(1+{\\frac {z}{2}}\\right)\\cdots \\left(1+{\\frac {z}{n}}\\right)}}\\\\&={\\frac {1}{z}}\\lim _{n\\to \\infty }{\\frac {1}{\\left(1+z\\right)\\left(1+{\\frac {z}{2}}\\right)\\cdots \\left(1+{\\frac {z}{n}}\\right)}}e^{z\\log \\left(n+1\\right)}\\\\&=\\lim _{n\\to \\infty }{\\frac {n!(n+1)^{z}}{z(z+1)\\cdots (z+n)}},\\quad z\\in \\mathbb {C} \\setminus \\mathbb {Z} _{0}^{-}\\end{aligned}}}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Derivation showing equivalence of Weierstrass and Euler products; not a single decl."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\Gamma (z+1)=z\\ \\Gamma (z).}"
+      },
+      "status": "formalized",
+      "decl": "Complex.Gamma_add_one",
+      "module": "Mathlib.Analysis.SpecialFunctions.Gamma.Basic",
+      "note": "This is exactly Gamma_add_one."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\Gamma (1-z)\\Gamma (z)={\\frac {\\pi }{\\sin \\pi z}},\\qquad z\\not \\in \\mathbb {Z} ,}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Euler reflection formula not listed in provided decls."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\Gamma (z-n)=(-1)^{n-1}\\;{\\frac {\\Gamma (-z)\\Gamma (1+z)}{\\Gamma (n+1-z)}},\\qquad n\\in \\mathbb {Z} }"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Consequence of reflection formula; no matching decl provided."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\Gamma (z)\\Gamma \\left(z+{\\frac {1}{2}}\\right)=2^{1-2z}\\,{\\sqrt {\\pi }}\\,\\Gamma (2z).}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Legendre duplication formula not present in provided decls."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\Gamma (z)={\\frac {1}{z}}\\prod _{n=1}^{\\infty }{\\frac {(1+1/n)^{z}}{1+z/n}}}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Euler infinite product starting point for reflection proof; not provided."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle {\\frac {1}{\\Gamma (1-z)\\Gamma (z)}}={\\frac {1}{(-z)\\Gamma (-z)\\Gamma (z)}}=z\\prod _{n=1}^{\\infty }{\\frac {(1-z/n)(1+z/n)}{(1+1/n)^{-z}(1+1/n)^{z}}}=z\\prod _{n=1}^{\\infty }\\left(1-{\\frac {z^{2}}{n^{2}}}\\right)={\\frac {\\sin \\pi z}{\\pi }}\\,,}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Proof step in reflection formula derivation; not a standalone decl."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle I=\\int _{-\\infty }^{\\infty }{\\frac {e^{ax}}{1+e^{x}}}\\,dx=\\int _{0}^{\\infty }{\\frac {v^{a-1}}{1+v}}\\,dv={\\frac {\\pi }{\\sin \\pi a}},\\quad a\\in (0,1).}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Auxiliary integral lemma in reflection-formula proof; not provided."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\int _{C_{R}}{\\frac {e^{az}}{1+e^{z}}}\\,dz=-2\\pi ie^{a\\pi i}.}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Residue-theorem computation; intermediate step not a standalone decl."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle I_{R}=\\int _{-R}^{R}{\\frac {e^{ax}}{1+e^{x}}}\\,dx}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Definition local to the proof; not a Mathlib decl."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\left|\\int _{A_{R}}{\\frac {e^{az}}{1+e^{z}}}\\,dz\\right|\\leq \\int _{0}^{2\\pi }\\left|{\\frac {e^{a(R+it)}}{1+e^{R+it}}}\\right|\\,dt\\leq Ce^{(a-1)R}}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Estimate inside proof; not a standalone decl."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle I-e^{2\\pi ia}I=-2\\pi ie^{a\\pi i},}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Algebraic step in reflection-formula proof; not a standalone decl."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle I={\\frac {\\pi }{\\sin \\pi a}},\\quad a\\in (0,1).}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Conclusion of auxiliary integral; not provided as decl."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\Gamma (1-z)=\\int _{0}^{\\infty }e^{-u}u^{-z}\\,du=t\\int _{0}^{\\infty }e^{-vt}(vt)^{-z}\\,dv,\\quad t>0}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Integral substitution step; not a standalone decl."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle {\\begin{aligned}\\Gamma (z)\\Gamma (1-z)&=\\int _{0}^{\\infty }\\int _{0}^{\\infty }e^{-t(1+v)}v^{-z}\\,dv\\,dt\\\\&=\\int _{0}^{\\infty }{\\frac {v^{-z}}{1+v}}\\,dv\\\\&={\\frac {\\pi }{\\sin \\pi (1-z)}}\\\\&={\\frac {\\pi }{\\sin \\pi z}},\\quad z\\in (0,1).\\end{aligned}}}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Reflection-formula derivation; not a standalone decl."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\mathrm {B} (z_{1},z_{2})={\\frac {\\Gamma (z_{1})\\Gamma (z_{2})}{\\Gamma (z_{1}+z_{2})}}=\\int _{0}^{1}t^{z_{1}-1}(1-t)^{z_{2}-1}\\,dt.}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Beta-function identity not in provided list."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle {\\frac {\\Gamma ^{2}(z)}{\\Gamma (2z)}}=\\int _{0}^{1}t^{z-1}(1-t)^{z-1}\\,dt.}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Specialization of beta identity; not provided."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle {\\frac {\\Gamma ^{2}(z)}{\\Gamma (2z)}}={\\frac {1}{2^{2z-1}}}\\int _{-1}^{1}\\left(1-u^{2}\\right)^{z-1}\\,du.}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Intermediate step in duplication-formula proof; not a decl."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle 2^{2z-1}\\Gamma ^{2}(z)=2\\Gamma (2z)\\int _{0}^{1}(1-u^{2})^{z-1}\\,du.}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Intermediate proof step; not a decl."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\mathrm {B} \\left({\\frac {1}{2}},z\\right)=\\int _{0}^{1}t^{{\\frac {1}{2}}-1}(1-t)^{z-1}\\,dt,\\quad t=s^{2}.}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Proof step using beta function substitution; not provided as decl."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\mathrm {B} \\left({\\frac {1}{2}},z\\right)=2\\int _{0}^{1}(1-s^{2})^{z-1}\\,ds=2\\int _{0}^{1}(1-u^{2})^{z-1}\\,du.}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Proof step; not a standalone decl."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle 2^{2z-1}\\Gamma ^{2}(z)=\\Gamma (2z)\\mathrm {B} \\left({\\frac {1}{2}},z\\right).}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Intermediate identity in duplication proof; not provided."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\mathrm {B} \\left({\\frac {1}{2}},z\\right)={\\frac {\\Gamma \\left({\\frac {1}{2}}\\right)\\Gamma (z)}{\\Gamma \\left(z+{\\frac {1}{2}}\\right)}},\\quad \\Gamma \\left({\\frac {1}{2}}\\right)={\\sqrt {\\pi }},}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Beta-Gamma special case and Γ(1/2)=√π; not in provided decls."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\Gamma (z)\\Gamma \\left(z+{\\frac {1}{2}}\\right)=2^{1-2z}{\\sqrt {\\pi }}\\;\\Gamma (2z).}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Legendre duplication formula; not in provided decls."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\prod _{k=0}^{m-1}\\Gamma \\left(z+{\\frac {k}{m}}\\right)=(2\\pi )^{\\frac {m-1}{2}}\\;m^{{\\frac {1}{2}}-mz}\\;\\Gamma (mz).}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Gauss multiplication theorem; not in provided decls."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle {\\overline {\\Gamma (z)}}=\\Gamma ({\\overline {z}})\\;\\Rightarrow \\;\\Gamma (z)\\Gamma ({\\overline {z}})\\in \\mathbb {R} .}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Conjugation symmetry of Γ not in provided list."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle |\\Gamma (a+bi)|^{2}=|\\Gamma (a)|^{2}\\prod _{k=0}^{\\infty }{\\frac {1}{1+{\\frac {b^{2}}{(a+k)^{2}}}}}}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Product formula for |Γ(a+bi)|²; no matching decl."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle {\\begin{aligned}|\\Gamma (bi)|^{2}&={\\frac {\\pi }{b\\sinh \\pi b}}\\\\[6pt]\\left|\\Gamma \\left({\\tfrac {1}{2}}+bi\\right)\\right|^{2}&={\\frac {\\pi }{\\cosh \\pi b}}\\\\[6pt]\\left|\\Gamma \\left(1+bi\\right)\\right|^{2}&={\\frac {\\pi b}{\\sinh \\pi b}}\\\\[6pt]\\left|\\Gamma \\left(1+n+bi\\right)\\right|^{2}&={\\frac {\\pi b}{\\sinh \\pi b}}\\prod _{k=1}^{n}\\left(k^{2}+b^{2}\\right),\\quad n\\in \\mathbb {N} \\\\[6pt]\\left|\\Gamma \\left(-n+bi\\right)\\right|^{2}&={\\frac {\\pi }{b\\sinh \\pi b}}\\prod _{k=1}^{n}\\left(k^{2}+b^{2}\\right)^{-1},\\quad n\\in \\mathbb {N} \\\\[6pt]\\left|\\Gamma \\left({\\tfrac {1}{2}}\\pm n+bi\\right)\\right|^{2}&={\\frac {\\pi }{\\cosh \\pi b}}\\prod _{k=1}^{n}\\left(\\left(k-{\\tfrac {1}{2}}\\right)^{2}+b^{2}\\right)^{\\pm 1},\\quad n\\in \\mathbb {N} \\\\[-1ex]&\\end{aligned}}}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Closed-form |Γ|² values on integer/half-integer real parts; not in provided list."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\Gamma (bi)\\Gamma (1-bi)={\\frac {\\pi }{\\sin \\pi bi}}}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Reflection-formula instance; not provided."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle -bi\\cdot \\Gamma (bi)\\Gamma (-bi)={\\frac {\\pi }{\\sin \\pi bi}}}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Step in derivation; not provided as decl."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\Gamma (bi)\\Gamma (-bi)={\\frac {\\pi }{-bi\\sin \\pi bi}}={\\frac {\\pi }{b\\sinh \\pi b}}}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Step in derivation; not provided as decl."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\Gamma ({\\tfrac {1}{2}}+bi)\\Gamma \\left(1-({\\tfrac {1}{2}}+bi)\\right)=\\Gamma ({\\tfrac {1}{2}}+bi)\\Gamma ({\\tfrac {1}{2}}-bi)={\\frac {\\pi }{\\sin \\pi ({\\tfrac {1}{2}}+bi)}}={\\frac {\\pi }{\\cos \\pi bi}}={\\frac {\\pi }{\\cosh \\pi b}}}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Step in derivation; not provided as decl."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\Gamma \\left({\\tfrac {1}{2}}\\right)={\\sqrt {\\pi }},}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Particular value Γ(1/2)=√π not in provided decls."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle {\\begin{aligned}\\Gamma \\left({\\frac {1}{2}}+n\\right)&={(2n)! \\over 4^{n}n!}{\\sqrt {\\pi }}={\\frac {(2n-1)!!}{2^{n}}}{\\sqrt {\\pi }}={\\binom {n-{\\frac {1}{2}}}{n}}\\,n!\\,{\\sqrt {\\pi }}\\\\[6pt]\\Gamma \\left({\\frac {1}{2}}-n\\right)&={(-4)^{n}n! \\over (2n)!}{\\sqrt {\\pi }}={\\frac {(-2)^{n}}{(2n-1)!!}}{\\sqrt {\\pi }}={\\frac {\\sqrt {\\pi }}{{\\binom {-1/2}{n}}\\,n!}}\\end{aligned}}}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Half-integer values of Γ; not in provided decls."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\Gamma '(z)=\\Gamma (z)\\psi ^{(0)}(z).}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Logarithmic derivative via digamma; not in provided decls."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\Gamma '(m+1)=m!\\left(-\\gamma +\\sum _{k=1}^{m}{\\frac {1}{k}}\\right)=m!\\left(-\\gamma +H(m)\\right)\\,,}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Derivative at integer arguments; not in provided list."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle {\\frac {d^{n}}{dz^{n}}}\\Gamma (z)=\\int _{0}^{\\infty }t^{z-1}e^{-t}(\\log t)^{n}\\,dt.}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Higher derivatives via integral; not in provided decls."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\Gamma ^{(n)}(1)=(-1)^{n}B_{n}(\\gamma ,1!\\zeta (2),\\ldots ,(n-1)!\\,\\zeta (n)),}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Derivatives at 1 via Bell polynomials; not in provided decls."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\Gamma (z)={\\frac {1}{z}}-\\gamma +{\\frac {1}{2}}\\left(\\gamma ^{2}+{\\frac {\\pi ^{2}}{6}}\\right)z-{\\frac {1}{6}}\\left(\\gamma ^{3}+{\\frac {\\gamma \\pi ^{2}}{2}}+2\\zeta (3)\\right)z^{2}+O(z^{3}).}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Laurent expansion near 0; not in provided decls."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\Gamma (tx_{1}+(1-t)x_{2})\\leq \\Gamma (x_{1})^{t}\\Gamma (x_{2})^{1-t}.}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Log-convexity inequality not in provided decls."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\left({\\frac {\\Gamma (x_{2})}{\\Gamma (x_{1})}}\\right)^{\\frac {1}{x_{2}-x_{1}}}>\\exp \\left({\\frac {\\Gamma '(x_{1})}{\\Gamma (x_{1})}}\\right).}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Inequality consequence of log-convexity; not in provided decls."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\Gamma ''(x)\\Gamma (x)>\\Gamma '(x)^{2}.}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Second-derivative inequality; not in provided decls."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\Gamma \\left({\\frac {a_{1}x_{1}+\\cdots +a_{n}x_{n}}{a_{1}+\\cdots +a_{n}}}\\right)\\leq {\\bigl (}\\Gamma (x_{1})^{a_{1}}\\cdots \\Gamma (x_{n})^{a_{n}}{\\bigr )}^{\\frac {1}{a_{1}+\\cdots +a_{n}}}.}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Weighted-mean inequality from log-convexity; not provided."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle x^{1-s}<{\\frac {\\Gamma (x+1)}{\\Gamma (x+s)}}<\\left(x+1\\right)^{1-s}.}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Gautschi's inequality; not in provided decls."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\Gamma (x+1)\\sim {\\sqrt {2\\pi x}}\\left({\\frac {x}{e}}\\right)^{x},}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Stirling asymptotic for Γ; not in provided decls."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle {\\Gamma (x+\\alpha )}\\sim {\\Gamma (x)x^{\\alpha }},\\qquad \\alpha \\in \\mathbb {C} .}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Asymptotic ratio; not in provided decls."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\Gamma (x)={\\sqrt {\\frac {2\\pi }{x}}}\\left({\\frac {x}{e}}\\right)^{x}\\prod _{n=0}^{\\infty }\\left[{\\frac {1}{e}}\\left(1+{\\frac {1}{x+n}}\\right)^{x+n+{\\frac {1}{2}}}\\right].}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Stirling product definition of Γ; not provided."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\Gamma (-x)={\\frac {1}{\\Gamma (x+1)}}{\\frac {\\pi }{\\sin {\\big (}\\pi (x+1){\\big )}}},}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Reflection-based continuation formula; not in provided decls."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\Gamma (-x):={\\frac {\\,1}{-x}}\\,\\Gamma (-x+1),}"
+      },
+      "status": "partial",
+      "decl": "Complex.Gamma_add_one",
+      "module": "Mathlib.Analysis.SpecialFunctions.Gamma.Basic",
+      "note": "Recurrence-based continuation is essentially rearranging Gamma_add_one."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\Gamma \\!\\left(\\!-{\\frac {1}{2}}\\right)=-2\\,\\Gamma \\!\\left({\\frac {1}{2}}\\right).}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Numerical particular value; not provided."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\Gamma (z)={\\frac {\\Gamma (z+n+1)}{z(z+1)\\cdots (z+n)}},}"
+      },
+      "status": "partial",
+      "decl": "Complex.Gamma_add_one",
+      "module": "Mathlib.Analysis.SpecialFunctions.Gamma.Basic",
+      "note": "Iterated recurrence — derived from Gamma_add_one; not a standalone decl."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\operatorname {Res} (f,c)=\\lim _{z\\to c}(z-c)f(z).}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "General residue definition; not in provided list."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle (z+n)\\Gamma (z)={\\frac {\\Gamma (z+n+1)}{z(z+1)\\cdots (z+n-1)}}.}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Step in residue computation; not a standalone decl."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\Gamma (z+n+1)=\\Gamma (1)=1}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Trivial evaluation step; not a decl."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle z(z+1)\\cdots (z+n-1)=-n(1-n)\\cdots (n-1-n)=(-1)^{n}n!.}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Arithmetic step in residue computation; not a decl."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\operatorname {Res} (\\Gamma ,-n)={\\frac {(-1)^{n}}{n!}}.}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Residue at negative integers; not in provided decls."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\Gamma (z)=\\int _{-\\infty }^{\\infty }e^{zt-e^{t}}\\,dt}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Alternative integral representation; not in provided decls."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\Gamma (z)=\\int _{0}^{1}\\left(\\log {\\frac {1}{t}}\\right)^{z-1}\\,dt,}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Alternative integral representation; not in provided decls."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\Gamma (z)=2c^{z}\\int _{0}^{\\infty }t^{2z-1}e^{-ct^{2}}\\,dt\\,,\\;c>0}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Gaussian-type integral representation; not in provided decls."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\Gamma (1/2)=2\\int _{0}^{\\infty }e^{-t^{2}}\\,dt={\\sqrt {\\pi }}\\;.}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Gaussian integral evaluation; not in provided decls."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\operatorname {log\\Gamma } (z)=\\left(z-{\\frac {1}{2}}\\right)\\log z-z+{\\frac {1}{2}}\\log(2\\pi )+\\int _{0}^{\\infty }\\left({\\frac {1}{2}}-{\\frac {1}{t}}+{\\frac {1}{e^{t}-1}}\\right){\\frac {e^{-tz}}{t}}\\,dt.}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Binet's first integral; not in provided decls."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\log \\left(\\Gamma (z)\\left({\\frac {e}{z}}\\right)^{z}{\\sqrt {\\frac {z}{2\\pi }}}\\right)={\\mathcal {L}}\\left({\\frac {1}{2t}}-{\\frac {1}{t^{2}}}+{\\frac {1}{t(e^{t}-1)}}\\right)(z).}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Laplace-transform reformulation; not in provided decls."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\operatorname {log\\Gamma } (z)=\\left(z-{\\frac {1}{2}}\\right)\\log z-z+{\\frac {1}{2}}\\log(2\\pi )+2\\int _{0}^{\\infty }{\\frac {\\arctan(t/z)}{e^{2\\pi t}-1}}\\,dt.}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Binet's second integral; not in provided decls."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\Gamma (z)=-{\\frac {1}{2i\\sin \\pi z}}\\int _{C}(-t)^{z-1}e^{-t}\\,dt,}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Hankel contour integral; not in provided decls."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle {\\frac {1}{\\Gamma (z)}}={\\frac {i}{2\\pi }}\\int _{C}(-t)^{-z}e^{-t}\\,dt,}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Hankel formula for 1/Γ; not in provided decls."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle {\\begin{aligned}\\Gamma (z)&={\\cfrac {e^{-1}}{2+0-z+1{\\cfrac {z-1}{2+2-z+2{\\cfrac {z-2}{2+4-z+3{\\cfrac {z-3}{2+6-z+4{\\cfrac {z-4}{2+8-z+5{\\cfrac {z-5}{2+10-z+\\ddots }}}}}}}}}}}}\\\\&+\\ {\\cfrac {e^{-1}}{z+0-{\\cfrac {z+0}{z+1+{\\cfrac {1}{z+2-{\\cfrac {z+1}{z+3+{\\cfrac {2}{z+4-{\\cfrac {z+2}{z+5+{\\cfrac {3}{z+6-\\ddots }}}}}}}}}}}}}}\\end{aligned}}}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Continued-fraction representation; not in provided decls."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\operatorname {log\\Gamma } (z)=\\left({\\frac {1}{2}}-z\\right)(\\gamma +\\log 2)+(1-z)\\log \\pi -{\\frac {1}{2}}\\log \\sin(\\pi z)+{\\frac {1}{\\pi }}\\sum _{n=1}^{\\infty }{\\frac {\\log n}{n}}\\sin(2\\pi nz),}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Kummer/Fourier series for log Γ; not in provided decls."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\int _{a}^{a+1}\\log \\Gamma (z)\\,dz={\\tfrac {1}{2}}\\log 2\\pi +a\\log a-a,\\quad a>0.}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Raabe's formula; not in provided decls."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\int _{0}^{1}\\log \\Gamma (z)\\,dz={\\frac {1}{2}}\\log(2\\pi ).}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Specialization of Raabe's formula; not in provided decls."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\Pi (z)=\\Gamma (z+1)=z\\Gamma (z)=\\int _{0}^{\\infty }e^{-t}t^{z}\\,dt,}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Gauss's Π function; not in provided decls."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\Pi (z)\\Pi (-z)={\\frac {\\pi z}{\\sin(\\pi z)}}={\\frac {1}{\\operatorname {sinc} (z)}}}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Reflection formula for Π; not in provided decls."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\Pi \\left({\\frac {z}{m}}\\right)\\,\\Pi \\left({\\frac {z-1}{m}}\\right)\\cdots \\Pi \\left({\\frac {z-m+1}{m}}\\right)=(2\\pi )^{\\frac {m-1}{2}}m^{-z-{\\frac {1}{2}}}\\Pi (z)\\ .}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Multiplication theorem in Π form; not in provided decls."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle V_{n}(r_{1},\\dotsc ,r_{n})={\\frac {\\pi ^{\\frac {n}{2}}}{\\Pi \\left({\\frac {n}{2}}\\right)}}\\prod _{k=1}^{n}r_{k}.}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Ellipsoid volume formula; not in provided decls."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\Gamma (z,x)=\\int _{x}^{\\infty }t^{z-1}e^{-t}dt.}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Upper incomplete Gamma; not in provided decls."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\mathrm {B} (z_{1},z_{2})=\\int _{0}^{1}t^{z_{1}-1}(1-t)^{z_{2}-1}\\,dt={\\frac {\\Gamma (z_{1})\\,\\Gamma (z_{2})}{\\Gamma (z_{1}+z_{2})}}.}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Beta-Gamma identity; not in provided decls."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\pi ^{-{\\frac {z}{2}}}\\;\\Gamma \\left({\\frac {z}{2}}\\right)\\zeta (z)=\\pi ^{-{\\frac {1-z}{2}}}\\;\\Gamma \\left({\\frac {1-z}{2}}\\right)\\;\\zeta (1-z).}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Riemann ζ functional equation; not in provided decls."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\zeta (z)\\Gamma (z)=\\int _{0}^{\\infty }{\\frac {u^{z}}{e^{u}-1}}\\,{\\frac {du}{u}},}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Mellin-transform link between ζ and Γ; not in provided decls."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\operatorname {log\\Gamma } (z)=\\zeta _{H}'(0,z)-\\zeta '(0),}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Lerch formula for logΓ; not in provided decls."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\langle \\tau ^{n}\\rangle \\equiv \\int _{0}^{\\infty }t^{n-1}\\,e^{-\\left({\\frac {t}{\\tau }}\\right)^{\\beta }}\\,\\mathrm {d} t={\\frac {\\tau ^{n}}{\\beta }}\\Gamma \\left({n \\over \\beta }\\right).}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Stretched-exponential moments formula; not in provided decls."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle {\\begin{array}{rcccl}\\Gamma \\left(-{\\frac {3}{2}}\\right)&=&{\\frac {4{\\sqrt {\\pi }}}{3}}&\\approx &+2.36327\\,18012\\,07354\\,70306\\\\[6pt]\\Gamma \\left(-{\\frac {1}{2}}\\right)&=&-2{\\sqrt {\\pi }}&\\approx &-3.54490\\,77018\\,11032\\,05459\\\\[6pt]\\Gamma \\left({\\frac {1}{2}}\\right)&=&{\\sqrt {\\pi }}&\\approx &+1.77245\\,38509\\,05516\\,02729\\\\[6pt]\\Gamma (1)&=&0!&=&+1\\\\[6pt]\\Gamma \\left({\\frac {3}{2}}\\right)&=&{\\frac {\\sqrt {\\pi }}{2}}&\\approx &+0.88622\\,69254\\,52758\\,01364\\\\[6pt]\\Gamma (2)&=&1!&=&+1\\\\[6pt]\\Gamma \\left({\\frac {5}{2}}\\right)&=&{\\frac {3{\\sqrt {\\pi }}}{4}}&\\approx &+1.32934\\,03881\\,79137\\,02047\\\\[6pt]\\Gamma (3)&=&2!&=&+2\\\\[6pt]\\Gamma \\left({\\frac {7}{2}}\\right)&=&{\\tfrac {15{\\sqrt {\\pi }}}{8}}&\\approx &+3.32335\\,09704\\,47842\\,55118\\\\[6pt]\\Gamma (4)&=&3!&=&+6\\end{array}}}"
+      },
+      "status": "partial",
+      "decl": "Complex.Gamma_nat_eq_factorial",
+      "module": "Mathlib.Analysis.SpecialFunctions.Gamma.Basic",
+      "note": "Integer values match Gamma_nat_eq_factorial; half-integer values not in provided decls."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle {\\frac {1}{\\Gamma (-3)}}={\\frac {1}{\\Gamma (-2)}}={\\frac {1}{\\Gamma (-1)}}={\\frac {1}{\\Gamma (0)}}=0.}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Reciprocal-Γ vanishing at non-positive integers; not in provided decls."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\operatorname {log\\Gamma } (z)=-\\gamma z-\\log z+\\sum _{k=1}^{\\infty }\\left[{\\frac {z}{k}}-\\log \\left(1+{\\frac {z}{k}}\\right)\\right].}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Series for log Γ; not in provided decls."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\operatorname {log\\Gamma } (z)=\\operatorname {log\\Gamma } (z+1)-\\log z}"
+      },
+      "status": "partial",
+      "decl": "Complex.Gamma_add_one",
+      "module": "Mathlib.Analysis.SpecialFunctions.Gamma.Basic",
+      "note": "Log-form of functional equation derivable from Gamma_add_one; no logΓ decl provided."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\operatorname {log\\Gamma } (z)\\approx (z-{\\tfrac {1}{2}})\\log z-z+{\\tfrac {1}{2}}\\log(2\\pi ).}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Stirling approximation of logΓ; not in provided decls."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\operatorname {log\\Gamma } (z-m)=\\operatorname {log\\Gamma } (z)-\\sum _{k=1}^{m}\\log(z-k).}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Böhmer shift identity for logΓ; not in provided decls."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\Gamma (z)\\sim z^{z-{\\frac {1}{2}}}e^{-z}{\\sqrt {2\\pi }}\\left(1+{\\frac {1}{12z}}+{\\frac {1}{288z^{2}}}-{\\frac {139}{51\\,840z^{3}}}-{\\frac {571}{2\\,488\\,320z^{4}}}\\right)}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Stirling asymptotic series; not in provided decls."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\log \\Gamma (z)=z\\log z-z-{\\frac {1}{2}}\\log z+{\\frac {1}{2}}\\log 2\\pi +{\\frac {1}{12z}}-{\\frac {1}{360z^{3}}}+{\\frac {1}{1260z^{5}}}+O\\left({\\frac {1}{z^{5}}}\\right)}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Stirling series with Bernoulli coefficients; not in provided decls."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle {\\frac {B_{k}}{k(k-1)}},}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Coefficient formula in Stirling series; not a Γ-specific decl."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\operatorname {log\\Gamma } (1+x)={\\frac {x(x-1)}{2!}}\\log(2)+{\\frac {x(x-1)(x-2)}{3!}}(\\log(3)-2\\log(2))+\\cdots ,\\quad \\Re (x)>0.}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Hermite Stirling series; not in provided decls."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\operatorname {log\\Gamma } (z+1)=-\\gamma z+\\sum _{k=2}^{\\infty }{\\frac {\\zeta (k)}{k}}\\,(-z)^{k}\\qquad \\forall \\;|z|<1}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Taylor series of logΓ at 1; not in provided decls."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\zeta (s)\\Gamma (s)=\\int _{0}^{\\infty }{\\frac {t^{s}}{e^{t}-1}}\\,{\\frac {dt}{t}}}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "ζ-Γ Mellin integral; not in provided decls."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\operatorname {log\\Gamma } (z+1)=-\\gamma z+\\int _{0}^{\\infty }{\\frac {e^{-zt}-1+zt}{t\\left(e^{t}-1\\right)}}\\,dt}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Integral representation for logΓ(z+1); not in provided decls."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\operatorname {log\\Gamma } (z+1)=\\int _{0}^{\\infty }{\\frac {e^{-zt}-ze^{-t}-1+z}{t\\left(e^{t}-1\\right)}}\\,dt\\,.}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Alternate integral for logΓ; not in provided decls."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle {\\begin{aligned}\\operatorname {log\\Gamma } \\left({\\frac {k}{n}}\\right)={}&{\\frac {\\,(n-2k)\\log 2\\pi \\,}{2n}}+{\\frac {1}{2}}\\left\\{\\,\\log \\pi -\\log \\sin {\\frac {\\pi k}{n}}\\,\\right\\}+{\\frac {1}{\\pi }}\\!\\sum _{r=1}^{n-1}{\\frac {\\,\\gamma +\\log r\\,}{r}}\\cdot \\sin {\\frac {\\,2\\pi rk\\,}{n}}\\\\&{}-{\\frac {1}{2\\pi }}\\sin {\\frac {2\\pi k}{n}}\\cdot \\!\\int _{0}^{\\infty }\\!\\!{\\frac {\\,e^{-nx}\\!\\cdot \\log x\\,}{\\,\\cosh x-\\cos(2\\pi k/n)\\,}}\\,{\\mathrm {d} }x.\\end{aligned}}}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Malmsten-type formula for logΓ at rationals; not in provided decls."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\int _{0}^{z}\\operatorname {log\\Gamma } (x)\\,dx}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Definition only; not a standalone decl."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\int _{0}^{z}\\operatorname {log\\Gamma } (x)\\,dx={\\frac {z}{2}}\\log(2\\pi )+{\\frac {z(1-z)}{2}}+z\\operatorname {log\\Gamma } (z)-\\log G(z+1)}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Barnes-G identity; not in provided decls."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\int _{0}^{z}\\operatorname {log\\Gamma } (x)\\,dx={\\frac {z}{2}}\\log(2\\pi )+{\\frac {z(1-z)}{2}}-\\zeta '(-1)+\\zeta '(-1,z).}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Hurwitz-ζ formulation of the integral; not in provided decls."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\int _{0}^{1}\\operatorname {log\\Gamma } (x)\\,dx={\\frac {1}{2}}\\log(2\\pi ),}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Raabe-type unit integral; not in provided decls."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\int _{0}^{1}\\log ^{2}\\Gamma (x)dx={\\frac {\\gamma ^{2}}{12}}+{\\frac {\\pi ^{2}}{48}}+{\\frac {1}{3}}\\gamma L_{1}+{\\frac {4}{3}}L_{1}^{2}-\\left(\\gamma +2L_{1}\\right){\\frac {\\zeta ^{\\prime }(2)}{\\pi ^{2}}}+{\\frac {\\zeta ^{\\prime \\prime }(2)}{2\\pi ^{2}}},}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Higher moment integral of logΓ; not in provided decls."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle L_{n}:=\\int _{0}^{1}\\log ^{n}\\Gamma (x)\\,dx}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Definition only; not a standalone decl."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\lim _{n\\to \\infty }{\\frac {L_{n}}{n!}}=1.}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Asymptotic limit of L_n; not in provided decls."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\Gamma (z)\\sim {\\sqrt {2\\pi }}z^{z-1/2}e^{-z}\\quad {\\hbox{as }}z\\to \\infty {\\hbox{ in }}\\left|\\arg(z)\\right|<\\pi .}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Stirling asymptotic in complex sector; not in provided decls."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle {\\begin{aligned}\\Gamma (z)&=\\int _{0}^{x}e^{-t}t^{z}\\,{\\frac {dt}{t}}+\\int _{x}^{\\infty }e^{-t}t^{z}\\,{\\frac {dt}{t}}\\\\&=x^{z}e^{-x}\\sum _{n=0}^{\\infty }{\\frac {x^{n}}{z(z+1)\\cdots (z+n)}}+\\int _{x}^{\\infty }e^{-t}t^{z}\\,{\\frac {dt}{t}}.\\end{aligned}}}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Splitting-integral approximation; not in provided decls."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\int _{0}^{\\infty }t^{b}\\,e^{-at}\\,dt={\\frac {1}{a^{b}}}\\int _{0}^{\\infty }u^{b}\\,e^{-u}\\,d\\left({\\frac {u}{a}}\\right)={\\frac {\\Gamma (b+1)}{a^{b+1}}}.}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Scaling integral identity; not in provided decls."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle ae^{-{\\frac {(x-b)^{2}}{c^{2}}}}}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Generic Gaussian; not a Γ-specific decl."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle (1+z)^{n}=\\sum _{k=0}^{\\infty }{\\frac {\\Gamma (n+1)}{k!\\Gamma (n-k+1)}}z^{k},}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Generalized binomial via Γ; not in provided decls."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle (1+z)^{n}=\\sum _{k=0}^{n}{\\frac {n!}{k!(n-k)!}}z^{k}=\\sum _{k=0}^{n}{\\binom {n}{k}}z^{k}.}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Standard binomial expansion; not Γ-specific."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\prod _{i=a}^{b}{\\frac {P(i)}{Q(i)}}=\\left(\\prod _{j=1}^{m}{\\frac {\\Gamma (b-p_{j}+1)}{\\Gamma (a-p_{j})}}\\right)\\left(\\prod _{k=1}^{n}{\\frac {\\Gamma (a-q_{k})}{\\Gamma (b-q_{k}+1)}}\\right).}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Rational-product formula via Γ; not in provided decls."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\Gamma \\left({\\frac {s}{2}}\\right)\\,\\zeta (s)\\,\\pi ^{-{\\frac {s}{2}}}=\\Gamma \\left({\\frac {1-s}{2}}\\right)\\,\\zeta (1-s)\\,\\pi ^{-{\\frac {1-s}{2}}}.}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Riemann ζ functional equation; not in provided decls."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\zeta (s)\\;\\Gamma (s)=\\int _{0}^{\\infty }{\\frac {t^{s}}{e^{t}-1}}\\,{\\frac {dt}{t}}.}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Mellin formula linking ζ and Γ; not in provided decls."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle x!=\\lim _{n\\to \\infty }\\left(n+1+{\\frac {x}{2}}\\right)^{x-1}\\prod _{k=1}^{n}{\\frac {k+1}{k+x}},}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Bernoulli's product representation; not in provided decls."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle n!=\\prod _{k=1}^{\\infty }{\\frac {\\left(1+{\\frac {1}{k}}\\right)^{n}}{1+{\\frac {n}{k}}}}\\,,}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Euler's infinite product; not in provided decls."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle n!=\\int _{0}^{1}(-\\log s)^{n}\\,ds,}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Euler's original integral; not in provided decls."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\Gamma (z)=\\lim _{m\\to \\infty }{\\frac {m^{z}m!}{z(z+1)(z+2)\\cdots (z+m)}}}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Gauss limit representation; not in provided decls."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\Gamma (z)={\\frac {e^{-\\gamma z}}{z}}\\prod _{k=1}^{\\infty }\\left(1+{\\frac {z}{k}}\\right)^{-1}e^{\\frac {z}{k}},}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Weierstrass product representation; not in provided decls."
+    }
+  ]
+}

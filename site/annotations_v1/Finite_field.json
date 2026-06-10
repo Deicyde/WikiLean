@@ -1,0 +1,349 @@
+{
+  "slug": "Finite_field",
+  "wikipedia_title": "Finite field",
+  "display_title": "Finite field",
+  "schema_version": 1,
+  "source": "claude-agent-sdk/annotate_articles.py",
+  "annotations": [
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle (x+y)^{p}=x^{p}+y^{p}}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Freshman's dream identity not in provided list; would need add_pow_char or similar."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle X^{p}-X=\\prod _{a\\in \\mathrm {GF} (p)}(X-a)}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Factorization of X^p - X over GF(p) not represented in the provided decls."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle P=X^{q}-X}"
+      },
+      "status": "partial",
+      "decl": "GaloisField",
+      "module": "Mathlib.FieldTheory.Finite.GaloisField",
+      "note": "GaloisField is defined as the splitting field of X^(p^n) - X, capturing this polynomial implicitly."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle x^{q}=x,}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "The identity x^q = x for elements of a finite field is not in the provided list."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle X^{q}-X=\\prod _{a\\in F}(X-a).}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Full splitting identity over the finite field is not among the provided decls."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\mathrm {GF} (q)=\\mathrm {GF} (p)[X]/(P)}"
+      },
+      "status": "partial",
+      "decl": "GaloisField",
+      "module": "Mathlib.FieldTheory.Finite.GaloisField",
+      "note": "Mathlib constructs GF(q) as a splitting field rather than an explicit quotient by an irreducible polynomial."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle X^{n}+aX+b,}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Trinomial form for irreducible polynomial choice is not represented in the provided list."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle X^{2}+X+1}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Specific irreducible polynomial X^2+X+1 over GF(2) is not in the provided decls."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\mathrm {GF} (4)=\\mathrm {GF} (2)[X]/(X^{2}+X+1).}"
+      },
+      "status": "partial",
+      "decl": "GaloisField",
+      "module": "Mathlib.FieldTheory.Finite.GaloisField",
+      "note": "GaloisField 2 2 captures GF(4) but not via this specific quotient presentation."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\alpha ^{2}=1+\\alpha ,}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Specific minimal-polynomial relation for a generator of GF(4) is not in the provided decls."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\varphi :x\\mapsto x^{2}}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Frobenius squaring map for GF(4) is not explicitly listed; no Frobenius decl provided."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle a+b\\alpha ,}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Linear-expression representation of GF(p^2) elements is an ad-hoc construction, not in the list."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle {\\begin{aligned}-(a+b\\alpha )&=-a+(-b)\\alpha \\\\(a+b\\alpha )+(c+d\\alpha )&=(a+c)+(b+d)\\alpha \\\\(a+b\\alpha )(c+d\\alpha )&=(ac+rbd)+(ad+bc)\\alpha \\\\(a+b\\alpha )^{-1}&=a(a^{2}-rb^{2})^{-1}+(-b)(a^{2}-rb^{2})^{-1}\\alpha \\end{aligned}}}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Explicit arithmetic formulas in GF(p^2) basis representation are not provided as decls."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle X^{3}-X-1}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Specific irreducible polynomial X^3-X-1 is not represented in the provided decl list."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle a+b\\alpha +c\\alpha ^{2},}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Basis representation of GF(8)/GF(27) elements is ad-hoc and not in the list."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\alpha ^{3}=\\alpha +1.}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Specific minimal-polynomial relation for generator α of GF(8) is not in the list."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle {\\begin{aligned}-(a+b\\alpha +c\\alpha ^{2})&=-a+(-b)\\alpha +(-c)\\alpha ^{2}\\qquad {\\text{(for }}\\mathrm {GF} (8),{\\text{this operation is the identity)}}\\\\(a+b\\alpha +c\\alpha ^{2})+(d+e\\alpha +f\\alpha ^{2})&=(a+d)+(b+e)\\alpha +(c+f)\\alpha ^{2}\\\\(a+b\\alpha +c\\alpha ^{2})(d+e\\alpha +f\\alpha ^{2})&=(ad+bf+ce)+(ae+bd+bf+ce+cf)\\alpha +(af+be+cd+cf)\\alpha ^{2}\\end{aligned}}}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Explicit arithmetic formulas in GF(8)/GF(27) basis are not represented as decls in the list."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle X^{4}+X+1}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Specific irreducible polynomial X^4+X+1 over GF(2) is not in the provided decls."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle a+b\\alpha +c\\alpha ^{2}+d\\alpha ^{3},}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Basis representation of GF(16) elements is an ad-hoc construction, not in the list."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\alpha ^{4}=\\alpha +1}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Specific minimal-polynomial relation for generator of GF(16) is not in the provided decls."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle {\\begin{aligned}(a+b\\alpha +c\\alpha ^{2}+d\\alpha ^{3})+(e+f\\alpha +g\\alpha ^{2}+h\\alpha ^{3})&=(a+e)+(b+f)\\alpha +(c+g)\\alpha ^{2}+(d+h)\\alpha ^{3}\\\\(a+b\\alpha +c\\alpha ^{2}+d\\alpha ^{3})(e+f\\alpha +g\\alpha ^{2}+h\\alpha ^{3})&=(ae+bh+cg+df)+(af+be+bh+cg+df+ch+dg)\\alpha \\;+\\\\&\\quad \\;(ag+bf+ce+ch+dg+dh)\\alpha ^{2}+(ah+bg+cf+de+dh)\\alpha ^{3}\\end{aligned}}}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Explicit arithmetic formulas in GF(16) basis representation are not represented as decls."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle a^{m}+a^{n}=a^{n}\\left(a^{m-n}+1\\right)}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Basic factoring identity used for Zech logarithms is not in the provided list."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle X^{6}+X^{3}+1,}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Specific cyclotomic-like polynomial example for GF(64) is not in the provided decls."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle (X^{6}+X^{4}+X^{2}+X+1)(X^{6}+X^{5}+X^{4}+X^{2}+1).}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Specific factorization example for 21st roots of unity over GF(2) is not in the list."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle {\\begin{aligned}&(X^{6}+X^{4}+X^{3}+X+1)(X^{6}+X+1)(X^{6}+X^{5}+1)\\cdot {}\\\\&\\qquad (X^{6}+X^{5}+X^{3}+X^{2}+1)(X^{6}+X^{5}+X^{2}+X+1)(X^{6}+X^{5}+X^{4}+X+1).\\end{aligned}}}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Specific listing of degree-6 irreducibles over GF(2) is not represented in the decls."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\varphi :x\\mapsto x^{p}}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Frobenius endomorphism map is not in the provided list (no frobenius decl supplied)."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\varphi ^{k}:x\\mapsto x^{p^{k}}.}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Iterated Frobenius x ↦ x^(p^k) is not represented in the provided decls."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle X^{p^{k}}-X}"
+      },
+      "status": "partial",
+      "decl": "GaloisField",
+      "module": "Mathlib.FieldTheory.Finite.GaloisField",
+      "note": "This polynomial appears in GaloisField's definition but not as a standalone decl."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\mathrm {Id} =\\varphi ^{0},\\varphi ,\\varphi ^{2},\\ldots ,\\varphi ^{n-1}.}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Enumeration of Galois group of GF(p^n) over GF(p) is not in the provided list."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle X^{q}-X}"
+      },
+      "status": "partial",
+      "decl": "GaloisField",
+      "module": "Mathlib.FieldTheory.Finite.GaloisField",
+      "note": "X^q - X appears in GaloisField's construction but not as a separate named decl."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle N(q,n)={\\frac {1}{n}}\\sum _{d\\mid n}\\mu (d)q^{n/d},}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Gauss's formula for the number of monic irreducibles via Möbius is not in the provided decls."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle N(q,n)\\geq {\\frac {1}{n}}{\\biggl (}q^{n}-\\sum _{\\ell \\mid n,\\ \\ell {\\text{ prime}}}q^{n/\\ell }{\\biggr )};}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Lower bound on number of monic irreducibles is not represented in the provided list."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle f(T)=1+\\prod _{\\alpha \\in F}(T-\\alpha ),}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Construction showing finite fields are not algebraically closed is not in the provided decls."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle {\\overline {\\mathbb {F} }}_{p}=\\bigcup _{n\\geq 1}\\mathbb {F} _{p^{n}}.}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Algebraic closure of F_p as a union of finite extensions is not represented in the provided list."
+    }
+  ]
+}

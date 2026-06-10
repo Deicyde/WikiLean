@@ -1,0 +1,829 @@
+{
+  "slug": "Bayesian_inference",
+  "wikipedia_title": "Bayesian inference",
+  "display_title": "Bayesian inference",
+  "schema_version": 3,
+  "annotation_style": "theorem_article",
+  "annotations": [
+    {
+      "kind": "definition",
+      "label": "Bayesian inference",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "is a method of statistical inference in which Bayes' theorem is used to calculate a probability of a hypothesis"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "ProbabilityTheory.posterior",
+        "module": "Mathlib.Probability.Kernel.Posterior",
+        "match_kind": null
+      },
+      "note": "Bayesian inference as a 'method' is not a single declaration, but its core operation—the posterior of a likelihood kernel given a prior measure—is formalized as `posterior`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Bayes' theorem (posterior computation)",
+      "anchor": {
+        "section": "Formal explanation",
+        "snippet": "Bayesian inference computes the posterior probability according to Bayes' theorem"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "ProbabilityTheory.cond_eq_inv_mul_cond_mul",
+        "module": "Mathlib.Probability.ConditionalProbability",
+        "match_kind": "exact"
+      },
+      "note": "`cond_eq_inv_mul_cond_mul` is explicitly labelled **Bayes' Theorem** and states `μ[t | s] = (μ s)⁻¹ * μ[s | t] * μ t`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Hypothesis H",
+      "anchor": {
+        "section": "Formal explanation",
+        "snippet": "stands for any hypothesis whose probability may be affected by data"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "A 'hypothesis' is just an arbitrary measurable event/set and has no dedicated formal definition.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Prior probability",
+      "anchor": {
+        "section": "Formal explanation",
+        "snippet": "is the estimate of the probability of the hypothesis"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "ProbabilityTheory.posterior",
+        "module": "Mathlib.Probability.Kernel.Posterior",
+        "match_kind": null
+      },
+      "note": "The prior is just the measure `μ` (called the 'prior measure' in the posterior framework); it has no standalone definition.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Evidence",
+      "anchor": {
+        "section": "Formal explanation",
+        "snippet": "corresponds to new data that were not used in computing the prior probability"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Evidence/data is modelled as a point or measurable event with no dedicated definition.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Posterior probability",
+      "anchor": {
+        "section": "Formal explanation",
+        "snippet": "This is what we want to know: the probability of a hypothesis given the observed evidence"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "ProbabilityTheory.cond",
+        "module": "Mathlib.Probability.ConditionalProbability",
+        "match_kind": "exact"
+      },
+      "note": "The posterior probability of a hypothesis given evidence is the conditional probability `cond` (`μ[H | E]`).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Likelihood",
+      "anchor": {
+        "section": "Formal explanation",
+        "snippet": "it indicates the compatibility of the evidence with the given hypothesis"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "ProbabilityTheory.cond",
+        "module": "Mathlib.Probability.ConditionalProbability",
+        "match_kind": null
+      },
+      "note": "The likelihood `P(E | H)` is an instance of conditional probability `cond` (and the data-generating kernel `κ` in the posterior framework), but 'likelihood' is not a named concept.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Marginal likelihood (model evidence)",
+      "anchor": {
+        "section": "Formal explanation",
+        "snippet": "This factor is the same for all possible hypotheses being considered"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "ProbabilityTheory.cond_add_cond_compl_eq",
+        "module": "Mathlib.Probability.ConditionalProbability",
+        "match_kind": null
+      },
+      "note": "`cond_add_cond_compl_eq` (law of total probability) computes the marginal `μ t` as a weighted sum over hypotheses, but there is no named 'marginal likelihood'.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Posterior proportional to prior times likelihood",
+      "anchor": {
+        "section": "Formal explanation",
+        "snippet": "the posterior probability of a hypothesis is proportional to its prior probability"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "ProbabilityTheory.posterior_eq_withDensity",
+        "module": "Mathlib.Probability.Kernel.Posterior",
+        "match_kind": "generalization"
+      },
+      "note": "`posterior_eq_withDensity`, annotated 'a form of Bayes' theorem', writes the posterior as the prior weighted (via `withDensity`) by the likelihood density.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Bayes' rule in odds form",
+      "anchor": {
+        "section": "Formal explanation",
+        "snippet": "Bayes' rule can be rewritten as follows"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No odds-form / posterior-odds = prior-odds × likelihood-ratio statement was found in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Rule of multiplication form",
+      "anchor": {
+        "section": "Formal explanation",
+        "snippet": "One quick and easy way to remember the equation would be to use rule of multiplication"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "ProbabilityTheory.cond_mul_eq_inter",
+        "module": "Mathlib.Probability.ConditionalProbability",
+        "match_kind": "exact"
+      },
+      "note": "`cond_mul_eq_inter` states `μ[t | s] * μ s = μ (s ∩ t)`, the multiplication rule `P(A∩B)=P(B|A)P(A)`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Jeffrey's rule (probability kinematics)",
+      "anchor": {
+        "section": "Alternatives to Bayesian updating",
+        "snippet": "which applies Bayes' rule to the case where the evidence itself is assigned a probability"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Jeffrey conditioning / probability kinematics is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "General formulation of Bayesian updating",
+      "anchor": {
+        "section": "General formulation",
+        "snippet": "Suppose a process is generating independent and identically distributed events"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "ProbabilityTheory.posterior_eq_withDensity",
+        "module": "Mathlib.Probability.Kernel.Posterior",
+        "match_kind": "generalization"
+      },
+      "note": "The general measure-theoretic Bayesian update is captured by the posterior kernel and `posterior_eq_withDensity`, though not stated in the article's iid-process form.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Update for multiple iid observations",
+      "anchor": {
+        "section": "Multiple observations",
+        "snippet": "it can be shown by induction that repeated application of the above is equivalent to"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The result that repeated Bayesian updating equals a single update with the product likelihood is not formalized.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Multiple observations",
+          "snippet": "it can be shown by induction that repeated application of the above is equivalent to"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle P(M\\mid \\mathbf {E} )={\\frac {P(\\mathbf {E} \\mid M)}{\\sum _{m}{P(\\mathbf {E} \\mid M_{m})P(M_{m})}}}\\cdot P(M),}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle P(\\mathbf {E} \\mid M)=\\prod _{k}{P(e_{k}\\mid M)}.}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Parametric posterior update",
+      "anchor": {
+        "section": "Parametric formulation: motivating the formal description",
+        "snippet": "By parameterizing the space of models, the belief in all models may be updated in a single step"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "ProbabilityTheory.compProd_posterior_eq_map_swap",
+        "module": "Mathlib.Probability.Kernel.Posterior",
+        "match_kind": "generalization"
+      },
+      "note": "The parametric posterior over a model space is exactly the `posterior` kernel, characterized by `compProd_posterior_eq_map_swap`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Data point",
+      "anchor": {
+        "section": "Definitions",
+        "snippet": "a data point in general. This may be a vector of values"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "A data point is just an element of the data space and has no dedicated definition.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Parameter",
+      "anchor": {
+        "section": "Definitions",
+        "snippet": "the parameter of the data point's distribution"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The parameter is just an element of the parameter space `Ω` in the posterior framework, with no standalone definition.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Hyperparameter",
+      "anchor": {
+        "section": "Definitions",
+        "snippet": "the hyperparameter of the parameter distribution"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Hyperparameters of a prior distribution are not formalized as a concept in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Sample",
+      "anchor": {
+        "section": "Definitions",
+        "snippet": "is the sample, a set of"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "A 'sample' of n data points has no dedicated definition beyond generic finite tuples/product spaces.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "New data point",
+      "anchor": {
+        "section": "Definitions",
+        "snippet": "a new data point whose distribution is to be predicted"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "A new (to-be-predicted) data point is just an element of the data space with no formal definition.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Prior distribution",
+      "anchor": {
+        "section": "Bayesian inference",
+        "snippet": "The prior distribution is the distribution of the parameter(s) before any data is observed"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "ProbabilityTheory.posterior",
+        "module": "Mathlib.Probability.Kernel.Posterior",
+        "match_kind": null
+      },
+      "note": "The prior distribution is just the 'prior measure' `μ` on the parameter space in the posterior framework; it is not a separate definition.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Sampling distribution (likelihood)",
+      "anchor": {
+        "section": "Bayesian inference",
+        "snippet": "The sampling distribution is the distribution of the observed data conditional on its parameters"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "ProbabilityTheory.posterior",
+        "module": "Mathlib.Probability.Kernel.Posterior",
+        "match_kind": null
+      },
+      "note": "The sampling distribution is modelled as the data-generating Markov kernel `κ : Kernel Ω 𝓧`, but it is not separately defined as 'sampling distribution'.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Marginal likelihood",
+      "anchor": {
+        "section": "Bayesian inference",
+        "snippet": "is the distribution of the observed data marginalized over the parameter(s)"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "MeasureTheory.Measure.bind",
+        "module": "Mathlib.MeasureTheory.Measure.GiryMonad",
+        "match_kind": null
+      },
+      "note": "The marginal of data over the parameter is `κ ∘ₘ μ` (`Measure.bind`), but there is no named 'marginal likelihood' declaration.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Bayesian inference",
+          "snippet": "is the distribution of the observed data marginalized over the parameter(s)"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle p(\\mathbf {X} \\mid \\alpha )=\\int p(\\mathbf {X} \\mid \\theta )p(\\theta \\mid \\alpha )d\\theta .}"
+        }
+      ]
+    },
+    {
+      "kind": "definition",
+      "label": "Posterior distribution",
+      "anchor": {
+        "section": "Bayesian inference",
+        "snippet": "The posterior distribution is the distribution of the parameter(s) after taking into account the observed data"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "ProbabilityTheory.posterior",
+        "module": "Mathlib.Probability.Kernel.Posterior",
+        "match_kind": "exact"
+      },
+      "note": "`posterior κ μ` (`κ†μ`) is exactly the posterior distribution of the parameter given the data.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Bayes' rule (posterior ∝ likelihood × prior)",
+      "anchor": {
+        "section": "Bayesian inference",
+        "snippet": "posterior is proportional to likelihood times prior"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "ProbabilityTheory.posterior_eq_withDensity",
+        "module": "Mathlib.Probability.Kernel.Posterior",
+        "match_kind": "exact"
+      },
+      "note": "`posterior_eq_withDensity` is documented as 'a form of Bayes' theorem' and expresses the posterior as the prior times the likelihood (Radon–Nikodym) density.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Existence/uniqueness via Radon–Nikodym",
+      "anchor": {
+        "section": "Bayesian inference",
+        "snippet": "Existence and uniqueness of the needed conditional expectation is a consequence of the Radon–Nikodym theorem"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "MeasureTheory.Measure.absolutelyContinuous_iff_withDensity_rnDeriv_eq",
+        "module": "Mathlib.MeasureTheory.Measure.Decomposition.RadonNikodym",
+        "match_kind": "exact"
+      },
+      "note": "The Radon–Nikodym theorem itself is formalized as `absolutelyContinuous_iff_withDensity_rnDeriv_eq` (and `withDensity_rnDeriv_eq`).",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Bayesian inference",
+          "snippet": "Existence and uniqueness of the needed conditional expectation is a consequence of the Radon–Nikodym theorem"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle P_{X}^{y}(A)=E(1_{A}(X)|Y=y)}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Generalization to improper priors",
+      "anchor": {
+        "section": "Bayesian inference",
+        "snippet": "Bayes' theorem can be generalized to include improper prior distributions"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The posterior framework requires `IsFiniteMeasure μ`, so the extension to improper (non-finite) priors is not covered.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Bayesian inference",
+          "snippet": "Bayes' theorem can be generalized to include improper prior distributions"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle P_{X}^{y}(A)=E(1_{A}(X)|Y=y)}"
+        }
+      ]
+    },
+    {
+      "kind": "definition",
+      "label": "Posterior predictive distribution",
+      "anchor": {
+        "section": "Bayesian prediction",
+        "snippet": "The posterior predictive distribution is the distribution of a new data point, marginalized over the posterior"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "MeasureTheory.Measure.bind",
+        "module": "Mathlib.MeasureTheory.Measure.GiryMonad",
+        "match_kind": null
+      },
+      "note": "The posterior predictive is expressible as the likelihood kernel composed with the posterior (`κ ∘ₘ κ†μ`), but is not a named definition.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Bayesian prediction",
+          "snippet": "The posterior predictive distribution is the distribution of a new data point, marginalized over the posterior"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle p({\\tilde {x}}\\mid \\mathbf {X} ,\\alpha )=\\int p({\\tilde {x}}\\mid \\theta )p(\\theta \\mid \\mathbf {X} ,\\alpha )d\\theta }"
+        }
+      ]
+    },
+    {
+      "kind": "definition",
+      "label": "Prior predictive distribution",
+      "anchor": {
+        "section": "Bayesian prediction",
+        "snippet": "The prior predictive distribution is the distribution of a new data point, marginalized over the prior"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "MeasureTheory.Measure.bind",
+        "module": "Mathlib.MeasureTheory.Measure.GiryMonad",
+        "match_kind": null
+      },
+      "note": "The prior predictive is the marginal `κ ∘ₘ μ` (`Measure.bind`), present as a construction but not under that name.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Bayesian prediction",
+          "snippet": "The prior predictive distribution is the distribution of a new data point, marginalized over the prior"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle p({\\tilde {x}}\\mid \\alpha )=\\int p({\\tilde {x}}\\mid \\theta )p(\\theta \\mid \\alpha )d\\theta }"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Predictive distributions are compound distributions",
+      "anchor": {
+        "section": "Bayesian prediction",
+        "snippet": "Both types of predictive distributions have the form of a compound probability distribution"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "MeasureTheory.Measure.bind",
+        "module": "Mathlib.MeasureTheory.Measure.GiryMonad",
+        "match_kind": null
+      },
+      "note": "Compound/mixture distributions are exactly `Measure.bind` (`κ ∘ₘ μ`), but the predictive-equals-compound statement is not stated as a result.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Interpretation of evidence factor",
+      "anchor": {
+        "section": "Interpretation of factor",
+        "snippet": "if the model were true, the evidence would be more likely than is predicted by the current state of belief"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This is interpretive commentary about the support factor, not a formal statement in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Cromwell's rule",
+      "anchor": {
+        "section": "Cromwell's rule",
+        "snippet": "This can be interpreted to mean that hard convictions are insensitive to counter-evidence"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Cromwell's rule (priors of 0 or 1 cannot be updated) is not formalized as such in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Bernstein–von Mises theorem",
+      "anchor": {
+        "section": "Asymptotic behaviour of posterior",
+        "snippet": "in the limit of infinite trials, the posterior converges to a Gaussian distribution"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Bernstein–von Mises theorem (asymptotic normality of the posterior) is not in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Conjugate prior",
+      "anchor": {
+        "section": "Conjugate priors",
+        "snippet": "the corresponding posterior distribution will be in the same family"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No notion of conjugate priors / conjugate distribution families exists in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Posterior median as robust estimator",
+      "anchor": {
+        "section": "Estimates of parameters and predictions",
+        "snippet": "The posterior median is attractive as a robust estimator"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The posterior median and its robustness as an estimator are not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Posterior mean estimator",
+      "anchor": {
+        "section": "Estimates of parameters and predictions",
+        "snippet": "then the posterior mean is a method of estimation"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "ProbabilityTheory.bayesRisk",
+        "module": "Mathlib.Probability.Decision.Risk.Defs",
+        "match_kind": null
+      },
+      "note": "The posterior mean is the Bayes estimator under squared loss; the Bayes-risk decision framework exists but the posterior-mean estimator itself is not defined.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Estimates of parameters and predictions",
+          "snippet": "then the posterior mean is a method of estimation"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle {\\tilde {\\theta }}=\\operatorname {E} [\\theta ]=\\int \\theta \\,p(\\theta \\mid \\mathbf {X} ,\\alpha )\\,d\\theta }"
+        }
+      ]
+    },
+    {
+      "kind": "definition",
+      "label": "Maximum a posteriori estimation (MAP)",
+      "anchor": {
+        "section": "Estimates of parameters and predictions",
+        "snippet": "Taking a value with the greatest probability defines the maximum a posteriori estimation"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "MAP estimation (argmax of the posterior) is not formalized in Mathlib.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Estimates of parameters and predictions",
+          "snippet": "Taking a value with the greatest probability defines the maximum a posteriori estimation"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\{\\theta _{\\text{MAP}}\\}\\subset \\arg \\max _{\\theta }p(\\theta \\mid \\mathbf {X} ,\\alpha ).}"
+        }
+      ]
+    },
+    {
+      "kind": "example",
+      "label": "No MAP estimate attained",
+      "anchor": {
+        "section": "Estimates of parameters and predictions",
+        "snippet": "There are examples where no maximum is attained, in which case the set of MAP estimates is empty"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "There is no MAP definition in Mathlib, hence no formalized example of a non-attained MAP estimate.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Posterior-risk-minimizing estimators",
+      "anchor": {
+        "section": "Estimates of parameters and predictions",
+        "snippet": "There are other methods of estimation that minimize the posterior risk"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "ProbabilityTheory.bayesRisk",
+        "module": "Mathlib.Probability.Decision.Risk.Defs",
+        "match_kind": null
+      },
+      "note": "`bayesRisk` is the infimum of average risk over estimators, formalizing risk minimization, but no `bayesEstimator` achieving the minimum is defined.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Posterior predictive of a new observation",
+      "anchor": {
+        "section": "Estimates of parameters and predictions",
+        "snippet": "The posterior predictive distribution of a new observation"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "MeasureTheory.Measure.bind",
+        "module": "Mathlib.MeasureTheory.Measure.GiryMonad",
+        "match_kind": null
+      },
+      "note": "Expressible as the likelihood kernel composed with the posterior (`Measure.bind`), but the posterior predictive of a new observation is not a named construction.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Cookie bowls problem",
+      "anchor": {
+        "section": "Probability of a hypothesis",
+        "snippet": "Suppose there are two full bowls of cookies"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This pedagogical worked example is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Archaeological pottery dating",
+      "anchor": {
+        "section": "Making a prediction",
+        "snippet": "An archaeologist is working at a site thought to be from the medieval period"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This applied worked example is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Wald's complete class theorem",
+      "anchor": {
+        "section": "In frequentist statistics and decision theory",
+        "snippet": "who proved that every unique Bayesian procedure is admissible"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Admissibility and complete-class theorems are not formalized; the decision framework has only `bayesRisk`/`minimaxRisk`, not Wald's theorem.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Bayes factor in model comparison",
+      "anchor": {
+        "section": "Model selection",
+        "snippet": "the ratio of their posterior probabilities corresponds to the Bayes factor"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Bayes factor (ratio of marginal likelihoods) is not defined in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Solomonoff's universal prior",
+      "anchor": {
+        "section": "Computer applications",
+        "snippet": "is the sum of the probabilities of all programs"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Algorithmic probability / Solomonoff's universal prior (and Kolmogorov complexity) are not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Gardner-Medwin courtroom implication",
+      "anchor": {
+        "section": "In the courtroom",
+        "snippet": "A and not- B implies the truth of C , but the reverse is not true"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This is an informal courtroom logical illustration, not a formalized statement.",
+      "provenance": "ai"
+    }
+  ]
+}

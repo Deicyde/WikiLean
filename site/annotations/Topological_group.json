@@ -1,0 +1,1433 @@
+{
+  "slug": "Topological_group",
+  "wikipedia_title": "Topological group",
+  "display_title": "Topological group",
+  "schema_version": 3,
+  "annotation_style": "theorem_article",
+  "annotations": [
+    {
+      "kind": "definition",
+      "label": "Topological group",
+      "anchor": {
+        "section": "Formal definition",
+        "snippet": "A topological group , G , is a topological space that is also a group such that the group operation"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "IsTopologicalGroup",
+        "module": "Mathlib.Topology.Algebra.Group.Defs",
+        "match_kind": "exact"
+      },
+      "note": "Mathlib's `IsTopologicalGroup` is the class for a group with continuous multiplication and inversion.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Group topology",
+      "anchor": {
+        "section": "Formal definition",
+        "snippet": "Such a topology is said to be compatible with the group operations and is called a group topology"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "GroupTopology",
+        "module": "Mathlib.Topology.Algebra.Group.GroupTopology",
+        "match_kind": "exact"
+      },
+      "note": "`GroupTopology α` is the bundled type of topologies on `α` making it a topological group.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Continuity of product map",
+      "anchor": {
+        "section": "Formal definition",
+        "snippet": "The product map is continuous if and only if for any"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "ContinuousMul",
+        "module": "Mathlib.Topology.Algebra.Monoid.Defs",
+        "match_kind": "generalization"
+      },
+      "note": "Continuity of multiplication is the typeclass `ContinuousMul`, but the explicit pointwise reformulation in nhds is not stated as an iff.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Continuity of inversion map",
+      "anchor": {
+        "section": "Formal definition",
+        "snippet": "The inversion map is continuous if and only if for any"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "ContinuousInv",
+        "module": "Mathlib.Topology.Algebra.Group.Defs",
+        "match_kind": "generalization"
+      },
+      "note": "Continuity of inversion is the typeclass `ContinuousInv`, but the nhds reformulation is not stated as an iff.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Sufficient condition for compatibility",
+      "anchor": {
+        "section": "Formal definition",
+        "snippet": "To show that a topology is compatible with the group operations, it suffices to check that the map"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "IsTopologicalGroup.of_nhds_one",
+        "module": "Mathlib.Topology.Algebra.Group.Basic",
+        "match_kind": "generalization"
+      },
+      "note": "Mathlib provides constructors like `IsTopologicalGroup.of_nhds_one` rather than the specific `(x,y) ↦ x*y⁻¹` continuity criterion.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Homomorphism of topological groups",
+      "anchor": {
+        "section": "Homomorphisms",
+        "snippet": "A homomorphism of topological groups is defined to be a continuous group homomorphism"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "ContinuousMonoidHom",
+        "module": "Mathlib.Topology.Algebra.ContinuousMonoidHom",
+        "match_kind": "exact"
+      },
+      "note": "`ContinuousMonoidHom A B` is the bundled type of continuous monoid homomorphisms.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Continuity from continuity at a point",
+      "anchor": {
+        "section": "Homomorphisms",
+        "snippet": "A group homomorphism between topological groups is continuous if and only if it is continuous at some point"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "continuous_of_continuousAt_one",
+        "module": "Mathlib.Topology.Algebra.Group.Basic",
+        "match_kind": "exact"
+      },
+      "note": "A monoid hom between topological groups is continuous iff it is continuous at the identity.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Isomorphism of topological groups",
+      "anchor": {
+        "section": "Homomorphisms",
+        "snippet": "An isomorphism of topological groups is a group isomorphism that is also a homeomorphism of the underlying topological spaces"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "ContinuousMulEquiv",
+        "module": "Mathlib.Topology.Algebra.ContinuousMonoidHom",
+        "match_kind": "exact"
+      },
+      "note": "`ContinuousMulEquiv` extends `MulEquiv` and `Homeomorph`, exactly Wikipedia's definition.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Discrete vs indiscrete topology on a group",
+      "anchor": {
+        "section": "Homomorphisms",
+        "snippet": "For example, let G be any group. We can put at least two topologies on it"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "An informal example rather than a Mathlib statement.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Discrete groups",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "Every group can be trivially made into a topological group by considering it with the discrete topology"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "IsTopologicalGroup",
+        "module": "Mathlib.Topology.Algebra.Group.Defs",
+        "match_kind": "invocation"
+      },
+      "note": "Mathlib derives `IsTopologicalGroup` from discrete topology via the general `ContinuousMul`/`ContinuousInv` instances but no single decl named for the example.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Real numbers and Euclidean space as topological groups",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "The group of real numbers"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Real.instIsTopologicalAddGroup",
+        "module": "Mathlib.Topology.Instances.Real",
+        "match_kind": "exact"
+      },
+      "note": "Mathlib has instances making `ℝ` and `ℝⁿ` topological additive groups.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "General linear group",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "The classical groups are important examples of non-abelian topological groups"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Matrix.GeneralLinearGroup",
+        "module": "Mathlib.Topology.Algebra.Group.Matrix",
+        "match_kind": "exact"
+      },
+      "note": "`GL n R` is defined and equipped with topology in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Orthogonal group",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "Another classical group is the orthogonal group"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Matrix.orthogonalGroup",
+        "module": "Mathlib.LinearAlgebra.UnitaryGroup",
+        "match_kind": "exact"
+      },
+      "note": "`Matrix.orthogonalGroup n R` is defined as an abbreviation for `unitaryGroup`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Lie groups",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "The groups mentioned so far are all Lie groups , meaning that they are smooth manifolds"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "LieGroup",
+        "module": "Mathlib.Geometry.Manifold.Algebra.LieGroup",
+        "match_kind": "exact"
+      },
+      "note": "`LieGroup I n G` is the class of Lie groups in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Rationals and p-adic integers",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "An example of a topological group that is not a Lie group is the additive group"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "PadicInt",
+        "module": "Mathlib.NumberTheory.Padics.PadicIntegers",
+        "match_kind": "exact"
+      },
+      "note": "`PadicInt` is defined as the ring of p-adic integers carrying its valuation topology in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Profinite groups",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "is a profinite group ; it is isomorphic to a subgroup of the product"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "ProfiniteGrp",
+        "module": "Mathlib.Topology.Algebra.Category.ProfiniteGrp.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`ProfiniteGrp` is the category of profinite groups in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Infinite dimensional Lie groups",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "Some topological groups can be viewed as infinite dimensional Lie groups"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Infinite-dimensional Lie groups are not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Invertible elements of Banach algebra",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "In every Banach algebra with multiplicative identity, the set of invertible elements forms a topological group under multiplication"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Units.instIsTopologicalGroup",
+        "module": "Mathlib.Topology.Algebra.Group.Units",
+        "match_kind": "generalization"
+      },
+      "note": "Mathlib gives topological group structure on `Mˣ` for topological monoids satisfying continuity hypotheses; the Banach-algebra case is an instance of this.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Translation invariance of topology",
+      "anchor": {
+        "section": "Translation invariance",
+        "snippet": "Every topological group's topology is translation invariant"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Homeomorph.mulLeft",
+        "module": "Mathlib.Topology.Algebra.Group.Basic",
+        "match_kind": "exact"
+      },
+      "note": "Left and right translations are homeomorphisms via `Homeomorph.mulLeft` and `Homeomorph.mulRight`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Inversion is a homeomorphism",
+      "anchor": {
+        "section": "Symmetric neighborhoods",
+        "snippet": "The inversion operation"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Homeomorph.inv",
+        "module": "Mathlib.Topology.Algebra.Group.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`Homeomorph.inv G` packages inversion as a self-homeomorphism of `G`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Symmetric subset",
+      "anchor": {
+        "section": "Symmetric neighborhoods",
+        "snippet": "A subset"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has `IsSymmetricRel` for uniform-space entourages but no dedicated `Set.IsSymmetric` for group subsets.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Symmetric neighborhood basis",
+      "anchor": {
+        "section": "Symmetric neighborhoods",
+        "snippet": "For any neighborhood N in a commutative topological group G of the identity element, there exists a symmetric neighborhood M of the identity element"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No specific decl for existence of symmetric `M ⊆ N` with `MM ⊆ N` in a topological group was found.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Relatively compact symmetric neighborhood",
+      "anchor": {
+        "section": "Symmetric neighborhoods",
+        "snippet": "If G is a locally compact commutative group, then for any neighborhood N in G of the identity element, there exists a symmetric relatively compact neighborhood"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No direct statement of a symmetric relatively compact neighborhood basis of the identity was found.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Left and right uniformities",
+      "anchor": {
+        "section": "Uniform space",
+        "snippet": "Every topological group can be viewed as a uniform space in two ways"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "IsTopologicalGroup.rightUniformSpace",
+        "module": "Mathlib.Topology.Algebra.IsUniformGroup.Defs",
+        "match_kind": "exact"
+      },
+      "note": "Mathlib defines `IsTopologicalGroup.rightUniformSpace` and `IsTopologicalGroup.leftUniformSpace`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Compact set absorbed by neighborhood",
+      "anchor": {
+        "section": "Separation properties",
+        "snippet": "If U is an open subset of a commutative topological group G and U contains a compact set K , then there exists a neighborhood N of the identity element"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No direct lemma of the form `K ⊆ U open ⇒ ∃ N ∈ 𝓝 1, K·N ⊆ U` was found.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Equivalence of separation axioms for topological groups",
+      "anchor": {
+        "section": "Separation properties",
+        "snippet": "As a uniform space, every commutative topological group is completely regular"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "IsTopologicalGroup.regularSpace",
+        "module": "Mathlib.Topology.Algebra.Group.Pointwise",
+        "match_kind": "generalization"
+      },
+      "note": "Mathlib proves `RegularSpace` for any topological group but does not bundle the full T0 ⇔ T2 ⇔ T3 ⇔ T3½ equivalence.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Discrete subgroup iff isolated point",
+      "anchor": {
+        "section": "Separation properties",
+        "snippet": "A subgroup of a commutative topological group is discrete if and only if it has an isolated point"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No direct iff-with-isolated-point characterization of discreteness for subgroups was found.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Hausdorff quotient by closure of identity",
+      "anchor": {
+        "section": "Separation properties",
+        "snippet": "If G is not Hausdorff, then one can obtain a Hausdorff group by passing to the quotient group"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "SeparationQuotient",
+        "module": "Mathlib.Topology.Algebra.SeparationQuotient.Basic",
+        "match_kind": "generalization"
+      },
+      "note": "Mathlib's `SeparationQuotient` gives a T2 group quotient in the additive case; the multiplicative `G / closure {1}` version is not explicitly named.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Metrisable topological group",
+      "anchor": {
+        "section": "Metrisability",
+        "snippet": "is metrisable if and only if there exists a metric"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "TopologicalSpace.MetrizableSpace",
+        "module": "Mathlib.Topology.MetricSpace.Metrizable",
+        "match_kind": "generalization"
+      },
+      "note": "General metrisability is in Mathlib, but not a dedicated decl for group metrisability.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Left/right-invariant metric",
+      "anchor": {
+        "section": "Metrisability",
+        "snippet": "left-invariant (resp. right-invariant ) if and only if"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No `LeftInvariantMetric` typeclass was located in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Proper metric",
+      "anchor": {
+        "section": "Metrisability",
+        "snippet": "proper if and only if all open balls,"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "ProperSpace",
+        "module": "Mathlib.Topology.MetricSpace.ProperSpace",
+        "match_kind": "generalization"
+      },
+      "note": "Mathlib's `ProperSpace` captures the same condition (closed balls compact) at the level of metric spaces.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Birkhoff–Kakutani theorem",
+      "anchor": {
+        "section": "Metrisability",
+        "snippet": "The Birkhoff–Kakutani theorem (named after mathematicians Garrett Birkhoff and Shizuo Kakutani ) states that the following three conditions"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Birkhoff–Kakutani metrisation theorem is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Proper metrisability equivalences",
+      "anchor": {
+        "section": "Metrisability",
+        "snippet": "Furthermore, the following are equivalent for any topological group"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The proper-metrisability equivalence (Struble's theorem) is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Subgroup is a topological group",
+      "anchor": {
+        "section": "Subgroups",
+        "snippet": "Every subgroup of a topological group is itself a topological group when given the subspace topology"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Subgroup.instIsTopologicalGroup",
+        "module": "Mathlib.Topology.Algebra.Group.Basic",
+        "match_kind": "exact"
+      },
+      "note": "Mathlib has `instance (S : Subgroup G) : IsTopologicalGroup S`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Open subgroup is closed",
+      "anchor": {
+        "section": "Subgroups",
+        "snippet": "Every open subgroup H is also closed in G"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "OpenSubgroup.isClosed",
+        "module": "Mathlib.Topology.Algebra.OpenSubgroup",
+        "match_kind": "exact"
+      },
+      "note": "`OpenSubgroup.isClosed` states an open subgroup is automatically closed.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Closure of subgroup is subgroup",
+      "anchor": {
+        "section": "Subgroups",
+        "snippet": "If H is a subgroup of G , then the closure of H is also a subgroup"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Subgroup.topologicalClosure",
+        "module": "Mathlib.Topology.Algebra.Group.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`Subgroup.topologicalClosure` packages the topological closure of a subgroup as a subgroup.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Closure of normal subgroup is normal",
+      "anchor": {
+        "section": "Subgroups",
+        "snippet": "if H is a normal subgroup of G , the closure of H is normal in G"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Subgroup.is_normal_topologicalClosure",
+        "module": "Mathlib.Topology.Algebra.Group.Basic",
+        "match_kind": "exact"
+      },
+      "note": "Mathlib proves the topological closure of a normal subgroup is normal.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Homogeneous space G/H",
+      "anchor": {
+        "section": "Quotients and normal subgroups",
+        "snippet": "If H is a subgroup of G , the set of left cosets"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "QuotientGroup.instTopologicalSpace",
+        "module": "Mathlib.Topology.Algebra.Group.Quotient",
+        "match_kind": "exact"
+      },
+      "note": "`G ⧸ H` is given the quotient topology in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Quotient map is open",
+      "anchor": {
+        "section": "Quotients and normal subgroups",
+        "snippet": "The quotient map"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "QuotientGroup.isOpenQuotientMap_mk",
+        "module": "Mathlib.Topology.Algebra.Group.Quotient",
+        "match_kind": "exact"
+      },
+      "note": "`QuotientGroup.isOpenQuotientMap_mk` shows the canonical map is an open quotient map.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Sphere as homogeneous space",
+      "anchor": {
+        "section": "Quotients and normal subgroups",
+        "snippet": "for a positive integer n , the sphere S n is a homogeneous space for the rotation group"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The identification `S^n ≃ SO(n+1)/SO(n)` is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "G/H Hausdorff iff H closed",
+      "anchor": {
+        "section": "Quotients and normal subgroups",
+        "snippet": "A homogeneous space G / H is Hausdorff if and only if H is closed in G"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "QuotientGroup.instT2Space",
+        "module": "Mathlib.Topology.Algebra.ProperAction.Basic",
+        "match_kind": "special_case"
+      },
+      "note": "Mathlib proves T2 when H is closed; the converse direction is implicit via `t1Space_iff`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Quotient group is topological group",
+      "anchor": {
+        "section": "Quotients and normal subgroups",
+        "snippet": "If H is a normal subgroup of G , then the quotient group G / H becomes a topological group when given the quotient topology"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "QuotientGroup.instIsTopologicalGroup",
+        "module": "Mathlib.Topology.Algebra.Group.Quotient",
+        "match_kind": "exact"
+      },
+      "note": "Mathlib gives `G ⧸ N` an `IsTopologicalGroup` instance when `N.Normal`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Identity component is closed normal subgroup",
+      "anchor": {
+        "section": "Quotients and normal subgroups",
+        "snippet": "In any topological group, the identity component"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Subgroup.connectedComponentOfOne",
+        "module": "Mathlib.Topology.Algebra.Group.Basic",
+        "match_kind": "generalization"
+      },
+      "note": "The identity component is defined as a subgroup; closedness follows from `isClosed_connectedComponent` but the full closed+normal bundling is not packaged as one decl.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Product of compact and closed sets is closed",
+      "anchor": {
+        "section": "Closure and compactness",
+        "snippet": "In any commutative topological group, the product (assuming the group is multiplicative) KC of a compact set K and a closed set C is a closed set"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "IsClosed.mul_left_of_isCompact",
+        "module": "Mathlib.Topology.Algebra.Group.Pointwise",
+        "match_kind": "exact"
+      },
+      "note": "`IsClosed.mul_left_of_isCompact` (and `mul_right_of_isCompact`) give this for topological groups.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Closure product inclusion",
+      "anchor": {
+        "section": "Closure and compactness",
+        "snippet": "for any subsets R and S of G"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "smul_set_closure_subset",
+        "module": "Mathlib.Topology.Algebra.MulAction",
+        "match_kind": "generalization"
+      },
+      "note": "The closure-of-product inclusion is covered via `smul_set_closure_subset` and related pointwise closure lemmas in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Closedness criterion for subgroup",
+      "anchor": {
+        "section": "Closure and compactness",
+        "snippet": "If H is a subgroup of a commutative topological group G and if N is a neighborhood in G of the identity element"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No direct decl matching this neighborhood-based closedness criterion for subgroups was found.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Discrete subgroup is closed",
+      "anchor": {
+        "section": "Closure and compactness",
+        "snippet": "Every discrete subgroup of a Hausdorff commutative topological group is closed"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Subgroup.isClosed_of_discrete",
+        "module": "Mathlib.Topology.Algebra.IsUniformGroup.Basic",
+        "match_kind": "exact"
+      },
+      "note": "Mathlib has `Subgroup.isClosed_of_discrete` for T2 topological groups.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "First isomorphism theorem for topological groups",
+      "anchor": {
+        "section": "Isomorphism theorems",
+        "snippet": "There is a version of the first isomorphism theorem for topological groups"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "QuotientGroup.quotientKerEquivRange",
+        "module": "Mathlib.GroupTheory.QuotientGroup.Basic",
+        "match_kind": "generalization"
+      },
+      "note": "Algebraic first isomorphism theorem exists; a topological-group version with a continuity/openness clause is not packaged as a single decl.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Continuous Lie group homomorphism is smooth",
+      "anchor": {
+        "section": "Hilbert's fifth problem",
+        "snippet": "every continuous homomorphism of Lie groups"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Automatic smoothness of continuous Lie group homomorphisms is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Cartan's theorem",
+      "anchor": {
+        "section": "Hilbert's fifth problem",
+        "snippet": "Cartan's theorem says that every closed subgroup of a Lie group is a Lie subgroup"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Cartan's closed subgroup theorem is not in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Hilbert's fifth problem (Gleason–Montgomery–Zippin)",
+      "anchor": {
+        "section": "Hilbert's fifth problem",
+        "snippet": "Hilbert's fifth problem asked whether a topological group G that is a topological manifold must be a Lie group"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Gleason–Montgomery–Zippin solution to Hilbert's fifth problem is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Compact groups are inverse limits of compact Lie groups",
+      "anchor": {
+        "section": "Hilbert's fifth problem",
+        "snippet": "every compact group (understood to be Hausdorff) is an inverse limit of compact Lie groups"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This inverse-limit structure theorem for compact groups is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Connected locally compact groups are inverse limits of Lie groups",
+      "anchor": {
+        "section": "Hilbert's fifth problem",
+        "snippet": "every connected locally compact group is an inverse limit of connected Lie groups"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This Yamabe-type structure theorem is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Totally disconnected locally compact group contains compact open subgroup",
+      "anchor": {
+        "section": "Hilbert's fifth problem",
+        "snippet": "a totally disconnected locally compact group always contains a compact open subgroup"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "TotallyDisconnectedSpace",
+        "module": "Mathlib.Topology.Algebra.Nonarchimedean.TotallyDisconnected",
+        "match_kind": "generalization"
+      },
+      "note": "Related infrastructure on totally disconnected/nonarchimedean groups exists but van Dantzig's theorem is not stated as such.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Action of a topological group",
+      "anchor": {
+        "section": "Representations of compact or locally compact groups",
+        "snippet": "An action of a topological group G on a topological space X is a group action of G on X such that the corresponding function"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "ContinuousSMul",
+        "module": "Mathlib.Topology.Algebra.MulAction",
+        "match_kind": "exact"
+      },
+      "note": "Mathlib uses `ContinuousSMul` for jointly continuous group actions.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Representation of a topological group",
+      "anchor": {
+        "section": "Representations of compact or locally compact groups",
+        "snippet": "a representation of a topological group G on a real or complex topological vector space V is a continuous action of G on V"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "ContinuousSMul",
+        "module": "Mathlib.Topology.Algebra.MulAction",
+        "match_kind": "generalization"
+      },
+      "note": "Continuous representations on topological vector spaces are expressed via `ContinuousSMul` plus module structure; no dedicated `Representation` typeclass for topological groups.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Finite-dim representation decomposes as direct sum",
+      "anchor": {
+        "section": "Representations of compact or locally compact groups",
+        "snippet": "every finite-dimensional (real or complex) representation of a compact group is a direct sum of irreducible representations"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Complete reducibility of finite-dimensional representations of compact groups is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Peter–Weyl theorem",
+      "anchor": {
+        "section": "Representations of compact or locally compact groups",
+        "snippet": "An infinite-dimensional unitary representation of a compact group can be decomposed as a Hilbert-space direct sum of irreducible representations"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Peter–Weyl theorem is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Irreducible representations of the circle group",
+      "anchor": {
+        "section": "Representations of compact or locally compact groups",
+        "snippet": "the theory of Fourier series describes the decomposition of the unitary representation of the circle group"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "fourierBasis",
+        "module": "Mathlib.Analysis.Fourier.AddCircle",
+        "match_kind": "generalization"
+      },
+      "note": "Mathlib formalizes Fourier series on `AddCircle` but not the explicit interpretation as irreducible representations.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Weyl character formula",
+      "anchor": {
+        "section": "Representations of compact or locally compact groups",
+        "snippet": "the character of each irreducible representation is given by the Weyl character formula"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Weyl character formula is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Direct integral decomposition for locally compact groups",
+      "anchor": {
+        "section": "Representations of compact or locally compact groups",
+        "snippet": "Every unitary representation of a locally compact group can be described as a direct integral of irreducible unitary representations"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Direct integral decomposition of unitary representations is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Fourier transform as direct integral",
+      "anchor": {
+        "section": "Representations of compact or locally compact groups",
+        "snippet": "A basic example is the Fourier transform , which decomposes the action of the additive group"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Fourier transform viewed as a direct-integral decomposition of the regular representation is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Pontryagin duality",
+      "anchor": {
+        "section": "Representations of compact or locally compact groups",
+        "snippet": "Pontryagin duality states that for a locally compact abelian group G , the dual of"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "PontryaginDual",
+        "module": "Mathlib.Topology.Algebra.PontryaginDual",
+        "match_kind": "generalization"
+      },
+      "note": "`PontryaginDual` is defined and the duality is established for finite abelian groups, but full LCA Pontryagin duality is not.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Gelfand–Raikov theorem",
+      "anchor": {
+        "section": "Representations of compact or locally compact groups",
+        "snippet": "Every locally compact group G has a good supply of irreducible unitary representations"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Gelfand–Raikov theorem is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Classifying space and loop space",
+      "anchor": {
+        "section": "Homotopy theory of topological groups",
+        "snippet": "a topological group G determines a path-connected topological space, the classifying space"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Classifying spaces `BG` of topological groups are not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Fundamental group of topological group is abelian",
+      "anchor": {
+        "section": "Homotopy theory of topological groups",
+        "snippet": "the fundamental group of a topological group G is abelian"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Commutativity of `π₁` of a topological group is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Cohomology ring is a Hopf algebra",
+      "anchor": {
+        "section": "Homotopy theory of topological groups",
+        "snippet": "for any field k , the cohomology ring"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Hopf algebra structure on `H*(G; k)` is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Structure of rational cohomology ring",
+      "anchor": {
+        "section": "Homotopy theory of topological groups",
+        "snippet": "if G is a path-connected topological group whose rational cohomology ring"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Hopf's theorem on the rational cohomology ring of a Lie group is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Maximal compact subgroup of connected Lie group",
+      "anchor": {
+        "section": "Homotopy theory of topological groups",
+        "snippet": "a connected Lie group G has a maximal compact subgroup K , which is unique up to conjugation"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Existence and uniqueness of maximal compact subgroups is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Classification of compact connected Lie groups",
+      "anchor": {
+        "section": "Homotopy theory of topological groups",
+        "snippet": "compact connected Lie groups have been classified by Wilhelm Killing"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Killing–Cartan classification of compact connected Lie groups is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Diagonal and canonical entourage",
+      "anchor": {
+        "section": "Canonical uniformity on a commutative topological group",
+        "snippet": "The diagonal of"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "uniformity",
+        "module": "Mathlib.Topology.UniformSpace.Defs",
+        "match_kind": "generalization"
+      },
+      "note": "Diagonal and entourages are defined generally; the group-specific canonical entourages from `N ∋ 1` are folded into `IsTopologicalGroup.rightUniformSpace`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Canonical uniformity",
+      "anchor": {
+        "section": "Canonical uniformity on a commutative topological group",
+        "snippet": "the canonical uniformity"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "IsTopologicalGroup.rightUniformSpace",
+        "module": "Mathlib.Topology.Algebra.IsUniformGroup.Defs",
+        "match_kind": "exact"
+      },
+      "note": "Mathlib's `IsTopologicalGroup.rightUniformSpace` (and `leftUniformSpace`) realizes the canonical uniformity.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Translation-invariant uniformity",
+      "anchor": {
+        "section": "Canonical uniformity on a commutative topological group",
+        "snippet": "a fundamental system of entourages"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No explicit `TranslationInvariantUniformity` typeclass was located in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Canonical uniformity is translation-invariant",
+      "anchor": {
+        "section": "Canonical uniformity on a commutative topological group",
+        "snippet": "The canonical uniformity on any commutative topological group is translation-invariant"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Translation-invariance of the canonical uniformity is not stated as a named lemma.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Product, sum, and difference of nets",
+      "anchor": {
+        "section": "Cauchy prefilters and nets",
+        "snippet": "Make"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib works with filters rather than directly defining pointwise products of nets in topological groups.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Cauchy net",
+      "anchor": {
+        "section": "Cauchy prefilters and nets",
+        "snippet": "A net"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Cauchy",
+        "module": "Mathlib.Topology.UniformSpace.Cauchy",
+        "match_kind": "generalization"
+      },
+      "note": "Mathlib's `Cauchy` is defined for filters; net Cauchy-ness is captured via the associated filter.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Cauchy sequence",
+      "anchor": {
+        "section": "Cauchy prefilters and nets",
+        "snippet": "A Cauchy sequence is a Cauchy net that is a sequence"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "CauchySeq",
+        "module": "Mathlib.Topology.UniformSpace.Cauchy",
+        "match_kind": "exact"
+      },
+      "note": "`CauchySeq` is Mathlib's definition of a Cauchy sequence in a uniform space.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "N-small set",
+      "anchor": {
+        "section": "Cauchy prefilters and nets",
+        "snippet": "is said to be an"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No group-specific `N-small` set definition was found; Mathlib instead uses entourage-small via `Set.Pairwise` and uniformity.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Cauchy prefilter",
+      "anchor": {
+        "section": "Cauchy prefilters and nets",
+        "snippet": "A prefilter"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Cauchy",
+        "module": "Mathlib.Topology.UniformSpace.Cauchy",
+        "match_kind": "generalization"
+      },
+      "note": "Mathlib's `Cauchy` on filters subsumes the prefilter notion.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Convergence iff adherent and Cauchy",
+      "anchor": {
+        "section": "Cauchy prefilters and nets",
+        "snippet": "Suppose"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Cauchy.le_nhds_of_clusterPt",
+        "module": "Mathlib.Topology.UniformSpace.Cauchy",
+        "match_kind": "generalization"
+      },
+      "note": "Standard uniform-space lemmas state that a Cauchy filter converges iff it has a cluster point.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Complete subset",
+      "anchor": {
+        "section": "Complete commutative topological group",
+        "snippet": "of a topological group"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "IsComplete",
+        "module": "Mathlib.Topology.UniformSpace.Cauchy",
+        "match_kind": "generalization"
+      },
+      "note": "`IsComplete s` defines completeness of a subset in a uniform space.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Sequentially complete subset",
+      "anchor": {
+        "section": "Complete commutative topological group",
+        "snippet": "is called a sequentially complete subset if every Cauchy sequence"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib speaks of `SequentiallyComplete` for spaces but not as a subset-relative predicate for groups.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Complete group",
+      "anchor": {
+        "section": "Complete commutative topological group",
+        "snippet": "A commutative topological group"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "CompleteSpace",
+        "module": "Mathlib.Topology.UniformSpace.Cauchy",
+        "match_kind": "generalization"
+      },
+      "note": "Completeness of a topological group uses the general `CompleteSpace` typeclass on the associated uniform space.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Sequentially complete topological group",
+      "anchor": {
+        "section": "Complete commutative topological group",
+        "snippet": "A topological group is called sequentially complete if it is a sequentially complete subset of itself"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "SequentiallyComplete",
+        "module": "Mathlib.Topology.UniformSpace.Cauchy",
+        "match_kind": "generalization"
+      },
+      "note": "`SequentiallyComplete` exists as a general uniform-space notion in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Neighborhood basis of a completion",
+      "anchor": {
+        "section": "Complete commutative topological group",
+        "snippet": "Neighborhood basis"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "An explicit neighborhood basis description of the group completion is not given as a named lemma.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Uniform continuity between topological groups",
+      "anchor": {
+        "section": "Complete commutative topological group",
+        "snippet": "is uniformly continuous if for every neighborhood"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "UniformContinuous",
+        "module": "Mathlib.Topology.UniformSpace.UniformContinuous",
+        "match_kind": "exact"
+      },
+      "note": "`UniformContinuous` is Mathlib's general definition specialized to the group uniformity.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Semitopological group",
+      "anchor": {
+        "section": "Generalizations",
+        "snippet": "A semitopological group is a group G with a topology such that for each"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "ContinuousConstSMul",
+        "module": "Mathlib.Topology.Algebra.ConstMulAction",
+        "match_kind": "generalization"
+      },
+      "note": "Separate continuity of left/right translation is captured via `ContinuousConstSMul` but `SemitopologicalGroup` itself is not defined.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Quasitopological group",
+      "anchor": {
+        "section": "Generalizations",
+        "snippet": "A quasitopological group is a semitopological group in which the function mapping elements to their inverses is also continuous"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Quasitopological groups are not defined in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Paratopological group",
+      "anchor": {
+        "section": "Generalizations",
+        "snippet": "A paratopological group is a group with a topology such that the group operation is continuous"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "ContinuousMul",
+        "module": "Mathlib.Topology.Algebra.Monoid.Defs",
+        "match_kind": "generalization"
+      },
+      "note": "Mathlib uses `Group` + `ContinuousMul` for this notion but has no dedicated `ParatopologicalGroup` name.",
+      "provenance": "ai"
+    }
+  ]
+}

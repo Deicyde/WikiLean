@@ -1,0 +1,1153 @@
+{
+  "slug": "Power_series",
+  "wikipedia_title": "Power series",
+  "display_title": "Power series",
+  "schema_version": 3,
+  "annotation_style": "theorem_article",
+  "annotations": [
+    {
+      "kind": "definition",
+      "label": "Power series",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "is an infinite series of the form"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "FormalMultilinearSeries",
+        "module": "Mathlib.Analysis.Calculus.FormalMultilinearSeries",
+        "match_kind": "generalization"
+      },
+      "note": "Mathlib models analytic power series as FormalMultilinearSeries with HasFPowerSeriesOnBall (and formal ones as PowerSeries), generalizing the scalar series Σ aₙ(x−c)ⁿ.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "(Lead)",
+          "snippet": "is an infinite series of the form"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\sum _{n=0}^{\\infty }a_{n}\\left(x-c\\right)^{n}=a_{0}+a_{1}(x-c)+a_{2}(x-c)^{2}+\\dots }"
+        }
+      ]
+    },
+    {
+      "kind": "theorem",
+      "label": "Borel's theorem",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "Borel's theorem implies that every power series is the Taylor series of some smooth function"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Borel's theorem (every formal Taylor series is realized by a smooth function) is not present in Mathlib.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "(Lead)",
+          "snippet": "Borel's theorem implies that every power series is the Taylor series of some smooth function"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\sum _{n=0}^{\\infty }a_{n}\\left(x-c\\right)^{n}=a_{0}+a_{1}(x-c)+a_{2}(x-c)^{2}+\\dots }"
+        }
+      ]
+    },
+    {
+      "kind": "definition",
+      "label": "Maclaurin series (center zero)",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "the center c is equal to zero, for instance for Maclaurin series"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "HasFPowerSeriesAt",
+        "module": "Mathlib.Analysis.Analytic.Basic",
+        "match_kind": "special_case"
+      },
+      "note": "A Maclaurin series is just a power-series expansion at center 0, the special case x = 0 of HasFPowerSeriesAt, with no dedicated Maclaurin notion.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "(Lead)",
+          "snippet": "the center c is equal to zero, for instance for Maclaurin series"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\sum _{n=0}^{\\infty }a_{n}x^{n}=a_{0}+a_{1}x+a_{2}x^{2}+\\dots .}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Polynomial as power series",
+      "anchor": {
+        "section": "Polynomial",
+        "snippet": "Every polynomial of degree d can be expressed as a power series around any center c"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Polynomial.taylor",
+        "module": "Mathlib.Algebra.Polynomial.Taylor",
+        "match_kind": "special_case"
+      },
+      "note": "Polynomial.taylor r f re-expresses a polynomial in powers of (X − r) about any center r, with Polynomial.taylor_coeff giving its coefficients.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Polynomial",
+          "snippet": "Every polynomial of degree d can be expressed as a power series around any center c"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle f(x)=3+2x+1x^{2}+0x^{3}+0x^{4}+\\cdots }"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle f(x)=6+4(x-1)+1(x-1)^{2}+0(x-1)^{3}+0(x-1)^{4}+\\cdots .}"
+        }
+      ]
+    },
+    {
+      "kind": "example",
+      "label": "Polynomial expanded about two centers",
+      "anchor": {
+        "section": "Polynomial",
+        "snippet": "For instance, the polynomial"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Polynomial.taylor",
+        "module": "Mathlib.Algebra.Polynomial.Taylor",
+        "match_kind": "invocation"
+      },
+      "note": "The specific numeric example is not in Mathlib, but Polynomial.taylor provides the re-centering computation it illustrates.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Polynomial",
+          "snippet": "For instance, the polynomial"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle f(x)=3+2x+1x^{2}+0x^{3}+0x^{4}+\\cdots }"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle f(x)=6+4(x-1)+1(x-1)^{2}+0(x-1)^{3}+0(x-1)^{4}+\\cdots .}"
+        }
+      ]
+    },
+    {
+      "kind": "example",
+      "label": "Geometric series",
+      "anchor": {
+        "section": "Geometric series, exponential function and sine",
+        "snippet": "The geometric series formula"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "tsum_geometric_of_norm_lt_one",
+        "module": "Mathlib.Analysis.SpecificLimits.Normed",
+        "match_kind": "exact"
+      },
+      "note": "Σ ξⁿ = (1−ξ)⁻¹ for ‖ξ‖ < 1 is tsum_geometric_of_norm_lt_one (and hasSum_geometric_of_norm_lt_one).",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Geometric series, exponential function and sine",
+          "snippet": "The geometric series formula"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle {\\frac {1}{1-x}}=\\sum _{n=0}^{\\infty }x^{n}=1+x+x^{2}+x^{3}+\\cdots ,}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle e^{x}=\\sum _{n=0}^{\\infty }{\\frac {x^{n}}{n!}}=1+x+{\\frac {x^{2}}{2!}}+{\\frac {x^{3}}{3!}}+\\cdots }"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\sin(x)=\\sum _{n=0}^{\\infty }{\\frac {(-1)^{n}x^{2n+1}}{(2n+1)!}}=x-{\\frac {x^{3}}{3!}}+{\\frac {x^{5}}{5!}}-{\\frac {x^{7}}{7!}}+\\cdots ,}"
+        }
+      ]
+    },
+    {
+      "kind": "example",
+      "label": "Exponential function series",
+      "anchor": {
+        "section": "Geometric series, exponential function and sine",
+        "snippet": "the exponential function formula"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "NormedSpace.exp_eq_tsum",
+        "module": "Mathlib.Analysis.Normed.Algebra.Exponential",
+        "match_kind": "exact"
+      },
+      "note": "exp x = Σ xⁿ/n! is NormedSpace.exp_eq_tsum, with expSeries_radius_eq_top giving infinite radius.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Geometric series, exponential function and sine",
+          "snippet": "the exponential function formula"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle {\\frac {1}{1-x}}=\\sum _{n=0}^{\\infty }x^{n}=1+x+x^{2}+x^{3}+\\cdots ,}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle e^{x}=\\sum _{n=0}^{\\infty }{\\frac {x^{n}}{n!}}=1+x+{\\frac {x^{2}}{2!}}+{\\frac {x^{3}}{3!}}+\\cdots }"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\sin(x)=\\sum _{n=0}^{\\infty }{\\frac {(-1)^{n}x^{2n+1}}{(2n+1)!}}=x-{\\frac {x^{3}}{3!}}+{\\frac {x^{5}}{5!}}-{\\frac {x^{7}}{7!}}+\\cdots ,}"
+        }
+      ]
+    },
+    {
+      "kind": "example",
+      "label": "Sine series",
+      "anchor": {
+        "section": "Geometric series, exponential function and sine",
+        "snippet": "and the sine formula"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Real.sin_eq_tsum",
+        "module": "Mathlib.Analysis.SpecialFunctions.Trigonometric.Series",
+        "match_kind": "exact"
+      },
+      "note": "sin x = Σ (−1)ⁿ x^(2n+1)/(2n+1)! is Real.sin_eq_tsum / Complex.hasSum_sin.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Geometric series, exponential function and sine",
+          "snippet": "and the sine formula"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle {\\frac {1}{1-x}}=\\sum _{n=0}^{\\infty }x^{n}=1+x+x^{2}+x^{3}+\\cdots ,}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle e^{x}=\\sum _{n=0}^{\\infty }{\\frac {x^{n}}{n!}}=1+x+{\\frac {x^{2}}{2!}}+{\\frac {x^{3}}{3!}}+\\cdots }"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\sin(x)=\\sum _{n=0}^{\\infty }{\\frac {(-1)^{n}x^{2n+1}}{(2n+1)!}}=x-{\\frac {x^{3}}{3!}}+{\\frac {x^{5}}{5!}}-{\\frac {x^{7}}{7!}}+\\cdots ,}"
+        }
+      ]
+    },
+    {
+      "kind": "definition",
+      "label": "No negative powers",
+      "anchor": {
+        "section": "On the set of exponents",
+        "snippet": "Negative powers are not permitted in an ordinary power series"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "PowerSeries",
+        "module": "Mathlib.RingTheory.PowerSeries.Basic",
+        "match_kind": null
+      },
+      "note": "PowerSeries is indexed by ℕ so negative exponents are excluded by construction (negative powers live in Mathlib's LaurentSeries instead), but there is no explicit statement.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "No fractional powers",
+      "anchor": {
+        "section": "On the set of exponents",
+        "snippet": "Similarly, fractional powers such as"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "PowerSeries",
+        "module": "Mathlib.RingTheory.PowerSeries.Basic",
+        "match_kind": null
+      },
+      "note": "PowerSeries / FormalMultilinearSeries are indexed by ℕ, so fractional exponents are excluded by construction with no explicit statement.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Coefficients independent of x",
+      "anchor": {
+        "section": "On the set of exponents",
+        "snippet": "must not depend on"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "PowerSeries.coeff",
+        "module": "Mathlib.RingTheory.PowerSeries.Basic",
+        "match_kind": null
+      },
+      "note": "Coefficients are elements of the base ring (PowerSeries.coeff : R) and hence constant by construction, but this is definitional rather than a stated theorem.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Convergence at center",
+      "anchor": {
+        "section": "Radius of convergence",
+        "snippet": "is convergent for some values of x , which always include x = c"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "FormalMultilinearSeries.radius",
+        "module": "Mathlib.Analysis.Analytic.ConvergenceRadius",
+        "match_kind": null
+      },
+      "note": "Convergence at the center is the trivial value p.sum 0 = p₀ inside the radius-0 ball; no lemma states it specifically.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Existence of radius of convergence",
+      "anchor": {
+        "section": "Radius of convergence",
+        "snippet": "there is always a number r with 0 < r ≤ ∞"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "FormalMultilinearSeries.radius",
+        "module": "Mathlib.Analysis.Analytic.ConvergenceRadius",
+        "match_kind": "generalization"
+      },
+      "note": "Every formal series has a well-defined radius p.radius : ℝ≥0∞, so the radius always exists.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Radius of convergence",
+          "snippet": "there is always a number r with 0 < r ≤ ∞"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle r=\\liminf _{n\\to \\infty }\\left|a_{n}\\right|^{-{\\frac {1}{n}}}}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle r^{-1}=\\limsup _{n\\to \\infty }\\left|a_{n}\\right|^{\\frac {1}{n}}.}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle r^{-1}=\\lim _{n\\to \\infty }\\left|{a_{n+1} \\over a_{n}}\\right|}"
+        }
+      ]
+    },
+    {
+      "kind": "definition",
+      "label": "Radius of convergence",
+      "anchor": {
+        "section": "Radius of convergence",
+        "snippet": "is called the radius of convergence of the power series"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "FormalMultilinearSeries.radius",
+        "module": "Mathlib.Analysis.Analytic.ConvergenceRadius",
+        "match_kind": "generalization"
+      },
+      "note": "FormalMultilinearSeries.radius is the largest r with ‖pₙ‖rⁿ subexponential, i.e. the radius of convergence.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Radius of convergence",
+          "snippet": "is called the radius of convergence of the power series"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle r=\\liminf _{n\\to \\infty }\\left|a_{n}\\right|^{-{\\frac {1}{n}}}}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle r^{-1}=\\limsup _{n\\to \\infty }\\left|a_{n}\\right|^{\\frac {1}{n}}.}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle r^{-1}=\\lim _{n\\to \\infty }\\left|{a_{n+1} \\over a_{n}}\\right|}"
+        }
+      ]
+    },
+    {
+      "kind": "theorem",
+      "label": "Cauchy–Hadamard theorem",
+      "anchor": {
+        "section": "Radius of convergence",
+        "snippet": "This is the Cauchy–Hadamard theorem"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "FormalMultilinearSeries.radius_inv_eq_limsup",
+        "module": "Mathlib.Analysis.Analytic.RadiusLiminf",
+        "match_kind": "exact"
+      },
+      "note": "radius_inv_eq_limsup (and radius_eq_liminf) express 1/r = limsup ‖pₙ‖^(1/n), explicitly labelled the Cauchy–Hadamard theorem.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Radius of convergence",
+          "snippet": "This is the Cauchy–Hadamard theorem"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle r=\\liminf _{n\\to \\infty }\\left|a_{n}\\right|^{-{\\frac {1}{n}}}}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle r^{-1}=\\limsup _{n\\to \\infty }\\left|a_{n}\\right|^{\\frac {1}{n}}.}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle r^{-1}=\\lim _{n\\to \\infty }\\left|{a_{n+1} \\over a_{n}}\\right|}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Ratio formula for radius",
+      "anchor": {
+        "section": "Radius of convergence",
+        "snippet": "is also satisfied, if this limit exists"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "FormalMultilinearSeries.ofScalars_radius_eq_inv_of_tendsto",
+        "module": "Mathlib.Analysis.Analytic.OfScalars",
+        "match_kind": "special_case"
+      },
+      "note": "For scalar series, ofScalars_radius_eq_inv_of_tendsto gives radius = (lim ‖cₙ₊₁‖/‖cₙ‖)⁻¹ when the limit exists.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Radius of convergence",
+          "snippet": "is also satisfied, if this limit exists"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle r=\\liminf _{n\\to \\infty }\\left|a_{n}\\right|^{-{\\frac {1}{n}}}}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle r^{-1}=\\limsup _{n\\to \\infty }\\left|a_{n}\\right|^{\\frac {1}{n}}.}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle r^{-1}=\\lim _{n\\to \\infty }\\left|{a_{n+1} \\over a_{n}}\\right|}"
+        }
+      ]
+    },
+    {
+      "kind": "definition",
+      "label": "Disc of convergence",
+      "anchor": {
+        "section": "Radius of convergence",
+        "snippet": "is called the disc of convergence of the series"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "FormalMultilinearSeries.analyticOnNhd",
+        "module": "Mathlib.Analysis.Analytic.ChangeOrigin",
+        "match_kind": null
+      },
+      "note": "Mathlib uses the open ball Metric.eball 0 p.radius (e.g. in FormalMultilinearSeries.analyticOnNhd) but has no separately named 'disc of convergence' definition.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Absolute and uniform convergence",
+      "anchor": {
+        "section": "Radius of convergence",
+        "snippet": "The series converges absolutely inside its disc of convergence"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "FormalMultilinearSeries.summable_norm_apply",
+        "module": "Mathlib.Analysis.Analytic.ConvergenceRadius",
+        "match_kind": "exact"
+      },
+      "note": "summable_norm_apply gives absolute convergence inside the radius and HasFPowerSeriesOnBall.tendstoLocallyUniformlyOn gives locally uniform convergence.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Abel's theorem",
+      "anchor": {
+        "section": "Radius of convergence",
+        "snippet": "Abel's theorem states that if the series is convergent"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Real.tendsto_tsum_powerSeries_nhdsWithin_lt",
+        "module": "Mathlib.Analysis.Complex.AbelLimit",
+        "match_kind": "exact"
+      },
+      "note": "Abel's limit theorem is formalized as Real.tendsto_tsum_powerSeries_nhdsWithin_lt and Complex.tendsto_tsum_powerSeries_nhdsWithin_stolzCone.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Termwise addition and subtraction",
+      "anchor": {
+        "section": "Addition and subtraction",
+        "snippet": "the power series of the sum or difference of the functions can be obtained by termwise addition and subtraction"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "HasFPowerSeriesOnBall.add",
+        "module": "Mathlib.Analysis.Analytic.Constructions",
+        "match_kind": "exact"
+      },
+      "note": "HasFPowerSeriesOnBall.add and .sub show that pf + pg / pf − pg is a power series for f ± g.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Addition and subtraction",
+          "snippet": "the power series of the sum or difference of the functions can be obtained by termwise addition and subtraction"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle f(x)=\\sum _{n=0}^{\\infty }a_{n}(x-c)^{n}}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle g(x)=\\sum _{n=0}^{\\infty }b_{n}(x-c)^{n}}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle f(x)\\pm g(x)=\\sum _{n=0}^{\\infty }(a_{n}\\pm b_{n})(x-c)^{n}.}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Radius of convergence of a sum",
+      "anchor": {
+        "section": "Addition and subtraction",
+        "snippet": "The sum of two power series will have a radius of convergence of at least the smaller of the two radii of convergence"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "FormalMultilinearSeries.min_radius_le_radius_add",
+        "module": "Mathlib.Analysis.Analytic.ConvergenceRadius",
+        "match_kind": "exact"
+      },
+      "note": "min_radius_le_radius_add states min(p.radius, q.radius) ≤ (p+q).radius.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Product and quotient of power series",
+      "anchor": {
+        "section": "Multiplication and division",
+        "snippet": "the power series of the product and quotient of the functions can be obtained as follows"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "AnalyticAt.mul",
+        "module": "Mathlib.Analysis.Analytic.Constructions",
+        "match_kind": "exact"
+      },
+      "note": "AnalyticAt.mul and AnalyticAt.div show products and quotients of (power-series) analytic functions are again analytic.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Multiplication and division",
+          "snippet": "the power series of the product and quotient of the functions can be obtained as follows"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle {\\begin{aligned}f(x)g(x)&amp;={\\biggl (}\\sum _{n=0}^{\\infty }a_{n}(x-c)^{n}{\\biggr )}{\\biggl (}\\sum _{n=0}^{\\infty }b_{n}(x-c)^{n}{\\biggr )}\\\\&amp;=\\sum _{i=0}^{\\infty }\\sum _{j=0}^{\\infty }a_{i}b_{j}(x-c)^{i+j}\\\\&amp;=\\sum _{n=0}^{\\infty }{\\biggl (}\\sum _{i=0}^{n}a_{i}b_{n-i}{\\biggr )}(x-c)^{n}.\\end{aligned}}}"
+        }
+      ]
+    },
+    {
+      "kind": "definition",
+      "label": "Cauchy product",
+      "anchor": {
+        "section": "Multiplication and division",
+        "snippet": "is known as the Cauchy product of the sequences"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "tsum_mul_tsum_eq_tsum_sum_antidiagonal",
+        "module": "Mathlib.Topology.Algebra.InfiniteSum.Ring",
+        "match_kind": "exact"
+      },
+      "note": "The Cauchy product formula is tsum_mul_tsum_eq_tsum_sum_antidiagonal, matching the antidiagonal-convolution PowerSeries.coeff_mul.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Division by recursion",
+      "anchor": {
+        "section": "Multiplication and division",
+        "snippet": "and one can solve recursively for the terms"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "PowerSeries.inv",
+        "module": "Mathlib.RingTheory.PowerSeries.Inverse",
+        "match_kind": "exact"
+      },
+      "note": "PowerSeries.inv / invOfUnit define the reciprocal series whose coefficients are computed recursively (inv.aux).",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Multiplication and division",
+          "snippet": "and one can solve recursively for the terms"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle {\\frac {f(x)}{g(x)}}={\\frac {\\sum _{n=0}^{\\infty }a_{n}(x-c)^{n}}{\\sum _{n=0}^{\\infty }b_{n}(x-c)^{n}}}=\\sum _{n=0}^{\\infty }d_{n}(x-c)^{n}}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle f(x)={\\biggl (}\\sum _{n=0}^{\\infty }b_{n}(x-c)^{n}{\\biggr )}{\\biggl (}\\sum _{n=0}^{\\infty }d_{n}(x-c)^{n}{\\biggr )}}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Determinant formula for division",
+      "anchor": {
+        "section": "Multiplication and division",
+        "snippet": "yields the formulae based on determinants of certain matrices of the coefficients"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Hankel/Toeplitz-determinant closed form for power-series division coefficients is not in Mathlib.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Multiplication and division",
+          "snippet": "yields the formulae based on determinants of certain matrices of the coefficients"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle d_{0}={\\frac {a_{0}}{b_{0}}}}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle d_{n}={\\frac {1}{b_{0}^{n+1}}}{\\begin{vmatrix}a_{n}&amp;b_{1}&amp;b_{2}&amp;\\cdots &amp;b_{n}\\\\a_{n-1}&amp;b_{0}&amp;b_{1}&amp;\\cdots &amp;b_{n-1}\\\\a_{n-2}&amp;0&amp;b_{0}&amp;\\cdots &amp;b_{n-2}\\\\\\vdots &amp;\\vdots &amp;\\vdots &amp;\\ddots &amp;\\vdots \\\\a_{0}&amp;0&amp;0&amp;\\cdots &amp;b_{0}\\end{vmatrix}}}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Termwise differentiation and integration",
+      "anchor": {
+        "section": "Differentiation and integration",
+        "snippet": "It can be differentiated and integrated by treating every term separately"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "HasFPowerSeriesOnBall.fderiv",
+        "module": "Mathlib.Analysis.Calculus.FDeriv.Analytic",
+        "match_kind": "exact"
+      },
+      "note": "HasFPowerSeriesOnBall.fderiv shows the derivative has the termwise derivative series p.derivSeries as its power series; termwise integration is not separately stated.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Differentiation and integration",
+          "snippet": "It can be differentiated and integrated by treating every term separately"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle {\\begin{aligned}f'(x)&amp;=\\sum _{n=1}^{\\infty }a_{n}n(x-c)^{n-1}=\\sum _{n=0}^{\\infty }a_{n+1}(n+1)(x-c)^{n},\\\\\\int f(x)\\,dx&amp;=\\sum _{n=0}^{\\infty }{\\frac {a_{n}(x-c)^{n+1}}{n+1}}+k=\\sum _{n=1}^{\\infty }{\\frac {a_{n-1}(x-c)^{n}}{n}}+k.\\end{aligned}}}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Derivative/integral preserve radius",
+      "anchor": {
+        "section": "Differentiation and integration",
+        "snippet": "Both of these series have the same radius of convergence as the original series"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "FormalMultilinearSeries.radius_le_radius_derivSeries",
+        "module": "Mathlib.Analysis.Analytic.ChangeOrigin",
+        "match_kind": null
+      },
+      "note": "radius_le_radius_derivSeries gives p.radius ≤ p.derivSeries.radius (one direction); the full equality of radii is not stated as a single lemma.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Analytic function",
+      "anchor": {
+        "section": "Analytic functions",
+        "snippet": "is called analytic if it is locally given by a convergent power series"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "AnalyticAt",
+        "module": "Mathlib.Analysis.Analytic.Basic",
+        "match_kind": "exact"
+      },
+      "note": "AnalyticAt / AnalyticOnNhd define functions admitting a convergent power-series expansion at / near a point.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Power series sums are analytic",
+      "anchor": {
+        "section": "Analytic functions",
+        "snippet": "Every power series with a positive radius of convergence is analytic on the interior of its region of convergence"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "FormalMultilinearSeries.analyticOnNhd",
+        "module": "Mathlib.Analysis.Analytic.ChangeOrigin",
+        "match_kind": "exact"
+      },
+      "note": "FormalMultilinearSeries.analyticOnNhd shows p.sum is analytic on the ball Metric.eball 0 p.radius.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Holomorphic implies complex-analytic",
+      "anchor": {
+        "section": "Analytic functions",
+        "snippet": "All holomorphic functions are complex-analytic"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "DifferentiableOn.analyticAt",
+        "module": "Mathlib.Analysis.Complex.CauchyIntegral",
+        "match_kind": "exact"
+      },
+      "note": "DifferentiableOn.analyticAt / Differentiable.analyticAt prove complex differentiability implies analyticity.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Closure of analytic functions under operations",
+      "anchor": {
+        "section": "Analytic functions",
+        "snippet": "Sums and products of analytic functions are analytic"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "AnalyticAt.mul",
+        "module": "Mathlib.Analysis.Analytic.Constructions",
+        "match_kind": "exact"
+      },
+      "note": "AnalyticAt.add and AnalyticAt.mul (with .div) show sums and products of analytic functions are analytic.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Analytic implies infinitely differentiable",
+      "anchor": {
+        "section": "Analytic functions",
+        "snippet": "If a function is analytic, then it is infinitely differentiable"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "AnalyticAt.contDiffAt",
+        "module": "Mathlib.Analysis.Calculus.ContDiff.Defs",
+        "match_kind": "exact"
+      },
+      "note": "AnalyticAt.contDiffAt / AnalyticOnNhd.contDiffOn give C^∞ smoothness of analytic functions.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Analytic functions",
+          "snippet": "If a function is analytic, then it is infinitely differentiable"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle a_{n}={\\frac {f^{\\left(n\\right)}{\\left(c\\right)}}{n!}}}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Taylor coefficient formula",
+      "anchor": {
+        "section": "Analytic functions",
+        "snippet": "For an analytic function, the coefficients a n can be computed as"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "HasFPowerSeriesOnBall.factorial_smul",
+        "module": "Mathlib.Analysis.Calculus.FDeriv.Analytic",
+        "match_kind": "exact"
+      },
+      "note": "factorial_smul gives n! • pₙ = iteratedFDeriv n f x, i.e. aₙ = f⁽ⁿ⁾(c)/n!.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Analytic functions",
+          "snippet": "For an analytic function, the coefficients a n can be computed as"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle a_{n}={\\frac {f^{\\left(n\\right)}{\\left(c\\right)}}{n!}}}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Local Taylor representation",
+      "anchor": {
+        "section": "Analytic functions",
+        "snippet": "every analytic function is locally represented by its Taylor series"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "HasFPowerSeriesOnBall.hasSum_iteratedFDeriv",
+        "module": "Mathlib.Analysis.Calculus.FDeriv.Analytic",
+        "match_kind": "exact"
+      },
+      "note": "hasSum_iteratedFDeriv shows f(x+y) = Σ (1/n!) iteratedFDeriv n f x (y,…,y), the local Taylor expansion.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Identity theorem for analytic functions",
+      "anchor": {
+        "section": "Analytic functions",
+        "snippet": "The global form of an analytic function is completely determined by its local behavior"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "AnalyticOnNhd.eqOn_of_preconnected_of_eventuallyEq",
+        "module": "Mathlib.Analysis.Analytic.Uniqueness",
+        "match_kind": "exact"
+      },
+      "note": "The identity principle is AnalyticOnNhd.eqOn_of_preconnected_of_eventuallyEq (and the eqOn_zero variants).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Maximality of the radius of convergence",
+      "anchor": {
+        "section": "Analytic functions",
+        "snippet": "The number r is maximal in the following sense"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "There is no Mathlib theorem asserting the existence of a singularity on the boundary circle / non-extendability beyond the radius.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Lagrange inversion theorem",
+      "anchor": {
+        "section": "Analytic functions",
+        "snippet": "can be determined using the Lagrange inversion theorem"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "FormalMultilinearSeries.leftInv",
+        "module": "Mathlib.Analysis.Analytic.Inverse",
+        "match_kind": null
+      },
+      "note": "Mathlib constructs the inverse series (leftInv/rightInv) and proves its convergence, but the explicit Lagrange inversion coefficient formula is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Sum analytic in interior",
+      "anchor": {
+        "section": "Behavior near the boundary",
+        "snippet": "The sum of a power series with a positive radius of convergence is an analytic function at every point in the interior"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "FormalMultilinearSeries.analyticOnNhd",
+        "module": "Mathlib.Analysis.Analytic.ChangeOrigin",
+        "match_kind": "exact"
+      },
+      "note": "FormalMultilinearSeries.analyticOnNhd states p.sum is analytic at every point of the open disc of convergence.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Divergent but extends analytically",
+      "anchor": {
+        "section": "Behavior near the boundary",
+        "snippet": "Divergence while the sum extends to an analytic function"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This specific boundary-behavior example is not in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Convergent at some boundary points",
+      "anchor": {
+        "section": "Behavior near the boundary",
+        "snippet": "Convergent at some points divergent at others"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This specific boundary-behavior example is not in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Absolute convergence on boundary",
+      "anchor": {
+        "section": "Behavior near the boundary",
+        "snippet": "Absolute convergence at every point of the boundary"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This specific boundary-behavior example is not in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Sierpiński's example",
+      "anchor": {
+        "section": "Behavior near the boundary",
+        "snippet": "Sierpiński gave an example"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Sierpiński's boundary example is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Abel's theorem (boundary continuity)",
+      "anchor": {
+        "section": "Behavior near the boundary",
+        "snippet": "A sufficient condition for one-sided continuity at a boundary point is given by Abel's theorem"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Real.tendsto_tsum_powerSeries_nhdsWithin_lt",
+        "module": "Mathlib.Analysis.Complex.AbelLimit",
+        "match_kind": "exact"
+      },
+      "note": "Abel's limit theorem giving one-sided boundary continuity is Real.tendsto_tsum_powerSeries_nhdsWithin_lt / Complex stolzCone version.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Generating series",
+      "anchor": {
+        "section": "Generating series",
+        "snippet": "It is common to associate to any sequence of numbers"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "PowerSeries.mk",
+        "module": "Mathlib.RingTheory.PowerSeries.Basic",
+        "match_kind": "exact"
+      },
+      "note": "PowerSeries.mk associates to any sequence f : ℕ → R its (ordinary) generating power series.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Generating series",
+          "snippet": "It is common to associate to any sequence of numbers"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\sum _{n=0}^{\\infty }a_{n}x^{n}}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\sum _{n=0}^{\\infty }{\\frac {a_{n}}{n!}}x^{n}.}"
+        }
+      ]
+    },
+    {
+      "kind": "definition",
+      "label": "Exponential generating series",
+      "anchor": {
+        "section": "Generating series",
+        "snippet": "or its exponential generating series"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has no dedicated exponential-generating-function construction (only ad hoc rescale/PowerSeries.exp usages).",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Generating series",
+          "snippet": "or its exponential generating series"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\sum _{n=0}^{\\infty }a_{n}x^{n}}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\sum _{n=0}^{\\infty }{\\frac {a_{n}}{n!}}x^{n}.}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Positive radius gives analytic function",
+      "anchor": {
+        "section": "Generating series",
+        "snippet": "When the radius of convergence is positive, the series defines an analytic function"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "FormalMultilinearSeries.hasFPowerSeriesOnBall",
+        "module": "Mathlib.Analysis.Analytic.Basic",
+        "match_kind": "exact"
+      },
+      "note": "For positive radius, FormalMultilinearSeries.hasFPowerSeriesOnBall (and analyticOnNhd) show p.sum is analytic on the disc.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Formal power series",
+      "anchor": {
+        "section": "Formal power series",
+        "snippet": "This leads to the concept of formal power series"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "PowerSeries",
+        "module": "Mathlib.RingTheory.PowerSeries.Basic",
+        "match_kind": "exact"
+      },
+      "note": "PowerSeries R is the ring of formal power series over R.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Power series in several variables",
+      "anchor": {
+        "section": "Power series in several variables",
+        "snippet": "A power series is here defined to be an infinite series of the form"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "MvPowerSeries",
+        "module": "Mathlib.RingTheory.MvPowerSeries.Basic",
+        "match_kind": "exact"
+      },
+      "note": "MvPowerSeries σ R is the multivariate (formal) power series ring indexed by multi-indices; analytic several-variable series are covered by FormalMultilinearSeries.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Power series in several variables",
+          "snippet": "A power series is here defined to be an infinite series of the form"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle f(x_{1},\\dots ,x_{n})=\\sum _{j_{1},\\dots ,j_{n}=0}^{\\infty }a_{j_{1},\\dots ,j_{n}}\\prod _{k=1}^{n}(x_{k}-c_{k})^{j_{k}},}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle f(x)=\\sum _{\\alpha \\in \\mathbb {N} ^{n}}a_{\\alpha }(x-c)^{\\alpha }.}"
+        }
+      ]
+    },
+    {
+      "kind": "example",
+      "label": "Convergence between two hyperbolas",
+      "anchor": {
+        "section": "Power series in several variables",
+        "snippet": "is absolutely convergent in the set"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This specific two-variable convergence-region example is not in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Region of convergence is log-convex",
+      "anchor": {
+        "section": "Power series in several variables",
+        "snippet": "the interior of the region of absolute convergence is always a log-convex set"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib explicitly does not define the multivariate polydisk/region of convergence, so its log-convexity is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Term-by-term calculus in several variables",
+      "anchor": {
+        "section": "Power series in several variables",
+        "snippet": "one may differentiate and integrate under the series sign"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "HasFPowerSeriesOnBall.fderiv",
+        "module": "Mathlib.Analysis.Calculus.FDeriv.Analytic",
+        "match_kind": "generalization"
+      },
+      "note": "The FormalMultilinearSeries framework allows term-by-term differentiation in arbitrary (multivariate) normed spaces via derivSeries, but there is no statement specific to multivariate scalar power series.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Order of a power series",
+      "anchor": {
+        "section": "Order of a power series",
+        "snippet": "The order of the power series f is defined to be the least value"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "PowerSeries.order",
+        "module": "Mathlib.RingTheory.PowerSeries.Order",
+        "match_kind": "exact"
+      },
+      "note": "PowerSeries.order is the least n with nonzero coefficient (greatest n with Xⁿ ∣ f), ⊤ for the zero series.",
+      "provenance": "ai"
+    }
+  ]
+}

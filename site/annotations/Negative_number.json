@@ -1,0 +1,537 @@
+{
+  "slug": "Negative_number",
+  "wikipedia_title": "Negative number",
+  "display_title": "Negative number",
+  "schema_version": 3,
+  "annotation_style": "theorem_article",
+  "annotations": [
+    {
+      "kind": "definition",
+      "label": "Negative number",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "a negative number is the opposite of a positive real number"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Neg",
+        "module": "Mathlib.Algebra.Group.Defs",
+        "match_kind": "generalization"
+      },
+      "note": "Mathlib has the `Neg` typeclass (core Lean) and `InvolutiveNeg`, providing the unary `-` operation, but no standalone definition `negative := -x for positive x`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Negative number (equivalent)",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "a negative number is a real number that is less than zero"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "neg_lt_zero",
+        "module": "Mathlib.Algebra.Order.Group.Unbundled.Basic",
+        "match_kind": "invocation"
+      },
+      "note": "The predicate `x < 0` is just the order on a `LinearOrderedField`; no dedicated `IsNegative` definition exists, but `neg_lt_zero` characterizes negativity.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Positive number",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "a number that is greater than zero is called positive"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "neg_pos",
+        "module": "Mathlib.Algebra.Order.Group.Unbundled.Basic",
+        "match_kind": "invocation"
+      },
+      "note": "Mathlib expresses positivity directly as `0 < x`; there is no separate `IsPositive` predicate but order infrastructure is fully present.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Sign of a number",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "the negativity or positivity of a number is referred to as its sign"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "SignType.sign",
+        "module": "Mathlib.Data.Sign.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`SignType.sign : α →o SignType` returns the sign of an element in a suitable ordered structure.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Trichotomy of reals",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "Every real number other than zero is either positive or negative"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "lt_trichotomy",
+        "module": "Mathlib.Order.Defs.LinearOrder",
+        "match_kind": "generalization"
+      },
+      "note": "`lt_trichotomy a b : a < b ∨ a = b ∨ b < a` instantiated at `b = 0` gives the article's trichotomy for any linear order, in particular `ℝ`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Natural numbers and integers",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "The non-negative whole numbers are referred to as natural numbers"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Nat",
+        "module": "Init.Prelude",
+        "match_kind": "exact"
+      },
+      "note": "`Nat` (core Lean, used throughout Mathlib) is the type of natural numbers; `Int` is the type of integers.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Order on the number line",
+      "anchor": {
+        "section": "The number line",
+        "snippet": "Numbers appearing farther to the right on this line are greater, while numbers appearing farther to the left are lesser"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Real.instLinearOrder",
+        "module": "Mathlib.Data.Real.Basic",
+        "match_kind": "generalization"
+      },
+      "note": "The linear order on ℝ encodes the number-line order; `lt_trichotomy` and `LinearOrder` formalize the informal left/right comparison.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Negative magnitude comparison",
+      "anchor": {
+        "section": "The number line",
+        "snippet": "a negative number with greater magnitude is considered less"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "neg_lt_neg_iff",
+        "module": "Mathlib.Algebra.Order.Group.Unbundled.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`neg_lt_neg_iff : -a < -b ↔ b < a` (and `abs_lt`) formalize that a more-negative number is smaller.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Positive in signed context",
+      "anchor": {
+        "section": "Signed numbers",
+        "snippet": "a number that is greater than zero is referred to as positive"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "neg_pos",
+        "module": "Mathlib.Algebra.Order.Group.Unbundled.Basic",
+        "match_kind": "invocation"
+      },
+      "note": "Positivity is encoded as the predicate `0 < x`; Mathlib has no `IsPositive` wrapper but uses this throughout.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Nonnegative and nonpositive",
+      "anchor": {
+        "section": "Signed numbers",
+        "snippet": "the term nonnegative is sometimes used to refer to a number that is either positive or zero"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib uses the raw predicates `0 ≤ a` and `a ≤ 0` rather than named definitions `Nonneg`/`Nonpos`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Negative as subtraction result",
+      "anchor": {
+        "section": "As the result of subtraction",
+        "snippet": "Negative numbers can be thought of as resulting from the subtraction of a larger number from a smaller"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "sub_neg_of_lt",
+        "module": "Mathlib.Algebra.Order.Group.Unbundled.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`sub_neg_of_lt : a < b → a - b < 0` is exactly this characterization.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Subtraction of larger from smaller",
+      "anchor": {
+        "section": "As the result of subtraction",
+        "snippet": "the subtraction of a larger number from a smaller yields a negative result"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "sub_neg_of_lt",
+        "module": "Mathlib.Algebra.Order.Group.Unbundled.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`sub_neg_of_lt` states precisely that `a < b` implies `a - b < 0`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Minus sign operator",
+      "anchor": {
+        "section": "Arithmetic involving negative numbers",
+        "snippet": "signifies the operator for both the binary"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Neg",
+        "module": "Mathlib.Algebra.Group.Defs",
+        "match_kind": "exact"
+      },
+      "note": "The `Neg` (unary) and `Sub` (binary) typeclasses (with `-` notation overloaded) capture both meanings of the minus sign.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Unary negation of positive",
+      "anchor": {
+        "section": "Arithmetic involving negative numbers",
+        "snippet": "A special case of unary negation occurs when it operates on a positive number"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "neg_neg_of_pos",
+        "module": "Mathlib.Algebra.Order.Group.Unbundled.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`neg_pos`/`neg_neg_of_pos` express that negating a positive number yields a negative number.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Addition of two negatives",
+      "anchor": {
+        "section": "Addition",
+        "snippet": "Addition of two negative numbers is very similar to addition of two positive numbers"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Left.add_neg",
+        "module": "Mathlib.Algebra.Order.Monoid.Unbundled.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`Left.add_neg`/`Left.add_neg_of_neg_of_nonpos` give that the sum of two negative numbers is negative.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Mixed-sign addition",
+      "anchor": {
+        "section": "Addition",
+        "snippet": "one can think of the negative numbers as positive quantities being subtracted"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "sub_eq_add_neg",
+        "module": "Mathlib.Algebra.Group.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`sub_eq_add_neg : a - b = a + -b` formalizes treating addition with negatives as subtraction.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Subtraction as adding negative",
+      "anchor": {
+        "section": "Subtraction",
+        "snippet": "subtraction of a positive number yields the same result as the addition of a negative number of equal magnitude"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "sub_eq_add_neg",
+        "module": "Mathlib.Algebra.Group.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`SubNegMonoid.sub_eq_add_neg` (and its theorem form `sub_eq_add_neg`) is exactly this identity.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Subtracting a negative",
+      "anchor": {
+        "section": "Subtraction",
+        "snippet": "subtracting a negative number yields the same result as the addition a positive number of equal magnitude"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "sub_neg_eq_add",
+        "module": "Mathlib.Algebra.Group.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`sub_neg_eq_add : a - -b = a + b` formalizes this.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Sign rules of multiplication",
+      "anchor": {
+        "section": "Multiplication",
+        "snippet": "The product of one positive number and one negative number is negative"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "mul_neg_of_pos_of_neg",
+        "module": "Mathlib.Algebra.Order.Ring.Unbundled.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`mul_neg_of_pos_of_neg`, `mul_neg_of_neg_of_pos`, `mul_pos_of_neg_of_neg`, and `mul_pos` collectively encode all sign rules of multiplication.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Sign-of-product rule",
+      "anchor": {
+        "section": "Multiplication",
+        "snippet": "the sign of any product a × b depends on the sign of a as follows"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "mul_pos_iff",
+        "module": "Mathlib.Algebra.Order.Ring.Unbundled.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`mul_pos_iff : 0 < a * b ↔ 0 < a ∧ 0 < b ∨ a < 0 ∧ b < 0` is the iff form of the sign-of-product rule.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Sign rules of division",
+      "anchor": {
+        "section": "Division",
+        "snippet": "The sign rules for division are the same as for multiplication"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "div_pos_of_neg_of_neg",
+        "module": "Mathlib.Algebra.Order.Field.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`div_pos_of_neg_of_neg`, `div_neg_of_neg_of_pos`, `div_neg_of_pos_of_neg`, and `div_pos` cover the four sign-rule cases for division.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Division sign rule",
+      "anchor": {
+        "section": "Division",
+        "snippet": "If dividend and divisor have the same sign, the result is positive"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "div_pos_iff",
+        "module": "Mathlib.Algebra.Order.Field.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`div_pos_iff : 0 < a / b ↔ 0 < a ∧ 0 < b ∨ a < 0 ∧ b < 0` precisely captures the same-sign rule for division.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Negation of a number",
+      "anchor": {
+        "section": "Negation",
+        "snippet": "The negative version of a positive number is referred to as its negation"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Neg",
+        "module": "Mathlib.Algebra.Group.Defs",
+        "match_kind": "exact"
+      },
+      "note": "The `Neg` typeclass and the unary `-` notation are the formalization of negation.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Negation is additive inverse",
+      "anchor": {
+        "section": "Negation",
+        "snippet": "the negation of a positive number is the additive inverse of the number"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "neg_add_cancel",
+        "module": "Mathlib.Algebra.Group.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`neg_add_cancel : -a + a = 0` (in any `AddGroup`) says the negation is the additive inverse.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Negation extended to all reals",
+      "anchor": {
+        "section": "Negation",
+        "snippet": "The negation of 0 is 0, and The negation of a negative number is the corresponding positive number"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "neg_neg",
+        "module": "Mathlib.Algebra.Group.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`neg_zero` and `InvolutiveNeg.neg_neg : - -x = x` give the two stated identities.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Absolute value",
+      "anchor": {
+        "section": "Negation",
+        "snippet": "The absolute value of a number is the non-negative number with the same magnitude"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "abs",
+        "module": "Mathlib.Algebra.Order.Group.Unbundled.Abs",
+        "match_kind": "exact"
+      },
+      "note": "`|a| = a ⊔ -a` is defined for `Lattice`s with `Neg`, with `abs_nonneg` confirming the nonnegativity property.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Integers as ordered pairs",
+      "anchor": {
+        "section": "Formal construction of negative integers",
+        "snippet": "by defining integers as an ordered pair of natural numbers"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib uses core Lean's `Int` (defined via `ofNat`/`negSucc`) rather than the Grothendieck pair construction `ℕ × ℕ / ~`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Equivalence relation on pairs",
+      "anchor": {
+        "section": "Formal construction of negative integers",
+        "snippet": "We define an equivalence relation ~ upon these pairs with the following rule"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The specific relation `(a,b) ~ (c,d) ↔ a + d = b + c` for the pair construction of ℤ is not in Mathlib since ℤ is defined differently.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Integers as quotient set",
+      "anchor": {
+        "section": "Formal construction of negative integers",
+        "snippet": "we identify two pairs ( a , b ) and ( c , d ) if they are equivalent in the above sense"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib's `Int` is not constructed as a quotient of `ℕ × ℕ`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Integers form a ring",
+      "anchor": {
+        "section": "Formal construction of negative integers",
+        "snippet": "equipped with these operations of addition and multiplication, is a ring"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Int.instCommRing",
+        "module": "Mathlib.Algebra.Ring.Int.Defs",
+        "match_kind": "generalization"
+      },
+      "note": "`Int.instCommRing : CommRing ℤ` shows ℤ is a (commutative) ring.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Total order on integers",
+      "anchor": {
+        "section": "Formal construction of negative integers",
+        "snippet": "We can also define a total order"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Int.instLinearOrder",
+        "module": "Mathlib.Data.Int.Order",
+        "match_kind": "exact"
+      },
+      "note": "The `LinearOrder ℤ` instance gives the total order on integers.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Additive zero, inverse, unit, subtraction",
+      "anchor": {
+        "section": "Formal construction of negative integers",
+        "snippet": "an additive zero of the form ( a , a ), an additive inverse of ( a , b ) of the form ( b , a )"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Int.instCommRing",
+        "module": "Mathlib.Algebra.Ring.Int.Defs",
+        "match_kind": "generalization"
+      },
+      "note": "The abstract structure (zero, neg, one, sub on ℤ) exists via `CommRing ℤ`, but the specific representatives in the pair construction are not used.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Uniqueness of additive inverse",
+      "anchor": {
+        "section": "Uniqueness",
+        "snippet": "The additive inverse of a number is unique"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "neg_eq_of_add_eq_zero_left",
+        "module": "Mathlib.Algebra.Group.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`neg_eq_of_add_eq_zero_left` and `neg_eq_of_add_eq_zero_right` express uniqueness of the additive inverse in any `AddGroup`.",
+      "provenance": "ai"
+    }
+  ]
+}

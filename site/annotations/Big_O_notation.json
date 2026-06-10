@@ -1,0 +1,1241 @@
+{
+  "slug": "Big_O_notation",
+  "wikipedia_title": "Big O notation",
+  "display_title": "Big O notation",
+  "schema_version": 3,
+  "annotation_style": "theorem_article",
+  "annotations": [
+    {
+      "kind": "definition",
+      "label": "Big O formal definition",
+      "anchor": {
+        "section": "Formal definition",
+        "snippet": "if there exists a positive real number"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Asymptotics.IsBigO",
+        "module": "Mathlib.Analysis.Asymptotics.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`IsBigO l f g` (lemma `isBigO_iff`) is exactly: ∃ c, eventually ‖f‖ ≤ c‖g‖, generalized to an arbitrary filter.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Formal definition",
+          "snippet": "if there exists a positive real number"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\left|f(x)\\right|\\leq M\\ g(x)\\qquad ~{\\mathsf {\\ for\\ all\\ }}~\\quad x\\in D.}"
+        }
+      ]
+    },
+    {
+      "kind": "definition",
+      "label": "Equivalent definition (bounded ratio)",
+      "anchor": {
+        "section": "Formal definition",
+        "snippet": "an equivalent definition is that the ratio"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Asymptotics.isBigO_iff_div_isBoundedUnder",
+        "module": "Mathlib.Analysis.Asymptotics.Lemmas",
+        "match_kind": "exact"
+      },
+      "note": "States f =O[l] g iff ‖f/g‖ is bounded under l, the bounded-ratio characterization.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Implied constant",
+      "anchor": {
+        "section": "Formal definition",
+        "snippet": "is called the implied constant"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Asymptotics.IsBigOWith",
+        "module": "Mathlib.Analysis.Asymptotics.Defs",
+        "match_kind": null
+      },
+      "note": "`IsBigOWith c l f g` exposes the implied constant c explicitly, but Mathlib has no named terminology for it.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Big O for eventually positive functions",
+      "anchor": {
+        "section": "Formal definition",
+        "snippet": "When restricted to functions which are eventually positive"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Asymptotics.isBigO_iff",
+        "module": "Mathlib.Analysis.Asymptotics.Defs",
+        "match_kind": null
+      },
+      "note": "Mathlib uses norms throughout, so the eventually-positive specialization (dropping absolute values) is subsumed by the general definition but not stated separately.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Formal definition",
+          "snippet": "When restricted to functions which are eventually positive"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle f(x)=O{\\bigl (}g(x){\\bigr )}\\qquad ~{\\mathsf {as}}\\quad x\\to \\infty }"
+        }
+      ]
+    },
+    {
+      "kind": "definition",
+      "label": "Big O at a point a",
+      "anchor": {
+        "section": "Formal definition",
+        "snippet": "that is, in a small neighborhood of"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Asymptotics.IsBigO",
+        "module": "Mathlib.Analysis.Asymptotics.Defs",
+        "match_kind": "generalization"
+      },
+      "note": "Big O at a point is `IsBigO` instantiated at the neighborhood filter 𝓝[≠] a, since the definition takes an arbitrary filter l.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Formal definition",
+          "snippet": "that is, in a small neighborhood of"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\ f(x)=h(x)+O{\\bigl (}g(x){\\bigr )}\\ }"
+        }
+      ]
+    },
+    {
+      "kind": "definition",
+      "label": "Vinogradov's ≪ notation",
+      "anchor": {
+        "section": "Formal definition",
+        "snippet": "introduced the notation"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Asymptotics.IsBigO",
+        "module": "Mathlib.Analysis.Asymptotics.Defs",
+        "match_kind": "exact"
+      },
+      "note": "f ≪ g means f = O(g), which is exactly `IsBigO`; Mathlib does not provide the ≪ symbol itself.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Formal definition",
+          "snippet": "introduced the notation"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\ f\\ll g\\iff f=O{\\bigl (}g{\\bigr )}.}"
+        }
+      ]
+    },
+    {
+      "kind": "definition",
+      "label": "Set version of big O",
+      "anchor": {
+        "section": "Set version of big O",
+        "snippet": "as also defining a set of functions"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Asymptotics.IsBigO",
+        "module": "Mathlib.Analysis.Asymptotics.Defs",
+        "match_kind": null
+      },
+      "note": "Mathlib formalizes big O as a Prop-valued relation `IsBigO`, not as a set O(g) of functions with set-membership/equality conventions.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Simplification rules",
+      "anchor": {
+        "section": "Examples with an infinite domain",
+        "snippet": "the following simplification rules can be applied"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Asymptotics.IsBigO.add",
+        "module": "Mathlib.Analysis.Asymptotics.Defs",
+        "match_kind": null
+      },
+      "note": "Individual rules exist as separate lemmas (`IsBigO.add`, `IsBigO.const_mul_left`, `IsBigO.mul`), but there is no single bundled 'simplification rules' statement.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Polynomial growth-rate example",
+      "anchor": {
+        "section": "Examples with an infinite domain",
+        "snippet": "and suppose we wish to simplify this function"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Polynomial.isEquivalent_atTop_lead",
+        "module": "Mathlib.Analysis.Polynomial.Basic",
+        "match_kind": "special_case"
+      },
+      "note": "A polynomial is asymptotically equivalent to its leading term at infinity, of which the example is a special case.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Examples with an infinite domain",
+          "snippet": "and suppose we wish to simplify this function"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle |f(x)|\\leq Mx^{4}}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle {\\begin{aligned}|6x^{4}-2x^{3}+5|&amp;\\leq 6x^{4}+|-2x^{3}|+5\\\\&amp;\\leq 6x^{4}+2x^{4}+5x^{4}\\\\&amp;=13x^{4}\\end{aligned}}}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle |6x^{4}-2x^{3}+5|\\leq 13x^{4}.}"
+        }
+      ]
+    },
+    {
+      "kind": "example",
+      "label": "Time complexity interpretation",
+      "anchor": {
+        "section": "Examples with an infinite domain",
+        "snippet": "describes the number of steps required in an algorithm with input"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This is an informal interpretation of big O as algorithmic step count, not a formalizable mathematical statement.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Examples with an infinite domain",
+          "snippet": "describes the number of steps required in an algorithm with input"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle T(n)=O(n^{2})}"
+        }
+      ]
+    },
+    {
+      "kind": "example",
+      "label": "Exponential series error term",
+      "anchor": {
+        "section": "Example with a finite domain",
+        "snippet": "the exponential series and two expressions of it that are valid when"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "An illustrative numeric example of error terms in the exponential series over a finite domain, not a stated theorem.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Example with a finite domain",
+          "snippet": "the exponential series and two expressions of it that are valid when"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle {\\begin{aligned}e^{x}&amp;=1+x+{\\frac {\\;x^{2}\\ }{2!}}+{\\frac {\\;x^{3}\\ }{3!}}+{\\frac {\\;x^{4}\\ }{4!}}+\\dotsb &amp;&amp;{\\text{ for all finite }}x\\\\[4pt]&amp;=1+x+{\\frac {\\;x^{2}\\ }{2}}+O(|x|^{3})&amp;&amp;{\\text{ for all }}|x|\\leq 1\\\\[4pt]&amp;=1+x+O(x^{2})&amp;&amp;{\\text{ for all }}|x|\\leq 1.\\end{aligned}}}"
+        }
+      ]
+    },
+    {
+      "kind": "example",
+      "label": "Finite vs infinite domain behavior",
+      "anchor": {
+        "section": "Example with a finite domain",
+        "snippet": "may be very different on finite domains than on infinite domains"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "A prose remark contrasting big O behavior on finite versus infinite domains; not a formal statement.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Example with a finite domain",
+          "snippet": "may be very different on finite domains than on infinite domains"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle (x+1)^{8}=x^{8}+O(x^{7})\\quad {\\text{ for }}x\\geq 1}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle (x+1)^{8}=1+8x+O(x^{2})\\quad {\\text{ for }}|x|\\leq 1.}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Bounded functions are O(1)",
+      "anchor": {
+        "section": "Multivariate examples",
+        "snippet": "any bounded function is"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Filter.IsBoundedUnder.isBigO_one",
+        "module": "Mathlib.Analysis.Asymptotics.Lemmas",
+        "match_kind": "exact"
+      },
+      "note": "A function bounded under l is O(1), via `isBigO_one_iff`/`IsBoundedUnder.isBigO_one`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Subscripted constant (binomial theorem)",
+      "anchor": {
+        "section": "Multivariate examples",
+        "snippet": "This particular statement follows from the general binomial theorem"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "An illustrative example where the implied constant depends on a parameter; not formalized as a big-O statement.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Multivariate examples",
+          "snippet": "This particular statement follows from the general binomial theorem"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle |(1+x)^{b}-1|\\leq M_{b}\\cdot x.}"
+        }
+      ]
+    },
+    {
+      "kind": "example",
+      "label": "Taylor series implied constant",
+      "anchor": {
+        "section": "Multivariate examples",
+        "snippet": "common in the theory of Taylor series"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "A remark about implied constants arising in Taylor series, not a specific formalizable statement.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Multivariate examples",
+          "snippet": "common in the theory of Taylor series"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle e^{x}=1+x+O_{r}(x^{2})\\quad {\\text{ for all }}|x|\\leq r,r{\\text{ being any real number.}}}"
+        }
+      ]
+    },
+    {
+      "kind": "example",
+      "label": "Mixing finite and infinite domains",
+      "anchor": {
+        "section": "Multivariate examples",
+        "snippet": "illustrates a mixing of finite and infinite domains"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "A prose example about multivariate big O combining finite and infinite domains; not a formal statement.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Sum rule",
+      "anchor": {
+        "section": "Sum",
+        "snippet": "It follows that if"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Asymptotics.IsBigO.add",
+        "module": "Mathlib.Analysis.Asymptotics.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`IsBigO.add` gives f₁ =O[l] g and f₂ =O[l] g imply f₁+f₂ =O[l] g.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Multiplication by a constant",
+      "anchor": {
+        "section": "Multiplication by a constant",
+        "snippet": "Let k be a nonzero constant"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Asymptotics.IsBigO.const_mul_left",
+        "module": "Mathlib.Analysis.Asymptotics.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`IsBigO.const_mul_left` (with `isBigO_const_mul_left_iff`) shows scaling by a constant preserves big O.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Transitive property",
+      "anchor": {
+        "section": "Transitive property",
+        "snippet": "then"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Asymptotics.IsBigO.trans",
+        "module": "Mathlib.Analysis.Asymptotics.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`IsBigO.trans` states f =O[l] g and g =O[l] k imply f =O[l] k.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Finite sum determines order",
+      "anchor": {
+        "section": "Transitive property",
+        "snippet": "can be written as a finite sum of other functions"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Asymptotics.IsBigO.add",
+        "module": "Mathlib.Analysis.Asymptotics.Defs",
+        "match_kind": null
+      },
+      "note": "Big O of a sum follows from `IsBigO.add`, but the statement that the fastest-growing summand determines the order is not a single Mathlib lemma.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Large powers dominate small powers",
+      "anchor": {
+        "section": "Large powers dominate small powers",
+        "snippet": "as"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Asymptotics.isLittleO_pow_pow_atTop_of_lt",
+        "module": "Mathlib.Analysis.Asymptotics.SpecificAsymptotics",
+        "match_kind": "exact"
+      },
+      "note": "For p < q, xᵖ =o[atTop] xᵠ, i.e. larger powers dominate.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Large powers dominate small powers",
+          "snippet": "as"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle n^{a}=O(n^{b})}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Powers dominate logarithms",
+      "anchor": {
+        "section": "Powers dominate logarithms",
+        "snippet": "no matter how large"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "isLittleO_log_rpow_atTop",
+        "module": "Mathlib.Analysis.SpecialFunctions.Pow.Asymptotics",
+        "match_kind": "exact"
+      },
+      "note": "`isLittleO_log_rpow_atTop` states log =o[atTop] xʳ for any r > 0.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Powers dominate logarithms",
+          "snippet": "no matter how large"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle (\\log n)^{a}=O_{a,b}(n^{b}),}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Exponentials dominate powers",
+      "anchor": {
+        "section": "Exponentials dominate powers",
+        "snippet": "no matter how large"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "isLittleO_rpow_exp_atTop",
+        "module": "Mathlib.Analysis.SpecialFunctions.Pow.Asymptotics",
+        "match_kind": "exact"
+      },
+      "note": "`isLittleO_rpow_exp_atTop` states xˢ =o[atTop] exp for any s.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Exponentials dominate powers",
+          "snippet": "no matter how large"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle n^{a}=O_{a,b}(e^{bn}),}"
+        }
+      ]
+    },
+    {
+      "kind": "definition",
+      "label": "Superpolynomial and subexponential",
+      "anchor": {
+        "section": "Exponentials dominate powers",
+        "snippet": "is called superpolynomial"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Asymptotics.SuperpolynomialDecay",
+        "module": "Mathlib.Analysis.Asymptotics.SuperpolynomialDecay",
+        "match_kind": null
+      },
+      "note": "Mathlib defines `SuperpolynomialDecay` (decaying faster than any polynomial), the dual of the superpolynomial-growth/subexponential terminology, which is not itself named.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Ignoring powers inside logarithms",
+      "anchor": {
+        "section": "Exponentials dominate powers",
+        "snippet": "We may ignore any powers of"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Real.log_rpow",
+        "module": "Mathlib.Analysis.SpecialFunctions.Pow.Real",
+        "match_kind": null
+      },
+      "note": "log(xʳ) = r·log x (`Real.log_rpow`/`Real.log_pow`) implies log(xᵏ) = Θ(log x), but the asymptotic restatement is not a dedicated lemma.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Logs with different bases equivalent",
+      "anchor": {
+        "section": "Exponentials dominate powers",
+        "snippet": "logs with different constant bases are equivalent"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Real.logb",
+        "module": "Mathlib.Analysis.SpecialFunctions.Log.Base",
+        "match_kind": null
+      },
+      "note": "`Real.logb b x = log x / log b` shows logs of different bases differ by a constant factor, but their Θ-equivalence is not stated as an asymptotics lemma.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Exponentials with different bases differ",
+      "anchor": {
+        "section": "Exponentials dominate powers",
+        "snippet": "exponentials with different bases are not of the same order"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "isLittleO_pow_pow_of_lt_left",
+        "module": "Mathlib.Analysis.SpecificLimits.Normed",
+        "match_kind": "exact"
+      },
+      "note": "For 0 ≤ r₁ < r₂, r₁ⁿ =o[atTop] r₂ⁿ, so exponentials with different bases are of different order.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "O appearing in multiple places",
+      "anchor": {
+        "section": "More complicated expressions",
+        "snippet": "can appear in different places in an equation"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "A discussion of the notational convention of O appearing in multiple places of an equation; not a formal statement.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "More complicated expressions",
+          "snippet": "can appear in different places in an equation"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle {\\begin{aligned}(n+1)^{2}&amp;=n^{2}+O(n),\\\\(n+O(n^{1/2}))\\cdot (n+O(\\log n))^{2}&amp;=n^{3}+O(n^{5/2}),\\\\n^{O(1)}&amp;=O(e^{n}).\\end{aligned}}}"
+        }
+      ]
+    },
+    {
+      "kind": "definition",
+      "label": "Vinogradov's ≫ notation",
+      "anchor": {
+        "section": "Vinogradov's ≫ and Knuth's big Ω",
+        "snippet": "are both positive functions"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Asymptotics.IsBigO",
+        "module": "Mathlib.Analysis.Asymptotics.Defs",
+        "match_kind": "exact"
+      },
+      "note": "f ≫ g means g = O(f), exactly `IsBigO l g f`; the ≫ symbol is not provided.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Vinogradov's ≫ and Knuth's big Ω",
+          "snippet": "are both positive functions"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle f(x)\\ll g(x)\\Longleftrightarrow g(x)\\gg f(x).}"
+        }
+      ]
+    },
+    {
+      "kind": "definition",
+      "label": "Knuth's big Ω",
+      "anchor": {
+        "section": "Vinogradov's ≫ and Knuth's big Ω",
+        "snippet": "which has the same meaning as Vinogradov's"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Asymptotics.IsBigO",
+        "module": "Mathlib.Analysis.Asymptotics.Defs",
+        "match_kind": "exact"
+      },
+      "note": "Knuth's Ω (lower bound, same as Vinogradov ≫) is g = O(f), i.e. `IsBigO` with arguments swapped; distinct from the Hardy–Littlewood Ω which is absent.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Hardy's ≍ and Knuth's big Θ",
+      "anchor": {
+        "section": "Hardy's ≍ and Knuth's big Θ",
+        "snippet": "means both"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Asymptotics.IsTheta",
+        "module": "Mathlib.Analysis.Asymptotics.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`IsTheta l f g` is defined as f =O[l] g ∧ g =O[l] f, matching ≍/big Θ.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Hardy's ≍ and Knuth's big Θ",
+          "snippet": "means both"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle Ng(x)\\leq f(x)\\leq Mg(x)}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle 2n^{2}-10n=\\Theta (n^{2})}"
+        }
+      ]
+    },
+    {
+      "kind": "example",
+      "label": "Order true on reals but not integers",
+      "anchor": {
+        "section": "Hardy's ≍ and Knuth's big Θ",
+        "snippet": "but false if the domain is all positive integers"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "An illustrative counterexample about domain dependence (reals vs integers); not a formalized statement.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Hardy's ≍ and Knuth's big Θ",
+          "snippet": "but false if the domain is all positive integers"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle Ng(x)\\leq f(x)\\leq Mg(x)}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle 2n^{2}-10n=\\Theta (n^{2})}"
+        }
+      ]
+    },
+    {
+      "kind": "definition",
+      "label": "Meanings of Ω, ≫, Θ notations",
+      "anchor": {
+        "section": "Further examples",
+        "snippet": "By contrast"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Asymptotics.IsTheta",
+        "module": "Mathlib.Analysis.Asymptotics.Defs",
+        "match_kind": null
+      },
+      "note": "Θ (`IsTheta`) and ≫ (`IsBigO`) are formalized, but the Hardy–Littlewood Ω meaning is not present in Mathlib.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Further examples",
+          "snippet": "By contrast"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle f(n)=e^{\\Omega (n)}\\quad {\\text{ for all }}n\\geq 1,}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle f(n)=e^{-O(n)}\\quad {\\text{ for all }}n\\geq 1,}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle f(n)=e^{\\Theta (n)}\\quad {\\text{ for all }}n\\geq 1,}"
+        }
+      ]
+    },
+    {
+      "kind": "example",
+      "label": "Statements over a domain",
+      "anchor": {
+        "section": "Further examples",
+        "snippet": "each statement being for all"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "A prose remark about reading asymptotic statements as holding for all sufficiently large arguments; not a formal statement.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Further examples",
+          "snippet": "each statement being for all"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle f(x)=g(x)+O(1)\\Longleftrightarrow e^{f(x)}\\asymp e^{g(x)},}"
+        }
+      ]
+    },
+    {
+      "kind": "example",
+      "label": "Weakening Θ to O",
+      "anchor": {
+        "section": "Orders of common functions",
+        "snippet": "is sometimes weakened to"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Asymptotics.IsTheta.isBigO",
+        "module": "Mathlib.Analysis.Asymptotics.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`IsTheta.isBigO` shows f =Θ[l] g implies f =O[l] g, i.e. weakening Θ to O.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Little-o notation",
+      "anchor": {
+        "section": "Little-o notation",
+        "snippet": "for every positive constant"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Asymptotics.IsLittleO",
+        "module": "Mathlib.Analysis.Asymptotics.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`IsLittleO l f g` is defined as: for every c > 0, eventually ‖f‖ ≤ c‖g‖.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Little-o notation",
+          "snippet": "for every positive constant"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\lim _{x\\to \\infty }{\\frac {f(x)}{g(x)}}=0.}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Little-o implies big-O",
+      "anchor": {
+        "section": "Little-o notation",
+        "snippet": "every function that is little-o of"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Asymptotics.IsLittleO.isBigO",
+        "module": "Mathlib.Analysis.Asymptotics.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`IsLittleO.isBigO` states f =o[l] g implies f =O[l] g.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Little-o arithmetic operations",
+      "anchor": {
+        "section": "Little-o notation",
+        "snippet": "Little-o respects a number of arithmetic operations"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Asymptotics.IsLittleO.add",
+        "module": "Mathlib.Analysis.Asymptotics.Defs",
+        "match_kind": "exact"
+      },
+      "note": "Little-o respects sums and products via `IsLittleO.add`, `IsLittleO.mul`, etc.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Little-o transitivity",
+      "anchor": {
+        "section": "Little-o notation",
+        "snippet": "It also satisfies a transitivity relation"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Asymptotics.IsLittleO.trans",
+        "module": "Mathlib.Analysis.Asymptotics.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`IsLittleO.trans` gives f =o[l] g and g =o[l] k imply f =o[l] k.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Little-o finite case",
+      "anchor": {
+        "section": "Little-o notation",
+        "snippet": "can also be generalized to the finite case"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Asymptotics.IsLittleO",
+        "module": "Mathlib.Analysis.Asymptotics.Defs",
+        "match_kind": "generalization"
+      },
+      "note": "Little-o at a finite point is `IsLittleO` at a neighborhood filter, since the definition takes an arbitrary filter.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Little-o notation",
+          "snippet": "can also be generalized to the finite case"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\lim _{x\\to x_{0}}{\\frac {f(x)}{g(x)}}=0.}"
+        }
+      ]
+    },
+    {
+      "kind": "example",
+      "label": "Limits via Taylor series",
+      "anchor": {
+        "section": "Little-o notation",
+        "snippet": "especially useful in the computation of limits using Taylor series"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "A remark about using little-o for limit computations with Taylor series; an application rather than a formal statement.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Asymptotic equivalence ~",
+      "anchor": {
+        "section": "Asymptotic notation",
+        "snippet": "A relation related to little-o is the asymptotic notation"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Asymptotics.IsEquivalent",
+        "module": "Mathlib.Analysis.Asymptotics.AsymptoticEquivalent",
+        "match_kind": "exact"
+      },
+      "note": "`IsEquivalent l u v` (notation u ~[l] v) is defined as u - v =o[l] v.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Asymptotic notation",
+          "snippet": "A relation related to little-o is the asymptotic notation"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle f(x)\\sim g(x)\\quad {\\text{ as }}x\\to \\infty }"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\lim _{x\\to \\infty }{\\frac {f(x)}{g(x)}}=1.}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "~ is an equivalence relation",
+      "anchor": {
+        "section": "Asymptotic notation",
+        "snippet": "forms an equivalence relation"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Asymptotics.IsEquivalent.trans",
+        "module": "Mathlib.Analysis.Asymptotics.AsymptoticEquivalent",
+        "match_kind": "exact"
+      },
+      "note": "Reflexivity, symmetry and transitivity are given by `IsEquivalent.refl/.symm/.trans`.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Asymptotic notation",
+          "snippet": "forms an equivalence relation"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle f(x)\\sim g(x)\\quad {\\text{ as }}x\\to \\infty }"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\lim _{x\\to \\infty }{\\frac {f(x)}{g(x)}}=1.}"
+        }
+      ]
+    },
+    {
+      "kind": "theorem",
+      "label": "Stirling's formula",
+      "anchor": {
+        "section": "Asymptotic notation",
+        "snippet": "is Stirling's formula"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Stirling.factorial_isEquivalent_stirling",
+        "module": "Mathlib.Analysis.SpecialFunctions.Stirling",
+        "match_kind": "exact"
+      },
+      "note": "`factorial_isEquivalent_stirling` states n! ~[atTop] √(2πn)·(n/e)ⁿ.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Asymptotic notation",
+          "snippet": "is Stirling's formula"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle n!\\sim {\\bigg (}{\\frac {n}{e}}{\\bigg )}^{n}{\\sqrt {2\\pi n}}\\quad {\\text{ as }}n\\to \\infty .}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\pi (x)\\sim {\\frac {x}{\\log x}}\\quad {\\text{ as }}x\\to \\infty ,}"
+        }
+      ]
+    },
+    {
+      "kind": "theorem",
+      "label": "Prime number theorem",
+      "anchor": {
+        "section": "Asymptotic notation",
+        "snippet": "the famous prime number theorem states that"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The asymptotic π(x) ~ x/log x is not in Mathlib; only the prime-counting function and Chebyshev-type bounds exist.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Asymptotic notation",
+          "snippet": "the famous prime number theorem states that"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle n!\\sim {\\bigg (}{\\frac {n}{e}}{\\bigg )}^{n}{\\sqrt {2\\pi n}}\\quad {\\text{ as }}n\\to \\infty .}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\pi (x)\\sim {\\frac {x}{\\log x}}\\quad {\\text{ as }}x\\to \\infty ,}"
+        }
+      ]
+    },
+    {
+      "kind": "example",
+      "label": "Asymptotic with finite limits",
+      "anchor": {
+        "section": "Asymptotic notation",
+        "snippet": "there is a version with finite limits"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Asymptotics.IsEquivalent",
+        "module": "Mathlib.Analysis.Asymptotics.AsymptoticEquivalent",
+        "match_kind": "generalization"
+      },
+      "note": "`IsEquivalent` at a neighborhood filter (with `isEquivalent_iff_tendsto_one`) gives the finite-limit version of ~.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Asymptotic notation",
+          "snippet": "there is a version with finite limits"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\sin x\\sim x\\quad {\\text{ as }}x\\to 0.}"
+        }
+      ]
+    },
+    {
+      "kind": "example",
+      "label": "Riemann zeta property",
+      "anchor": {
+        "section": "Asymptotic notation",
+        "snippet": "is a basic property of the Riemann zeta function"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "isBigO_riemannZeta_sub_one_div",
+        "module": "Mathlib.NumberTheory.Harmonic.ZetaAsymp",
+        "match_kind": "exact"
+      },
+      "note": "`isBigO_riemannZeta_sub_one_div` (with `tendsto_riemannZeta_sub_one_div`) captures ζ(s) ~ 1/(s−1) near s = 1.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Asymptotic notation",
+          "snippet": "is a basic property of the Riemann zeta function"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle x^{a}=o_{a,b}(e^{bx})\\quad {\\text{ as }}x\\to \\infty ,{\\text{ for any positive constants }}a,b,}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle f(x)=g(x)+o(1)\\quad \\Longleftrightarrow \\quad e^{f(x)}\\sim e^{g(x)}\\quad (x\\to \\infty ).}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\sum _{n=1}^{\\infty }{\\frac {1}{n^{s}}}\\sim {\\frac {1}{s-1}}\\quad (s\\to 1^{+}).}"
+        }
+      ]
+    },
+    {
+      "kind": "definition",
+      "label": "Knuth's little ω",
+      "anchor": {
+        "section": "Knuth's little 𝜔",
+        "snippet": "For eventually positive, real valued functions"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Asymptotics.IsLittleO",
+        "module": "Mathlib.Analysis.Asymptotics.Defs",
+        "match_kind": null
+      },
+      "note": "f = ω(g) means g = o(f), expressible as `IsLittleO l g f`, but Mathlib has no dedicated little-omega notation.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Knuth's little 𝜔",
+          "snippet": "For eventually positive, real valued functions"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle f(x)=\\omega (g(x))\\quad {\\text{ as }}x\\to \\infty }"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\lim _{x\\to \\infty }{\\frac {f(x)}{g(x)}}=\\infty .}"
+        }
+      ]
+    },
+    {
+      "kind": "definition",
+      "label": "Hardy–Littlewood Ω (1914)",
+      "anchor": {
+        "section": "The Hardy–Littlewood Ω notation",
+        "snippet": "introduced the new symbol"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The negation-of-little-o lower bound Ω (limsup |f/g| > 0) is not defined in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Hardy–Littlewood Ω+ and Ω− (1916)",
+      "anchor": {
+        "section": "The Hardy–Littlewood Ω notation",
+        "snippet": "introduced the two new symbols"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The one-sided Hardy–Littlewood Ω₊ and Ω₋ notions are not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Ω and asymptotic examples",
+      "anchor": {
+        "section": "Simple examples",
+        "snippet": "means that the left side is both"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Examples involving the Hardy–Littlewood Ω notation, which is not present in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Big O used as tight bound",
+      "anchor": {
+        "section": "Quality of approximations using different notation",
+        "snippet": "to describe an asymptotic tight bound"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "A usage remark about informally writing O where Θ is meant; not a formal statement.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Soft-O notation",
+      "anchor": {
+        "section": "Extensions to the Bachmann–Landau notations",
+        "snippet": "which hides polylogarithmic factors"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Soft-O (Õ, hiding polylogarithmic factors) is not defined in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "L notation",
+      "anchor": {
+        "section": "Extensions to the Bachmann–Landau notations",
+        "snippet": "is convenient for functions that are between polynomial and exponential"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The L-notation Lₙ[α,c] for sub-exponential complexity is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Generalization to normed vector spaces",
+      "anchor": {
+        "section": "Generalizations and related usages",
+        "snippet": "taking values in any normed vector space is straightforward"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Asymptotics.IsBigO",
+        "module": "Mathlib.Analysis.Asymptotics.Defs",
+        "match_kind": "generalization"
+      },
+      "note": "`IsBigO` already allows codomains with any norm (normed/seminormed spaces), so this generalization is the default setting.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Asymptotic equivalence (general)",
+      "anchor": {
+        "section": "Generalizations and related usages",
+        "snippet": "which is an equivalence relation and a more restrictive notion"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Asymptotics.IsEquivalent",
+        "module": "Mathlib.Analysis.Asymptotics.AsymptoticEquivalent",
+        "match_kind": "exact"
+      },
+      "note": "`IsEquivalent` is the equivalence relation u − v =o[l] v, more restrictive than Θ, exactly as described.",
+      "provenance": "ai"
+    }
+  ]
+}

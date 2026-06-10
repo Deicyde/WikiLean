@@ -1,0 +1,350 @@
+{
+  "slug": "Nondeterministic_finite_automaton",
+  "wikipedia_title": "Nondeterministic finite automaton",
+  "display_title": "Nondeterministic finite automaton",
+  "schema_version": 3,
+  "annotations": [
+    {
+      "kind": "definition",
+      "label": "Deterministic finite automaton (DFA)",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "is called a deterministic finite automaton"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "definition",
+      "label": "Nondeterministic finite automaton (NFA)",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "does not need to obey these restrictions"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "proposition",
+      "label": "Every DFA is an NFA",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "every DFA is also an NFA"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "proposition",
+      "label": "Subset construction yields equivalent DFA",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "each NFA can be translated to an equivalent DFA"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "proposition",
+      "label": "NFAs recognize only regular languages",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "NFAs only recognize regular languages"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "definition",
+      "label": "NFA as a 5-tuple",
+      "anchor": {
+        "section": "Automaton",
+        "snippet": "An NFA is represented formally by a 5- tuple"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "definition",
+      "label": "Recognized language of an NFA",
+      "anchor": {
+        "section": "Recognized language",
+        "snippet": "its recognized language is denoted by"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "definition",
+      "label": "Acceptance via state sequence",
+      "anchor": {
+        "section": "Recognized language",
+        "snippet": "there are several equivalent formal definitions of a string"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "definition",
+      "label": "Acceptance via recursive reachable-set definition",
+      "anchor": {
+        "section": "Recognized language",
+        "snippet": "is defined recursively by"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "proposition",
+      "label": "Multiple initial states reducible to single initial state",
+      "anchor": {
+        "section": "Initial state",
+        "snippet": "There is an easy construction that translates an NFA with multiple initial states to an NFA with a single initial state"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "example",
+      "label": "NFA M accepting strings ending in 1",
+      "anchor": {
+        "section": "Example",
+        "snippet": "determines if the input ends with a 1"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "proposition",
+      "label": "DFA is a special kind of NFA",
+      "anchor": {
+        "section": "Equivalence to DFA",
+        "snippet": "can be seen as a special kind of NFA"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "theorem",
+      "label": "Every NFA has an equivalent DFA (powerset construction)",
+      "anchor": {
+        "section": "Equivalence to DFA",
+        "snippet": "for each NFA, there is a DFA such that it recognizes the same formal language"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "proposition",
+      "label": "Exponential state blowup of powerset construction",
+      "anchor": {
+        "section": "Equivalence to DFA",
+        "snippet": "the resulting DFA may have up to 2 n states"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "definition",
+      "label": "NFA with ε-moves (NFA-ε)",
+      "anchor": {
+        "section": "NFA with ε-moves",
+        "snippet": "is a further generalization to NFA"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "definition",
+      "label": "NFA-ε as a 5-tuple",
+      "anchor": {
+        "section": "Formal definition (2)",
+        "snippet": "An NFA-ε is represented formally by a 5- tuple"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "definition",
+      "label": "ε-closure of a state",
+      "anchor": {
+        "section": "ε-closure of a state or set of states",
+        "snippet": "denote the set of states that are reachable from"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "definition",
+      "label": "ε-closure of a set of states",
+      "anchor": {
+        "section": "ε-closure of a state or set of states",
+        "snippet": "of states of an NFA is defined as the set of states reachable from any state in"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "definition",
+      "label": "Extended transition function of NFA-ε",
+      "anchor": {
+        "section": "Extended transition function",
+        "snippet": "of an NFA-ε can be extended to strings"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "definition",
+      "label": "Acceptance by an NFA-ε",
+      "anchor": {
+        "section": "Extended transition function",
+        "snippet": "The automaton is said to accept a string"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "example",
+      "label": "NFA-ε for even number of 0s or 1s",
+      "anchor": {
+        "section": "Example (2)",
+        "snippet": "that determines if the input contains an even number of 0s or an even number of 1s"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "theorem",
+      "label": "Every NFA-ε has an equivalent NFA",
+      "anchor": {
+        "section": "Equivalence to NFA",
+        "snippet": "for every NFA-ε, there exists an equivalent NFA"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "proposition",
+      "label": "Equality of extended transition functions by induction",
+      "anchor": {
+        "section": "Equivalence to NFA",
+        "snippet": "by induction on the length of"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "proposition",
+      "label": "NFA-ε is equivalent to DFA",
+      "anchor": {
+        "section": "Equivalence to NFA",
+        "snippet": "NFA-ε is also equivalent to DFA"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "theorem",
+      "label": "NFA-recognized languages closed under operations",
+      "anchor": {
+        "section": "Closure properties",
+        "snippet": "The set of languages recognized by NFAs is closed under the following operations"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "proposition",
+      "label": "Closure under union",
+      "anchor": {
+        "section": "Closure properties",
+        "snippet": "an NFA A u can be constructed that accepts the language"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "proposition",
+      "label": "Closure under intersection",
+      "anchor": {
+        "section": "Closure properties",
+        "snippet": "an NFA A i can be constructed that accepts"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "proposition",
+      "label": "Closure under concatenation",
+      "anchor": {
+        "section": "Closure properties",
+        "snippet": "Concatenation"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "proposition",
+      "label": "Closure under negation",
+      "anchor": {
+        "section": "Closure properties",
+        "snippet": "an NFA A n can be constructed that accepts"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "proposition",
+      "label": "Closure under Kleene closure",
+      "anchor": {
+        "section": "Closure properties",
+        "snippet": "Kleene closure"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "proposition",
+      "label": "Language accepted by an NFA is regular",
+      "anchor": {
+        "section": "Properties",
+        "snippet": "This language is a regular language"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "proposition",
+      "label": "Every NFA has an equivalent DFA",
+      "anchor": {
+        "section": "Properties",
+        "snippet": "For every NFA a deterministic finite automaton (DFA) can be found that accepts the same language"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "proposition",
+      "label": "Time and space bound for NFA simulation",
+      "anchor": {
+        "section": "Implementation",
+        "snippet": "A string of length n can be processed in time"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "proposition",
+      "label": "Emptiness problem solvable in linear time",
+      "anchor": {
+        "section": "Complexity",
+        "snippet": "One can solve in linear time the emptiness problem for NFA"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "theorem",
+      "label": "Universality of NFA is PSPACE-complete",
+      "anchor": {
+        "section": "Complexity",
+        "snippet": "It is PSPACE -complete to test, given an NFA, whether it is universal"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "proposition",
+      "label": "Inclusion problem is PSPACE-complete",
+      "anchor": {
+        "section": "Complexity",
+        "snippet": "the same is true of the inclusion problem"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "theorem",
+      "label": "Counting accepted words is #P-hard",
+      "anchor": {
+        "section": "Complexity",
+        "snippet": "the counting problem of determining how many words of length n are accepted by A is intractable"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "proposition",
+      "label": "NFAs and DFAs are equivalent",
+      "anchor": {
+        "section": "Application of NFA",
+        "snippet": "NFAs and DFAs are equivalent in that if a language is recognized by an NFA"
+      },
+      "provenance": "ai-agent1"
+    }
+  ]
+}

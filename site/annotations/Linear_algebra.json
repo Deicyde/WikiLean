@@ -1,0 +1,1081 @@
+{
+  "slug": "Linear_algebra",
+  "wikipedia_title": "Linear algebra",
+  "display_title": "Linear algebra",
+  "schema_version": 3,
+  "annotation_style": "theorem_article",
+  "annotations": [
+    {
+      "kind": "definition",
+      "label": "Vector space",
+      "anchor": {
+        "section": "Vector spaces",
+        "snippet": "is a set V equipped with two binary operations"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Module",
+        "module": "Mathlib.Algebra.Module.Defs",
+        "match_kind": "special_case"
+      },
+      "note": "A vector space is `Module K M` over a field; Mathlib has no separate vector-space type, using `Module` over an arbitrary semiring.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Vector space axioms",
+      "anchor": {
+        "section": "Vector spaces",
+        "snippet": "The axioms that addition and scalar multiplication must satisfy are the following"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Module",
+        "module": "Mathlib.Algebra.Module.Defs",
+        "match_kind": "exact"
+      },
+      "note": "The distributivity/associativity/unit axioms are exactly the fields of the `Module` class (together with `AddCommMonoid`).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Vectors form an abelian group",
+      "anchor": {
+        "section": "Vector spaces",
+        "snippet": "The first four axioms mean that V is an abelian group under addition."
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "AddCommGroup",
+        "module": "Mathlib.Algebra.Group.Defs",
+        "match_kind": "exact"
+      },
+      "note": "Vectors forming an abelian group under addition is the `AddCommGroup` typeclass required of a vector space.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Linear map",
+      "anchor": {
+        "section": "Linear maps",
+        "snippet": "Linear maps are mappings between vector spaces that preserve the vector-space structure"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "LinearMap",
+        "module": "Mathlib.Algebra.Module.LinearMap.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`LinearMap` is the structure of structure-preserving maps with fields `map_add` and `map_smul`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Equivalent linearity condition",
+      "anchor": {
+        "section": "Linear maps",
+        "snippet": "An equivalent condition is that"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "LinearMap",
+        "module": "Mathlib.Algebra.Module.LinearMap.Defs",
+        "match_kind": "generalization"
+      },
+      "note": "Mathlib's `LinearMap` uses the equivalent two-axiom form (`map_add` and `map_smul`) rather than the single combined condition f(ax+y)=a f(x)+f(y).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Linear operator",
+      "anchor": {
+        "section": "Linear maps",
+        "snippet": "is also known as a linear operator on"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Module.End",
+        "module": "Mathlib.Algebra.Module.LinearMap.End",
+        "match_kind": "exact"
+      },
+      "note": "`Module.End R M` is the type of linear maps from M to itself, i.e. linear operators.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Isomorphism, kernel and image",
+      "anchor": {
+        "section": "Linear maps",
+        "snippet": "A bijective linear map between two vector spaces"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "LinearEquiv",
+        "module": "Mathlib.Algebra.Module.Equiv.Defs",
+        "match_kind": "exact"
+      },
+      "note": "Bijective linear maps are `LinearEquiv`; kernel and image are `LinearMap.ker` and `LinearMap.range`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Linear subspace",
+      "anchor": {
+        "section": "Subspaces, span, and basis",
+        "snippet": "These subsets are called linear subspaces"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Submodule",
+        "module": "Mathlib.Algebra.Module.Submodule.Defs",
+        "match_kind": "generalization"
+      },
+      "note": "Linear subspaces are `Submodule`s (defined over general rings, specializing to subspaces over fields).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Image and kernel are subspaces",
+      "anchor": {
+        "section": "Subspaces, span, and basis",
+        "snippet": "For example, given a linear map"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "LinearMap.range",
+        "module": "Mathlib.Algebra.Module.Submodule.Range",
+        "match_kind": "exact"
+      },
+      "note": "`LinearMap.range` and `LinearMap.ker` are defined directly as `Submodule`s.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Span of a set",
+      "anchor": {
+        "section": "Subspaces, span, and basis",
+        "snippet": "form a linear subspace called the span of"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Submodule.span",
+        "module": "Mathlib.LinearAlgebra.Span.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`Submodule.span R s` is the smallest submodule containing s.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Linear independence",
+      "anchor": {
+        "section": "Subspaces, span, and basis",
+        "snippet": "A set of vectors is linearly independent if none is in the span of the others"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "LinearIndependent",
+        "module": "Mathlib.LinearAlgebra.LinearIndependent.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`LinearIndependent R v` formalizes linear independence of an indexed family.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Spanning set and basis",
+      "anchor": {
+        "section": "Subspaces, span, and basis",
+        "snippet": "A set of vectors that spans a vector space is called a spanning set or generating set"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Basis",
+        "module": "Mathlib.LinearAlgebra.Basis.Defs",
+        "match_kind": "exact"
+      },
+      "note": "A basis is `Basis`; spanning means `Submodule.span R s = ⊤`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Basis between independent and spanning sets",
+      "anchor": {
+        "section": "Subspaces, span, and basis",
+        "snippet": "More precisely, if S is a linearly independent set"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Basis.extend",
+        "module": "Mathlib.LinearAlgebra.Basis.VectorSpace",
+        "match_kind": "exact"
+      },
+      "note": "`Basis.extend`/`Basis.extendLe` extend a linearly independent set to a basis contained in a spanning set.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Dimension theorem for vector spaces",
+      "anchor": {
+        "section": "Subspaces, span, and basis",
+        "snippet": "this is the dimension theorem for vector spaces"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "mk_eq_mk_of_basis",
+        "module": "Mathlib.LinearAlgebra.Dimension.StrongRankCondition",
+        "match_kind": "exact"
+      },
+      "note": "`mk_eq_mk_of_basis` proves any two bases of a module have the same cardinality.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Isomorphic iff equal dimension",
+      "anchor": {
+        "section": "Subspaces, span, and basis",
+        "snippet": "Moreover, two vector spaces over the same field"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "FiniteDimensional.nonempty_linearEquiv_iff_finrank_eq",
+        "module": "Mathlib.LinearAlgebra.Dimension.Free",
+        "match_kind": "exact"
+      },
+      "note": "Two finite-dimensional spaces are isomorphic iff equal finrank; the general rank version `nonempty_linearEquiv_of_lift_rank_eq` also exists.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Finite-dimensional vector space",
+      "anchor": {
+        "section": "Subspaces, span, and basis",
+        "snippet": "has a finite number of elements"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "FiniteDimensional",
+        "module": "Mathlib.LinearAlgebra.FiniteDimensional.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`FiniteDimensional K V` abbreviates `Module.Finite K V` for a division ring.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Subspace dimension inequality",
+      "anchor": {
+        "section": "Subspaces, span, and basis",
+        "snippet": "If U is a subspace of V , then dim U ≤ dim V"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Submodule.finrank_le",
+        "module": "Mathlib.LinearAlgebra.Dimension.Constructions",
+        "match_kind": "exact"
+      },
+      "note": "`Submodule.finrank_le` gives finrank of a submodule ≤ finrank of the ambient finite module.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Dimension of sum of subspaces",
+      "anchor": {
+        "section": "Subspaces, span, and basis",
+        "snippet": "If U 1 and U 2 are subspaces of V , then"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Submodule.finrank_sup_add_finrank_inf_eq",
+        "module": "Mathlib.LinearAlgebra.FiniteDimensional.Lemmas",
+        "match_kind": "exact"
+      },
+      "note": "`finrank_sup_add_finrank_inf_eq` is dim(U₁+U₂)+dim(U₁∩U₂)=dim U₁+dim U₂.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Coordinate isomorphism from a basis",
+      "anchor": {
+        "section": "Matrices",
+        "snippet": "This is an isomorphism of vector spaces"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Basis.equivFun",
+        "module": "Mathlib.LinearAlgebra.Basis.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`Basis.equivFun` is the linear equiv V ≃ₗ (ι → R) for a finite basis (`Basis.repr` is the general Finsupp version).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Coordinate vector / column matrix",
+      "anchor": {
+        "section": "Matrices",
+        "snippet": "representing a vector by its inverse image under this isomorphism"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Basis.repr",
+        "module": "Mathlib.LinearAlgebra.Basis.Defs",
+        "match_kind": "exact"
+      },
+      "note": "The coordinate vector of x is `b.repr x` (or `b.equivFun x`).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Matrix of a linear map",
+      "anchor": {
+        "section": "Matrices",
+        "snippet": "is well defined by its values on the basis elements"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "LinearMap.toMatrix",
+        "module": "Mathlib.LinearAlgebra.Matrix.ToLin",
+        "match_kind": "exact"
+      },
+      "note": "`LinearMap.toMatrix` is the equiv between linear maps and matrices given bases.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Matrix multiplication",
+      "anchor": {
+        "section": "Matrices",
+        "snippet": "Matrix multiplication is defined in such a way that the product of two matrices"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Matrix.mul_apply",
+        "module": "Mathlib.Data.Matrix.Mul",
+        "match_kind": "exact"
+      },
+      "note": "Matrix product is the `HMul` instance, characterized by `Matrix.mul_apply`, and matches composition (`LinearMap.toMatrix'_comp`).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Similar matrices",
+      "anchor": {
+        "section": "Matrices",
+        "snippet": "Two matrices that encode the same linear transformation in different bases are called similar"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "IsConj",
+        "module": "Mathlib.Algebra.Group.Conj",
+        "match_kind": null
+      },
+      "note": "There is no dedicated matrix-similarity definition; generic `IsConj` (conjugation by a unit in the matrix ring) captures it.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Similarity via row and column operations",
+      "anchor": {
+        "section": "Matrices",
+        "snippet": "It can be proven that two matrices are similar if and only if"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No theorem characterizing matrix similarity via sequences of elementary row/column operations is present.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Similar to bordered identity",
+      "anchor": {
+        "section": "Matrices",
+        "snippet": "Every matrix is similar to an identity matrix possibly bordered by zero rows and zero columns"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The rank-normal-form result (matrix equivalent to a bordered identity block) is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "System of linear equations",
+      "anchor": {
+        "section": "Linear systems",
+        "snippet": "is called a system of linear equations or a linear system"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Matrix.mulVec",
+        "module": "Mathlib.Data.Matrix.Mul",
+        "match_kind": null
+      },
+      "note": "Linear systems are written as `A *ᵥ x = b` via `Matrix.mulVec`; there is no dedicated linear-system structure.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Solution as preimage under T",
+      "anchor": {
+        "section": "Linear systems",
+        "snippet": "that is an element of the preimage of"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No named formalization of a linear system's solution set as a preimage/fiber of the associated linear map.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Associated homogeneous system",
+      "anchor": {
+        "section": "Linear systems",
+        "snippet": "Let ( S′ ) be the associated homogeneous system"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Matrix.mulVecLin",
+        "module": "Mathlib.LinearAlgebra.Matrix.ToLin",
+        "match_kind": null
+      },
+      "note": "The homogeneous system A x = 0 corresponds to `Matrix.mulVecLin A` set equal to zero; no separate 'associated homogeneous system' definition.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Homogeneous solutions are the kernel",
+      "anchor": {
+        "section": "Linear systems",
+        "snippet": "The solutions of ( S′ ) are exactly the elements of the kernel of"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Matrix.mulVecLin",
+        "module": "Mathlib.LinearAlgebra.Matrix.ToLin",
+        "match_kind": "invocation"
+      },
+      "note": "The solution set of A x = 0 is `LinearMap.ker A.mulVecLin` by definition (`LinearMap.mem_ker`, `Matrix.ker_mulVecLin_eq_bot_iff`).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Row operations preserve solutions",
+      "anchor": {
+        "section": "Linear systems",
+        "snippet": "These row operations do not change the set of solutions of the system of equations"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No theorem stating elementary row operations preserve a linear system's solution set.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Unique solution when matrix invertible",
+      "anchor": {
+        "section": "Linear systems",
+        "snippet": "is invertible, then the system has the unique solution"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Matrix.mulVec_injective_of_invertible",
+        "module": "Mathlib.LinearAlgebra.Matrix.NonsingularInverse",
+        "match_kind": null
+      },
+      "note": "Invertibility makes `A *ᵥ ·` injective (uniqueness) and existence is x = A⁻¹b, but there is no single packaged 'unique solution' lemma.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Linear endomorphism",
+      "anchor": {
+        "section": "Endomorphisms and square matrices",
+        "snippet": "A linear endomorphism is a linear map that maps a vector space"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Module.End",
+        "module": "Mathlib.Algebra.Module.LinearMap.End",
+        "match_kind": "exact"
+      },
+      "note": "`Module.End R M` is the ring of linear endomorphisms of M.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Endomorphism as square matrix",
+      "anchor": {
+        "section": "Endomorphisms and square matrices",
+        "snippet": "such an endomorphism is represented by a square matrix of size"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "LinearMap.toMatrixAlgEquiv",
+        "module": "Mathlib.LinearAlgebra.Matrix.ToLin",
+        "match_kind": "exact"
+      },
+      "note": "`LinearMap.toMatrixAlgEquiv` is the algebra equiv between endomorphisms and square matrices in a basis.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Determinant",
+      "anchor": {
+        "section": "Determinant",
+        "snippet": "The determinant of a square matrix A is defined to be"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Matrix.det",
+        "module": "Mathlib.LinearAlgebra.Matrix.Determinant.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`Matrix.det` is the determinant of a square matrix.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Invertible iff determinant invertible",
+      "anchor": {
+        "section": "Determinant",
+        "snippet": "A matrix is invertible if and only if the determinant is invertible"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Matrix.isUnit_iff_isUnit_det",
+        "module": "Mathlib.LinearAlgebra.Matrix.NonsingularInverse",
+        "match_kind": "exact"
+      },
+      "note": "`Matrix.isUnit_iff_isUnit_det` says A is a unit iff det A is a unit.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Cramer's rule",
+      "anchor": {
+        "section": "Determinant",
+        "snippet": "Cramer's rule is a closed-form expression"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Matrix.cramer",
+        "module": "Mathlib.LinearAlgebra.Matrix.Adjugate",
+        "match_kind": "exact"
+      },
+      "note": "`Matrix.cramer` and `Matrix.mulVec_cramer` give Cramer's rule.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Determinant of an endomorphism",
+      "anchor": {
+        "section": "Determinant",
+        "snippet": "The determinant of an endomorphism is the determinant of the matrix representing the endomorphism"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "LinearMap.det",
+        "module": "Mathlib.LinearAlgebra.Determinant",
+        "match_kind": "exact"
+      },
+      "note": "`LinearMap.det` is the basis-independent determinant of an endomorphism.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Eigenvector and eigenvalue",
+      "anchor": {
+        "section": "Eigenvalues and eigenvectors",
+        "snippet": "an eigenvector of f is a nonzero vector"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Module.End.HasEigenvalue",
+        "module": "Mathlib.LinearAlgebra.Eigenspace.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`Module.End.HasEigenvector`/`HasEigenvalue` define eigenvectors (nonzero) and eigenvalues.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Characteristic polynomial",
+      "anchor": {
+        "section": "Eigenvalues and eigenvectors",
+        "snippet": "called the characteristic polynomial of the matrix"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Matrix.charpoly",
+        "module": "Mathlib.LinearAlgebra.Matrix.Charpoly.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`Matrix.charpoly` is det(XI − M).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Diagonalizable",
+      "anchor": {
+        "section": "Eigenvalues and eigenvectors",
+        "snippet": "the endomorphism and the matrix are said to be diagonalizable"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Module.End.IsSemisimple",
+        "module": "Mathlib.LinearAlgebra.Semisimple",
+        "match_kind": null
+      },
+      "note": "There is no 'diagonalizable' predicate; `Module.End.IsSemisimple` is the field-independent analogue and eigenvector-basis machinery exists.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Square-free characteristic polynomial implies diagonalizable",
+      "anchor": {
+        "section": "Eigenvalues and eigenvectors",
+        "snippet": "if the characteristic polynomial is square-free"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Module.End.isSemisimple_of_squarefree_aeval_eq_zero",
+        "module": "Mathlib.LinearAlgebra.Semisimple",
+        "match_kind": "generalization"
+      },
+      "note": "Mathlib proves a squarefree annihilating polynomial implies semisimplicity (the field-independent form of diagonalizability), not diagonalizability per se.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Symmetric matrices are diagonalizable",
+      "anchor": {
+        "section": "Eigenvalues and eigenvectors",
+        "snippet": "A symmetric matrix is always diagonalizable"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Matrix.IsHermitian.spectral_theorem",
+        "module": "Mathlib.Analysis.Matrix.Spectrum",
+        "match_kind": "generalization"
+      },
+      "note": "The spectral theorem gives unitary diagonalization of Hermitian matrices, which over ℝ are exactly the symmetric matrices.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Non-diagonalizable matrix",
+      "anchor": {
+        "section": "Eigenvalues and eigenvectors",
+        "snippet": "There are non-diagonalizable matrices, the simplest being"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This is an illustrative example rather than a formal statement.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Frobenius normal form",
+      "anchor": {
+        "section": "Eigenvalues and eigenvectors",
+        "snippet": "The Frobenius normal form does not need to extend the field of scalars"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The rational (Frobenius) canonical form is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Jordan normal form",
+      "anchor": {
+        "section": "Eigenvalues and eigenvectors",
+        "snippet": "The Jordan normal form requires to extension of the field of scalar"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Jordan normal form is not formalized; only the Jordan–Chevalley (semisimple+nilpotent) decomposition exists.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Linear form and dual space",
+      "anchor": {
+        "section": "Duality",
+        "snippet": "A linear form is a linear map from a vector space"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Module.Dual",
+        "module": "Mathlib.LinearAlgebra.Dual.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`Module.Dual R M = M →ₗ[R] R` is the space of linear forms.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Dual basis",
+      "anchor": {
+        "section": "Duality",
+        "snippet": "These linear maps form a basis of"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Basis.dualBasis",
+        "module": "Mathlib.LinearAlgebra.Dual.Basis",
+        "match_kind": "exact"
+      },
+      "note": "`Basis.dualBasis` is the dual basis of the dual space.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Double dual / bidual",
+      "anchor": {
+        "section": "Duality",
+        "snippet": "This defines the canonical linear map from"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Module.Dual.eval",
+        "module": "Mathlib.LinearAlgebra.Dual.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`Module.Dual.eval` is the canonical map V → V** into the bidual.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Canonical map to bidual is an isomorphism",
+      "anchor": {
+        "section": "Duality",
+        "snippet": "This canonical map is an isomorphism if"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Module.evalEquiv",
+        "module": "Mathlib.LinearAlgebra.Dual.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`Module.evalEquiv` packages the canonical V ≃ₗ V** under reflexivity (finite-dimensionality).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Dual / transpose of a linear map",
+      "anchor": {
+        "section": "Dual map",
+        "snippet": "which is called the dual or the transpose of"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "LinearMap.dualMap",
+        "module": "Mathlib.LinearAlgebra.Dual.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`LinearMap.dualMap` (= `Module.Dual.transpose`) is the dual/transpose of a linear map.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Matrix of dual map is transpose",
+      "anchor": {
+        "section": "Dual map",
+        "snippet": "then the matrix of f* over the dual bases is the transpose"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "LinearMap.toMatrix_transpose",
+        "module": "Mathlib.LinearAlgebra.Matrix.Dual",
+        "match_kind": "exact"
+      },
+      "note": "`LinearMap.toMatrix_transpose` shows the matrix of the dual map over dual bases is the transpose.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Inner product",
+      "anchor": {
+        "section": "Inner-product spaces",
+        "snippet": "Formally, an inner product is a map"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "InnerProductSpace",
+        "module": "Mathlib.Analysis.InnerProductSpace.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`InnerProductSpace` (with the `Inner` class) axiomatizes the inner product.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Length of a vector",
+      "anchor": {
+        "section": "Inner-product spaces",
+        "snippet": "We can define the length of a vector"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "norm_eq_sqrt_re_inner",
+        "module": "Mathlib.Analysis.InnerProductSpace.Basic",
+        "match_kind": "exact"
+      },
+      "note": "The inner-product norm satisfies `norm_eq_sqrt_re_inner`: ‖x‖ = √re⟪x,x⟫.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Cauchy–Schwarz inequality",
+      "anchor": {
+        "section": "Inner-product spaces",
+        "snippet": "and we can prove the Cauchy–Schwarz inequality"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "norm_inner_le_norm",
+        "module": "Mathlib.Analysis.InnerProductSpace.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`norm_inner_le_norm` is the Cauchy–Schwarz inequality ‖⟪x,y⟫‖ ≤ ‖x‖‖y‖.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Orthogonality and orthonormal basis",
+      "anchor": {
+        "section": "Inner-product spaces",
+        "snippet": "Two vectors are orthogonal if"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "OrthonormalBasis",
+        "module": "Mathlib.Analysis.InnerProductSpace.PiL2",
+        "match_kind": "exact"
+      },
+      "note": "Orthonormal families are `Orthonormal` and orthonormal bases are `OrthonormalBasis`; orthogonality is ⟪x,y⟫ = 0.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Gram–Schmidt procedure",
+      "anchor": {
+        "section": "Inner-product spaces",
+        "snippet": "an orthonormal basis could be found by the Gram–Schmidt procedure"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "gramSchmidtOrthonormalBasis",
+        "module": "Mathlib.Analysis.InnerProductSpace.GramSchmidtOrtho",
+        "match_kind": "exact"
+      },
+      "note": "`gramSchmidt` and `gramSchmidtOrthonormalBasis` formalize the Gram–Schmidt process.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Hermitian conjugate",
+      "anchor": {
+        "section": "Inner-product spaces",
+        "snippet": "we can define its Hermitian conjugate"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Matrix.conjTranspose",
+        "module": "Mathlib.LinearAlgebra.Matrix.ConjTranspose",
+        "match_kind": "exact"
+      },
+      "note": "The Hermitian conjugate of a matrix is `Matrix.conjTranspose` (Aᴴ); the operator analogue is `ContinuousLinearMap.adjoint`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Normal operator",
+      "anchor": {
+        "section": "Inner-product spaces",
+        "snippet": "we call T normal"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "IsStarNormal",
+        "module": "Mathlib.Algebra.Star.SelfAdjoint",
+        "match_kind": "exact"
+      },
+      "note": "`IsStarNormal x` states star x * x = x * star x, i.e. T commutes with its adjoint.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Characterization of normal matrices",
+      "anchor": {
+        "section": "Inner-product spaces",
+        "snippet": "It turns out that normal matrices are precisely the matrices"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Matrix.IsHermitian.spectral_theorem",
+        "module": "Mathlib.Analysis.Matrix.Spectrum",
+        "match_kind": null
+      },
+      "note": "Unitary diagonalization (spectral theorem) is formalized only for Hermitian matrices; the general normal-matrix characterization is not present.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Module over a ring",
+      "anchor": {
+        "section": "Module theory",
+        "snippet": "this gives the structure called a module over"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Module",
+        "module": "Mathlib.Algebra.Module.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`Module R M` is a module over a (semi)ring R.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Free and finitely generated modules",
+      "anchor": {
+        "section": "Module theory",
+        "snippet": "The modules that have a basis are the free modules"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Module.Free",
+        "module": "Mathlib.LinearAlgebra.FreeModule.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`Module.Free` is having a basis and `Module.Finite` is finitely generated.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Submodule of free module over PID is free",
+      "anchor": {
+        "section": "Module theory",
+        "snippet": "over a principal ideal domain, every submodule of a free module is free"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Submodule.basisOfPid",
+        "module": "Mathlib.LinearAlgebra.FreeModule.PID",
+        "match_kind": "exact"
+      },
+      "note": "`Submodule.basisOfPid` produces a basis for any submodule of a finite free module over a PID.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Every module is a cokernel of free modules",
+      "anchor": {
+        "section": "Module theory",
+        "snippet": "every module is a cokernel of a homomorphism of free modules"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Module.tautologicalRelations",
+        "module": "Mathlib.Algebra.Module.Presentation.Tautological",
+        "match_kind": "generalization"
+      },
+      "note": "The tautological presentation exhibits any module via generators and relations, i.e. as a cokernel of free modules.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Algebra (bilinear product)",
+      "anchor": {
+        "section": "Multilinear algebra and tensors",
+        "snippet": "the vector space is called an algebra"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Algebra",
+        "module": "Mathlib.Algebra.Algebra.Defs",
+        "match_kind": "special_case"
+      },
+      "note": "Mathlib's `Algebra` is the unital associative case; the general bilinear-product (possibly non-unital/non-associative) algebra is not a single typeclass.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Normed vector space",
+      "anchor": {
+        "section": "Topological vector spaces",
+        "snippet": "A normed vector space is a vector space along with a function called a norm"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "NormedSpace",
+        "module": "Mathlib.Analysis.Normed.Module.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`NormedSpace` is a module with a compatible norm over a normed field.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Banach space",
+      "anchor": {
+        "section": "Topological vector spaces",
+        "snippet": "a normed vector space that is complete is known as a Banach space"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "NormedSpace",
+        "module": "Mathlib.Analysis.Normed.Module.Basic",
+        "match_kind": null
+      },
+      "note": "No `BanachSpace` typeclass; a Banach space is expressed as `NormedSpace` together with `[CompleteSpace E]`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Hilbert space",
+      "anchor": {
+        "section": "Topological vector spaces",
+        "snippet": "is known as a Hilbert space"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "InnerProductSpace",
+        "module": "Mathlib.Analysis.InnerProductSpace.Defs",
+        "match_kind": null
+      },
+      "note": "No `HilbertSpace` typeclass; a Hilbert space is expressed as `InnerProductSpace` together with `[CompleteSpace E]`.",
+      "provenance": "ai"
+    }
+  ]
+}

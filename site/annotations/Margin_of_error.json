@@ -1,0 +1,377 @@
+{
+  "slug": "Margin_of_error",
+  "wikipedia_title": "Margin of error",
+  "display_title": "Margin of error",
+  "schema_version": 3,
+  "annotation_style": "theorem_article",
+  "annotations": [
+    {
+      "kind": "definition",
+      "label": "Margin of error",
+      "anchor": {
+        "section": "Concept",
+        "snippet": "The margin of error describes the distance within which a specified percentage of these results is expected to vary from"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Margin of error is a survey-statistics concept with no corresponding definition in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Central limit theorem application",
+      "anchor": {
+        "section": "Concept",
+        "snippet": "the margin of error helps to explain how the distribution of sample means"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has the strong law of large numbers (ProbabilityTheory.strong_law_ae) but no central limit theorem governing the distribution of sample means.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "68-95-99.7 rule for results",
+      "anchor": {
+        "section": "Concept",
+        "snippet": "we would expect that 95% of the results"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The empirical 68-95-99.7 rule (Gaussian mass within k standard deviations) is not stated or proved in Mathlib despite the Gaussian distribution being defined.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Confidence interval and margin of error",
+      "anchor": {
+        "section": "Concept",
+        "snippet": "This interval is called the confidence interval , and the radius (half the interval) is called the margin of error"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Confidence intervals are not defined in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "General margin of error formula",
+      "anchor": {
+        "section": "Concept",
+        "snippet": "has a margin of error"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The margin-of-error formula (quantile times standard error) is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Lower quantile (z-score) and standard error",
+      "anchor": {
+        "section": "Concept",
+        "snippet": "denotes the lower quantile (also, commonly, a z-score )"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib defines CDFs (ProbabilityTheory.cdf) but has no quantile/inverse-CDF or z-score notion.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "95% confidence level computation",
+      "anchor": {
+        "section": "Concept",
+        "snippet": "For example, using a confidence level of 95%, we would have"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "A worked numerical confidence-level computation has no counterpart in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Standard error",
+      "anchor": {
+        "section": "Standard deviation and standard error",
+        "snippet": "This is called the standard error"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Standard error (standard deviation of the sample mean) is not defined in Mathlib, though variance/std of a single random variable is.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Variance of survey results",
+      "anchor": {
+        "section": "Standard deviation and standard error",
+        "snippet": "together would have a variance"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "ProbabilityTheory.IndepFun.variance_sum",
+        "module": "Mathlib.Probability.Moments.Variance",
+        "match_kind": "generalization"
+      },
+      "note": "The additivity used (variance of a sum of independent variables equals the sum of variances) is the general lemma IndepFun.variance_sum, but the survey/Bernoulli specialization itself is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Variance of a Bernoulli distribution",
+      "anchor": {
+        "section": "Standard deviation and standard error",
+        "snippet": "corresponds to the variance of a Bernoulli distribution"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "ProbabilityTheory.variance_of_hasLaw_binomial",
+        "module": "Mathlib.Probability.Distributions.Binomial",
+        "match_kind": null
+      },
+      "note": "The Bernoulli distribution is defined (PMF.bernoulli) and the binomial variance p(1-p)n is stated, but only as an unproved `proof_wanted`, so Var = p(1-p) is not actually established.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Confidence interval about the mean",
+      "anchor": {
+        "section": "Maximum margin of error at different confidence levels",
+        "snippet": "there is a corresponding confidence interval about the mean"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Confidence intervals about the mean are not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Quantile undefined at endpoints",
+      "anchor": {
+        "section": "Maximum margin of error at different confidence levels",
+        "snippet": "is undefined for"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No quantile function exists in Mathlib, so the claim about it being undefined at 0 and 1 has no formal analogue.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Maximum margin of error",
+      "anchor": {
+        "section": "Maximum margin of error at different confidence levels",
+        "snippet": "to obtain the maximum margin of error for"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The maximum margin of error formula is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Highest margin of error near 50%",
+      "anchor": {
+        "section": "Specific margins of error",
+        "snippet": "the result closest to 50% will have the highest margin of error"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The statement that p(1-p) (hence margin of error) is maximized near 50% is not formalized in the margin-of-error context.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Specific margins poll example",
+      "anchor": {
+        "section": "Specific margins of error",
+        "snippet": "Imagine poll"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "A numerical polling example has no counterpart in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Margin of error at extremes",
+      "anchor": {
+        "section": "Specific margins of error",
+        "snippet": "As a given percentage approaches the extremes of 0% or 100%, its margin of error approaches ±0%."
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The limiting behavior of margin of error at 0% and 100% is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Comparing percentages poll example",
+      "anchor": {
+        "section": "Comparing percentages",
+        "snippet": "Imagine multiple-choice poll"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "A numerical multiple-choice polling example has no counterpart in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Statistical tie",
+      "anchor": {
+        "section": "Comparing percentages",
+        "snippet": "The popular notion of statistical tie or statistical dead heat"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The notion of a statistical tie is not defined in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Standard error of difference (sum of variances)",
+      "anchor": {
+        "section": "Comparing percentages",
+        "snippet": "we need to apply the sum of variances to obtain a new variance"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "ProbabilityTheory.variance_sub",
+        "module": "Mathlib.Probability.Moments.Variance",
+        "match_kind": "generalization"
+      },
+      "note": "Var[X - Y] = Var X - 2cov + Var Y is given by variance_sub (and variance_add with covariance), generalizing the variance-of-difference step, but the standard-error-of-difference statement is not itself formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Covariance constancy assumption",
+      "anchor": {
+        "section": "Comparing percentages",
+        "snippet": "is close to constant, that is, respondents choosing either A or B would almost never choose C"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "ProbabilityTheory.covariance",
+        "module": "Mathlib.Probability.Moments.Covariance",
+        "match_kind": null
+      },
+      "note": "Covariance is defined in Mathlib, but the modeling assumption that it is approximately constant is not a formal statement.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Infinite population assumption",
+      "anchor": {
+        "section": "Effect of finite population size",
+        "snippet": "assume that there is an infinitely large population"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This is a modeling assumption with no formal counterpart in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Finite population correction",
+      "anchor": {
+        "section": "Effect of finite population size",
+        "snippet": "analysts might adjust the margin of error using a finite population correction"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The finite population correction factor (sampling without replacement) is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Finite population correction example",
+      "anchor": {
+        "section": "Effect of finite population size",
+        "snippet": "were conducted over 24% of, say, an electorate of 300,000 voters"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "A numerical finite-population-correction example has no counterpart in Mathlib.",
+      "provenance": "ai"
+    }
+  ]
+}

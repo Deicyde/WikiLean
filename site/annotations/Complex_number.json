@@ -1,0 +1,1233 @@
+{
+  "slug": "Complex_number",
+  "wikipedia_title": "Complex number",
+  "display_title": "Complex number",
+  "schema_version": 3,
+  "annotation_style": "theorem_article",
+  "annotations": [
+    {
+      "kind": "definition",
+      "label": "Complex number",
+      "anchor": {
+        "section": "Definition and basic operations",
+        "snippet": "A complex number is an expression of the form a + bi"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Complex",
+        "module": "Mathlib.Data.Complex.Basic",
+        "match_kind": "exact"
+      },
+      "note": "The structure `Complex` is defined with two real fields `re` and `im`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Real and imaginary parts",
+      "anchor": {
+        "section": "Definition and basic operations",
+        "snippet": "the real number a is called its real part"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Complex.re",
+        "module": "Mathlib.Data.Complex.Basic",
+        "match_kind": "exact"
+      },
+      "note": "Real/imaginary parts are the structure projections `Complex.re` and `Complex.im`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Complex plane (Argand diagram)",
+      "anchor": {
+        "section": "Definition and basic operations",
+        "snippet": "which is then called the complex plane or Argand diagram"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Complex.equivRealProd",
+        "module": "Mathlib.Data.Complex.Basic",
+        "match_kind": "invocation"
+      },
+      "note": "Mathlib has the bijection `Complex.equivRealProd : ℂ ≃ ℝ × ℝ` but no named 'complex plane' definition.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Purely imaginary number",
+      "anchor": {
+        "section": "Definition and basic operations",
+        "snippet": "A purely imaginary number bi is a complex number"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No dedicated 'purely imaginary' predicate; expressed via `z.re = 0`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Addition of complex numbers",
+      "anchor": {
+        "section": "Addition and subtraction",
+        "snippet": "are added by separately adding their real and imaginary parts"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Complex.instAdd",
+        "module": "Mathlib.Data.Complex.Basic",
+        "match_kind": "exact"
+      },
+      "note": "Addition is defined componentwise via the `Add ℂ` instance at line 164 of `Basic.lean`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Parallelogram rule for addition",
+      "anchor": {
+        "section": "Addition and subtraction",
+        "snippet": "The addition can be geometrically visualized as follows"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The geometric parallelogram visualization for complex addition is not stated as a lemma.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Multiplication of complex numbers",
+      "anchor": {
+        "section": "Multiplication",
+        "snippet": "The product of two complex numbers is computed as follows"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Complex.instMul",
+        "module": "Mathlib.Data.Complex.Basic",
+        "match_kind": "exact"
+      },
+      "note": "Multiplication is defined via the `Mul ℂ` instance at line 206 of `Basic.lean`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Sample product",
+      "anchor": {
+        "section": "Multiplication",
+        "snippet": "For example,"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Illustrative numeric example, no corresponding Mathlib lemma.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Complex numbers form a field",
+      "anchor": {
+        "section": "Multiplication",
+        "snippet": "the complex numbers form an algebraic structure known as a field"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Complex.instField",
+        "module": "Mathlib.Data.Complex.Basic",
+        "match_kind": "exact"
+      },
+      "note": "The `Field ℂ` instance is established at line 678 of `Basic.lean`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Complex conjugate",
+      "anchor": {
+        "section": "Complex conjugate, absolute value, argument and division",
+        "snippet": "The complex conjugate of the complex number"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Complex.conj",
+        "module": "Mathlib.Data.Complex.Basic",
+        "match_kind": "exact"
+      },
+      "note": "Conjugation is the `star` operation on ℂ, available as `conj` in the `ComplexConjugate` scope.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Conjugation is an involution",
+      "anchor": {
+        "section": "Complex conjugate, absolute value, argument and division",
+        "snippet": "Conjugating twice gives the original complex number"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Complex.conj_conj",
+        "module": "Mathlib.Algebra.Star.Basic",
+        "match_kind": "exact"
+      },
+      "note": "Aliased as `Complex.conj_conj := starRingEnd_self_apply`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Real iff equals conjugate",
+      "anchor": {
+        "section": "Complex conjugate, absolute value, argument and division",
+        "snippet": "A complex number is real if and only if it equals its own conjugate"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Complex.conj_eq_iff_real",
+        "module": "Mathlib.Data.Complex.Basic",
+        "match_kind": "exact"
+      },
+      "note": "Stated at line 467 of `Basic.lean` as `conj z = z ↔ ∃ r : ℝ, z = r`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Absolute value (modulus)",
+      "anchor": {
+        "section": "Complex conjugate, absolute value, argument and division",
+        "snippet": "This allows to define the absolute value"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Complex.norm_def",
+        "module": "Mathlib.Analysis.Complex.Norm",
+        "match_kind": "exact"
+      },
+      "note": "Modulus is the norm: `‖z‖ = √(normSq z)`, via the `NormedField ℂ` instance.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Complex conjugate, absolute value, argument and division",
+          "snippet": "This allows to define the absolute value"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle |z|={\\sqrt {x^{2}+y^{2}}}.}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Modulus as distance",
+      "anchor": {
+        "section": "Complex conjugate, absolute value, argument and division",
+        "snippet": "is the distance from the origin to the point representing the complex number"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Complex.dist_eq",
+        "module": "Mathlib.Analysis.Complex.Norm",
+        "match_kind": "exact"
+      },
+      "note": "`dist z w = ‖z - w‖` in ℂ; specialising to w = 0 gives the distance from origin.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Complex conjugate, absolute value, argument and division",
+          "snippet": "is the distance from the origin to the point representing the complex number"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle |z|={\\sqrt {x^{2}+y^{2}}}.}"
+        }
+      ]
+    },
+    {
+      "kind": "definition",
+      "label": "Reciprocal of a complex number",
+      "anchor": {
+        "section": "Complex conjugate, absolute value, argument and division",
+        "snippet": "Using the conjugate, the reciprocal of a nonzero complex number"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Complex.inv_def",
+        "module": "Mathlib.Data.Complex.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`z⁻¹ = conj z * (normSq z)⁻¹` is proved at line 648 of `Basic.lean`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Division of complex numbers",
+      "anchor": {
+        "section": "Complex conjugate, absolute value, argument and division",
+        "snippet": "the division of an arbitrary complex number"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Complex.instField",
+        "module": "Mathlib.Data.Complex.Basic",
+        "match_kind": "exact"
+      },
+      "note": "Division is provided by the `Field ℂ` instance, giving `w / z = w * z⁻¹`.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Complex conjugate, absolute value, argument and division",
+          "snippet": "the division of an arbitrary complex number"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle {\\frac {1}{z}}={\\frac {\\bar {z}}{z{\\bar {z}}}}={\\frac {\\bar {z}}{|z|^{2}}}={\\frac {x-yi}{x^{2}+y^{2}}}={\\frac {x}{x^{2}+y^{2}}}-{\\frac {y}{x^{2}+y^{2}}}i.}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle {\\frac {w}{z}}={\\frac {w{\\bar {z}}}{|z|^{2}}}={\\frac {(u+vi)(x-iy)}{x^{2}+y^{2}}}={\\frac {ux+vy}{x^{2}+y^{2}}}+{\\frac {vx-uy}{x^{2}+y^{2}}}i.}"
+        }
+      ]
+    },
+    {
+      "kind": "definition",
+      "label": "Argument of a complex number",
+      "anchor": {
+        "section": "Complex conjugate, absolute value, argument and division",
+        "snippet": "The argument of z (sometimes called the \"phase\""
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Complex.arg",
+        "module": "Mathlib.Analysis.SpecialFunctions.Complex.Arg",
+        "match_kind": "exact"
+      },
+      "note": "`Complex.arg : ℂ → ℝ` is defined at line 30 of `Arg.lean`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Principal value of argument",
+      "anchor": {
+        "section": "Complex conjugate, absolute value, argument and division",
+        "snippet": "which is referred to as the principal value"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Complex.arg_mem_Ioc",
+        "module": "Mathlib.Analysis.SpecialFunctions.Complex.Arg",
+        "match_kind": "exact"
+      },
+      "note": "Mathlib's `Complex.arg` is the principal value: `arg_mem_Ioc` shows `arg z ∈ Set.Ioc (-π) π`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Polar form",
+      "anchor": {
+        "section": "Polar form",
+        "snippet": "This identity is referred to as the polar form of"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Complex.norm_mul_cos_add_sin_mul_I",
+        "module": "Mathlib.Analysis.SpecialFunctions.Complex.Arg",
+        "match_kind": "exact"
+      },
+      "note": "`‖x‖ * (cos (arg x) + sin (arg x) * I) = x` is the polar form identity.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Polar form",
+          "snippet": "This identity is referred to as the polar form of"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle z=r\\angle \\varphi .}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Product and quotient in polar form",
+      "anchor": {
+        "section": "Polar form",
+        "snippet": "the absolute values are multiplied and the arguments are added"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Complex.arg_mul_eq_add_arg_iff",
+        "module": "Mathlib.Analysis.SpecialFunctions.Complex.Arg",
+        "match_kind": "special_case"
+      },
+      "note": "Mathlib has `arg_mul_eq_add_arg_iff` and `norm_mul`, but the combined statement of the multiplicative polar law is split across lemmas.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Polar form",
+          "snippet": "the absolute values are multiplied and the arguments are added"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle z_{1}z_{2}=r_{1}r_{2}(\\cos(\\varphi _{1}+\\varphi _{2})+i\\sin(\\varphi _{1}+\\varphi _{2})).}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle {\\frac {z_{1}}{z_{2}}}={\\frac {r_{1}}{r_{2}}}\\left(\\cos(\\varphi _{1}-\\varphi _{2})+i\\sin(\\varphi _{1}-\\varphi _{2})\\right),{\\text{if }}z_{2}\\neq 0.}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle (2+i)(3+i)=5+5i.}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle {\\frac {\\pi }{4}}=\\arctan \\left({\\frac {1}{2}}\\right)+\\arctan \\left({\\frac {1}{3}}\\right)}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle {\\frac {\\pi }{4}}=4\\arctan \\left({\\frac {1}{5}}\\right)-\\arctan \\left({\\frac {1}{239}}\\right)}"
+        }
+      ]
+    },
+    {
+      "kind": "theorem",
+      "label": "de Moivre's formula",
+      "anchor": {
+        "section": "Powers and roots",
+        "snippet": "The n -th power of a complex number can be computed using de Moivre's formula"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Complex.cos_add_sin_mul_I_pow",
+        "module": "Mathlib.Analysis.Complex.Trigonometric",
+        "match_kind": "exact"
+      },
+      "note": "`(cos θ + sin θ * I)^n` formula at line 539 of `Trigonometric.lean`.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Powers and roots",
+          "snippet": "The n -th power of a complex number can be computed using de Moivre's formula"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle z^{n}=\\underbrace {z\\cdot \\dots \\cdot z} _{n{\\text{ factors}}}=(r(\\cos \\varphi +i\\sin \\varphi ))^{n}=r^{n}\\,(\\cos n\\varphi +i\\sin n\\varphi ).}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "n-th roots of a complex number",
+      "anchor": {
+        "section": "Powers and roots",
+        "snippet": "The n n th roots of a complex number"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Polynomial.nthRoots",
+        "module": "Mathlib.RingTheory.RootsOfUnity.Complex",
+        "match_kind": "generalization"
+      },
+      "note": "General `Polynomial.nthRoots` exists and roots-of-unity in ℂ are formalized, but no single named lemma listing the n distinct n-th roots of an arbitrary complex number.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Powers and roots",
+          "snippet": "The n n th roots of a complex number"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle z^{1/n}={\\sqrt[{n}]{r}}\\left(\\cos \\left({\\frac {\\varphi +2k\\pi }{n}}\\right)+i\\sin \\left({\\frac {\\varphi +2k\\pi }{n}}\\right)\\right)}"
+        }
+      ]
+    },
+    {
+      "kind": "example",
+      "label": "Fourth roots of 1",
+      "anchor": {
+        "section": "Powers and roots",
+        "snippet": "there are 4 fourth roots of 1"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Specific numeric example not stated as a lemma.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Powers and roots",
+          "snippet": "there are 4 fourth roots of 1"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle z^{1/n}={\\sqrt[{n}]{r}}\\left(\\cos \\left({\\frac {\\varphi +2k\\pi }{n}}\\right)+i\\sin \\left({\\frac {\\varphi +2k\\pi }{n}}\\right)\\right)}"
+        }
+      ]
+    },
+    {
+      "kind": "theorem",
+      "label": "Fundamental theorem of algebra",
+      "anchor": {
+        "section": "Fundamental theorem of algebra",
+        "snippet": "states that for any complex numbers (called coefficients )"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Complex.isAlgClosed",
+        "module": "Mathlib.Analysis.Complex.Polynomial.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`Complex.isAlgClosed : IsAlgClosed ℂ` is the formal statement of FTA.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Fundamental theorem of algebra",
+          "snippet": "states that for any complex numbers (called coefficients )"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle a_{n}z^{n}+\\dotsb +a_{1}z+a_{0}=0}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "C is algebraically closed",
+      "anchor": {
+        "section": "Fundamental theorem of algebra",
+        "snippet": "is called an algebraically closed field"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Complex.isAlgClosed",
+        "module": "Mathlib.Analysis.Complex.Polynomial.Basic",
+        "match_kind": "exact"
+      },
+      "note": "The `IsAlgClosed ℂ` instance is registered at line 50 of `Polynomial/Basic.lean`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Quadratic extension definition of C",
+      "anchor": {
+        "section": "Abstract algebraic definitions",
+        "snippet": "One formal definition of the complex numbers is that they form the quadratic extension field"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib defines ℂ concretely as ℝ² rather than as a quadratic extension ℝ[X]/(X²+1).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Polynomial ring R[X]",
+      "anchor": {
+        "section": "Construction as a quotient field",
+        "snippet": "forms a commutative ring , called the polynomial ring"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Polynomial",
+        "module": "Mathlib.Algebra.Polynomial.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`structure Polynomial (R : Type*) [Semiring R]` is defined at line 71 of `Polynomial/Basic.lean`.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Construction as a quotient field",
+          "snippet": "forms a commutative ring , called the polynomial ring"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle p(X)=a_{n}X^{n}+\\dotsb +a_{1}X+a_{0},}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Quotient ring isomorphism",
+      "anchor": {
+        "section": "Construction as a quotient field",
+        "snippet": "Basic facts of abstract algebra then imply that the kernel of the above map is an ideal"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "RingHom.quotientKerEquivOfSurjective",
+        "module": "Mathlib.RingTheory.Ideal.Quotient.Operations",
+        "match_kind": "generalization"
+      },
+      "note": "First isomorphism theorem for rings is in Mathlib, but no specific instance constructing ℂ as ℝ[X]/(X²+1).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Matrix representation of complex numbers",
+      "anchor": {
+        "section": "Matrix representation of complex numbers",
+        "snippet": "Complex numbers a + bi can also be represented by 2 × 2 matrices"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No 2×2 real-matrix representation of ℂ is defined in Mathlib.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Matrix representation of complex numbers",
+          "snippet": "Complex numbers a + bi can also be represented by 2 × 2 matrices"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle {\\begin{pmatrix}a&amp;-b\\\\b&amp;\\;\\;a\\end{pmatrix}}.}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Ring isomorphism to matrix field",
+      "anchor": {
+        "section": "Matrix representation of complex numbers",
+        "snippet": "is a ring isomorphism from the field of complex numbers to the ring of these matrices"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No corresponding ring isomorphism ℂ ≃+* (matrices) is formalized.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Matrix representation of complex numbers",
+          "snippet": "is a ring isomorphism from the field of complex numbers to the ring of these matrices"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle a+ib\\mapsto {\\begin{pmatrix}a&amp;-b\\\\b&amp;\\;\\;a\\end{pmatrix}}}"
+        }
+      ]
+    },
+    {
+      "kind": "definition",
+      "label": "Convergence in C",
+      "anchor": {
+        "section": "Convergence",
+        "snippet": "A sequence of complex numbers is said to converge if and only if its real and imaginary parts do"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Complex.equivRealProdCLM",
+        "module": "Mathlib.Analysis.Complex.Basic",
+        "match_kind": "invocation"
+      },
+      "note": "Convergence in ℂ is via the metric/normed structure; the homeomorphism with ℝ × ℝ gives the componentwise characterization but it is not stated as a single named lemma.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Convergence",
+          "snippet": "A sequence of complex numbers is said to converge if and only if its real and imaginary parts do"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\operatorname {d} (z_{1},z_{2})=|z_{1}-z_{2}|}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle |z_{1}+z_{2}|\\leq |z_{1}|+|z_{2}|}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "C is a complete metric space",
+      "anchor": {
+        "section": "Convergence",
+        "snippet": "is a complete metric space"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Complex.instCompleteSpace",
+        "module": "Mathlib.Analysis.Complex.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`instance : CompleteSpace ℂ` at line 119 of `Analysis/Complex/Basic.lean`.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Convergence",
+          "snippet": "is a complete metric space"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\operatorname {d} (z_{1},z_{2})=|z_{1}-z_{2}|}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle |z_{1}+z_{2}|\\leq |z_{1}|+|z_{2}|}"
+        }
+      ]
+    },
+    {
+      "kind": "definition",
+      "label": "Complex exponential",
+      "anchor": {
+        "section": "Complex exponential",
+        "snippet": "the exponential function exp z , also written"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Complex.exp",
+        "module": "Mathlib.Analysis.Complex.Exponential",
+        "match_kind": "exact"
+      },
+      "note": "`Complex.exp` is defined via Cauchy sequences at line 60 of `Exponential.lean`.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Complex exponential",
+          "snippet": "the exponential function exp z , also written"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\exp z:=1+z+{\\frac {z^{2}}{2\\cdot 1}}+{\\frac {z^{3}}{3\\cdot 2\\cdot 1}}+\\cdots =\\sum _{n=0}^{\\infty }{\\frac {z^{n}}{n!}}.}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\exp(i\\varphi )=\\cos \\varphi +i\\sin \\varphi }"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\exp(i\\pi )=-1.}"
+        }
+      ]
+    },
+    {
+      "kind": "theorem",
+      "label": "Euler's formula",
+      "anchor": {
+        "section": "Complex exponential",
+        "snippet": "Euler's formula states:"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Complex.exp_mul_I",
+        "module": "Mathlib.Analysis.Complex.Trigonometric",
+        "match_kind": "exact"
+      },
+      "note": "`exp (x * I) = cos x + sin x * I` at line 511 of `Trigonometric.lean`.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Complex exponential",
+          "snippet": "Euler's formula states:"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\exp z:=1+z+{\\frac {z^{2}}{2\\cdot 1}}+{\\frac {z^{3}}{3\\cdot 2\\cdot 1}}+\\cdots =\\sum _{n=0}^{\\infty }{\\frac {z^{n}}{n!}}.}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\exp(i\\varphi )=\\cos \\varphi +i\\sin \\varphi }"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\exp(i\\pi )=-1.}"
+        }
+      ]
+    },
+    {
+      "kind": "theorem",
+      "label": "Euler's identity",
+      "anchor": {
+        "section": "Complex exponential",
+        "snippet": "this includes Euler's identity"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Complex.exp_pi_mul_I",
+        "module": "Mathlib.Analysis.SpecialFunctions.Trigonometric.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`exp (π * I) = -1` at line 1209 of `Trigonometric/Basic.lean`.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Complex exponential",
+          "snippet": "this includes Euler's identity"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\exp z:=1+z+{\\frac {z^{2}}{2\\cdot 1}}+{\\frac {z^{3}}{3\\cdot 2\\cdot 1}}+\\cdots =\\sum _{n=0}^{\\infty }{\\frac {z^{n}}{n!}}.}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\exp(i\\varphi )=\\cos \\varphi +i\\sin \\varphi }"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\exp(i\\pi )=-1.}"
+        }
+      ]
+    },
+    {
+      "kind": "definition",
+      "label": "Complex logarithm",
+      "anchor": {
+        "section": "Complex logarithm",
+        "snippet": "is called a complex logarithm of"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Complex.log",
+        "module": "Mathlib.Analysis.SpecialFunctions.Complex.Log",
+        "match_kind": "exact"
+      },
+      "note": "`Complex.log x : ℂ` is defined at line 30 of `Complex/Log.lean`.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Complex logarithm",
+          "snippet": "is called a complex logarithm of"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle z=\\log w=\\ln |w|+i\\arg w,}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\ln \\colon \\;\\mathbb {C} ^{\\times }\\;\\to \\;\\;\\;\\mathbb {R} ^{+}+\\;i\\,\\left(-\\pi ,\\pi \\right].}"
+        }
+      ]
+    },
+    {
+      "kind": "definition",
+      "label": "Principal value of log",
+      "anchor": {
+        "section": "Complex logarithm",
+        "snippet": "The principal value of log is often taken by restricting the imaginary part"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Complex.log_im",
+        "module": "Mathlib.Analysis.SpecialFunctions.Complex.Log",
+        "match_kind": "exact"
+      },
+      "note": "Mathlib's `Complex.log` is the principal branch: `log_im x = x.arg` lies in (-π, π].",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Complex logarithm",
+          "snippet": "The principal value of log is often taken by restricting the imaginary part"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle z=\\log w=\\ln |w|+i\\arg w,}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\ln \\colon \\;\\mathbb {C} ^{\\times }\\;\\to \\;\\;\\;\\mathbb {R} ^{+}+\\;i\\,\\left(-\\pi ,\\pi \\right].}"
+        }
+      ]
+    },
+    {
+      "kind": "definition",
+      "label": "Complex exponentiation",
+      "anchor": {
+        "section": "Complex logarithm",
+        "snippet": "Complex exponentiation z ω is defined as"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Complex.cpow",
+        "module": "Mathlib.Analysis.SpecialFunctions.Pow.Complex",
+        "match_kind": "exact"
+      },
+      "note": "`Complex.cpow x y = exp (log x * y)` at line 25 of `Pow/Complex.lean`.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Complex logarithm",
+          "snippet": "Complex exponentiation z ω is defined as"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle z^{\\omega }=\\exp(\\omega \\ln z),}"
+        }
+      ]
+    },
+    {
+      "kind": "example",
+      "label": "Failure of power identity",
+      "anchor": {
+        "section": "Complex logarithm",
+        "snippet": "they do not satisfy"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No lemma in Mathlib explicitly exhibits the failure of `(zw)^c = z^c w^c` for complex exponents.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Complex logarithm",
+          "snippet": "they do not satisfy"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle a^{bc}=\\left(a^{b}\\right)^{c}.}"
+        }
+      ]
+    },
+    {
+      "kind": "definition",
+      "label": "Complex trigonometric and hyperbolic functions",
+      "anchor": {
+        "section": "Complex sine and cosine",
+        "snippet": "The series defining the real trigonometric functions sin and cos"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Complex.sin",
+        "module": "Mathlib.Analysis.Complex.Trigonometric",
+        "match_kind": "exact"
+      },
+      "note": "`Complex.sin`, `cos`, `tan`, `sinh`, `cosh`, `tanh` are all defined via `exp` in `Trigonometric.lean`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Holomorphic function",
+      "anchor": {
+        "section": "Holomorphic functions",
+        "snippet": "is called holomorphic or complex differentiable at a point"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "DifferentiableAt",
+        "module": "Mathlib.Analysis.Calculus.FDeriv.Basic",
+        "match_kind": "generalization"
+      },
+      "note": "Holomorphic means `DifferentiableAt ℂ f x`; no dedicated `Holomorphic` predicate, but the concept is captured.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Real-differentiable but not complex-differentiable",
+      "anchor": {
+        "section": "Holomorphic functions",
+        "snippet": "is differentiable as a function"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The explicit example (e.g. conjugation) is not formalized as a lemma.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Cauchy–Riemann characterization",
+      "anchor": {
+        "section": "Holomorphic functions",
+        "snippet": "A real differentiable function is complex differentiable if and only if it satisfies the Cauchy–Riemann equations"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "DifferentiableAt.hasDerivAt_of_isLinearMap_of_cauchyRiemann",
+        "module": "Mathlib.Analysis.Complex.Conformal",
+        "match_kind": "exact"
+      },
+      "note": "The `CauchyRiemann` section in `Analysis/Complex/Conformal.lean` proves the equivalence.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Identity theorem",
+      "anchor": {
+        "section": "Holomorphic functions",
+        "snippet": "the identity theorem asserts that two holomorphic functions"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "AnalyticOnNhd.eqOn_of_preconnected_of_frequently_eq",
+        "module": "Mathlib.Analysis.Analytic.IsolatedZeros",
+        "match_kind": "exact"
+      },
+      "note": "The identity theorem for analytic functions on connected open sets.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Meromorphic function",
+      "anchor": {
+        "section": "Holomorphic functions",
+        "snippet": "Meromorphic functions , functions that can locally be written as"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "MeromorphicAt",
+        "module": "Mathlib.Analysis.Meromorphic.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`MeromorphicAt f x` is defined at line 36 of `Meromorphic/Basic.lean`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Shape of a triangle",
+      "anchor": {
+        "section": "Shapes",
+        "snippet": "this shape of a triangle may be expressed by complex arithmetic"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The complex-arithmetic 'shape' invariant of a triangle is not defined in Mathlib.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Shapes",
+          "snippet": "this shape of a triangle may be expressed by complex arithmetic"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle S(u,v,w)={\\frac {u-w}{u-v}}.}"
+        }
+      ]
+    },
+    {
+      "kind": "definition",
+      "label": "Mandelbrot set",
+      "anchor": {
+        "section": "Fractal geometry",
+        "snippet": "The Mandelbrot set is a popular example of a fractal"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No definition of the Mandelbrot set exists in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Julia sets",
+      "anchor": {
+        "section": "Fractal geometry",
+        "snippet": "Similarly, Julia sets have the same rules"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No definition of Julia sets in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Marden's theorem",
+      "anchor": {
+        "section": "Triangles",
+        "snippet": "Marden's theorem says that the solutions of this equation are the complex numbers"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Marden's theorem is not formalized (only the related Gauss–Lucas theorem appears in `Polynomial/GaussLucas.lean`).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Algebraic numbers",
+      "anchor": {
+        "section": "Algebraic number theory",
+        "snippet": "The roots of such equations are called algebraic numbers"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "IsAlgebraic",
+        "module": "Mathlib.RingTheory.Algebraic.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`IsAlgebraic R x` at line 45 of `Algebraic/Defs.lean`; algebraic numbers are elements with `IsAlgebraic ℚ x` (in ℂ).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Gaussian integers",
+      "anchor": {
+        "section": "Algebraic number theory",
+        "snippet": "Another example is the Gaussian integers"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "GaussianInt",
+        "module": "Mathlib.NumberTheory.Zsqrtd.GaussianInt",
+        "match_kind": "exact"
+      },
+      "note": "`GaussianInt := Zsqrtd (-1)` at line 51 of `GaussianInt.lean`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Existence of complex eigenvalues",
+      "anchor": {
+        "section": "Linear algebra",
+        "snippet": "any non-empty complex square matrix has at least one (complex) eigenvalue"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Module.End.exists_eigenvalue",
+        "module": "Mathlib.LinearAlgebra.Eigenspace.Triangularizable",
+        "match_kind": "exact"
+      },
+      "note": "Existence of an eigenvalue over an algebraically closed field at line 63 (applies to ℂ since `IsAlgClosed ℂ`).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Algebraic characterization of C",
+      "anchor": {
+        "section": "Algebraic characterization",
+        "snippet": "It can be shown that any field having these properties is isomorphic"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The characterization 'characteristic 0, alg. closed, transcendence degree 𝔠 ⇒ iso ℂ' is not in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Topological field characterization of C",
+      "anchor": {
+        "section": "Characterization as a topological field",
+        "snippet": "The only connected locally compact topological fields are"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No theorem characterizing ℝ and ℂ as the only connected locally compact fields is formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Cayley–Dickson construction",
+      "anchor": {
+        "section": "Other number systems",
+        "snippet": "is an instance of the Cayley–Dickson construction"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Cayley–Dickson construction is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "C is not an ordered field",
+      "anchor": {
+        "section": "Other number systems",
+        "snippet": "is not an ordered field"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No explicit theorem stating ℂ does not admit a `LinearOrderedField` structure.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Hurwitz's theorem on normed division algebras",
+      "anchor": {
+        "section": "Other number systems",
+        "snippet": "By Hurwitz's theorem they are the only ones"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Hurwitz's theorem on normed division algebras over ℝ is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Ostrowski's theorem",
+      "anchor": {
+        "section": "Other number systems",
+        "snippet": "There are no other nontrivial ways of completing"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Rat.AbsoluteValue.equiv_real_or_padic",
+        "module": "Mathlib.NumberTheory.Ostrowski",
+        "match_kind": "exact"
+      },
+      "note": "Ostrowski's theorem classifying absolute values on ℚ is formalized in `NumberTheory/Ostrowski.lean`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Split-complex numbers",
+      "anchor": {
+        "section": "Other number systems",
+        "snippet": "the split-complex numbers , which are elements of the ring"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Split-complex numbers are not defined in Mathlib (no `SplitComplex` type).",
+      "provenance": "ai"
+    }
+  ]
+}

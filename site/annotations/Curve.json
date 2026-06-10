@@ -1,0 +1,793 @@
+{
+  "slug": "Curve",
+  "wikipedia_title": "Curve",
+  "display_title": "Curve",
+  "schema_version": 3,
+  "annotation_style": "theorem_article",
+  "annotations": [
+    {
+      "kind": "definition",
+      "label": "Curve (informal)",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "a curve (also called a curved line in older texts) is an object similar to a line"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has no single informal/general notion of 'curve'; only specific incarnations such as Path, IsIntegralCurve, and WeierstrassCurve.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Curve as image of an interval",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "A curve is the image of an interval to a topological space by a continuous function"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Path",
+        "module": "Mathlib.Topology.Path",
+        "match_kind": "special_case"
+      },
+      "note": "Mathlib's `Path` is a continuous map `C(I, X)` from the unit interval, the standard incarnation of this informal definition.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Parametrization / parametric curve",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "the function that defines the curve is called a parametrization , and the curve is a parametric curve"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Path",
+        "module": "Mathlib.Topology.Path",
+        "match_kind": "special_case"
+      },
+      "note": "Mathlib treats the parametrizing function itself (as in `Path` or generic `γ : ℝ → E`) rather than naming a parametrization concept separately.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Differentiable curve (lead)",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "the function that defines a curve is often supposed to be differentiable , and the curve is then said to be a differentiable curve"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Differentiable",
+        "module": "Mathlib.Analysis.Calculus.FDeriv.Basic",
+        "match_kind": "generalization"
+      },
+      "note": "Mathlib has `Differentiable`/`ContDiff` for arbitrary maps but no dedicated 'differentiable curve' structure.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Plane algebraic curve (lead)",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "A plane algebraic curve is the zero set of a polynomial in two indeterminates"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No general definition of plane algebraic curve; only special families like `WeierstrassCurve` are formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Algebraic curve (lead)",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "an algebraic curve is the zero set of a finite set of polynomials, which satisfies the further condition of being an algebraic variety of dimension one"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has no generic `AlgebraicCurve` notion as a one-dimensional variety.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Curve defined over a field",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "If the coefficients of the polynomials belong to a field"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "There is no general 'curve defined over F' concept; only specific structures like `WeierstrassCurve R` are parametrized by their base ring.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Real algebraic curve (lead)",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "In the common case of a real algebraic curve"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No dedicated 'real algebraic curve' definition was found in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Complex algebraic curve / Riemann surface (lead)",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "When complex zeros are considered, one has a complex algebraic curve"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No formalization of complex algebraic curves or Riemann surfaces was found in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Topological curve",
+      "anchor": {
+        "section": "Topological curve",
+        "snippet": "A topological curve can be specified by a continuous function"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Path",
+        "module": "Mathlib.Topology.Path",
+        "match_kind": "special_case"
+      },
+      "note": "Mathlib's `Path` (continuous `I → X`) is essentially a topological curve on the unit interval; no general 'topological curve' name.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Peano / space-filling curve",
+      "anchor": {
+        "section": "Topological curve",
+        "snippet": "the image of the Peano curve or, more generally, a space-filling curve completely fills a square"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "A Peano-curve construction lives in `Counterexamples/PeanoCurve.lean`, but nothing inside `Mathlib/` formalizes space-filling curves.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Closed curve / loop",
+      "anchor": {
+        "section": "Topological curve",
+        "snippet": "is closed"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib's `Path` does not have a dedicated 'closed path/loop' subtype; loops appear implicitly via `Path x x`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Path / arc",
+      "anchor": {
+        "section": "Topological curve",
+        "snippet": "the curve is called a path , also known as topological arc"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Path",
+        "module": "Mathlib.Topology.Path",
+        "match_kind": "exact"
+      },
+      "note": "`Path x y` is defined as a continuous map from `I` with endpoints `x` and `y`, matching the topological notion of a path.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Simple curve",
+      "anchor": {
+        "section": "Topological curve",
+        "snippet": "A curve is simple if it is the image of an interval or a circle by an injective continuous function"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No definition of 'simple curve' (injective parametrization) was found in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Plane / space / skew curve",
+      "anchor": {
+        "section": "Topological curve",
+        "snippet": "A plane curve is a curve for which"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No notions of plane/space/skew curves as distinguished classes were found in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Jordan curve",
+      "anchor": {
+        "section": "Topological curve",
+        "snippet": "A plane simple closed curve is also called a Jordan curve"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Grepping for `JordanCurve` returned no hits in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Jordan curve theorem",
+      "anchor": {
+        "section": "Topological curve",
+        "snippet": "The Jordan curve theorem states that the set complement in a plane of a Jordan curve consists of two connected components"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Jordan curve theorem is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Jordan domain",
+      "anchor": {
+        "section": "Topological curve",
+        "snippet": "The bounded region inside a Jordan curve is known as Jordan domain"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No definition of Jordan domain is present in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Fractal curve with positive area",
+      "anchor": {
+        "section": "Topological curve",
+        "snippet": "a fractal curve can have a Hausdorff dimension bigger than one"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Hausdorff dimension exists in Mathlib but no fractal-curve examples are formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Differentiable curve",
+      "anchor": {
+        "section": "Differentiable curve",
+        "snippet": "Roughly speaking a differentiable curve is a curve that is defined as being locally the image of an injective differentiable function"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No structure capturing 'differentiable curve as a subset locally diffeomorphic to an interval' exists in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Differentiable curve (precise)",
+      "anchor": {
+        "section": "Differentiable curve",
+        "snippet": "a differentiable curve is a subset"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has no formalization of differentiable curves as subsets locally parametrized by injective differentiable maps.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Arc (Euclidean geometry)",
+      "anchor": {
+        "section": "Differentiable arc",
+        "snippet": "an arc (symbol: ⌒ ) is a connected subset of a differentiable curve"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No notion of 'arc' as a connected subset of a differentiable curve was found.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Segments, rays, lines",
+      "anchor": {
+        "section": "Differentiable arc",
+        "snippet": "Arcs of lines are called segments , rays , or lines"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "segment",
+        "module": "Mathlib.Analysis.Convex.Segment",
+        "match_kind": "special_case"
+      },
+      "note": "Mathlib has `segment` and `openSegment` in vector spaces, but no specific 'ray' or 'line as arc' definitions linked to the curve framework.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Circular arc",
+      "anchor": {
+        "section": "Differentiable arc",
+        "snippet": "A common curved example is an arc of a circle"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No dedicated definition of circular arc was found in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Great arc",
+      "anchor": {
+        "section": "Differentiable arc",
+        "snippet": "an arc of a great circle (or a great ellipse ) is called a great arc"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Great arcs of great circles or ellipses are not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Length of a curve (Euclidean)",
+      "anchor": {
+        "section": "Length of a curve",
+        "snippet": "then the length of"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "eVariationOn",
+        "module": "Mathlib.Topology.EMetricSpace.BoundedVariation",
+        "match_kind": "generalization"
+      },
+      "note": "`eVariationOn` is the total-variation length applicable to Euclidean curves; no specific integral-of-norm-derivative formula is packaged as 'curve length'.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Length independent of parametrization",
+      "anchor": {
+        "section": "Length of a curve",
+        "snippet": "The length of a curve is independent of the parametrization"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "eVariationOn.comp_eq_of_monotoneOn",
+        "module": "Mathlib.Topology.EMetricSpace.BoundedVariation",
+        "match_kind": "generalization"
+      },
+      "note": "Reparametrization-invariance of `eVariationOn` under monotone bijections expresses length independence from parametrization.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Length of a graph",
+      "anchor": {
+        "section": "Length of a curve",
+        "snippet": "In particular, the length"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No specific formula for the arclength of the graph of a function `y = f(x)` was found.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Length of a curve in a metric space",
+      "anchor": {
+        "section": "Length of a curve",
+        "snippet": "then we can define the length of a curve"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "eVariationOn",
+        "module": "Mathlib.Topology.EMetricSpace.BoundedVariation",
+        "match_kind": "exact"
+      },
+      "note": "`eVariationOn f s` is defined as the supremum of `Σ edist (f (u (i+1))) (f (u i))` and is the metric-space length/total-variation of a curve.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Rectifiable curve",
+      "anchor": {
+        "section": "Length of a curve",
+        "snippet": "A rectifiable curve is a curve with finite length"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "BoundedVariationOn",
+        "module": "Mathlib.Topology.EMetricSpace.BoundedVariation",
+        "match_kind": "exact"
+      },
+      "note": "`BoundedVariationOn f s := eVariationOn f s ≠ ∞` matches the finite-length/rectifiable condition.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Natural / unit-speed curve",
+      "anchor": {
+        "section": "Length of a curve",
+        "snippet": "is called natural (or unit-speed or parametrized by arc length)"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "HasUnitSpeedOn",
+        "module": "Mathlib.Analysis.ConstantSpeed",
+        "match_kind": "exact"
+      },
+      "note": "`HasUnitSpeedOn f s` states the speed of `f` on `s` is `1`, i.e., unit-speed/arc-length parametrization.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Lipschitz curves are rectifiable",
+      "anchor": {
+        "section": "Length of a curve",
+        "snippet": "is a Lipschitz-continuous function, then it is automatically rectifiable"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "LipschitzWith.locallyBoundedVariationOn",
+        "module": "Mathlib.Topology.EMetricSpace.BoundedVariation",
+        "match_kind": "exact"
+      },
+      "note": "`LipschitzWith.locallyBoundedVariationOn` shows any Lipschitz function on `ℝ` has locally bounded variation, the rectifiability statement.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Metric derivative / speed",
+      "anchor": {
+        "section": "Length of a curve",
+        "snippet": "one can define the speed (or metric derivative ) of"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "HasConstantSpeedOnWith",
+        "module": "Mathlib.Analysis.ConstantSpeed",
+        "match_kind": "special_case"
+      },
+      "note": "Mathlib has `HasConstantSpeedOnWith`/`HasUnitSpeedOn` capturing the value of metric speed, but no standalone definition of the metric-derivative function.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "World line in general relativity",
+      "anchor": {
+        "section": "Differential geometry",
+        "snippet": "In general relativity , a world line is a curve in spacetime"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "General relativity / worldlines are not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Smooth curve in a smooth manifold",
+      "anchor": {
+        "section": "Differential geometry",
+        "snippet": "a smooth curve in"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "ContMDiff",
+        "module": "Mathlib.Geometry.Manifold.ContMDiff.Defs",
+        "match_kind": "generalization"
+      },
+      "note": "Smooth curves are instances of `ContMDiff` maps from `ℝ` into a smooth manifold; no dedicated 'smooth curve' wrapper exists.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "C^k curve and analytic curve",
+      "anchor": {
+        "section": "Differential geometry",
+        "snippet": "There are less and more restricted ideas, too"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "ContDiff",
+        "module": "Mathlib.Analysis.Calculus.ContDiff.Defs",
+        "match_kind": "generalization"
+      },
+      "note": "`ContDiff`/`AnalyticOn` apply to curves but no notion specialized to one-variable parametrizations exists.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Regular differentiable curve",
+      "anchor": {
+        "section": "Differential geometry",
+        "snippet": "A differentiable curve is said to be regular if its derivative never vanishes"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No definition of 'regular curve' (nowhere-vanishing derivative) was found.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Equivalent curves / reparametrization / arc",
+      "anchor": {
+        "section": "Differential geometry",
+        "snippet": "are said to be equivalent if there is a bijective"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No equivalence relation on differentiable curves under reparametrization is defined in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Plane algebraic curve",
+      "anchor": {
+        "section": "Algebraic curve",
+        "snippet": "A plane algebraic curve is the set of the points of coordinates"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has no general definition of a plane algebraic curve as the zero locus of a bivariate polynomial.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Curve defined over F",
+      "anchor": {
+        "section": "Algebraic curve",
+        "snippet": "the curve is said to be defined over"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No generic 'curve defined over a field' definition exists; only the base ring of specific structures like `WeierstrassCurve R`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Real point and real part",
+      "anchor": {
+        "section": "Algebraic curve",
+        "snippet": "a point with real coordinates is a real point , and the set of all real points is the real part of the curve"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No formalization of real points / real part of an algebraic curve.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Riemann surface (algebraic)",
+      "anchor": {
+        "section": "Algebraic curve",
+        "snippet": "the nonsingular complex projective algebraic curves are called Riemann surfaces"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Riemann surfaces are not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Rational points on a curve",
+      "anchor": {
+        "section": "Algebraic curve",
+        "snippet": "are said to be rational over"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "WeierstrassCurve.Affine.Point",
+        "module": "Mathlib.AlgebraicGeometry.EllipticCurve.Affine.Point",
+        "match_kind": "special_case"
+      },
+      "note": "For Weierstrass curves, `Affine.Point` gives F-rational points, but no general 'rational points' for arbitrary curves.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Fermat's Last Theorem as rational points",
+      "anchor": {
+        "section": "Algebraic curve",
+        "snippet": "Fermat's Last Theorem may be restated as"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "FermatLastTheorem",
+        "module": "Mathlib.NumberTheory.FLT.Basic",
+        "match_kind": "special_case"
+      },
+      "note": "`FermatLastTheorem` is stated arithmetically over `ℕ`, not as rational points on the Fermat curve.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Algebraic space curves / complete intersection",
+      "anchor": {
+        "section": "Algebraic curve",
+        "snippet": "Algebraic curves can also be space curves"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No general space-curve or complete-intersection-curve definitions found.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Projective completion of a plane curve",
+      "anchor": {
+        "section": "Algebraic curve",
+        "snippet": "A plane curve may also be completed to a curve in the projective plane"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No generic projective-completion construction for plane curves; only Weierstrass curves have projective coordinates.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Fermat curve",
+      "anchor": {
+        "section": "Algebraic curve",
+        "snippet": "An example is the Fermat curve"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Fermat curve as a geometric object is not formalized; only the arithmetic statement `FermatLastTheorem` exists.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Conics",
+      "anchor": {
+        "section": "Algebraic curve",
+        "snippet": "the simplest examples of algebraic curves are the conics , which are nonsingular curves of degree two and genus zero"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No definition of conic sections as algebraic curves of degree two was found in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Elliptic curves",
+      "anchor": {
+        "section": "Algebraic curve",
+        "snippet": "Elliptic curves , which are nonsingular curves of genus one"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "WeierstrassCurve.IsElliptic",
+        "module": "Mathlib.AlgebraicGeometry.EllipticCurve.Weierstrass",
+        "match_kind": "exact"
+      },
+      "note": "Elliptic curves are formalized as a `WeierstrassCurve` with the `IsElliptic` typeclass (invertible discriminant).",
+      "provenance": "ai"
+    }
+  ]
+}

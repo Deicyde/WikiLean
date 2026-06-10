@@ -1,0 +1,1205 @@
+{
+  "slug": "Binomial_distribution",
+  "wikipedia_title": "Binomial distribution",
+  "display_title": "Binomial distribution",
+  "schema_version": 3,
+  "annotation_style": "theorem_article",
+  "annotations": [
+    {
+      "kind": "definition",
+      "label": "Binomial distribution",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "the binomial distribution with parameters n and p is the discrete probability distribution of the number of successes"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "ProbabilityTheory.binomial",
+        "module": "Mathlib.Probability.Distributions.Binomial",
+        "match_kind": "exact"
+      },
+      "note": "Mathlib defines the binomial distribution both as a measure on ℕ (`ProbabilityTheory.binomial`) and as a PMF (`PMF.binomial`).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Bernoulli trial",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "A single success/failure experiment is also called a Bernoulli trial or Bernoulli experiment"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "PMF.bernoulli",
+        "module": "Mathlib.Probability.ProbabilityMassFunction.Constructions",
+        "match_kind": "exact"
+      },
+      "note": "`PMF.bernoulli p h` is the success/failure distribution on `Bool` modelling a single Bernoulli trial.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Bernoulli process",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "a sequence of outcomes is called a Bernoulli process"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "ProbabilityTheory.setBernoulli",
+        "module": "Mathlib.Probability.Distributions.SetBernoulli",
+        "match_kind": null
+      },
+      "note": "`setBernoulli` is a product of Bernoulli distributions over an index set, but a Bernoulli process as an indexed sequence of i.i.d. Bernoulli variables is not defined under that name.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "n=1 is Bernoulli distribution",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "when n = 1 , the binomial distribution is a Bernoulli distribution"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "PMF.binomial_one_eq_bernoulli",
+        "module": "Mathlib.Probability.ProbabilityMassFunction.Binomial",
+        "match_kind": "exact"
+      },
+      "note": "`PMF.binomial_one_eq_bernoulli` proves `binomial p h 1` equals the Bernoulli distribution mapped to `{0,1}`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Sampling without replacement gives hypergeometric",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "If the sampling is carried out without replacement, the draws are not independent and so the resulting distribution is a hypergeometric distribution"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has no hypergeometric distribution (only the unrelated hypergeometric special function).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Probability mass function",
+      "anchor": {
+        "section": "Probability mass function",
+        "snippet": "The probability of getting exactly k successes in n independent Bernoulli trials (with the same rate p ) is given by the probability mass function"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "PMF.binomial_apply",
+        "module": "Mathlib.Probability.ProbabilityMassFunction.Binomial",
+        "match_kind": "exact"
+      },
+      "note": "`PMF.binomial_apply` gives `p^k (1-p)^(n-k) C(n,k)`, exactly the binomial PMF.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Probability mass function",
+          "snippet": "The probability of getting exactly k successes in n independent Bernoulli trials (with the same rate p ) is given by the probability mass function"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle f(k,n,p)=\\Pr(X=k)={\\binom {n}{k}}p^{k}(1-p)^{n-k}}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle {\\binom {n}{k}}={\\frac {n!}{k!(n-k)!}}}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Complement formula for k > n/2",
+      "anchor": {
+        "section": "Probability mass function",
+        "snippet": "the probability can be calculated by its complement as"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The p↔(1-p), k↔(n-k) symmetry of the binomial PMF is not formalized as a lemma.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Probability mass function",
+          "snippet": "the probability can be calculated by its complement as"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle f(k,n,p)=f(n-k,n,1-p).}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Existence of maximizing integer M",
+      "anchor": {
+        "section": "Probability mass function",
+        "snippet": "There is always an integer M that satisfies"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No result about the mode-determining integer M of the binomial PMF exists in Mathlib.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Probability mass function",
+          "snippet": "There is always an integer M that satisfies"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle {\\frac {f(k+1,n,p)}{f(k,n,p)}}={\\frac {(n-k)p}{(k+1)(1-p)}}}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle (n+1)p-1\\leq M&lt;(n+1)p.}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Monotonicity and mode of PMF",
+      "anchor": {
+        "section": "Probability mass function",
+        "snippet": "is monotone increasing for k < M and monotone decreasing for k > M"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Monotonicity of the binomial PMF around its mode is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Biased coin: 4 heads in 6 tosses",
+      "anchor": {
+        "section": "Example",
+        "snippet": "The probability of seeing exactly 4 heads in 6 tosses is"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This specific numerical example is not present, though it could be computed by invoking `PMF.binomial_apply`.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Example",
+          "snippet": "The probability of seeing exactly 4 heads in 6 tosses is"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle f(4,6,0.3)={\\binom {6}{4}}0.3^{4}(1-0.3)^{6-4}=0.059535.}"
+        }
+      ]
+    },
+    {
+      "kind": "definition",
+      "label": "Cumulative distribution function",
+      "anchor": {
+        "section": "Cumulative distribution function",
+        "snippet": "The cumulative distribution function can be expressed as"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No closed CDF lemma for the binomial distribution is stated, only the PMF and the underlying measure.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Cumulative distribution function",
+          "snippet": "The cumulative distribution function can be expressed as"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle F(k;n,p)=\\Pr(X\\leq k)=\\sum _{i=0}^{\\lfloor k\\rfloor }{n \\choose i}p^{i}(1-p)^{n-i},}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "CDF via regularized incomplete beta function",
+      "anchor": {
+        "section": "Cumulative distribution function",
+        "snippet": "It can also be represented in terms of the regularized incomplete beta function"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has no regularized incomplete beta function and no such CDF representation.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Cumulative distribution function",
+          "snippet": "It can also be represented in terms of the regularized incomplete beta function"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle {\\begin{aligned}F(k;n,p)&amp;=\\Pr(X\\leq k)\\\\&amp;=I_{1-p}(n-k,k+1)\\\\&amp;=(n-k){n \\choose k}\\int _{0}^{1-p}t^{n-k-1}(1-t)^{k}\\,dt,\\end{aligned}}}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle F(k;n,p)=F_{\\text{beta-distribution}}\\left(x=1-p;\\alpha =n-k,\\beta =k+1\\right)}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle F(k;n,p)=F_{F{\\text{-distribution}}}\\left(x={\\frac {1-p}{p}}{\\frac {k+1}{n-k}};d_{1}=2(n-k),d_{2}=2(k+1)\\right).}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Expected value",
+      "anchor": {
+        "section": "Expected value and variance",
+        "snippet": "then the expected value of X is"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "ProbabilityTheory.integral_of_hasLaw_binomial",
+        "module": "Mathlib.Probability.Distributions.Binomial",
+        "match_kind": null
+      },
+      "note": "The statement `E[X] = pn` is declared in Mathlib as an unproven `proof_wanted`, so it is not yet actually formalized.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Expected value and variance",
+          "snippet": "then the expected value of X is"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\operatorname {E} [X]=np.}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Variance",
+      "anchor": {
+        "section": "Expected value and variance",
+        "snippet": "The variance is"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "ProbabilityTheory.variance_of_hasLaw_binomial",
+        "module": "Mathlib.Probability.Distributions.Binomial",
+        "match_kind": null
+      },
+      "note": "The statement `Var[X] = p(1-p)n` exists only as an unproven `proof_wanted` declaration.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Expected value and variance",
+          "snippet": "The variance is"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\operatorname {Var} (X)=npq=np(1-p).}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "First six central moments",
+      "anchor": {
+        "section": "Higher moments",
+        "snippet": "The first 6 central moments , defined as"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Central moments of the binomial distribution are not computed in Mathlib.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Higher moments",
+          "snippet": "The first 6 central moments , defined as"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle {\\begin{aligned}\\mu _{1}&amp;=0,\\\\\\mu _{2}&amp;=np\\left(1-p\\right),\\\\\\mu _{3}&amp;=np\\left(1-p\\right)\\left(1-2p\\right),\\\\\\mu _{4}&amp;=np\\left(1-p\\right)\\left[1+\\left(3n-6\\right)p\\left(1-p\\right)\\right],\\\\\\mu _{5}&amp;=np\\left(1-p\\right)\\left(1-2p\\right)\\left[1+\\left(10n-12\\right)p\\left(1-p\\right)\\right],\\\\\\mu _{6}&amp;=np\\left(1-p\\right)\\left[1-30p\\left(1-p\\right)\\left[1-4p(1-p)\\right]+5np\\left(1-p\\right)\\left[5-26p\\left(1-p\\right)\\right]+15n^{2}p^{2}\\left(1-p\\right)^{2}\\right].\\end{aligned}}}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Non-central moments",
+      "anchor": {
+        "section": "Higher moments",
+        "snippet": "The non-central moments satisfy"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Raw moments of the binomial distribution are not formalized.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Higher moments",
+          "snippet": "The non-central moments satisfy"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle {\\begin{aligned}\\operatorname {E} [X]&amp;=np,\\\\\\operatorname {E} [X^{2}]&amp;=np(1-p)+n^{2}p^{2},\\end{aligned}}}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\operatorname {E} [X^{c}]=\\sum _{k=0}^{c}\\left\\{{c \\atop k}\\right\\}n^{\\underline {k}}p^{k},}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\operatorname {E} [X^{c}]\\leq \\left[{\\frac {c}{\\ln \\left(1+{\\frac {c}{np}}\\right)}}\\right]^{c}\\leq (np)^{c}\\exp \\left({\\frac {c^{2}}{2np}}\\right).}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Moment-generating function",
+      "anchor": {
+        "section": "Higher moments",
+        "snippet": "The moment-generating function is"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "ProbabilityTheory.mgf",
+        "module": "Mathlib.Probability.Moments.Basic",
+        "match_kind": null
+      },
+      "note": "The general MGF concept is defined, but the binomial MGF formula `(1-p+pe^t)^n` is not computed.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Mode formula",
+      "anchor": {
+        "section": "Mode",
+        "snippet": "Usually the mode of a binomial B ( n , p ) distribution is equal to"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The mode `⌊(n+1)p⌋` of the binomial distribution is not formalized.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Mode",
+          "snippet": "Usually the mode of a binomial B ( n , p ) distribution is equal to"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle {\\text{mode}}={\\begin{cases}\\lfloor (n+1)\\,p\\rfloor &amp;{\\text{if }}(n+1)p{\\text{ is 0 or a noninteger}},\\\\(n+1)\\,p\\ {\\text{ and }}\\ (n+1)\\,p-1&amp;{\\text{if }}(n+1)p\\in \\{1,\\dots ,n\\},\\\\n&amp;{\\text{if }}(n+1)p=n+1.\\end{cases}}}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Mean, median, mode coincide when np integer",
+      "anchor": {
+        "section": "Median",
+        "snippet": "If np is an integer, then the mean, median, and mode coincide and equal np"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No median results for the binomial distribution are formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Median interval bound",
+      "anchor": {
+        "section": "Median",
+        "snippet": "Any median m must lie within the interval"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The bound `⌊np⌋ ≤ m ≤ ⌈np⌉` on the binomial median is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Median close to mean",
+      "anchor": {
+        "section": "Median",
+        "snippet": "A median m cannot lie too far away from the mean"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The `|m - np| ≤ max(p, 1-p)` median bound is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Median unique equals round(np)",
+      "anchor": {
+        "section": "Median",
+        "snippet": "The median is unique and equal to m = round ( np ) when"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No uniqueness/round(np) median result is present in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Median unique when p rational",
+      "anchor": {
+        "section": "Median",
+        "snippet": "When p is a rational number (with the exception of p = 1/2 and n odd), the median is unique"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Median uniqueness for rational p is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Median for p=1/2, n odd",
+      "anchor": {
+        "section": "Median",
+        "snippet": "and n is odd, any number m in the interval"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The non-unique median interval for p=1/2, odd n is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Hoeffding tail bound",
+      "anchor": {
+        "section": "Tail bounds",
+        "snippet": "Hoeffding's inequality yields the simple bound"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "ProbabilityTheory.HasSubgaussianMGF.measure_sum_ge_le_of_iIndepFun",
+        "module": "Mathlib.Probability.Moments.SubGaussian",
+        "match_kind": "generalization"
+      },
+      "note": "Mathlib proves the general Hoeffding inequality for sums of independent sub-Gaussian variables, which generalizes the binomial bound but is not specialized to it.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Tail bounds",
+          "snippet": "Hoeffding's inequality yields the simple bound"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle F(k;n,p)\\leq \\exp \\left(-2n\\left(p-{\\frac {k}{n}}\\right)^{2}\\right),\\!}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Chernoff tail bound",
+      "anchor": {
+        "section": "Tail bounds",
+        "snippet": "A sharper bound can be obtained from the Chernoff bound"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "ProbabilityTheory.measure_ge_le_exp_cgf",
+        "module": "Mathlib.Probability.Moments.Basic",
+        "match_kind": "generalization"
+      },
+      "note": "The generic Chernoff bound via the cumulant/moment-generating function exists but is not applied to the binomial distribution.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Tail bounds",
+          "snippet": "A sharper bound can be obtained from the Chernoff bound"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle F(k;n,p)\\leq \\exp \\left(-nD{\\left({\\frac {k}{n}}\\parallel p\\right)}\\right)}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle D(a\\parallel p)=(a)\\ln {\\frac {a}{p}}+(1-a)\\ln {\\frac {1-a}{1-p}}.\\!}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Anti-concentration lower bound",
+      "anchor": {
+        "section": "Tail bounds",
+        "snippet": "known as anti-concentration bounds"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Anti-concentration lower bounds for the binomial tail are not formalized.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Tail bounds",
+          "snippet": "known as anti-concentration bounds"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle F(k;n,p)\\geq {\\frac {1}{\\sqrt {8n{\\tfrac {k}{n}}(1-{\\tfrac {k}{n}})}}}\\exp \\left(-nD{\\left({\\frac {k}{n}}\\parallel p\\right)}\\right),}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle F(k;n,p)\\geq {\\frac {1}{\\sqrt {2n}}}\\exp \\left(-nD\\left({\\frac {k}{n}}\\parallel p\\right)\\right).}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Constant-denominator bound for p=1/2",
+      "anchor": {
+        "section": "Tail bounds",
+        "snippet": "it is possible to make the denominator constant"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This specialized p=1/2 tail bound is not present in Mathlib.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Tail bounds",
+          "snippet": "it is possible to make the denominator constant"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle F(k;n,{\\tfrac {1}{2}})\\geq {\\frac {1}{15}}\\exp \\left(-16n\\left({\\frac {1}{2}}-{\\frac {k}{n}}\\right)^{2}\\right).\\!}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Estimator of p by proportion of successes",
+      "anchor": {
+        "section": "Estimation of parameters",
+        "snippet": "the parameter p can be estimated using the proportion of successes"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Statistical point estimation of the binomial parameter is not formalized.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Estimation of parameters",
+          "snippet": "the parameter p can be estimated using the proportion of successes"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle {\\widehat {p}}={\\frac {x}{n}}.}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Bayes estimator with Beta prior",
+      "anchor": {
+        "section": "Estimation of parameters",
+        "snippet": "A closed form Bayes estimator for p also exists when using the Beta distribution as a conjugate prior distribution"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Bayesian conjugate-prior estimation for the binomial is not formalized (only the Beta PDF exists).",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Estimation of parameters",
+          "snippet": "A closed form Bayes estimator for p also exists when using the Beta distribution as a conjugate prior distribution"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle {\\widehat {p}}_{b}={\\frac {x+\\alpha }{n+\\alpha +\\beta }}.}"
+        }
+      ]
+    },
+    {
+      "kind": "definition",
+      "label": "Rule of succession",
+      "anchor": {
+        "section": "Estimation of parameters",
+        "snippet": "This method is called the rule of succession"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Laplace's rule of succession is not formalized in Mathlib.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Estimation of parameters",
+          "snippet": "This method is called the rule of succession"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle {\\widehat {p}}_{b}={\\frac {x+1}{n+2}}.}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Jeffreys prior estimator",
+      "anchor": {
+        "section": "Estimation of parameters",
+        "snippet": "When relying on Jeffreys prior , the prior is"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Jeffreys prior for the binomial is not formalized.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Estimation of parameters",
+          "snippet": "When relying on Jeffreys prior , the prior is"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle {\\widehat {p}}_{\\mathrm {Jeffreys} }={\\frac {x+{\\frac {1}{2}}}{n+1}}.}"
+        }
+      ]
+    },
+    {
+      "kind": "example",
+      "label": "Estimating p for rare events",
+      "anchor": {
+        "section": "Estimation of parameters",
+        "snippet": "When estimating p with very rare events and a small n"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This estimation rule-of-thumb for rare events is not formalized.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Estimation of parameters",
+          "snippet": "When estimating p with very rare events and a small n"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle {\\widehat {p}}_{b}={\\frac {1}{n+2}}.}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle {\\widehat {p}}_{\\text{rule of 3}}={\\frac {3}{n}}.}"
+        }
+      ]
+    },
+    {
+      "kind": "definition",
+      "label": "Wald confidence interval",
+      "anchor": {
+        "section": "Wald method",
+        "snippet": "A continuity correction of 0.5 / n may be added"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Confidence intervals for the binomial proportion are not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Agresti–Coull interval",
+      "anchor": {
+        "section": "Agresti–Coull method",
+        "snippet": "Here the estimate of p is modified to"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Agresti–Coull interval is not formalized.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Agresti–Coull method",
+          "snippet": "Here the estimate of p is modified to"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle {\\tilde {p}}={\\frac {n_{1}+{\\frac {1}{2}}z^{2}}{n+z^{2}}}}"
+        }
+      ]
+    },
+    {
+      "kind": "definition",
+      "label": "Wilson (score) interval",
+      "anchor": {
+        "section": "Wilson (score) method",
+        "snippet": "this formula does not use a plus-minus to define the two bounds"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Wilson score interval is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Clopper–Pearson most conservative",
+      "anchor": {
+        "section": "Comparison",
+        "snippet": "is the most conservative"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Comparisons of confidence-interval methods are not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Wald method most biased",
+      "anchor": {
+        "section": "Comparison",
+        "snippet": "is the most biased"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Bias comparison of interval methods is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Sum of independent binomials",
+      "anchor": {
+        "section": "Sums of binomials",
+        "snippet": "then X + Y is again a binomial variable"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Closure of the binomial family under sums of independent variables (`B(n,p)+B(m,p)=B(n+m,p)`) is not formalized.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Sums of binomials",
+          "snippet": "then X + Y is again a binomial variable"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle {\\begin{aligned}\\operatorname {P} (Z=k)&amp;=\\sum _{i=0}^{k}\\left[{\\binom {n}{i}}p^{i}(1-p)^{n-i}\\right]\\left[{\\binom {m}{k-i}}p^{k-i}(1-p)^{m-k+i}\\right]\\\\&amp;={\\binom {n+m}{k}}p^{k}(1-p)^{n+m-k}\\end{aligned}}}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Binomial as special Poisson binomial",
+      "anchor": {
+        "section": "Poisson binomial distribution",
+        "snippet": "The binomial distribution is a special case of the Poisson binomial distribution"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Poisson binomial distribution is not defined in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Log-ratio of two binomials",
+      "anchor": {
+        "section": "Ratio of two binomial distributions",
+        "snippet": "Then log( T ) is approximately normally distributed with mean log( p 1 / p 2 )"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The asymptotic normality of the log-ratio of two binomial estimators is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Conditional binomial",
+      "anchor": {
+        "section": "Conditional binomials",
+        "snippet": "then Y is a simple binomial random variable with distribution"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The conditional-binomial thinning result is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Bernoulli as special binomial",
+      "anchor": {
+        "section": "Bernoulli distribution",
+        "snippet": "The Bernoulli distribution is a special case of the binomial distribution, where n = 1"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "PMF.binomial_one_eq_bernoulli",
+        "module": "Mathlib.Probability.ProbabilityMassFunction.Binomial",
+        "match_kind": "exact"
+      },
+      "note": "`PMF.binomial_one_eq_bernoulli` directly identifies `binomial p h 1` with the Bernoulli distribution.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Normal approximation to binomial",
+      "anchor": {
+        "section": "Normal approximation",
+        "snippet": "a reasonable approximation to B( n , p ) is given by the normal distribution"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "ProbabilityTheory.tendstoInDistribution_inv_sqrt_mul_sum_sub",
+        "module": "Mathlib.Probability.CentralLimitTheorem",
+        "match_kind": "generalization"
+      },
+      "note": "The general 1-D central limit theorem underlies the normal approximation but is not specialized to binomial sums.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Normal approximation",
+          "snippet": "a reasonable approximation to B( n , p ) is given by the normal distribution"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle {\\mathcal {N}}(np,\\,np(1-p)),}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Skewness rule of thumb",
+      "anchor": {
+        "section": "Normal approximation",
+        "snippet": "the normal approximation is adequate if the absolute value of the skewness is strictly less than 0.3"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This heuristic accuracy criterion is not formalized.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Normal approximation",
+          "snippet": "the normal approximation is adequate if the absolute value of the skewness is strictly less than 0.3"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle {\\frac {|1-2p|}{\\sqrt {np(1-p)}}}={\\frac {1}{\\sqrt {n}}}\\left|{\\sqrt {\\frac {1-p}{p}}}-{\\sqrt {\\frac {p}{1-p}}}\\,\\right|&lt;0.3.}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "3-standard-deviation rule",
+      "anchor": {
+        "section": "Normal approximation",
+        "snippet": "the normal approximation is appropriate only if everything within 3 standard deviations of its mean is within the range of possible values"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This rule-of-thumb is not formalized.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Normal approximation",
+          "snippet": "the normal approximation is appropriate only if everything within 3 standard deviations of its mean is within the range of possible values"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\mu \\pm 3\\sigma =np\\pm 3{\\sqrt {np(1-p)}}\\in (0,n).}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "np and n(1-p) rule of thumb",
+      "anchor": {
+        "section": "Normal approximation",
+        "snippet": "both values np and n (1 − p ) must be greater than"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This heuristic threshold is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Continuity correction example",
+      "anchor": {
+        "section": "Normal approximation",
+        "snippet": "The following is an example of applying a continuity correction"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Continuity-correction worked examples are not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "de Moivre–Laplace theorem",
+      "anchor": {
+        "section": "Normal approximation",
+        "snippet": "This approximation, known as de Moivre–Laplace theorem"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "ProbabilityTheory.tendstoInDistribution_inv_sqrt_mul_sum_sub",
+        "module": "Mathlib.Probability.CentralLimitTheorem",
+        "match_kind": "generalization"
+      },
+      "note": "The general CLT subsumes de Moivre–Laplace, but the binomial-specific de Moivre–Laplace theorem is not separately stated.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Poisson approximation",
+      "anchor": {
+        "section": "Poisson approximation",
+        "snippet": "The binomial distribution converges towards the Poisson distribution as the number of trials goes to infinity"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "ProbabilityTheory.tendsto_choose_mul_pow_of_tendsto_mul_atTop",
+        "module": "Mathlib.Probability.Distributions.Poisson.PoissonLimitThm",
+        "match_kind": "exact"
+      },
+      "note": "This theorem proves the binomial probabilities converge to the Poisson PMF when `n·p → r`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Poisson limit theorem",
+      "anchor": {
+        "section": "Limiting distributions",
+        "snippet": "As n approaches ∞ and p approaches 0 with the product np held fixed"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "ProbabilityTheory.tendsto_choose_mul_pow_of_tendsto_mul_atTop",
+        "module": "Mathlib.Probability.Distributions.Poisson.PoissonLimitThm",
+        "match_kind": "exact"
+      },
+      "note": "`tendsto_choose_mul_pow_of_tendsto_mul_atTop` is exactly the Poisson limit theorem for fixed `np`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "de Moivre–Laplace (limiting form)",
+      "anchor": {
+        "section": "Limiting distributions",
+        "snippet": "As n approaches ∞ while p remains fixed"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "ProbabilityTheory.tendstoInDistribution_inv_sqrt_mul_sum_sub",
+        "module": "Mathlib.Probability.CentralLimitTheorem",
+        "match_kind": "generalization"
+      },
+      "note": "The Gaussian limit for fixed p is a special case of Mathlib's general CLT but is not stated for the binomial.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Limiting distributions",
+          "snippet": "As n approaches ∞ while p remains fixed"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle {\\frac {X-np}{\\sqrt {np(1-p)}}}}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Beta–binomial relation",
+      "anchor": {
+        "section": "Beta distribution",
+        "snippet": "the beta distribution and the binomial distribution are related by"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Beta PDF exists (`ProbabilityTheory.betaPDFReal`) but its CDF identity relating Beta and binomial tails is not formalized.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Beta distribution",
+          "snippet": "the beta distribution and the binomial distribution are related by"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\operatorname {Beta} (p;\\alpha ;\\beta )=(n+1)\\mathrm {B} (k;n;p)}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Posterior is beta under uniform prior",
+      "anchor": {
+        "section": "Beta distribution",
+        "snippet": "the posterior distribution for the probability of success p given n independent events with k observed successes is a beta distribution"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Bayesian posterior conjugacy of Beta with the binomial likelihood is not formalized.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Beta distribution",
+          "snippet": "the posterior distribution for the probability of success p given n independent events with k observed successes is a beta distribution"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle P(p;\\alpha ,\\beta )={\\frac {p^{\\alpha -1}(1-p)^{\\beta -1}}{\\operatorname {Beta} (\\alpha ,\\beta )}}.}"
+        }
+      ]
+    },
+    {
+      "kind": "example",
+      "label": "Inversion algorithm for random generation",
+      "anchor": {
+        "section": "Random number generation",
+        "snippet": "One way to generate random variates samples from a binomial distribution is to use an inversion algorithm"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Random-variate generation algorithms are out of scope for Mathlib and not present.",
+      "provenance": "ai"
+    }
+  ]
+}

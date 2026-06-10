@@ -1,0 +1,137 @@
+{
+  "slug": "Five_lemma",
+  "wikipedia_title": "Five lemma",
+  "display_title": "Five lemma",
+  "schema_version": 3,
+  "annotation_style": "theorem_article",
+  "annotations": [
+    {
+      "kind": "definition",
+      "label": "Five lemma (informal)",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "the five lemma is an important and widely used lemma about commutative diagrams"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "CategoryTheory.Abelian.isIso_of_epi_of_isIso_of_isIso_of_mono",
+        "module": "Mathlib.CategoryTheory.Abelian.DiagramLemmas.Four",
+        "match_kind": "exact"
+      },
+      "note": "The five lemma is formalized as a theorem in Mathlib for abelian categories (and unbundled for groups/modules in Mathlib.Algebra.FiveLemma).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Five lemma",
+      "anchor": {
+        "section": "Statements",
+        "snippet": "The five lemma states that, if the rows are exact"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "CategoryTheory.Abelian.isIso_of_epi_of_isIso_of_isIso_of_mono",
+        "module": "Mathlib.CategoryTheory.Abelian.DiagramLemmas.Four",
+        "match_kind": "exact"
+      },
+      "note": "Stated for `ComposableArrows C 4` in an abelian category as `isIso_of_epi_of_isIso_of_isIso_of_mono`, matching the Wikipedia hypotheses (m epi, l/p iso, q mono ⟹ n iso).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "First four lemma (epimorphism)",
+      "anchor": {
+        "section": "Statements",
+        "snippet": "If the rows in the commutative diagram are exact and m and p are epimorphisms and q is a monomorphism, then n is an epimorphism"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "CategoryTheory.Abelian.epi_of_epi_of_epi_of_mono",
+        "module": "Mathlib.CategoryTheory.Abelian.DiagramLemmas.Four",
+        "match_kind": "exact"
+      },
+      "note": "`epi_of_epi_of_epi_of_mono` for `ComposableArrows C 3` in an abelian category states exactly this four-lemma; an unbundled module version is `LinearMap.surjective_of_surjective_of_surjective_of_injective`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Second four lemma (monomorphism)",
+      "anchor": {
+        "section": "Statements",
+        "snippet": "If the rows in the commutative diagram are exact and m and p are monomorphisms and l is an epimorphism, then n is a monomorphism"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "CategoryTheory.Abelian.mono_of_epi_of_mono_of_mono",
+        "module": "Mathlib.CategoryTheory.Abelian.DiagramLemmas.Four",
+        "match_kind": "exact"
+      },
+      "note": "`mono_of_epi_of_mono_of_mono` for `ComposableArrows C 3` states the mono version; an unbundled module version is `LinearMap.injective_of_surjective_of_injective_of_injective`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "n is surjective (proof of four lemma 1)",
+      "anchor": {
+        "section": "Proof",
+        "snippet": "Therefore, n is surjective"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "CategoryTheory.Abelian.epi_of_epi_of_epi_of_mono",
+        "module": "Mathlib.CategoryTheory.Abelian.DiagramLemmas.Four",
+        "match_kind": "invocation"
+      },
+      "note": "The conclusion of the surjectivity half of the four-lemma diagram chase is precisely the statement of `epi_of_epi_of_epi_of_mono` (its proof in Mathlib follows the same diagram-chase argument).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "n is injective (proof of four lemma 2)",
+      "anchor": {
+        "section": "Proof",
+        "snippet": "Therefore, n is injective"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "CategoryTheory.Abelian.mono_of_epi_of_mono_of_mono",
+        "module": "Mathlib.CategoryTheory.Abelian.DiagramLemmas.Four",
+        "match_kind": "invocation"
+      },
+      "note": "The conclusion of the injectivity half of the four-lemma diagram chase is precisely the statement of `mono_of_epi_of_mono_of_mono`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Application to long exact sequences",
+      "anchor": {
+        "section": "Applications",
+        "snippet": "The five lemma is often applied to long exact sequences"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This is a methodological remark about how the five lemma is applied to long exact sequences, not a specific theorem; no corresponding meta-lemma is formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Comparison of (co)homology theories",
+      "anchor": {
+        "section": "Applications",
+        "snippet": "it is quite helpful in proving two (co)homology theories of the same object coincide"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "A general application remark about comparing (co)homology theories; no theorem of this form is stated in Mathlib.",
+      "provenance": "ai"
+    }
+  ]
+}

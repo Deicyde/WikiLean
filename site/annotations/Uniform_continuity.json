@@ -1,0 +1,537 @@
+{
+  "slug": "Uniform_continuity",
+  "wikipedia_title": "Uniform continuity",
+  "display_title": "Uniform continuity",
+  "schema_version": 3,
+  "annotation_style": "theorem_article",
+  "annotations": [
+    {
+      "kind": "definition",
+      "label": "Uniform continuity (informal)",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "is said to be uniformly continuous if there is a positive real number"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "UniformContinuous",
+        "module": "Mathlib.Topology.UniformSpace.Defs",
+        "match_kind": "generalization"
+      },
+      "note": "Mathlib's `UniformContinuous` is the uniform-space generalization of this metric notion.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Uniform continuity on metric spaces",
+      "anchor": {
+        "section": "Definition of uniform continuity",
+        "snippet": "is called uniformly continuous if for every real number"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Metric.uniformContinuous_iff",
+        "module": "Mathlib.Topology.MetricSpace.Pseudo.Defs",
+        "match_kind": "exact"
+      },
+      "note": "The ε–δ characterization of uniform continuity for pseudometric spaces.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Equivalent definition via quantifiers",
+      "anchor": {
+        "section": "Definition of uniform continuity",
+        "snippet": "Equivalently,"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Metric.uniformContinuous_iff",
+        "module": "Mathlib.Topology.MetricSpace.Pseudo.Defs",
+        "match_kind": "exact"
+      },
+      "note": "Same ε–δ statement as the metric definition.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Uniform continuity via modulus of continuity",
+      "anchor": {
+        "section": "Definition of uniform continuity",
+        "snippet": "is uniformly continuous if it admits a modulus of continuity"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Searches found no `modulus of continuity` definition in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Continuity on metric spaces",
+      "anchor": {
+        "section": "Definition of (ordinary) continuity",
+        "snippet": "is called continuous"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Metric.continuous_iff",
+        "module": "Mathlib.Topology.MetricSpace.Pseudo.Defs",
+        "match_kind": "exact"
+      },
+      "note": "The ε–δ characterization of continuity on pseudometric spaces.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Equivalent definition of continuity",
+      "anchor": {
+        "section": "Definition of (ordinary) continuity",
+        "snippet": "Equivalently, a function"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Metric.continuous_iff",
+        "module": "Mathlib.Topology.MetricSpace.Pseudo.Defs",
+        "match_kind": "exact"
+      },
+      "note": "Identical content to the ε–δ continuity characterization above.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Continuity via maximum delta function",
+      "anchor": {
+        "section": "Definition of (ordinary) continuity",
+        "snippet": "Alternatively, a function"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The pointwise maximum-δ function characterization is not directly captured in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Uniformly continuous implies continuous",
+      "anchor": {
+        "section": "Properties",
+        "snippet": "Every uniformly continuous function is continuous"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "UniformContinuous.continuous",
+        "module": "Mathlib.Topology.UniformSpace.Basic",
+        "match_kind": "exact"
+      },
+      "note": "Verified at Mathlib/Topology/UniformSpace/Basic.lean line 521.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Absolutely continuous implies uniformly continuous",
+      "anchor": {
+        "section": "Properties",
+        "snippet": "Any absolutely continuous function"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib lacks a function-level `AbsolutelyContinuous` predicate yielding this implication.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Image of totally bounded set",
+      "anchor": {
+        "section": "Properties",
+        "snippet": "The image of a totally bounded subset under a uniformly continuous function is totally bounded"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "TotallyBounded.image",
+        "module": "Mathlib.Topology.UniformSpace.Cauchy",
+        "match_kind": "exact"
+      },
+      "note": "Stated exactly at line 663 of Cauchy.lean.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Heine–Cantor theorem",
+      "anchor": {
+        "section": "Properties",
+        "snippet": "The Heine–Cantor theorem asserts that every continuous function on a compact set is uniformly continuous"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "CompactSpace.uniformContinuous_of_continuous",
+        "module": "Mathlib.Topology.UniformSpace.HeineCantor",
+        "match_kind": "exact"
+      },
+      "note": "Heine-Cantor theorem in the uniform-space setting.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Continuous function with finite limit at infinity is uniformly continuous",
+      "anchor": {
+        "section": "Properties",
+        "snippet": "is continuous on"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Continuous.uniformContinuous_of_tendsto_cocompact",
+        "module": "Mathlib.Topology.UniformSpace.HeineCantor",
+        "match_kind": "generalization"
+      },
+      "note": "Mathlib generalizes `limit at infinity` to convergence along the cocompact filter.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Linear functions",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "Linear functions"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "ContinuousLinearMap.uniformContinuous",
+        "module": "Mathlib.Topology.Algebra.Module.LinearMap",
+        "match_kind": "generalization"
+      },
+      "note": "Continuous linear maps between uniform additive groups are uniformly continuous; the elementary real-line example is implicit.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Continuous on compact interval",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "Any continuous function on the interval"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "IsCompact.uniformContinuousOn_of_continuous",
+        "module": "Mathlib.Topology.UniformSpace.HeineCantor",
+        "match_kind": "generalization"
+      },
+      "note": "Special case of Heine-Cantor applied to a compact subset like [a,b].",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Bounded derivative implies uniform continuity",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "If a function is differentiable on an open interval and its derivative is bounded"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "lipschitzWith_of_nnnorm_deriv_le",
+        "module": "Mathlib.Analysis.Calculus.MeanValue",
+        "match_kind": "invocation"
+      },
+      "note": "Available by composing `lipschitzWith_of_nnnorm_deriv_le` with `LipschitzWith.uniformContinuous`; no single combined decl.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Lipschitz and Hölder are uniformly continuous",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "Every Lipschitz continuous map between two metric spaces is uniformly continuous"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "LipschitzWith.uniformContinuous",
+        "module": "Mathlib.Topology.EMetricSpace.Lipschitz",
+        "match_kind": "exact"
+      },
+      "note": "Lipschitz case verified at line 188; Hölder case is `HolderWith.uniformContinuous` in Mathlib/Topology/MetricSpace/Holder.lean.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Absolute value function",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "The absolute value function is uniformly continuous"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Real.uniformContinuous_abs",
+        "module": "Mathlib.Topology.Instances.Real.Lemmas",
+        "match_kind": "exact"
+      },
+      "note": "Verified at line 61 of Real/Lemmas.lean.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Weierstrass function",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "Despite being nowhere differentiable, the Weierstrass function is uniformly continuous"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "`uniformContinuous_weierstrass` exists in Counterexamples/NowhereDifferentiable.lean but is outside the Mathlib library.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Uniformly equicontinuous members",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "Every member of a uniformly equicontinuous set of functions is uniformly continuous"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "UniformEquicontinuous.uniformContinuous",
+        "module": "Mathlib.Topology.UniformSpace.Equicontinuity",
+        "match_kind": "exact"
+      },
+      "note": "Verified at line 372 of Equicontinuity.lean.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Tangent function nonexample",
+      "anchor": {
+        "section": "Nonexamples",
+        "snippet": "The tangent function is continuous on the interval"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No declaration asserts non-uniform-continuity of `Real.tan` on `(-π/2, π/2)`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Exponential function nonexample",
+      "anchor": {
+        "section": "Nonexamples",
+        "snippet": "The exponential function"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No declaration in Mathlib asserts that `Real.exp` is not uniformly continuous on ℝ.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Microcontinuity",
+      "anchor": {
+        "section": "Non-standard analysis",
+        "snippet": "is microcontinuous at a point"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No microcontinuity notion appears in Mathlib (though hyperreals exist in `Mathlib.Analysis.Real.Hyperreal`).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Uniform continuity via natural extension",
+      "anchor": {
+        "section": "Non-standard analysis",
+        "snippet": "Uniform continuity can be expressed as the condition"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The non-standard hyperreal-natural-extension characterization is absent from Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Sequential characterization of uniform continuity",
+      "anchor": {
+        "section": "Characterization via sequences",
+        "snippet": "If a function"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No iff lemma characterizing uniform continuity via sequence pairs found.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Tietze extension theorem application",
+      "anchor": {
+        "section": "Relations with the extension problem",
+        "snippet": "the answer is given by the Tietze extension theorem"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "BoundedContinuousFunction.exists_extension_norm_eq_of_isClosedEmbedding",
+        "module": "Mathlib.Topology.TietzeExtension",
+        "match_kind": "generalization"
+      },
+      "note": "The Tietze extension theorem is formalized; the specific application to dense subsets/uniform continuity is not directly stated.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Cauchy-continuous extension criterion",
+      "anchor": {
+        "section": "Relations with the extension problem",
+        "snippet": "A sufficient condition for"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "DenseInducing.extend",
+        "module": "Mathlib.Topology.UniformSpace.UniformEmbedding",
+        "match_kind": "invocation"
+      },
+      "note": "The Cauchy-continuous extension lemma per se is absent; Mathlib instead provides `uniformContinuous_uniformly_extend` / `Dense.extend` for the uniformly-continuous version.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Uniformly continuous implies Cauchy-continuous",
+      "anchor": {
+        "section": "Relations with the extension problem",
+        "snippet": "every uniformly continuous function is Cauchy-continuous"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "UniformContinuous.comp_cauchySeq",
+        "module": "Mathlib.Topology.UniformSpace.Cauchy",
+        "match_kind": "exact"
+      },
+      "note": "Mathlib formalizes Cauchy-continuity as preservation of Cauchy sequences.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Extension via bounded-restriction uniform continuity",
+      "anchor": {
+        "section": "Relations with the extension problem",
+        "snippet": "whose restriction to every bounded subset of"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The specific bounded-restriction extension lemma was not located in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Uniform continuity on topological vector spaces",
+      "anchor": {
+        "section": "Generalization to topological vector spaces",
+        "snippet": "the notion of uniform continuity of a map"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "IsUniformAddGroup",
+        "module": "Mathlib.Topology.Algebra.IsUniformGroup.Defs",
+        "match_kind": "generalization"
+      },
+      "note": "Mathlib equips additive groups (including TVS) with a canonical uniform structure via `IsUniformAddGroup`, supporting `UniformContinuous`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Linear maps: continuous iff uniformly continuous",
+      "anchor": {
+        "section": "Generalization to topological vector spaces",
+        "snippet": "For linear transformations"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "ContinuousLinearMap.uniformContinuous",
+        "module": "Mathlib.Topology.Algebra.Module.LinearMap",
+        "match_kind": "exact"
+      },
+      "note": "Continuous linear maps between uniform additive groups are uniformly continuous; the converse is immediate from `UniformContinuous.continuous`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Uniform continuity on uniform spaces",
+      "anchor": {
+        "section": "Generalization to uniform spaces",
+        "snippet": "is called uniformly continuous if for every entourage"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "UniformContinuous",
+        "module": "Mathlib.Topology.UniformSpace.Defs",
+        "match_kind": "exact"
+      },
+      "note": "Defined at line 807 via uniformity filters (equivalent to the entourage formulation).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Uniformly continuous maps preserve Cauchy sequences",
+      "anchor": {
+        "section": "Generalization to uniform spaces",
+        "snippet": "uniformly continuous maps transform Cauchy sequences into Cauchy sequences"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "UniformContinuous.comp_cauchySeq",
+        "module": "Mathlib.Topology.UniformSpace.Cauchy",
+        "match_kind": "exact"
+      },
+      "note": "Verified at line 254 of Cauchy.lean.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Generalized Heine–Cantor theorem",
+      "anchor": {
+        "section": "Generalization to uniform spaces",
+        "snippet": "each continuous function from a compact Hausdorff space to a uniform space is uniformly continuous"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "CompactSpace.uniformContinuous_of_continuous",
+        "module": "Mathlib.Topology.UniformSpace.HeineCantor",
+        "match_kind": "exact"
+      },
+      "note": "Mathlib's Heine-Cantor is already stated in the uniform-space generality.",
+      "provenance": "ai"
+    }
+  ]
+}

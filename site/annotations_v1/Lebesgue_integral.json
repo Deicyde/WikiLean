@@ -1,0 +1,389 @@
+{
+  "slug": "Lebesgue_integral",
+  "wikipedia_title": "Lebesgue integral",
+  "display_title": "Lebesgue integral",
+  "schema_version": 1,
+  "source": "claude-agent-sdk/annotate_articles.py",
+  "annotations": [
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\mu \\left(\\{x\\mid f(x)>y\\}\\right)\\,dy.}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Informal slab-area heuristic, not a standalone Mathlib declaration."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle F(y)=\\mu \\{x|f(x)>y\\}.}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Distribution function defined inline; no matching decl in the provided list."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\int f\\,d\\mu =\\int _{0}^{\\infty }F(y)\\,dy}"
+      },
+      "status": "partial",
+      "decl": "MeasureTheory.lintegral",
+      "module": "Mathlib.MeasureTheory.Integral.Lebesgue.Basic",
+      "note": "Layer-cake characterization of the Lebesgue integral; lintegral exists but this specific identity isn't in the provided list."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\{x\\,\\mid \\,f(x)>t\\}\\in X\\quad \\forall t\\in \\mathbb {R} .}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Definition of measurability via preimages; no decl provided for Measurable."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\sup _{k\\in \\mathbb {N} }f_{k},\\quad \\liminf _{k\\in \\mathbb {N} }f_{k},\\quad \\limsup _{k\\in \\mathbb {N} }f_{k}}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Closure of measurable functions under sup/liminf/limsup; not in provided decls."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\int _{E}f\\,d\\mu =\\int _{E}f(x)\\,d\\mu (x)=\\int _{E}f(x)\\,\\mu (dx).}"
+      },
+      "status": "formalized",
+      "decl": "MeasureTheory.lintegral",
+      "module": "Mathlib.MeasureTheory.Integral.Lebesgue.Basic",
+      "note": "Notational variants of the Lebesgue integral, captured by lintegral."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\langle \\mu ,f\\rangle .}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Dual-pair notation for integration against a measure; not represented as a separate decl."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\int 1_{S}\\,d\\mu =\\mu (S).}"
+      },
+      "status": "partial",
+      "decl": "MeasureTheory.lintegral",
+      "module": "Mathlib.MeasureTheory.Integral.Lebesgue.Basic",
+      "note": "Lintegral of indicator equals measure; specific lemma not in provided list."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\sum _{k}a_{k}1_{S_{k}}}"
+      },
+      "status": "partial",
+      "decl": "MeasureTheory.SimpleFunc.lintegral",
+      "module": "Mathlib.MeasureTheory.Function.SimpleFunc",
+      "note": "Simple functions exist in Mathlib (SimpleFunc); this linear-combination form is the canonical representation."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\int \\left(\\sum _{k}a_{k}1_{S_{k}}\\right)\\,d\\mu =\\sum _{k}a_{k}\\int 1_{S_{k}}\\,d\\mu =\\sum _{k}a_{k}\\,\\mu (S_{k})}"
+      },
+      "status": "formalized",
+      "decl": "MeasureTheory.SimpleFunc.lintegral",
+      "module": "Mathlib.MeasureTheory.Function.SimpleFunc",
+      "note": "This is exactly the defining sum for SimpleFunc.lintegral."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle f=\\sum _{k}a_{k}1_{S_{k}}}"
+      },
+      "status": "partial",
+      "decl": "MeasureTheory.SimpleFunc.lintegral",
+      "module": "Mathlib.MeasureTheory.Function.SimpleFunc",
+      "note": "Canonical representation of simple functions used by SimpleFunc."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\int _{B}s\\,\\mathrm {d} \\mu =\\int 1_{B}\\,s\\,\\mathrm {d} \\mu =\\sum _{k}a_{k}\\,\\mu (S_{k}\\cap B).}"
+      },
+      "status": "partial",
+      "decl": "MeasureTheory.SimpleFunc.lintegral",
+      "module": "Mathlib.MeasureTheory.Function.SimpleFunc",
+      "note": "Integral of simple function over a subset; restriction-version of SimpleFunc.lintegral."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\int _{E}f\\,d\\mu =\\sup \\left\\{\\,\\int _{E}s\\,d\\mu :0\\leq s\\leq f,\\ s\\ {\\text{simple}}\\,\\right\\}.}"
+      },
+      "status": "formalized",
+      "decl": "MeasureTheory.lintegral",
+      "module": "Mathlib.MeasureTheory.Integral.Lebesgue.Basic",
+      "note": "This is precisely Mathlib's definition of lintegral as a supremum over simple functions."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\int f\\,d\\mu =\\lim _{n\\to \\infty }\\int s_{n}\\,d\\mu }"
+      },
+      "status": "partial",
+      "decl": "MeasureTheory.lintegral",
+      "module": "Mathlib.MeasureTheory.Integral.Lebesgue.Basic",
+      "note": "Approximation by dyadic simple functions; corollary of lintegral definition, no specific decl listed."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle f=f^{+}-f^{-},}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Positive/negative part decomposition; no specific decl in provided list."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle {\\begin{aligned}f^{+}(x)&={\\begin{cases}f(x){\\hphantom {-}}&{\\text{if }}f(x)>0,\\\\0&{\\text{otherwise}},\\end{cases}}\\\\f^{-}(x)&={\\begin{cases}-f(x)&{\\text{if }}f(x)<0,\\\\0&{\\text{otherwise}}.\\end{cases}}\\end{cases}}}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Definitions of f⁺ and f⁻; not in the provided declaration list."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle |f|=f^{+}+f^{-}.}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Identity relating absolute value to positive/negative parts; not in provided list."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\min \\left(\\int f^{+}\\,d\\mu ,\\int f^{-}\\,d\\mu \\right)<\\infty .}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Condition for integral of signed function to be defined; not provided as a named decl."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\int f\\,d\\mu =\\int f^{+}\\,d\\mu -\\int f^{-}\\,d\\mu .}"
+      },
+      "status": "partial",
+      "decl": "MeasureTheory.integral",
+      "module": "Mathlib.MeasureTheory.Integral.Bochner.Basic",
+      "note": "Signed-function integral via positive/negative parts; integral is the Bochner extension."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\int |f|\\,\\mathrm {d} \\mu <\\infty ,}"
+      },
+      "status": "formalized",
+      "decl": "MeasureTheory.Integrable",
+      "module": "Mathlib.MeasureTheory.Function.L1Space.Integrable",
+      "note": "Finite integral of |f| is exactly the Integrable predicate."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle f^{*}(t)\\ {\\stackrel {\\text{def}}{=}}\\ \\mu \\left(\\{x\\in E\\mid f(x)>t\\}\\right).}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Distribution/decreasing-rearrangement function; no matching decl in the provided list."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\int _{E}f\\,d\\mu \\ {\\stackrel {\\text{def}}{=}}\\ \\int _{0}^{\\infty }f^{*}(t)\\,dt.}"
+      },
+      "status": "partial",
+      "decl": "MeasureTheory.lintegral",
+      "module": "Mathlib.MeasureTheory.Integral.Lebesgue.Basic",
+      "note": "Layer-cake/improper-Riemann formulation of the Lebesgue integral; lintegral is the underlying object."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\int h\\,d\\mu =\\int f\\,d\\mu +i\\int g\\,d\\mu .}"
+      },
+      "status": "partial",
+      "decl": "MeasureTheory.integral",
+      "module": "Mathlib.MeasureTheory.Integral.Bochner.Basic",
+      "note": "Complex-valued integral via Bochner integral; subsumed by MeasureTheory.integral."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\int _{[0,1]}1_{\\mathbf {Q} }\\,d\\mu =\\mu (\\mathbf {Q} \\cap [0,1])=0,}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Specific example computation; not a standalone named result."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\int _{b}^{a}f=-\\int _{a}^{b}f.}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Oriented Riemann integral convention; not the Lebesgue framework here."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\int _{A}f\\,d\\mu =\\int _{[a,b]}f\\,d\\mu }"
+      },
+      "status": "partial",
+      "decl": "MeasureTheory.lintegral",
+      "module": "Mathlib.MeasureTheory.Integral.Lebesgue.Basic",
+      "note": "Integration over a measurable subset; captured via lintegral with set restriction."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\sum _{k}\\int f_{k}(x)\\,dx\\quad {\\text{and}}\\quad \\int \\left[\\sum _{k}f_{k}(x)\\right]dx}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Motivational comparison of swapping sum and integral; not a single decl."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle g_{k}(x)={\\begin{cases}1&{\\text{if }}x=a_{j},j\\leq k\\\\0&{\\text{otherwise}}\\end{cases}}}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Concrete counterexample sequence; not a standalone Mathlib decl."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\int f\\,d\\mu =\\int g\\,d\\mu .}"
+      },
+      "status": "partial",
+      "decl": "MeasureTheory.lintegral",
+      "module": "Mathlib.MeasureTheory.Integral.Lebesgue.Basic",
+      "note": "Almost-everywhere equality preserves the integral; standard lintegral congruence, no specific lemma listed."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\int (af+bg)\\,d\\mu =a\\int f\\,d\\mu +b\\int g\\,d\\mu .}"
+      },
+      "status": "partial",
+      "decl": "MeasureTheory.integral",
+      "module": "Mathlib.MeasureTheory.Integral.Bochner.Basic",
+      "note": "Linearity of the integral; intrinsic to integral but no specific lemma in provided list."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\int f\\,d\\mu \\leq \\int g\\,d\\mu .}"
+      },
+      "status": "partial",
+      "decl": "MeasureTheory.lintegral",
+      "module": "Mathlib.MeasureTheory.Integral.Lebesgue.Basic",
+      "note": "Monotonicity of the integral; standard lemma about lintegral not specifically listed."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle f_{k}(x)\\leq f_{k+1}(x)\\quad \\forall k\\in \\mathbb {N} ,\\,\\forall x\\in E.}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Monotonicity hypothesis of MCT; not a standalone decl."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\lim _{k}\\int f_{k}\\,d\\mu =\\int f\\,d\\mu .}"
+      },
+      "status": "partial",
+      "decl": "MeasureTheory.lintegral",
+      "module": "Mathlib.MeasureTheory.Integral.Lebesgue.Basic",
+      "note": "Conclusion of monotone convergence theorem; MCT exists in Mathlib but not listed explicitly."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\int \\liminf _{k}f_{k}\\,d\\mu \\leq \\liminf _{k}\\int f_{k}\\,d\\mu .}"
+      },
+      "status": "partial",
+      "decl": "MeasureTheory.lintegral",
+      "module": "Mathlib.MeasureTheory.Integral.Lebesgue.Basic",
+      "note": "Fatou's lemma is in Mathlib (lintegral_liminf_le), but the specific decl wasn't provided."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\lim _{k}\\int f_{k}\\,d\\mu =\\int f\\,d\\mu .}"
+      },
+      "status": "partial",
+      "decl": "MeasureTheory.integral",
+      "module": "Mathlib.MeasureTheory.Integral.Bochner.Basic",
+      "note": "Dominated convergence conclusion; DCT exists in Mathlib but specific decl not listed."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\left\\|f\\right\\|=\\int |f(x)|\\,dx.}"
+      },
+      "status": "partial",
+      "decl": "MeasureTheory.Integrable",
+      "module": "Mathlib.MeasureTheory.Function.L1Space.Integrable",
+      "note": "L¹ norm via integral of |f|; related to Integrable/L¹ space but no norm decl in list."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\operatorname {sinc} (x)={\\frac {\\sin(x)}{x}}}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Sinc function example; not in the provided decl list."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\int _{-\\infty }^{\\infty }\\left|{\\frac {\\sin(x)}{x}}\\right|dx=\\infty .}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Counterexample showing sinc is not Lebesgue integrable; not a standalone decl."
+    }
+  ]
+}

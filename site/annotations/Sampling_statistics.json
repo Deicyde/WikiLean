@@ -1,0 +1,793 @@
+{
+  "slug": "Sampling_statistics",
+  "wikipedia_title": "Sampling (statistics)",
+  "display_title": "Sampling (statistics)",
+  "schema_version": 3,
+  "annotation_style": "theorem_article",
+  "annotations": [
+    {
+      "kind": "definition",
+      "label": "Sampling",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "sampling is the selection of a subset of individuals from within a statistical population"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Survey-statistics notion of sampling has no formalization in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Acceptance sampling",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "Acceptance sampling is used to determine if a production lot of material meets the governing specifications"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Quality-control acceptance sampling is not present in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Population",
+      "anchor": {
+        "section": "Population definition",
+        "snippet": "A population can be defined as including all people or items with the characteristics one wishes to understand"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Statistical population is not a formalized concept in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Batch as population",
+      "anchor": {
+        "section": "Population definition",
+        "snippet": "the batch is the population"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "An illustrative example with no Mathlib counterpart.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Roulette wheel population",
+      "anchor": {
+        "section": "Population definition",
+        "snippet": "Joseph Jagger studied the behaviour of roulette wheels at a casino in Monte Carlo"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "A historical anecdote with no Mathlib counterpart.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Superpopulation",
+      "anchor": {
+        "section": "Population definition",
+        "snippet": "sampling theory may treat the observed population as a sample from a larger 'superpopulation'"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The superpopulation modeling concept is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Sampling frame",
+      "anchor": {
+        "section": "Sampling frame",
+        "snippet": "we seek a sampling frame which has the property that we can identify every single element"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The survey sampling-frame concept has no formalization in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Probability sample",
+      "anchor": {
+        "section": "Sampling frame",
+        "snippet": "A probability sample is a sample in which every unit in the population has a chance"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib formalizes general probability distributions (PMF) but not the survey notion of a probability sample.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Estimating total street income",
+      "anchor": {
+        "section": "Sampling frame",
+        "snippet": "We want to estimate the total income of adults living in a given street"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "An illustrative estimation example with no Mathlib counterpart.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Equal probability of selection (EPS) design",
+      "anchor": {
+        "section": "Sampling frame",
+        "snippet": "this is known as an 'equal probability of selection' (EPS) design"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "PMF.uniformOfFintype",
+        "module": "Mathlib.Probability.Distributions.Uniform",
+        "match_kind": null
+      },
+      "note": "Mathlib's uniform PMF gives every element equal probability, the underlying math of EPS, but not the survey-design concept itself.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Common traits of probability sampling",
+      "anchor": {
+        "section": "Sampling frame",
+        "snippet": "Every element has a known nonzero probability of being sampled and involves random selection at some point"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This characterization of probability sampling is not stated in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Nonprobability sampling",
+      "anchor": {
+        "section": "Nonprobability sampling",
+        "snippet": "Nonprobability sampling is any sampling method where some elements of the population have no chance of selection"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Nonprobability sampling is not a formalized concept in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "First to answer the door",
+      "anchor": {
+        "section": "Nonprobability sampling",
+        "snippet": "We visit every household in a given street, and interview the first person to answer the door"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "An illustrative example with no Mathlib counterpart.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Simple random sample (SRS)",
+      "anchor": {
+        "section": "Simple random sampling",
+        "snippet": "In a simple random sample (SRS) of a given size, all subsets of a sampling frame have an equal probability of being selected"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "PMF.uniformOfFinset",
+        "module": "Mathlib.Probability.Distributions.Uniform",
+        "match_kind": null
+      },
+      "note": "Uniform PMF infrastructure can express equiprobable selection over a finset of subsets, but SRS is not defined as such in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "SRS vulnerability to sampling error",
+      "anchor": {
+        "section": "Simple random sampling",
+        "snippet": "Simple random sampling can be vulnerable to sampling error because the randomness of the selection"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This qualitative claim about SRS is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Systematic sampling",
+      "anchor": {
+        "section": "Systematic sampling",
+        "snippet": "Systematic sampling (also known as interval sampling) relies on arranging the study population according to some ordering scheme"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Systematic/interval sampling has no formalization in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Systematic sampling is probability sampling",
+      "anchor": {
+        "section": "Systematic sampling",
+        "snippet": "systematic sampling is a type of probability sampling"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This classification claim is not present in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Sampling along a long street",
+      "anchor": {
+        "section": "Systematic sampling",
+        "snippet": "suppose we wish to sample people from a long street that starts in a poor area"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "An illustrative example with no Mathlib counterpart.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Vulnerability to periodicities",
+      "anchor": {
+        "section": "Systematic sampling",
+        "snippet": "systematic sampling is especially vulnerable to periodicities in the list"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This qualitative caution is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Systematic sampling is an EPS method",
+      "anchor": {
+        "section": "Systematic sampling",
+        "snippet": "systematic sampling is an EPS method, because all elements have the same probability of selection"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This property of systematic sampling is not stated in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Stratified sampling / strata",
+      "anchor": {
+        "section": "Stratified sampling",
+        "snippet": "the frame can be organized by these categories into separate"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Stratified sampling and strata are not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Sampling fraction",
+      "anchor": {
+        "section": "Stratified sampling",
+        "snippet": "to the size of the population is called a sampling fraction"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The sampling-fraction ratio is not a named concept in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Poststratification",
+      "anchor": {
+        "section": "Stratified sampling",
+        "snippet": "Stratification is sometimes introduced after the sampling phase in a process called"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Poststratification is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Choice-based sampling / oversampling",
+      "anchor": {
+        "section": "Stratified sampling",
+        "snippet": "Choice-based sampling or oversampling is one of the stratified sampling strategies"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Choice-based/oversampling strategies have no Mathlib formalization.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Probability-proportional-to-size sampling",
+      "anchor": {
+        "section": "Probability-proportional-to-size sampling",
+        "snippet": "probability proportional to size ('PPS') sampling, in which the selection probability for each element is set to be proportional to its size measure"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "PPS sampling is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "PPS sample of six schools",
+      "anchor": {
+        "section": "Probability-proportional-to-size sampling",
+        "snippet": "Suppose we have six schools with populations of 150, 180, 200, 220, 260, and 490 students"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "A worked numerical example with no Mathlib counterpart.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Cluster sampling",
+      "anchor": {
+        "section": "Cluster sampling",
+        "snippet": "it is more cost-effective to select respondents in groups"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Cluster sampling is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Multistage sampling",
+      "anchor": {
+        "section": "Cluster sampling",
+        "snippet": "Cluster sampling is commonly implemented as multistage sampling"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Multistage sampling has no formalization in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Quota sampling",
+      "anchor": {
+        "section": "Quota sampling",
+        "snippet": "In quota sampling , the population is first segmented into mutually exclusive sub-groups"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Quota sampling is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Sample 200 females and 300 males",
+      "anchor": {
+        "section": "Quota sampling",
+        "snippet": "an interviewer may be told to sample 200 females and 300 males between the age of 45 and 60"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "An illustrative example with no Mathlib counterpart.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Minimax sampling",
+      "anchor": {
+        "section": "Minimax sampling",
+        "snippet": "one can resample the dataset in a conservative manner called minimax sampling"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Minimax resampling for imbalanced data is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Anderson minimax ratio equals 0.5",
+      "anchor": {
+        "section": "Minimax sampling",
+        "snippet": "Anderson minimax ratio whose value is proved to be 0.5"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This specific statistics result is absent from Mathlib (the unrelated game-theory minimax theorem does not formalize it).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Accidental sampling",
+      "anchor": {
+        "section": "Accidental sampling",
+        "snippet": "Accidental sampling (sometimes known as grab , convenience , or opportunity sampling ) is a type of nonprobability sampling"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Accidental/convenience sampling has no Mathlib formalization.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Voluntary sampling",
+      "anchor": {
+        "section": "Voluntary sampling",
+        "snippet": "The voluntary sampling method is a type of nonprobability sampling"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Voluntary sampling is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Line-intercept sampling",
+      "anchor": {
+        "section": "Line-intercept sampling",
+        "snippet": "Line-intercept sampling is a method of sampling elements in a region whereby an element is sampled if a chosen line segment"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Line-intercept sampling is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Panel sampling",
+      "anchor": {
+        "section": "Panel sampling",
+        "snippet": "Panel sampling is the method of first selecting a group of participants through a random sampling method"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Panel sampling is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Snowball sampling",
+      "anchor": {
+        "section": "Snowball sampling",
+        "snippet": "Snowball sampling involves finding a small group of initial respondents and using them to recruit more respondents"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Snowball sampling is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Theoretical sampling",
+      "anchor": {
+        "section": "Theoretical sampling",
+        "snippet": "occurs when samples are selected on the basis of the results of the data collected so far"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Theoretical sampling is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Active sampling",
+      "anchor": {
+        "section": "Active sampling",
+        "snippet": "In active sampling , the samples which are used for training a machine learning algorithm are actively selected"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Active (machine-learning) sampling is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Judgement sampling",
+      "anchor": {
+        "section": "Judgmental selection",
+        "snippet": "Judgement sampling, also known as expert or purposive sampling, is a type of non-random sampling"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Judgement/purposive sampling is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Haphazard sampling",
+      "anchor": {
+        "section": "Haphazard sampling",
+        "snippet": "Haphazard sampling refers to the idea of using human judgement to simulate randomness"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Haphazard sampling is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "With/without replacement",
+      "anchor": {
+        "section": "Replacement of selected units",
+        "snippet": "Sampling schemes may be without replacement ('WOR' – no element can be selected more than once in the same sample) or with replacement"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has no sampling-with/without-replacement distribution (the only hypergeometric file is the analytic ₂F₁ function, unrelated).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Catch-and-release fish sampling",
+      "anchor": {
+        "section": "Replacement of selected units",
+        "snippet": "if we catch fish, measure them, and immediately return them to the water"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "An illustrative example with no Mathlib counterpart.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Sampling Twitter data",
+      "anchor": {
+        "section": "Applications of sampling",
+        "snippet": "there are about 600 million tweets produced every day"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "An application example with no Mathlib counterpart.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Classification of total errors",
+      "anchor": {
+        "section": "Errors in sample surveys",
+        "snippet": "Total errors can be classified into sampling errors and non-sampling errors"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This survey-error taxonomy is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Sampling errors and biases",
+      "anchor": {
+        "section": "Sampling errors and biases",
+        "snippet": "Sampling errors and biases are induced by the sample design"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Survey sampling errors and biases are not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Non-sampling error",
+      "anchor": {
+        "section": "Non-sampling error",
+        "snippet": "Non-sampling errors are other errors which can impact final survey estimates"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Non-sampling error is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "When to weight data",
+      "anchor": {
+        "section": "Survey weights",
+        "snippet": "data should usually be weighted if the sample design does not give each individual an equal chance of being selected"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This survey-weighting guidance is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Stratified UK sample weighting",
+      "anchor": {
+        "section": "Survey weights",
+        "snippet": "a simple random sample of individuals in the United Kingdom might not include some in remote Scottish islands"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "An illustrative weighting example with no Mathlib counterpart.",
+      "provenance": "ai"
+    }
+  ]
+}

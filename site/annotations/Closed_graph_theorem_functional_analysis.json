@@ -1,0 +1,425 @@
+{
+  "slug": "Closed_graph_theorem_functional_analysis",
+  "wikipedia_title": "Closed graph theorem (functional analysis)",
+  "display_title": "Closed graph theorem (functional analysis)",
+  "schema_version": 3,
+  "annotation_style": "theorem_article",
+  "annotations": [
+    {
+      "kind": "theorem",
+      "label": "Closed graph theorem (informal statement)",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "the theorem states that a linear operator between two Banach spaces is continuous if and only if the graph of the operator is closed"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "LinearMap.continuous_of_isClosed_graph",
+        "module": "Mathlib.Analysis.Normed.Operator.Banach",
+        "match_kind": "exact"
+      },
+      "note": "Mathlib's closed graph theorem proves the substantive direction: a linear map between Banach spaces with closed graph is continuous.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Bounded equals continuous for normed spaces",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "Since an operator between two normed spaces is a bounded linear operator if and only if it is a continuous linear operator"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "IsBoundedLinearMap.isLinearMap_and_continuous_iff_isBoundedLinearMap",
+        "module": "Mathlib.Analysis.Normed.Operator.BoundedLinearMaps",
+        "match_kind": "exact"
+      },
+      "note": "States that a map between normed spaces is linear and continuous iff it is a bounded linear map.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Sufficient condition for closed graph",
+      "anchor": {
+        "section": "Explanation",
+        "snippet": "for the graph of T to be closed, it is enough that"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "LinearMap.continuous_of_seq_closed_graph",
+        "module": "Mathlib.Analysis.Normed.Operator.Banach",
+        "match_kind": null
+      },
+      "note": "Mathlib encodes exactly this sequential condition but folds it directly into a continuity conclusion (via IsSeqClosed.isClosed) rather than stating graph-closedness standalone.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Closedness in coarser topology implies closed in norm topology",
+      "anchor": {
+        "section": "Explanation",
+        "snippet": "if the graph of T is closed in some topology coarser than the norm topology, then it is closed in the norm topology"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "IsClosed.mono",
+        "module": "Mathlib.Topology.Order",
+        "match_kind": "generalization"
+      },
+      "note": "IsClosed.mono gives the general-topology fact that a set closed in a coarser topology is closed in any finer one.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Open mapping theorem deduced from closed graph theorem",
+      "anchor": {
+        "section": "Statement",
+        "snippet": "the open mapping theorem can in turn be deduced from the closed graph theorem"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "ContinuousLinearMap.isOpenMap",
+        "module": "Mathlib.Analysis.Normed.Operator.Banach",
+        "match_kind": "exact"
+      },
+      "note": "The open mapping theorem is formalized, though Mathlib proves it directly via Baire rather than deducing it from the closed graph theorem.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Failure without completeness",
+      "anchor": {
+        "section": "Statement",
+        "snippet": "one knows that the theorem fails without the completeness assumption"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No counterexample showing failure of the closed graph theorem without completeness is formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Closed graph theorem (Banach/Fréchet spaces)",
+      "anchor": {
+        "type": "theorem_box",
+        "value": "Theorem"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "ContinuousLinearMap.ofIsClosedGraph",
+        "module": "Mathlib.Analysis.Normed.Operator.Banach",
+        "match_kind": "special_case"
+      },
+      "note": "Mathlib has the Banach-space case but not the more general Fréchet-space version stated in the theorem box.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Boundedness of Fourier transform via closed graph theorem",
+      "anchor": {
+        "section": "Example",
+        "snippet": "The Hausdorff–Young inequality says that the Fourier transformation"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Hausdorff–Young inequality / Lp-boundedness of the Fourier transform is not in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Graph inner product and graph norm",
+      "anchor": {
+        "section": "On Hilbert spaces",
+        "snippet": "Define the graph inner product on"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No graph inner product or graph norm structure on an operator's domain is defined in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Closed operator iff graph is Banach",
+      "anchor": {
+        "section": "On Hilbert spaces",
+        "snippet": "is Banach"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "LinearPMap.IsClosed",
+        "module": "Mathlib.Topology.Algebra.Module.LinearPMap",
+        "match_kind": null
+      },
+      "note": "Mathlib defines a closed operator as having closed graph, but does not state the equivalence with the graph (under the graph norm) being a Banach space.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Bounded operator: closed iff domain closed",
+      "anchor": {
+        "section": "On Hilbert spaces",
+        "snippet": "is bounded, then"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "LinearPMap.IsClosed",
+        "module": "Mathlib.Topology.Algebra.Module.LinearPMap",
+        "match_kind": null
+      },
+      "note": "The LinearPMap closed-operator infrastructure exists, but the specific equivalence (for bounded operators, closed iff domain closed) is not stated.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Closed graph theorem (barrelled to Fréchet)",
+      "anchor": {
+        "type": "theorem_box",
+        "value": "Theorem"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "BarrelledSpace",
+        "module": "Mathlib.Analysis.LocallyConvex.Barrelled",
+        "match_kind": null
+      },
+      "note": "Barrelled spaces are defined (with Banach–Steinhaus), but no closed graph theorem from a barrelled space to a Fréchet space is proven.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Closed graph theorem between F-spaces",
+      "anchor": {
+        "type": "theorem_box",
+        "value": "Theorem"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has no closed graph theorem at the level of F-spaces (complete metrizable TVS); only the Banach case exists.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Equivalent conditions for continuity between F-spaces",
+      "anchor": {
+        "type": "theorem_box",
+        "value": "Theorem"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The bundle of equivalent continuity/closed-graph conditions for maps between F-spaces is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Pseudometrizable metrizable iff Hausdorff",
+      "anchor": {
+        "section": "Complete pseudometrizable codomain",
+        "snippet": "A pseudometrizable space is metrizable if and only if it is Hausdorff"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "PseudoMetrizableSpace.toMetrizableSpace",
+        "module": "Mathlib.Topology.Metrizable.Basic",
+        "match_kind": null
+      },
+      "note": "Both implications exist as instances (T0/Hausdorff pseudometrizable → metrizable, and metrizable → T2), but not packaged as a single biconditional.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Closed map from ultrabarrelled into complete pseudometrizable TVS",
+      "anchor": {
+        "type": "theorem_box",
+        "value": "Closed Graph Theorem [ 8 ] — Also, a clo"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Ultrabarrelled spaces and this closed graph theorem variant are not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Closed bounded map from infrabarreled into complete pseudometrizable LCS",
+      "anchor": {
+        "type": "theorem_box",
+        "value": "Closed Graph Theorem — A closed and boun"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Infrabarrelled spaces and this closed graph theorem variant are not present in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Closed graph theorem (inductive limit of Baire TVSs, webbed codomain)",
+      "anchor": {
+        "type": "theorem_box",
+        "value": "Theorem [ 9 ]"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Webbed spaces and inductive-limit closed graph theorems are not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Closed surjective map onto ultrabarrelled space",
+      "anchor": {
+        "type": "theorem_box",
+        "value": "Closed Graph Theorem [ 8 ] — A closed su"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This ultrabarrelled-target closed/open mapping variant is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Closed graph theorem via open mapping property",
+      "anchor": {
+        "type": "theorem_box",
+        "value": "Theorem [ 10 ]"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This abstract closed-graph-via-open-mapping characterization at TVS generality is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Polish space and Souslin space",
+      "anchor": {
+        "section": "Borel graph theorem",
+        "snippet": "a topological space is called a Polish space if it is a separable complete metrizable space"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "PolishSpace",
+        "module": "Mathlib.Topology.MetricSpace.Polish",
+        "match_kind": null
+      },
+      "note": "PolishSpace is defined exactly, but Souslin spaces (as a space-level class) are not; only analytic sets (MeasureTheory.AnalyticSet) exist.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "K-sigma-delta space",
+      "anchor": {
+        "section": "Borel graph theorem",
+        "snippet": "if it is the countable intersection of countable unions of compact sets"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No K-sigma-delta (Kσδ) space notion is defined in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "K-analytic space",
+      "anchor": {
+        "section": "Borel graph theorem",
+        "snippet": "is called K-analytic if it is the continuous image of a"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "K-analytic spaces are not defined; MeasureTheory.AnalyticSet is a related but distinct (continuous image of Polish) notion.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Borel graph theorem",
+      "anchor": {
+        "type": "theorem_box",
+        "value": "Borel Graph Theorem — Let [MATH] be line"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Borel graph theorem (continuity from Borel-measurable graph for Polish-type spaces) is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Generalized Borel graph theorem",
+      "anchor": {
+        "type": "theorem_box",
+        "value": "Generalized Borel Graph Theorem [ 12 ] —"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The generalized (K-analytic / Souslin) Borel graph theorem is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Closed operator into finite-dimensional TVS is continuous",
+      "anchor": {
+        "section": "Related results",
+        "snippet": "closed linear operator from a Hausdorff locally convex TVS"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": "LinearMap.continuous_of_finiteDimensional",
+        "module": "Mathlib.Topology.Algebra.Module.FiniteDimension",
+        "match_kind": null
+      },
+      "note": "Mathlib proves continuity of linear maps from a finite-dimensional domain, not continuity of a closed operator into a finite-dimensional codomain.",
+      "provenance": "ai"
+    }
+  ]
+}

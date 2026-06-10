@@ -1,0 +1,377 @@
+{
+  "slug": "Mean_value_theorem",
+  "wikipedia_title": "Mean value theorem",
+  "display_title": "Mean value theorem",
+  "schema_version": 3,
+  "annotation_style": "theorem_article",
+  "annotations": [
+    {
+      "kind": "theorem",
+      "label": "Mean value theorem (informal statement)",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "The theorem states precisely that if a real-valued function is continuous on a closed interval"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "exists_hasDerivAt_eq_slope",
+        "module": "Mathlib.Analysis.Calculus.Deriv.MeanValue",
+        "match_kind": "exact"
+      },
+      "note": "Mathlib's `exists_hasDerivAt_eq_slope` directly states the existence of c ∈ Ioo a b with f' c = (f b − f a)/(b − a) under continuity on Icc a b and differentiability on Ioo a b.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Mean value theorem",
+      "anchor": {
+        "section": "Statement",
+        "snippet": "be a continuous function on the closed interval"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "exists_hasDerivAt_eq_slope",
+        "module": "Mathlib.Analysis.Calculus.Deriv.MeanValue",
+        "match_kind": "exact"
+      },
+      "note": "Exact formalization of Lagrange's MVT with `ContinuousOn (Icc a b)` and `HasDerivAt` on `Ioo a b` hypotheses.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Mean value theorem (generalized setting)",
+      "anchor": {
+        "section": "Statement",
+        "snippet": "The mean value theorem is still valid in a slightly more general setting"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "exists_hasDerivAt_eq_slope",
+        "module": "Mathlib.Analysis.Calculus.Deriv.MeanValue",
+        "match_kind": "exact"
+      },
+      "note": "Mathlib's statement already requires only continuity on the closed interval and differentiability on the open interval, matching the generalized setting.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Zero derivative implies constant",
+      "anchor": {
+        "section": "Implications",
+        "snippet": "is a continuous, real-valued function, defined on an arbitrary interval"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "constant_of_derivWithin_zero",
+        "module": "Mathlib.Analysis.Calculus.MeanValue",
+        "match_kind": "exact"
+      },
+      "note": "`constant_of_derivWithin_zero` shows a function with zero derivative on `Icc a b` is constant; `is_const_of_deriv_eq_zero` gives the global version.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Equal derivatives differ by constant",
+      "anchor": {
+        "section": "Implications",
+        "snippet": "of the domain of these functions, then"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "eq_of_derivWithin_eq",
+        "module": "Mathlib.Analysis.Calculus.MeanValue",
+        "match_kind": "exact"
+      },
+      "note": "`eq_of_derivWithin_eq` (and `IsOpen.exists_eq_add_of_deriv_eq`) states that two functions with equal derivatives differ by a constant.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "General antiderivative",
+      "anchor": {
+        "section": "Implications",
+        "snippet": "the most general antiderivative of"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "IsOpen.exists_eq_add_of_deriv_eq",
+        "module": "Mathlib.Analysis.Calculus.MeanValue",
+        "match_kind": "exact"
+      },
+      "note": "The 'most general antiderivative' statement follows directly from `IsOpen.exists_eq_add_of_deriv_eq`/`eq_of_derivWithin_eq`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Cauchy's mean value theorem",
+      "anchor": {
+        "section": "Cauchy's mean value theorem",
+        "snippet": "Cauchy's mean value theorem , also known as the extended mean value theorem"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "exists_ratio_hasDerivAt_eq_ratio_slope",
+        "module": "Mathlib.Analysis.Calculus.Deriv.MeanValue",
+        "match_kind": "exact"
+      },
+      "note": "`exists_ratio_hasDerivAt_eq_ratio_slope` exactly formalizes Cauchy's MVT: (g b − g a)·f' c = (f b − f a)·g' c.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Mean value theorem in several variables",
+      "anchor": {
+        "section": "Mean value theorem in several variables",
+        "snippet": "be an open subset of"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "domain_mvt",
+        "module": "Mathlib.Analysis.Calculus.Deriv.MeanValue",
+        "match_kind": "exact"
+      },
+      "note": "`domain_mvt` formalizes the multivariate MVT for `f : E → ℝ` on a convex set: there is z on the segment with `f y − f x = f' z (y − x)`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Lipschitz continuity on convex domain with bounded partials",
+      "anchor": {
+        "section": "Mean value theorem in several variables",
+        "snippet": "is convex and the partial derivatives of"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Convex.lipschitzOnWith_of_nnnorm_fderiv_le",
+        "module": "Mathlib.Analysis.Calculus.MeanValue",
+        "match_kind": "exact"
+      },
+      "note": "`Convex.lipschitzOnWith_of_nnnorm_fderiv_le` gives `LipschitzOnWith C f s` from a bound on `‖fderiv 𝕜 f x‖₊` on a convex set.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Vanishing partial derivatives on connected open set imply constant",
+      "anchor": {
+        "section": "Mean value theorem in several variables",
+        "snippet": "As an application of the above, we prove that"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "IsOpen.is_const_of_fderiv_eq_zero",
+        "module": "Mathlib.Analysis.Calculus.MeanValue",
+        "match_kind": "exact"
+      },
+      "note": "`IsOpen.is_const_of_fderiv_eq_zero` requires `IsOpen s` and `IsPreconnected s` plus vanishing Fréchet derivative, concluding `f` is constant on `s`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Mean value theorem for vector-valued functions",
+      "anchor": {
+        "type": "theorem_box",
+        "value": "Theorem"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "norm_image_sub_le_of_norm_deriv_le_segment",
+        "module": "Mathlib.Analysis.Calculus.MeanValue",
+        "match_kind": "exact"
+      },
+      "note": "Vector-valued MVT (inequality form) is `norm_image_sub_le_of_norm_deriv_le_segment`: `‖f x − f a‖ ≤ C·(x − a)` when `‖f'‖ ≤ C` on `[a, b]`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Mean value inequality",
+      "anchor": {
+        "type": "theorem_box",
+        "value": "Mean value inequality [ 10 ] — For a con"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Convex.norm_image_sub_le_of_norm_fderiv_le",
+        "module": "Mathlib.Analysis.Calculus.MeanValue",
+        "match_kind": "exact"
+      },
+      "note": "`Convex.norm_image_sub_le_of_norm_fderiv_le` states `‖f y − f x‖ ≤ C·‖y − x‖` on a convex set when the Fréchet derivative is bounded by `C`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Counterexample: non-differentiable function",
+      "anchor": {
+        "section": "Cases where the theorem cannot be applied",
+        "snippet": "The necessity of the first condition can be seen by the counterexample where the function"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No Mathlib declaration corresponds to the |x| counterexample illustrating the necessity of differentiability.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Counterexample: discontinuous function",
+      "anchor": {
+        "section": "Cases where the theorem cannot be applied",
+        "snippet": "The necessity of the second condition can be seen by the counterexample where the function"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No Mathlib declaration corresponds to the discontinuity counterexample.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Counterexample: complex-valued function",
+      "anchor": {
+        "section": "Cases where the theorem cannot be applied",
+        "snippet": "The theorem is false if a differentiable function is complex-valued instead of real-valued"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No Mathlib declaration formalizes the complex-valued counterexample (e.g. e^{ix} on [0, 2π]).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "First mean value theorem for definite integrals",
+      "anchor": {
+        "section": "First mean value theorem for definite integrals",
+        "snippet": "be a continuous function. Then there exists"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "exists_eq_const_mul_intervalIntegral_of_nonneg",
+        "module": "Mathlib.MeasureTheory.Integral.IntervalIntegral.MeanValue",
+        "match_kind": "generalization"
+      },
+      "note": "Specializing `exists_eq_const_mul_intervalIntegral_of_nonneg` with `g = 1` gives the basic first integral MVT `∫ f = f c · (b − a)`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "First mean value theorem (weighted form)",
+      "anchor": {
+        "section": "First mean value theorem for definite integrals",
+        "snippet": "is continuous and g is an integrable function that does not change sign on"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "exists_eq_const_mul_intervalIntegral_of_nonneg",
+        "module": "Mathlib.MeasureTheory.Integral.IntervalIntegral.MeanValue",
+        "match_kind": "exact"
+      },
+      "note": "`exists_eq_const_mul_intervalIntegral_of_nonneg` (and its a.e. variant) is exactly the weighted first MVT for integrals.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Second mean value theorem for definite integrals",
+      "anchor": {
+        "section": "Second mean value theorem for definite integrals",
+        "snippet": "is a positive monotonically decreasing function"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No Mathlib declaration was found for Bonnet's second mean value theorem for integrals.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Second mean value theorem (monotonic variant)",
+      "anchor": {
+        "section": "Second mean value theorem for definite integrals",
+        "snippet": "is a monotonic (not necessarily decreasing and positive) function"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib does not contain the monotonic variant of the second MVT for integrals.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Counterexample: vector-valued integral MVT fails",
+      "anchor": {
+        "section": "Second mean value theorem for definite integrals",
+        "snippet": "For example, consider the following 2-dimensional function defined on an"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No Mathlib declaration formalizes this 2-D counterexample to a vector-valued integral MVT.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Linear algebra generalization of mean value theorem",
+      "anchor": {
+        "section": "Linear algebra",
+        "snippet": "are differentiable functions on"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The determinant-based linear-algebra generalization of the MVT does not appear in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Probabilistic mean value theorem",
+      "anchor": {
+        "section": "Probability theory",
+        "snippet": "be non-negative random variables such that"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No probabilistic MVT (Di Crescenzo's theorem) was found in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Mean value theorem for holomorphic functions",
+      "anchor": {
+        "section": "Complex analysis",
+        "snippet": "be a holomorphic function on the open convex set"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No Mathlib declaration was found for the complex-analytic MVT on convex open sets.",
+      "provenance": "ai"
+    }
+  ]
+}

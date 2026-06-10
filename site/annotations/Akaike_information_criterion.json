@@ -1,0 +1,329 @@
+{
+  "slug": "Akaike_information_criterion",
+  "wikipedia_title": "Akaike information criterion",
+  "display_title": "Akaike information criterion",
+  "schema_version": 3,
+  "annotation_style": "theorem_article",
+  "annotations": [
+    {
+      "kind": "definition",
+      "label": "Akaike information criterion (AIC)",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "The Akaike information criterion ( AIC ) is an estimator of prediction error and thereby relative quality of statistical models for a given set of data."
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No AIC or model-selection-criterion definition exists in Mathlib (grep for 'Akaike'/'AIC' returns nothing in Mathlib/).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "AIC value of a model",
+      "anchor": {
+        "section": "Definition",
+        "snippet": "Let k be the number of estimated parameters in the model."
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The formula AIC = 2k - 2 ln L̂ is absent from Mathlib; Mathlib has KL divergence and log-likelihood-ratio infra but no AIC formula.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Model selection via minimum AIC",
+      "anchor": {
+        "section": "Definition",
+        "snippet": "Given a set of candidate models for the data, the preferred model is the one with the minimum AIC value."
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Statistical model-selection procedures are not in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Akaike's estimation result",
+      "anchor": {
+        "section": "Definition",
+        "snippet": "Akaike (1974) showed, however, that we can estimate, via AIC, how much more (or less) information is lost by g 1 than by g 2 ."
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Akaike's 1974 theorem connecting AIC to expected KL information loss is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Relative likelihood of model i",
+      "anchor": {
+        "section": "How to use AIC in practice",
+        "snippet": "The quantity exp((AIC min − AIC i )/2) is known as the relative likelihood of model i ."
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The relative-likelihood transform exp((AICmin - AICi)/2) has no Mathlib counterpart.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Probability interpretation of relative likelihood",
+      "anchor": {
+        "section": "How to use AIC in practice",
+        "snippet": "Then the quantity exp((AIC min − AIC i )/2) can be interpreted as being proportional to the probability that the i th model minimizes the (estimated) information loss."
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Not formalized; depends on AIC and the underlying decision-theoretic interpretation absent from Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Three candidate models example",
+      "anchor": {
+        "section": "How to use AIC in practice",
+        "snippet": "As an example, suppose that there are three candidate models, whose AIC values are 100, 102, and 110."
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Numerical AIC worked example with no formal statistics counterpart in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Replicating Student's t-test via AIC",
+      "anchor": {
+        "section": "Replicating Student's t -test",
+        "snippet": "As an example of a hypothesis test, consider the t -test to compare the means of two normally-distributed populations."
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Student's t-test and AIC-based hypothesis testing are not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Comparing categorical data sets via AIC",
+      "anchor": {
+        "section": "Comparing categorical data sets",
+        "snippet": "For another example of a hypothesis test, suppose that we have two populations, and each member of each population is in one of two categories"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Categorical-data hypothesis testing via AIC is absent from Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "AICc (small-sample corrected AIC)",
+      "anchor": {
+        "section": "Modification for small sample size",
+        "snippet": "To address such potential overfitting, AICc was developed: AICc is AIC with a correction for small sample sizes."
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "AICc and the small-sample bias correction are not defined in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "AICc converges to AIC",
+      "anchor": {
+        "section": "Modification for small sample size",
+        "snippet": "Note that as n → ∞ , the extra penalty term converges to 0, and thus AICc converges to AIC."
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Without AIC or AICc in Mathlib, this asymptotic statement is unformalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Counting parameters in a straight line model",
+      "anchor": {
+        "section": "Counting parameters",
+        "snippet": "A straight line model might be formally described as y i = b 0 + b 1 x i + ε i ."
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has no statistical-regression-model framework with explicit parameter counting.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Parameters of an autoregressive model",
+      "anchor": {
+        "section": "Counting parameters",
+        "snippet": "As another example, consider a first-order autoregressive model , defined by x i = c + φx i −1 + ε i , with the ε i being i.i.d. Gaussian (with zero mean)."
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Autoregressive AR(1) models and their parameter counting are not in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Comparing normal vs log-normal models",
+      "anchor": {
+        "section": "Transforming data",
+        "snippet": "Suppose that we want to compare two models: one with a normal distribution of y and one with a normal distribution of log( y ) ."
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Comparison of normal vs log-normal via AIC and Jacobian correction is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "BIC penalty vs AIC penalty",
+      "anchor": {
+        "section": "Comparison with BIC",
+        "snippet": "With AIC the penalty is 2 k , whereas with BIC the penalty is ln( n ) k ."
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Neither AIC nor BIC (Bayesian Information Criterion) is defined in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "BIC selects the true model asymptotically",
+      "anchor": {
+        "section": "Comparison with BIC",
+        "snippet": "To be specific, if the \"true model\" is in the set of candidates, then BIC will select the \"true model\" with probability 1, as n → ∞ ; in contrast, when selection is done via AIC, the probability can be less than 1."
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "BIC consistency theorem is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "AIC asymptotic optimality in regression",
+      "anchor": {
+        "section": "Comparison with BIC",
+        "snippet": "In regression, AIC is asymptotically optimal for selecting the model with the least mean squared error , under the assumption that the \"true model\" is not in the candidate set."
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Asymptotic optimality results for AIC in regression are not in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "AIC equivalent to minimum RSS for same k",
+      "anchor": {
+        "section": "Comparison with least squares",
+        "snippet": "Note that if all the models have the same k , then selecting the model with minimum AIC is equivalent to selecting the model with minimum RSS"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Residual-sum-of-squares-based model comparison and AIC are not in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Leave-one-out CV equivalent to AIC",
+      "anchor": {
+        "section": "Comparison with cross-validation",
+        "snippet": "Leave-one-out cross-validation is asymptotically equivalent to AIC, for ordinary linear regression models."
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Cross-validation and Stone's asymptotic-equivalence theorem are not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Asymptotic equivalence of AIC and Cp",
+      "anchor": {
+        "section": "Comparison with Mallows's C p",
+        "snippet": "This leads to an asymptotic equivalence between AIC and C p ."
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mallows's Cp statistic is not defined in Mathlib (grep for 'Mallows' returns no results).",
+      "provenance": "ai"
+    }
+  ]
+}

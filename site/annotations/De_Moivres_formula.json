@@ -1,0 +1,417 @@
+{
+  "slug": "De_Moivres_formula",
+  "wikipedia_title": "De Moivre's formula",
+  "display_title": "De Moivre's formula",
+  "schema_version": 3,
+  "annotation_style": "theorem_article",
+  "annotations": [
+    {
+      "kind": "theorem",
+      "label": "De Moivre's formula",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "states that for any real number"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Complex.cos_add_sin_mul_I_pow",
+        "module": "Mathlib.Analysis.Complex.Trigonometric",
+        "match_kind": "exact"
+      },
+      "note": "`(cos z + sin z * I) ^ n = cos (n*z) + sin (n*z) * I` for `n : ℕ`, explicitly tagged **De Moivre's formula**.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "(Lead)",
+          "snippet": "states that for any real number"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle {\\big (}\\cos x+i\\sin x{\\big )}^{n}=\\cos nx+i\\sin nx,}"
+        }
+      ]
+    },
+    {
+      "kind": "definition",
+      "label": "cis notation",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "is sometimes abbreviated to cis"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Complex.cos_add_sin_I",
+        "module": "Mathlib.Analysis.Complex.Trigonometric",
+        "match_kind": null
+      },
+      "note": "Mathlib proves `cos x + sin x * I = exp (x * I)` (and defines `Circle.exp`) but has no named `cis` abbreviation.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "(Lead)",
+          "snippet": "is sometimes abbreviated to cis"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle {\\big (}\\cos x+i\\sin x{\\big )}^{n}=\\cos nx+i\\sin nx,}"
+        }
+      ]
+    },
+    {
+      "kind": "example",
+      "label": "Worked example (n=2)",
+      "anchor": {
+        "section": "Example",
+        "snippet": "it is easy to check the validity of the equation by multiplying out the left side"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Complex.cos_add_sin_mul_I_pow",
+        "module": "Mathlib.Analysis.Complex.Trigonometric",
+        "match_kind": "special_case"
+      },
+      "note": "The n=2 instance is the general De Moivre theorem `cos_add_sin_mul_I_pow` specialized.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Example",
+          "snippet": "it is easy to check the validity of the equation by multiplying out the left side"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\left(\\cos {\\bigg (}{\\frac {\\pi }{6}}{\\bigg )}+i\\sin {\\bigg (}{\\frac {\\pi }{6}}{\\bigg )}\\right)^{2}=\\cos {\\bigg (}2\\cdot {\\frac {\\pi }{6}}{\\bigg )}+i\\sin {\\bigg (}2\\cdot {\\frac {\\pi }{6}}{\\bigg )},}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\left({\\frac {\\sqrt {3}}{2}}+{\\frac {i}{2}}\\right)^{2}={\\frac {1}{2}}+{\\frac {i{\\sqrt {3}}}{2}}.}"
+        }
+      ]
+    },
+    {
+      "kind": "theorem",
+      "label": "Euler's formula",
+      "anchor": {
+        "section": "Relation to Euler's formula",
+        "snippet": "is a precursor to Euler's formula"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Complex.exp_mul_I",
+        "module": "Mathlib.Analysis.Complex.Trigonometric",
+        "match_kind": "exact"
+      },
+      "note": "`exp (x * I) = cos x + sin x * I` is exactly Euler's formula.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Relation to Euler's formula",
+          "snippet": "is a precursor to Euler's formula"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle e^{ix}=\\cos x+i\\sin x,}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Derivation via Euler's formula",
+      "anchor": {
+        "section": "Relation to Euler's formula",
+        "snippet": "using Euler's formula and the exponential law for integer powers"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Complex.cos_add_sin_mul_I_pow",
+        "module": "Mathlib.Analysis.Complex.Trigonometric",
+        "match_kind": "invocation"
+      },
+      "note": "Mathlib's proof of `cos_add_sin_mul_I_pow` is exactly this derivation, rewriting via `exp_mul_I` and `exp_nat_mul`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Proof by induction",
+      "anchor": {
+        "section": "Proof by induction",
+        "snippet": "can be established by using mathematical induction for natural numbers"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Complex.cos_add_sin_mul_I_pow",
+        "module": "Mathlib.Analysis.Complex.Trigonometric",
+        "match_kind": "exact"
+      },
+      "note": "The theorem itself is formalized, though Mathlib proves it via the exponential rather than by induction.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Viète's formula for cos nx and sin nx",
+      "anchor": {
+        "section": "Formulae for cosine and sine individually",
+        "snippet": "This formula was given by 16th century French mathematician"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Polynomial.Chebyshev.T_complex_cos",
+        "module": "Mathlib.Analysis.SpecialFunctions.Trigonometric.Chebyshev.Basic",
+        "match_kind": null
+      },
+      "note": "Mathlib expresses cos nx and sin nx via Chebyshev polynomials (`T_complex_cos`, `U_complex_cos`) rather than the explicit binomial-sum Viète form.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Validity for complex x",
+      "anchor": {
+        "section": "Formulae for cosine and sine individually",
+        "snippet": "are in fact valid even for complex values of"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Polynomial.Chebyshev.T_complex_cos",
+        "module": "Mathlib.Analysis.SpecialFunctions.Trigonometric.Chebyshev.Basic",
+        "match_kind": "generalization"
+      },
+      "note": "`T_complex_cos`/`U_complex_cos` are stated for `θ : ℂ`, so the multiple-angle relations are formalized for complex arguments, but via Chebyshev rather than the binomial form.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Concrete instances n=2, n=3",
+      "anchor": {
+        "section": "Formulae for cosine and sine individually",
+        "snippet": "Here are the concrete instances of these equations for"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Complex.cos_three_mul",
+        "module": "Mathlib.Analysis.Complex.Trigonometric",
+        "match_kind": "special_case"
+      },
+      "note": "`cos_two_mul`, `sin_two_mul`, `cos_three_mul`, `sin_three_mul` give the explicit n=2 and n=3 expansions.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Relation to Chebyshev polynomials",
+      "anchor": {
+        "section": "Formulae for cosine and sine individually",
+        "snippet": "is in fact the value"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Polynomial.Chebyshev.T_complex_cos",
+        "module": "Mathlib.Analysis.SpecialFunctions.Trigonometric.Chebyshev.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`(T ℂ n).eval (cos θ) = cos (n * θ)` is exactly cos nx = T_n(cos x).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Failure for non-integer powers",
+      "anchor": {
+        "section": "Failure for non-integer powers, and generalization",
+        "snippet": "does not hold for non-integer powers"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has no statement that De Moivre's identity fails (is multivalued) for non-integer exponents.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "n-th roots of a complex number",
+      "anchor": {
+        "section": "Roots of complex numbers",
+        "snippet": "can be used to find the n -th roots of a complex number"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "IsAlgClosed.exists_pow_nat_eq",
+        "module": "Mathlib.FieldTheory.IsAlgClosed.Basic",
+        "match_kind": "generalization"
+      },
+      "note": "Existence of n-th roots is formalized (`exists_pow_nat_eq`, plus roots-of-unity API like `Complex.isPrimitiveRoot_exp`), but not the explicit De Moivre polar formula for them.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Roots of complex numbers",
+          "snippet": "can be used to find the n -th roots of a complex number"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle z=r\\left(\\cos x+i\\sin x\\right),}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle r^{\\frac {1}{n}}\\left(\\cos {\\frac {x+2\\pi k}{n}}+i\\sin {\\frac {x+2\\pi k}{n}}\\right)}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Complex power as a set of values",
+      "anchor": {
+        "section": "Complex numbers raised to an arbitrary power",
+        "snippet": "are arbitrary complex numbers, then the set of possible values is"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib's `Complex.cpow` is the single-valued principal branch; the multivalued set of power values is not formalized.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Complex numbers raised to an arbitrary power",
+          "snippet": "are arbitrary complex numbers, then the set of possible values is"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle z^{w}=r^{w}\\left(\\cos x+i\\sin x\\right)^{w}=\\lbrace r^{w}\\cos(xw+2\\pi kw)+ir^{w}\\sin(xw+2\\pi kw)|k\\in \\mathbb {Z} \\rbrace \\,.}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle r^{w}(\\cos xw+i\\sin xw)\\,,}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Hyperbolic analog of de Moivre",
+      "anchor": {
+        "section": "Hyperbolic trigonometry",
+        "snippet": "an analog to de Moivre's formula also applies to the hyperbolic trigonometry"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Complex.cosh_add_sinh",
+        "module": "Mathlib.Analysis.Complex.Trigonometric",
+        "match_kind": null
+      },
+      "note": "`cosh x + sinh x = exp x` together with `exp_nat_mul` yields the analog, but no explicit `(cosh x + sinh x)^n = cosh nx + sinh nx` lemma exists.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Hyperbolic formula for rational n",
+      "anchor": {
+        "section": "Hyperbolic trigonometry",
+        "snippet": "will be one of the values of"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The multivalued hyperbolic De Moivre identity for rational exponents is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Extension to complex numbers",
+      "anchor": {
+        "section": "Extension to complex numbers",
+        "snippet": "the formula holds for any complex number"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Complex.cos_add_sin_mul_I_pow",
+        "module": "Mathlib.Analysis.Complex.Trigonometric",
+        "match_kind": "special_case"
+      },
+      "note": "Mathlib only states De Moivre for natural-number exponents; the extension to arbitrary complex exponents is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Quaternion de Moivre's formula",
+      "anchor": {
+        "section": "Quaternions",
+        "snippet": "there is an analogous form of de Moivre's formula"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Quaternion.exp_of_re_eq_zero",
+        "module": "Mathlib.Analysis.Normed.Algebra.QuaternionExponential",
+        "match_kind": null
+      },
+      "note": "The Euler-type closed form `exp q = cos‖q‖ + (sin‖q‖/‖q‖)•q` for imaginary quaternions exists, but the De Moivre power form is not stated.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Quaternion trigonometric functions",
+      "anchor": {
+        "section": "Quaternions",
+        "snippet": "and the trigonometric functions are defined as"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib uses `Real.cos`/`Real.sin` of the norm in `Quaternion.exp_eq` but defines no quaternion-valued trigonometric functions.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Variation of de Moivre's formula for quaternions",
+      "anchor": {
+        "section": "Quaternions",
+        "snippet": "This leads to the variation of De Moivre's formula"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No quaternion De Moivre power identity is formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Cube roots of a quaternion",
+      "anchor": {
+        "section": "Example (2)",
+        "snippet": "Then the cube roots are given by"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No worked computation of quaternion cube roots is present in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Matrix form of de Moivre",
+      "anchor": {
+        "section": "2 × 2 matrices",
+        "snippet": "This is a direct consequence of the isomorphism between the matrices of type"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has `Matrix.planeConformalMatrix` (the `[[a,-b],[b,a]]` form) but no De Moivre power identity for rotation matrices.",
+      "provenance": "ai"
+    }
+  ]
+}

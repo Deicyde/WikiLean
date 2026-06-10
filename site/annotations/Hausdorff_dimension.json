@@ -1,0 +1,505 @@
+{
+  "slug": "Hausdorff_dimension",
+  "wikipedia_title": "Hausdorff dimension",
+  "display_title": "Hausdorff dimension",
+  "schema_version": 3,
+  "annotation_style": "theorem_article",
+  "annotations": [
+    {
+      "kind": "definition",
+      "label": "Hausdorff dimension (roughness/fractal dimension)",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "the Hausdorff dimension is a measure of roughness"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "dimH",
+        "module": "Mathlib.Topology.MetricSpace.HausdorffDimension",
+        "match_kind": "exact"
+      },
+      "note": "`dimH s` is the Hausdorff dimension of a set in an (e)metric space, the article's fractal-dimension notion.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Dimension of point, segment, square, cube",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "the Hausdorff dimension of a single point is zero"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Real.dimH_segment",
+        "module": "Mathlib.Topology.MetricSpace.HausdorffDimension",
+        "match_kind": "special_case"
+      },
+      "note": "Point (`dimH_singleton` = 0), segment (`Real.dimH_segment` = 1), and filled square/cube (`Real.dimH_of_nonempty_interior` = finrank) are all special cases formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Hausdorff dimension associated with a metric space",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "a dimensional number associated with a metric space"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "dimH",
+        "module": "Mathlib.Topology.MetricSpace.HausdorffDimension",
+        "match_kind": "exact"
+      },
+      "note": "`dimH` is defined for any `[EMetricSpace X]`, exactly the metric-space-associated dimension.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Hausdorff dimension of n-dimensional inner product space",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "the Hausdorff dimension of an n -dimensional inner product space equals n"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Real.dimH_univ_eq_finrank",
+        "module": "Mathlib.Topology.MetricSpace.HausdorffDimension",
+        "match_kind": "generalization"
+      },
+      "note": "`Real.dimH_univ_eq_finrank` proves `dimH univ = finrank ℝ E` for any finite-dimensional real normed space, of which an n-dimensional inner product space is a special case.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Koch snowflake",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "the Koch snowflake shown at right is constructed from an equilateral triangle"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Koch snowflake set and its dimension log4/log3 are not constructed in Mathlib (only `Metric.Snowflaking` references it in prose).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Topological (Lebesgue covering) dimension",
+      "anchor": {
+        "section": "Intuition",
+        "snippet": "the greatest integer n such that in every covering of X by small open balls"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "smallInductiveDimension",
+        "module": "Mathlib.Topology.SmallInductiveDimension",
+        "match_kind": null
+      },
+      "note": "Mathlib formalizes the small inductive dimension, a related topological dimension, but not the Lebesgue covering dimension specifically.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Hausdorff dimension via covering by balls",
+      "anchor": {
+        "section": "Intuition",
+        "snippet": "the Hausdorff dimension is the unique number d such that"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "dimH_def",
+        "module": "Mathlib.Topology.MetricSpace.HausdorffDimension",
+        "match_kind": "exact"
+      },
+      "note": "The characterizing property (μH[d] jumps between 0 and ∞ at d = dimH) is captured by `dimH_def`, `hausdorffMeasure_of_lt_dimH`, and `hausdorffMeasure_of_dimH_lt`, with Mathlib using diameter coverings that yield the same dimension.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Box-counting dimension",
+      "anchor": {
+        "section": "Intuition",
+        "snippet": "this defines the box-counting dimension"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The box-counting (Minkowski) dimension is not defined in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "d-dimensional Hausdorff measure",
+      "anchor": {
+        "section": "Formal definition",
+        "snippet": "defining first the d-dimensional Hausdorff measure"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "MeasureTheory.Measure.hausdorffMeasure",
+        "module": "Mathlib.MeasureTheory.Measure.Hausdorff",
+        "match_kind": "exact"
+      },
+      "note": "`MeasureTheory.Measure.hausdorffMeasure d` (notation `μH[d]`) is the d-dimensional Hausdorff measure, with `hausdorffMeasure_apply` giving the covering formula.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Hausdorff dimension (formal)",
+      "anchor": {
+        "section": "Hausdorff dimension",
+        "snippet": "The Hausdorff dimension"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "dimH",
+        "module": "Mathlib.Topology.MetricSpace.HausdorffDimension",
+        "match_kind": "exact"
+      },
+      "note": "`dimH` is the formal Hausdorff dimension defined via the Hausdorff measure.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Hausdorff dimension as supremum characterization",
+      "anchor": {
+        "section": "Hausdorff dimension",
+        "snippet": "This is the same as the supremum of the set"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "dimH_def",
+        "module": "Mathlib.Topology.MetricSpace.HausdorffDimension",
+        "match_kind": "exact"
+      },
+      "note": "`dimH_def` states `dimH s = ⨆ (d : ℝ≥0) (_ : μH[d] s = ∞), d`, exactly the supremum characterization.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Unlimited Hausdorff content",
+      "anchor": {
+        "section": "Hausdorff content",
+        "snippet": "unlimited Hausdorff content of"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No Hausdorff content (covering without diameter restriction) is defined in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Countable sets have dimension 0",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "Countable sets have Hausdorff dimension"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "dimH_countable",
+        "module": "Mathlib.Topology.MetricSpace.HausdorffDimension",
+        "match_kind": "exact"
+      },
+      "note": "`dimH_countable` (aliased `Set.Countable.dimH_zero`) proves countable sets have Hausdorff dimension 0.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Euclidean space and circle",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "The Euclidean space"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Real.dimH_univ_pi_fin",
+        "module": "Mathlib.Topology.MetricSpace.HausdorffDimension",
+        "match_kind": "exact"
+      },
+      "note": "`Real.dimH_univ_pi_fin` proves `dimH (univ : Set (Fin n → ℝ)) = n`; the circle's dimension 1 is not separately formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Cantor set dimension",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "the Cantor set , a zero-dimensional topological space"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "cantorSet",
+        "module": "Mathlib.Topology.Instances.CantorSet",
+        "match_kind": null
+      },
+      "note": "The ternary `cantorSet` is defined but its Hausdorff dimension log2/log3 is not computed in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Sierpinski triangle dimension",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "The Sierpinski triangle is a union of three copies of itself"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Sierpinski triangle and its dimension log3/log2 are not formalized (Mathlib's `Sierpinski` refers to the unrelated Sierpiński topological space).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Space-filling curves",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "Space-filling curves like the Peano curve"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Space-filling curves like the Peano curve and their dimension are not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Brownian motion trajectories",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "Trajectories of Brownian motion through space"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Brownian motion is not present in Mathlib, let alone the dimension of its trajectories.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Coastline dimensions (Richardson)",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "the approximate Hausdorff dimension for various coastlines"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Empirical coastline dimensions are not a mathematical statement and are not in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Hausdorff dimension vs inductive dimension",
+      "anchor": {
+        "section": "Hausdorff dimension and inductive dimension",
+        "snippet": "Suppose X is non-empty"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "smallInductiveDimension",
+        "module": "Mathlib.Topology.SmallInductiveDimension",
+        "match_kind": null
+      },
+      "note": "Mathlib has `smallInductiveDimension` but no theorem comparing it with Hausdorff dimension `dimH`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Hausdorff vs Minkowski dimension",
+      "anchor": {
+        "section": "Hausdorff dimension and Minkowski dimension",
+        "snippet": "The Minkowski dimension is similar to, and at least as large as"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Minkowski dimension is not defined in Mathlib, so the comparison cannot be stated.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Mass distribution / Frostman bound",
+      "anchor": {
+        "section": "Hausdorff dimensions and Frostman measures",
+        "snippet": "If there is a measure μ defined on Borel subsets of a metric space X"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The mass distribution principle / Frostman bound is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Hausdorff dimension of countable unions",
+      "anchor": {
+        "section": "Behaviour under unions and products",
+        "snippet": "is a finite or countable union"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "dimH_iUnion",
+        "module": "Mathlib.Topology.MetricSpace.HausdorffDimension",
+        "match_kind": "exact"
+      },
+      "note": "`dimH_iUnion` (with `dimH_bUnion`, `dimH_sUnion`, `dimH_union`) proves the dimension of a countable union is the supremum of the dimensions.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Hausdorff dimension of products",
+      "anchor": {
+        "section": "Behaviour under unions and products",
+        "snippet": "the Hausdorff dimension of their product satisfies"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No lemma bounding `dimH (s ×ˢ t)` by `dimH s + dimH t` exists in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Self-similar set",
+      "anchor": {
+        "section": "Self-similar sets",
+        "snippet": "a set E is self-similar if it is the fixed point of a set-valued transformation"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Self-similar sets / iterated function systems are not defined in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Existence of unique invariant compact set",
+      "anchor": {
+        "section": "Self-similar sets",
+        "snippet": "are each a contraction mapping on R n with contraction constant"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "ContractingWith.exists_fixedPoint",
+        "module": "Mathlib.Topology.MetricSpace.Contracting",
+        "match_kind": null
+      },
+      "note": "The ingredients (Banach fixed point `ContractingWith.exists_fixedPoint` and completeness of `NonemptyCompacts` under Hausdorff distance) exist, but Hutchinson's attractor theorem for an IFS is not assembled in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Open set condition",
+      "anchor": {
+        "section": "The open set condition",
+        "snippet": "There is an open set V with compact closure"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The open set condition for iterated function systems is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Dimension of self-similar set under OSC",
+      "anchor": {
+        "section": "The open set condition",
+        "snippet": "Suppose the open set condition holds and each ψ i is a similitude"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Moran–Hutchinson formula for the dimension of a self-similar set under the open set condition is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Self-similarity intersection criterion",
+      "anchor": {
+        "section": "The open set condition",
+        "snippet": "is self-similar if and only if the intersections satisfy the following condition"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This self-similarity intersection criterion is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Fixed point is self-similar",
+      "anchor": {
+        "section": "The open set condition",
+        "snippet": "the unique fixed point of ψ is self-similar"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Self-similarity of the IFS fixed point is not formalized since self-similar sets are undefined in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Moran equation",
+      "anchor": {
+        "section": "The Moran Equation",
+        "snippet": "can be determined using the Moran equation"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Moran equation determining the similarity dimension is not formalized in Mathlib.",
+      "provenance": "ai"
+    }
+  ]
+}

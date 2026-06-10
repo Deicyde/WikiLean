@@ -1,0 +1,809 @@
+{
+  "slug": "Chebyshevs_inequality",
+  "wikipedia_title": "Chebyshev's inequality",
+  "display_title": "Chebyshev's inequality",
+  "schema_version": 3,
+  "annotation_style": "theorem_article",
+  "annotations": [
+    {
+      "kind": "proposition",
+      "label": "Tightness of Chebyshev's inequality",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "tight in the sense that for each chosen positive constant"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The sharpness claim (existence of an extremal distribution attaining equality for each k) has no Mathlib counterpart.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Chebyshev's inequality (probabilistic statement)",
+      "anchor": {
+        "section": "Probabilistic statement",
+        "snippet": "be a random variable with finite non-zero variance"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "ProbabilityTheory.meas_ge_le_variance_div_sq",
+        "module": "Mathlib.Probability.Moments.Variance",
+        "match_kind": "exact"
+      },
+      "note": "Mathlib states μ{ω | c ≤ |X ω − 𝔼[X]|} ≤ ENNReal.ofReal (Var[X]/c²), which is exactly Chebyshev's inequality.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "General-k form",
+      "anchor": {
+        "section": "Probabilistic statement",
+        "snippet": "For the general case, for any"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "ProbabilityTheory.meas_ge_le_variance_div_sq",
+        "module": "Mathlib.Probability.Moments.Variance",
+        "match_kind": "generalization"
+      },
+      "note": "The P(|X−μ|≥kσ)≤1/k² form is the c=kσ instance of Mathlib's arbitrary-threshold variance bound.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Two-standard-deviation coverage",
+      "anchor": {
+        "section": "Probabilistic statement",
+        "snippet": "shows that the probability values lie outside the interval"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "A numeric instance (k=2) of the formalized meas_ge_le_variance_div_sq, not itself a declaration.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Measure-theoretic Chebyshev inequality",
+      "anchor": {
+        "section": "Measure-theoretic statement",
+        "snippet": "extended real -valued measurable function defined on"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "MeasureTheory.meas_ge_le_lintegral_div",
+        "module": "Mathlib.MeasureTheory.Integral.Lebesgue.Markov",
+        "match_kind": "generalization"
+      },
+      "note": "Mathlib proves μ{x | ε ≤ f x} ≤ (∫⁻ f)/ε for ℝ≥0∞-valued functions, the measure-theoretic Markov/Chebyshev inequality (the t^{-p}∫|f|^p form is also available as mul_meas_ge_le_pow_eLpNorm').",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Generalization via nondecreasing function",
+      "anchor": {
+        "section": "Measure-theoretic statement",
+        "snippet": "extended real-valued measurable function, nonnegative and nondecreasing"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "MeasureTheory.mul_meas_ge_le_lintegral₀",
+        "module": "Mathlib.MeasureTheory.Integral.Lebesgue.Markov",
+        "match_kind": null
+      },
+      "note": "Mathlib has Markov for a single function but not the g∘f generalization for a nonnegative nondecreasing g as a named result.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Journal article word count",
+      "anchor": {
+        "section": "Example",
+        "snippet": "Suppose we randomly select a journal article from a source"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "A worked pedagogical example, not a theorem present in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Distribution achieving sharp bound",
+      "anchor": {
+        "section": "Sharpness of bounds",
+        "snippet": "The bounds are sharp for the following example"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "A specific extremal-distribution example with no Mathlib declaration.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Equality characterization",
+      "anchor": {
+        "section": "Sharpness of bounds",
+        "snippet": "is an equality for precisely those distributions which are affine transformations"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The equality-case characterization of Chebyshev's bound is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Markov's inequality",
+      "anchor": {
+        "section": "Proof",
+        "snippet": "states that for any non-negative real-valued random variable"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "MeasureTheory.mul_meas_ge_le_integral_of_nonneg",
+        "module": "Mathlib.MeasureTheory.Integral.Bochner.Basic",
+        "match_kind": "exact"
+      },
+      "note": "Mathlib proves ε·μ.real{x | ε ≤ f x} ≤ ∫ f for nonnegative integrable f, i.e. Markov's inequality (also stated for lintegrals as mul_meas_ge_le_lintegral₀).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Selberg's inequality",
+      "anchor": {
+        "section": "Selberg's inequality",
+        "snippet": "Selberg derived a generalization to arbitrary intervals"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Selberg's two-sided interval generalization is absent (Mathlib's SelbergSieve is unrelated number theory).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Birnbaum–Raymond–Zuckerman inequality",
+      "anchor": {
+        "section": "Finite-dimensional vector",
+        "snippet": "naturally extends to the multivariate setting"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No multivariate Birnbaum–Raymond–Zuckerman Chebyshev inequality in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Chen's inequality",
+      "anchor": {
+        "section": "Finite-dimensional vector",
+        "snippet": "A second related inequality has also been derived by Chen"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Chen's multivariate Chebyshev-type inequality is not present in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Navarro sharpness of multivariate bounds",
+      "anchor": {
+        "section": "Finite-dimensional vector",
+        "snippet": "proved that these bounds are sharp, that is, they are the best possible bounds"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Navarro's sharpness result for multivariate bounds is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Independent-variables sharpening",
+      "anchor": {
+        "section": "Known correlation",
+        "snippet": "If the variables are independent this inequality can be sharpened"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This sharpened multivariate bound under independence has no Mathlib declaration.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Berge's inequality",
+      "anchor": {
+        "section": "Known correlation",
+        "snippet": "Berge derived an inequality for two correlated variables"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Berge's two-variable correlated Chebyshev inequality is not in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Olkin–Pratt inequality",
+      "anchor": {
+        "section": "Known correlation",
+        "snippet": "Olkin and Pratt derived an inequality for"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Olkin–Pratt multivariate inequality is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Higher-moment tail bounds",
+      "anchor": {
+        "section": "Higher moments",
+        "snippet": "one can get a family of tail bounds"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "MeasureTheory.mul_meas_ge_le_pow_eLpNorm'",
+        "module": "Mathlib.MeasureTheory.Function.LpSeminorm.ChebyshevMarkov",
+        "match_kind": "generalization"
+      },
+      "note": "P(|X−μ|≥a)≤E[|X−μ|ⁿ]/aⁿ is the n-th moment Markov bound, given by Mathlib's eLpNorm Chebyshev–Markov inequality applied to the centered variable.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Exponential Chebyshev's inequality",
+      "anchor": {
+        "section": "Exponential moment",
+        "snippet": "sometimes known as the exponential Chebyshev's inequality"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "ProbabilityTheory.measure_ge_le_exp_mul_mgf",
+        "module": "Mathlib.Probability.Moments.Basic",
+        "match_kind": "exact"
+      },
+      "note": "Mathlib proves μ.real{ω | ε ≤ X ω} ≤ exp(−tε)·mgf X μ t, the exponential Chebyshev / Chernoff bound.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Chernoff-type exponential bound",
+      "anchor": {
+        "section": "Exponential moment",
+        "snippet": "and using the exponential Chebyshev's inequality we have"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "ProbabilityTheory.measure_ge_le_exp_cgf",
+        "module": "Mathlib.Probability.Moments.Basic",
+        "match_kind": "invocation"
+      },
+      "note": "Mathlib gives the per-t Chernoff bound exp(−tε+cgf t); the article's infimum over t is obtained by optimizing this.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Bounded-variable inequality",
+      "anchor": {
+        "section": "Bounded variables",
+        "snippet": "has finite support based on the interval"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The sharpened tail bound for variables supported on [a,b] is not formalized (Mathlib has only the related variance bounds variance_le_sub_mul_sub / variance_le_sq_of_bounded).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Saw–Yang–Mo (Kabán) sample inequality",
+      "anchor": {
+        "section": "Univariate case",
+        "snippet": "extended Chebyshev's inequality to cases where the population mean and variance are not known"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Saw–Yang–Mo sample (empirical) Chebyshev inequality is not in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Sample-mean form",
+      "anchor": {
+        "section": "Univariate case",
+        "snippet": "An equivalent inequality can be derived in terms of the sample mean instead"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The sample-mean reformulation of the Saw–Yang–Mo inequality is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Large-N approximation",
+      "anchor": {
+        "section": "Univariate case",
+        "snippet": "the Saw–Yang–Mo inequality is approximately"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The large-N asymptotic approximation of the sample inequality has no Mathlib declaration.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Beasley et al. modification",
+      "anchor": {
+        "section": "Univariate case",
+        "snippet": "Beasley et al have suggested a modification of this inequality"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Beasley et al.'s modification of the sample Chebyshev inequality is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Finite-sample vs distribution bound",
+      "anchor": {
+        "section": "Dependence on sample size",
+        "snippet": "at most approximately 11.11% of the distribution will lie at least three standard deviations"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "A numeric comparison example, not a theorem in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Samuelson's inequality",
+      "anchor": {
+        "section": "Samuelson's inequality",
+        "snippet": "states that all values of a sample must lie within"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Samuelson's inequality bounding sample values by √(n−1) standard deviations is not in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Upper and lower semivariances",
+      "anchor": {
+        "section": "Semivariances",
+        "snippet": "semivariances are defined as"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has no definition of upper/lower semivariance.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Variance as sum of semivariances",
+      "anchor": {
+        "section": "Semivariances",
+        "snippet": "The variance of the sample is the sum of the two semivariances"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The decomposition of variance into semivariances is not formalized (semivariance is undefined in Mathlib).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Chebyshev with lower semivariance",
+      "anchor": {
+        "section": "Semivariances",
+        "snippet": "In terms of the lower semivariance Chebyshev's inequality can be written"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The semivariance form of Chebyshev's inequality has no Mathlib counterpart.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Symmetric-distribution semivariance bound",
+      "anchor": {
+        "section": "Semivariances",
+        "snippet": "If the distribution is known to be symmetric, then"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The symmetric-distribution semivariance bound is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Empirical multivariate Chebyshev (Stellato et al.)",
+      "anchor": {
+        "section": "Multivariate case",
+        "snippet": "simplified the notation and extended the empirical Chebyshev inequality"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Stellato et al.'s empirical multivariate Chebyshev inequality is not in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Cantelli's inequality",
+      "anchor": {
+        "section": "Cantelli's inequality",
+        "snippet": "due to Francesco Paolo Cantelli states that for a real random variable"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Cantelli's one-sided inequality P(X−μ≥λ)≤σ²/(σ²+λ²) is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "One-tailed Chebyshev variant",
+      "anchor": {
+        "section": "Cantelli's inequality",
+        "snippet": "This inequality can be used to prove a one tailed variant of Chebyshev's inequality"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The one-tailed Chebyshev variant derived from Cantelli is not in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Sharpness of one-tailed bound",
+      "anchor": {
+        "section": "Cantelli's inequality",
+        "snippet": "The bound on the one tailed variant is known to be sharp"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The sharpness example for the one-tailed bound has no Mathlib declaration.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Mean–median distance bound",
+      "anchor": {
+        "section": "An application: distance between the mean and the median",
+        "snippet": "the mean and the median can never differ from each other by more than one standard deviation"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The |mean−median|≤σ bound is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Bhattacharyya's inequality",
+      "anchor": {
+        "section": "Bhattacharyya's inequality",
+        "snippet": "extended Cantelli's inequality using the third and fourth moments"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Bhattacharyya's higher-moment extension of Cantelli is not in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Gauss's inequality",
+      "anchor": {
+        "section": "Gauss's inequality",
+        "snippet": "for a distribution with a unique mode at zero"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Gauss's inequality for unimodal distributions is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Vysochanskij–Petunin inequality",
+      "anchor": {
+        "section": "Vysochanskij–Petunin inequality",
+        "snippet": "is a unimodal distribution with mean"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Vysochanskij–Petunin inequality for unimodal distributions is not in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Symmetric one-sided VP bounds",
+      "anchor": {
+        "section": "Vysochanskij–Petunin inequality",
+        "snippet": "one-sided bounds can be obtained by noticing that"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The one-sided Vysochanskij–Petunin bounds are not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "VP three-sigma bound",
+      "anchor": {
+        "section": "Vysochanskij–Petunin inequality",
+        "snippet": "of the distribution lies outside 3 standard deviations of the mode"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "A numeric instance of the VP inequality, not present in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "DasGupta normal-distribution bound",
+      "anchor": {
+        "section": "Bounds for specific distributions",
+        "snippet": "DasGupta has shown that if the distribution is known to be normal"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "DasGupta's sharpened bound for normal distributions is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "DasGupta 95% coverage for normal",
+      "anchor": {
+        "section": "Bounds for specific distributions",
+        "snippet": "for a normal distribution at least 95% lies within approximately 2.582 standard deviations"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "A numeric coverage example for normals, not in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Grechuk log-concave bound",
+      "anchor": {
+        "section": "Bounds for specific distributions",
+        "snippet": "they derived Chebyshev inequality for distributions with log-concave densities"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Grechuk's Chebyshev bound for log-concave densities is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Paley–Zygmund inequality",
+      "anchor": {
+        "section": "Paley–Zygmund inequality",
+        "snippet": "gives a lower bound on tail probabilities"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Paley–Zygmund lower tail-bound inequality is not present in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Haldane's transformation",
+      "anchor": {
+        "section": "Haldane's transformation",
+        "snippet": "then the variate can be converted to a normally distributed standard score"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Haldane's normalizing transformation is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "He, Zhang and Zhang's inequality",
+      "anchor": {
+        "section": "He, Zhang and Zhang's inequality",
+        "snippet": "For any collection of n non-negative independent random variables"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The He–Zhang–Zhang inequality for sums of nonnegative independent variables is not in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Integral Chebyshev inequality",
+      "anchor": {
+        "section": "Integral Chebyshev inequality",
+        "snippet": "are two monotonic functions of the same monotonicity"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "MonovaryOn.sum_mul_sum_le_card_mul_sum",
+        "module": "Mathlib.Algebra.Order.Chebyshev",
+        "match_kind": null
+      },
+      "note": "Mathlib has the discrete Chebyshev sum inequality for monovarying (same-monotonicity) functions, but not its integral/measure-theoretic form.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Opposite-monotonicity reversal",
+      "anchor": {
+        "section": "Integral Chebyshev inequality",
+        "snippet": "are of opposite monotonicity, then the above inequality works in the reverse way"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "AntivaryOn.card_mul_sum_le_sum_mul_sum",
+        "module": "Mathlib.Algebra.Order.Chebyshev",
+        "match_kind": null
+      },
+      "note": "The reversed discrete Chebyshev sum inequality for antivarying functions exists, but not its integral version.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Lemma (monotonic functions)",
+      "anchor": {
+        "type": "theorem_box",
+        "value": "Lemma"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The symmetrization lemma (double integral of (f(x)−f(y))(g(x)−g(y)) is nonnegative) underlying the integral inequality is not separately formalized.",
+      "provenance": "ai"
+    }
+  ]
+}

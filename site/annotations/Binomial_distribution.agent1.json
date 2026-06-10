@@ -1,0 +1,503 @@
+{
+  "slug": "Binomial_distribution",
+  "wikipedia_title": "Binomial distribution",
+  "display_title": "Binomial distribution",
+  "schema_version": 3,
+  "annotations": [
+    {
+      "kind": "definition",
+      "label": "Binomial distribution",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "the binomial distribution with parameters n and p is the discrete probability distribution of the number of successes"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "definition",
+      "label": "Bernoulli trial",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "A single success/failure experiment is also called a Bernoulli trial or Bernoulli experiment"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "definition",
+      "label": "Bernoulli process",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "a sequence of outcomes is called a Bernoulli process"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "proposition",
+      "label": "n=1 is Bernoulli distribution",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "when n = 1 , the binomial distribution is a Bernoulli distribution"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "proposition",
+      "label": "Sampling without replacement gives hypergeometric",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "If the sampling is carried out without replacement, the draws are not independent and so the resulting distribution is a hypergeometric distribution"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "definition",
+      "label": "Probability mass function",
+      "anchor": {
+        "section": "Probability mass function",
+        "snippet": "The probability of getting exactly k successes in n independent Bernoulli trials (with the same rate p ) is given by the probability mass function"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "proposition",
+      "label": "Complement formula for k > n/2",
+      "anchor": {
+        "section": "Probability mass function",
+        "snippet": "the probability can be calculated by its complement as"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "proposition",
+      "label": "Existence of maximizing integer M",
+      "anchor": {
+        "section": "Probability mass function",
+        "snippet": "There is always an integer M that satisfies"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "proposition",
+      "label": "Monotonicity and mode of PMF",
+      "anchor": {
+        "section": "Probability mass function",
+        "snippet": "is monotone increasing for k < M and monotone decreasing for k > M"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "example",
+      "label": "Biased coin: 4 heads in 6 tosses",
+      "anchor": {
+        "section": "Example",
+        "snippet": "The probability of seeing exactly 4 heads in 6 tosses is"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "definition",
+      "label": "Cumulative distribution function",
+      "anchor": {
+        "section": "Cumulative distribution function",
+        "snippet": "The cumulative distribution function can be expressed as"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "proposition",
+      "label": "CDF via regularized incomplete beta function",
+      "anchor": {
+        "section": "Cumulative distribution function",
+        "snippet": "It can also be represented in terms of the regularized incomplete beta function"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "proposition",
+      "label": "Expected value",
+      "anchor": {
+        "section": "Expected value and variance",
+        "snippet": "then the expected value of X is"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "proposition",
+      "label": "Variance",
+      "anchor": {
+        "section": "Expected value and variance",
+        "snippet": "The variance is"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "proposition",
+      "label": "First six central moments",
+      "anchor": {
+        "section": "Higher moments",
+        "snippet": "The first 6 central moments , defined as"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "proposition",
+      "label": "Non-central moments",
+      "anchor": {
+        "section": "Higher moments",
+        "snippet": "The non-central moments satisfy"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "proposition",
+      "label": "Moment-generating function",
+      "anchor": {
+        "section": "Higher moments",
+        "snippet": "The moment-generating function is"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "proposition",
+      "label": "Mode formula",
+      "anchor": {
+        "section": "Mode",
+        "snippet": "Usually the mode of a binomial B ( n , p ) distribution is equal to"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "proposition",
+      "label": "Mean, median, mode coincide when np integer",
+      "anchor": {
+        "section": "Median",
+        "snippet": "If np is an integer, then the mean, median, and mode coincide and equal np"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "proposition",
+      "label": "Median interval bound",
+      "anchor": {
+        "section": "Median",
+        "snippet": "Any median m must lie within the interval"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "proposition",
+      "label": "Median close to mean",
+      "anchor": {
+        "section": "Median",
+        "snippet": "A median m cannot lie too far away from the mean"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "proposition",
+      "label": "Median unique equals round(np)",
+      "anchor": {
+        "section": "Median",
+        "snippet": "The median is unique and equal to m = round ( np ) when"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "proposition",
+      "label": "Median unique when p rational",
+      "anchor": {
+        "section": "Median",
+        "snippet": "When p is a rational number (with the exception of p = 1/2 and n odd), the median is unique"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "proposition",
+      "label": "Median for p=1/2, n odd",
+      "anchor": {
+        "section": "Median",
+        "snippet": "and n is odd, any number m in the interval"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "proposition",
+      "label": "Hoeffding tail bound",
+      "anchor": {
+        "section": "Tail bounds",
+        "snippet": "Hoeffding's inequality yields the simple bound"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "proposition",
+      "label": "Chernoff tail bound",
+      "anchor": {
+        "section": "Tail bounds",
+        "snippet": "A sharper bound can be obtained from the Chernoff bound"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "proposition",
+      "label": "Anti-concentration lower bound",
+      "anchor": {
+        "section": "Tail bounds",
+        "snippet": "known as anti-concentration bounds"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "proposition",
+      "label": "Constant-denominator bound for p=1/2",
+      "anchor": {
+        "section": "Tail bounds",
+        "snippet": "it is possible to make the denominator constant"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "proposition",
+      "label": "Estimator of p by proportion of successes",
+      "anchor": {
+        "section": "Estimation of parameters",
+        "snippet": "the parameter p can be estimated using the proportion of successes"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "proposition",
+      "label": "Bayes estimator with Beta prior",
+      "anchor": {
+        "section": "Estimation of parameters",
+        "snippet": "A closed form Bayes estimator for p also exists when using the Beta distribution as a conjugate prior distribution"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "definition",
+      "label": "Rule of succession",
+      "anchor": {
+        "section": "Estimation of parameters",
+        "snippet": "This method is called the rule of succession"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "proposition",
+      "label": "Jeffreys prior estimator",
+      "anchor": {
+        "section": "Estimation of parameters",
+        "snippet": "When relying on Jeffreys prior , the prior is"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "example",
+      "label": "Estimating p for rare events",
+      "anchor": {
+        "section": "Estimation of parameters",
+        "snippet": "When estimating p with very rare events and a small n"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "definition",
+      "label": "Wald confidence interval",
+      "anchor": {
+        "section": "Wald method",
+        "snippet": "A continuity correction of 0.5 / n may be added"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "definition",
+      "label": "Agresti–Coull interval",
+      "anchor": {
+        "section": "Agresti–Coull method",
+        "snippet": "Here the estimate of p is modified to"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "definition",
+      "label": "Wilson (score) interval",
+      "anchor": {
+        "section": "Wilson (score) method",
+        "snippet": "this formula does not use a plus-minus to define the two bounds"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "proposition",
+      "label": "Clopper–Pearson most conservative",
+      "anchor": {
+        "section": "Comparison",
+        "snippet": "is the most conservative"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "proposition",
+      "label": "Wald method most biased",
+      "anchor": {
+        "section": "Comparison",
+        "snippet": "is the most biased"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "theorem",
+      "label": "Sum of independent binomials",
+      "anchor": {
+        "section": "Sums of binomials",
+        "snippet": "then X + Y is again a binomial variable"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "proposition",
+      "label": "Binomial as special Poisson binomial",
+      "anchor": {
+        "section": "Poisson binomial distribution",
+        "snippet": "The binomial distribution is a special case of the Poisson binomial distribution"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "theorem",
+      "label": "Log-ratio of two binomials",
+      "anchor": {
+        "section": "Ratio of two binomial distributions",
+        "snippet": "Then log( T ) is approximately normally distributed with mean log( p 1 / p 2 )"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "theorem",
+      "label": "Conditional binomial",
+      "anchor": {
+        "section": "Conditional binomials",
+        "snippet": "then Y is a simple binomial random variable with distribution"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "proposition",
+      "label": "Bernoulli as special binomial",
+      "anchor": {
+        "section": "Bernoulli distribution",
+        "snippet": "The Bernoulli distribution is a special case of the binomial distribution, where n = 1"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "proposition",
+      "label": "Normal approximation to binomial",
+      "anchor": {
+        "section": "Normal approximation",
+        "snippet": "a reasonable approximation to B( n , p ) is given by the normal distribution"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "proposition",
+      "label": "Skewness rule of thumb",
+      "anchor": {
+        "section": "Normal approximation",
+        "snippet": "the normal approximation is adequate if the absolute value of the skewness is strictly less than 0.3"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "proposition",
+      "label": "3-standard-deviation rule",
+      "anchor": {
+        "section": "Normal approximation",
+        "snippet": "the normal approximation is appropriate only if everything within 3 standard deviations of its mean is within the range of possible values"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "proposition",
+      "label": "np and n(1-p) rule of thumb",
+      "anchor": {
+        "section": "Normal approximation",
+        "snippet": "both values np and n (1 − p ) must be greater than"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "example",
+      "label": "Continuity correction example",
+      "anchor": {
+        "section": "Normal approximation",
+        "snippet": "The following is an example of applying a continuity correction"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "theorem",
+      "label": "de Moivre–Laplace theorem",
+      "anchor": {
+        "section": "Normal approximation",
+        "snippet": "This approximation, known as de Moivre–Laplace theorem"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "theorem",
+      "label": "Poisson approximation",
+      "anchor": {
+        "section": "Poisson approximation",
+        "snippet": "The binomial distribution converges towards the Poisson distribution as the number of trials goes to infinity"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "theorem",
+      "label": "Poisson limit theorem",
+      "anchor": {
+        "section": "Limiting distributions",
+        "snippet": "As n approaches ∞ and p approaches 0 with the product np held fixed"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "theorem",
+      "label": "de Moivre–Laplace (limiting form)",
+      "anchor": {
+        "section": "Limiting distributions",
+        "snippet": "As n approaches ∞ while p remains fixed"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "proposition",
+      "label": "Beta–binomial relation",
+      "anchor": {
+        "section": "Beta distribution",
+        "snippet": "the beta distribution and the binomial distribution are related by"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "proposition",
+      "label": "Posterior is beta under uniform prior",
+      "anchor": {
+        "section": "Beta distribution",
+        "snippet": "the posterior distribution for the probability of success p given n independent events with k observed successes is a beta distribution"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "example",
+      "label": "Inversion algorithm for random generation",
+      "anchor": {
+        "section": "Random number generation",
+        "snippet": "One way to generate random variates samples from a binomial distribution is to use an inversion algorithm"
+      },
+      "provenance": "ai-agent1"
+    }
+  ]
+}

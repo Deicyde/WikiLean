@@ -1,0 +1,659 @@
+{
+  "slug": "Gamma_distribution",
+  "wikipedia_title": "Gamma distribution",
+  "display_title": "Gamma distribution",
+  "schema_version": 1,
+  "source": "claude-agent-sdk/annotate_articles.py",
+  "annotations": [
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle X\\sim \\Gamma (\\alpha ,\\beta )\\equiv \\operatorname {Gamma} (\\alpha ,\\beta )}"
+      },
+      "status": "formalized",
+      "decl": "gammaMeasure",
+      "module": "Mathlib.Probability.Distributions.Gamma",
+      "note": "Notation for gamma-distributed variable corresponds to Mathlib's gammaMeasure with shape and rate parameters."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle {\\begin{aligned}f(x;\\alpha ,\\beta )&={\\frac {x^{\\alpha -1}e^{-\\beta x}\\beta ^{\\alpha }}{\\Gamma (\\alpha )}}\\quad {\\text{ for }}x>0\\quad \\alpha ,\\beta >0,\\\\[6pt]\\end{aligned}}}"
+      },
+      "status": "formalized",
+      "decl": "gammaPDFReal",
+      "module": "Mathlib.Probability.Distributions.Gamma",
+      "note": "This is exactly the gamma PDF formula formalized as gammaPDFReal."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle F(x;\\alpha ,\\beta )=\\int _{0}^{x}f(u;\\alpha ,\\beta )\\,du={\\frac {\\gamma (\\alpha ,\\beta x)}{\\Gamma (\\alpha )}},}"
+      },
+      "status": "partial",
+      "decl": "cdf_gammaMeasure_eq_integral",
+      "module": "Mathlib.Probability.Distributions.Gamma",
+      "note": "Mathlib has CDF as integral of PDF, but not the closed-form expression via regularized lower incomplete gamma."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle {\\begin{aligned}F(x;\\alpha ,\\beta )&=1-\\sum _{i=0}^{\\alpha -1}{\\frac {\\left(\\beta x\\right)^{i}}{i!}}e^{-\\beta x}\\\\[1ex]&=e^{-\\beta x}\\sum _{i=\\alpha }^{\\infty }{\\frac {\\left(\\beta x\\right)^{i}}{i!}}.\\end{aligned}}}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Erlang CDF series expansion is not present in the verified Mathlib decls."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle X\\sim \\Gamma (\\alpha ,\\theta )\\equiv \\operatorname {Gamma} (\\alpha ,\\theta )}"
+      },
+      "status": "partial",
+      "decl": "gammaMeasure",
+      "module": "Mathlib.Probability.Distributions.Gamma",
+      "note": "Mathlib's gammaMeasure uses shape-rate parameterization; shape-scale is the same distribution with reciprocal parameter."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle f(x;\\alpha ,\\theta )={\\frac {x^{\\alpha -1}e^{-x/\\theta }}{\\theta ^{\\alpha }\\Gamma (\\alpha )}}\\quad {\\text{ for }}x>0{\\text{ and }}\\alpha ,\\theta >0.}"
+      },
+      "status": "partial",
+      "decl": "gammaPDFReal",
+      "module": "Mathlib.Probability.Distributions.Gamma",
+      "note": "Same PDF in scale parameterization; Mathlib formalizes the rate-parameterized form gammaPDFReal."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle F(x;\\alpha ,\\theta )=\\int _{0}^{x}f(u;\\alpha ,\\theta )\\,du={\\frac {\\gamma {\\left(\\alpha ,{\\frac {x}{\\theta }}\\right)}}{\\Gamma (\\alpha )}},}"
+      },
+      "status": "partial",
+      "decl": "cdf_gammaMeasure_eq_integral",
+      "module": "Mathlib.Probability.Distributions.Gamma",
+      "note": "Mathlib formalizes CDF as integral, but not closed-form via regularized incomplete gamma."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle F(x;\\alpha ,\\theta )=1-\\sum _{i=0}^{\\alpha -1}{\\frac {1}{i!}}\\left({\\frac {x}{\\theta }}\\right)^{i}e^{-x/\\theta }=e^{-x/\\theta }\\sum _{i=\\alpha }^{\\infty }{\\frac {1}{i!}}\\left({\\frac {x}{\\theta }}\\right)^{i}.}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Erlang CDF series expansion is not in the verified Mathlib decls."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\mu =\\alpha \\theta =\\alpha /\\beta }"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Mean of gamma distribution is not in the provided Mathlib decl list."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\sigma ^{2}=\\alpha \\theta ^{2}=\\alpha /\\beta ^{2}}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Variance of gamma distribution is not in the provided Mathlib decl list."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\sigma /\\mu =\\alpha ^{-0.5}=1/{\\sqrt {\\alpha }}}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Coefficient of variation for gamma distribution is not in the provided decl list."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle {\\frac {1}{\\Gamma (\\alpha )\\theta ^{\\alpha }}}\\int _{0}^{\\nu }x^{\\alpha -1}e^{-x/\\theta }dx={\\frac {1}{2}}.}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Defining equation for the gamma median is not formalized in Mathlib."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\alpha -{\\tfrac {1}{3}}<\\nu (\\alpha )<\\alpha ,}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Bound on gamma median is not in the verified Mathlib decls."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle {\\begin{aligned}\\nu (\\alpha )=\\alpha &-{\\frac {1}{3}}+{\\frac {8}{405}}\\alpha ^{-1}+{\\frac {184}{25\\,515}}\\alpha ^{-2}+{\\frac {2248}{3\\,444\\,525}}\\alpha ^{-3}\\\\[1ex]&-{\\frac {19\\,006\\,408}{15\\,345\\,358\\,875}}\\alpha ^{-4}-{\\mathcal {O}}{\\left(\\alpha ^{-5}\\right)}+\\cdots \\end{aligned}}}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Asymptotic series for the gamma median is not in Mathlib."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\nu (\\alpha )\\leq \\alpha -1+\\log 2~~}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Upper bound on gamma median is not in Mathlib."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\nu (\\alpha )=\\alpha \\left(1-{\\frac {1}{9\\alpha }}\\right)^{3}}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Wilson–Hilferty approximation to the gamma median is not in Mathlib."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\nu _{L\\infty }(\\alpha )=2^{-1/\\alpha }\\left(\\log 2-{\\tfrac {1}{3}}+\\alpha \\right)}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Closed-form lower bound on the gamma median is not in Mathlib."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\nu _{U}(\\alpha )=2^{-1/\\alpha }(e^{-\\gamma }+\\alpha )\\quad }"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Closed-form upper bound on the gamma median is not in Mathlib."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\nu (\\alpha )>\\left({\\frac {2}{\\Gamma (\\alpha +1)}}\\right)^{-1/\\alpha }}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Lower bound on gamma median via Gamma function is not in Mathlib."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\nu (\\alpha )\\geq \\nu (1)+(\\alpha -1)\\nu ^{\\prime }(1)\\quad }"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Convexity-based bound on gamma median is not in Mathlib."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\nu (\\alpha )\\geq \\log 2+(\\alpha -1)\\left[\\gamma -2\\operatorname {Ei} (-\\log 2)-\\log \\log 2\\right]}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Specific linear bound on gamma median is not in Mathlib."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\nu (\\alpha )\\approx {\\tilde {g}}(\\alpha )\\nu _{L\\infty }(\\alpha )+(1-{\\tilde {g}}(\\alpha ))\\nu _{U}(\\alpha )}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Interpolated median approximation form is not in Mathlib."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle g(\\alpha )={\\frac {\\nu _{U}(\\alpha )-\\nu (\\alpha )}{\\nu _{U}(\\alpha )-\\nu _{L\\infty }(\\alpha )}}}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Interpolation weight function g(α) is not in Mathlib."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle {\\tilde {g}}_{1}(\\alpha )={\\frac {\\alpha }{b_{0}+\\alpha }}}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Rational interpolating function is not in Mathlib."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle b_{0}={\\frac {{\\frac {8}{405}}+e^{-\\gamma }\\log 2-{\\frac {\\log ^{2}2}{2}}}{e^{-\\gamma }-\\log 2+{\\frac {1}{3}}}}-\\log 2\\approx 0.143472}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Specific constant b₀ for tightest lower bound is not in Mathlib."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle b_{0}={\\frac {e^{-\\gamma }-\\log 2+{\\frac {1}{3}}}{1-{\\frac {e^{-\\gamma }\\pi ^{2}}{12}}}}\\approx 0.374654}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Specific constant b₀ for tightest upper bound is not in Mathlib."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\sum _{i=1}^{N}X_{i}\\sim \\mathrm {Gamma} \\left(\\sum _{i=1}^{N}\\alpha _{i},\\theta \\right)}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Sum-of-independent-gammas closure property is not in the provided Mathlib decls."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle X\\sim \\mathrm {Gamma} (\\alpha ,\\theta ),}"
+      },
+      "status": "partial",
+      "decl": "gammaMeasure",
+      "module": "Mathlib.Probability.Distributions.Gamma",
+      "note": "Notation matches Mathlib's gammaMeasure (under rate parameterization)."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle cX\\sim \\mathrm {Gamma} (\\alpha ,c\\,\\theta ),}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Scaling property of the gamma distribution is not in the provided decls."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle X\\sim \\mathrm {Gamma} \\left(\\alpha ,\\beta \\right)}"
+      },
+      "status": "partial",
+      "decl": "gammaMeasure",
+      "module": "Mathlib.Probability.Distributions.Gamma",
+      "note": "Notation matches Mathlib's gammaMeasure with shape-rate parameterization."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle cX\\sim \\mathrm {Gamma} \\left(\\alpha ,{\\frac {\\beta }{c}}\\right),}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Scaling property in rate parameterization is not in the provided decls."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\operatorname {E} [\\ln X]=\\psi (\\alpha )-\\ln \\beta }"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Logarithmic expectation of gamma variable is not in the provided decls."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\operatorname {E} [\\ln X]=\\psi (\\alpha )+\\ln \\theta }"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Logarithmic expectation (scale parameterization) is not in the provided decls."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\operatorname {var} [\\ln X]=\\psi ^{(1)}(\\alpha )}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Logarithmic variance of gamma variable is not in the provided decls."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle {\\begin{aligned}\\operatorname {H} (X)&=\\operatorname {E} [-\\ln p(X)]\\\\[4pt]&=\\operatorname {E} [-\\alpha \\ln \\beta +\\ln \\Gamma (\\alpha )-(\\alpha -1)\\ln X+\\beta X]\\\\[4pt]&=\\alpha -\\ln \\beta +\\ln \\Gamma (\\alpha )+(1-\\alpha )\\psi (\\alpha ).\\end{aligned}}}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Information entropy of gamma distribution is not in the provided decls."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\operatorname {H} (X)=\\alpha +\\ln \\theta +\\ln \\Gamma (\\alpha )+(1-\\alpha )\\psi (\\alpha ).}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Information entropy (scale parameterization) is not in the provided decls."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle {\\begin{aligned}D_{\\mathrm {KL} }(\\alpha _{p},\\beta _{p};\\alpha _{q},\\beta _{q})={}&(\\alpha _{p}-\\alpha _{q})\\psi (\\alpha _{p})-\\log {\\frac {\\Gamma (\\alpha _{p})}{\\Gamma (\\alpha _{q})}}\\\\&{}+\\alpha _{q}\\log {\\frac {\\beta _{p}}{\\beta _{q}}}+\\alpha _{p}\\left({\\frac {\\beta _{q}}{\\beta _{p}}}-1\\right).\\end{aligned}}}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "KL divergence between gamma distributions is not in the provided decls."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle {\\begin{aligned}D_{\\mathrm {KL} }(\\alpha _{p},\\theta _{p};\\alpha _{q},\\theta _{q})={}&(\\alpha _{p}-\\alpha _{q})\\psi (\\alpha _{p})-\\log {\\frac {\\Gamma (\\alpha _{p})}{\\Gamma (\\alpha _{q})}}\\\\&{}+\\alpha _{q}\\log {\\frac {\\theta _{q}}{\\theta _{p}}}+\\alpha _{p}\\left({\\frac {\\theta _{p}}{\\theta _{q}}}-1\\right).\\end{aligned}}}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "KL divergence in scale parameterization is not in the provided decls."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle F(s)=\\operatorname {E} \\left[e^{-sX}\\right]={\\frac {1}{\\left(1+\\theta s\\right)^{\\alpha }}}=\\left({\\frac {\\beta }{\\beta +s}}\\right)^{\\alpha }}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Laplace transform / MGF of the gamma distribution is not in the provided decls."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle L(\\alpha ,\\theta )=\\prod _{i=1}^{N}f(x_{i};\\alpha ,\\theta )}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Likelihood function for gamma MLE is not in the provided decls."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\ell (\\alpha ,\\theta )=(\\alpha -1)\\sum _{i=1}^{N}\\ln x_{i}-\\sum _{i=1}^{N}{\\frac {x_{i}}{\\theta }}-N\\alpha \\ln \\theta -N\\ln \\Gamma (\\alpha )}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Log-likelihood function for gamma MLE is not in the provided decls."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle {\\hat {\\theta }}={\\frac {1}{\\alpha N}}\\sum _{i=1}^{N}x_{i}={\\frac {\\bar {x}}{\\alpha }}}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "MLE for scale parameter is a proof-intermediate result not in the provided decls."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\ell (\\alpha )=(\\alpha -1)\\sum _{i=1}^{N}\\ln x_{i}-N\\alpha -N\\alpha \\ln {\\frac {\\sum _{i}x_{i}}{\\alpha }}-N\\ln \\Gamma (\\alpha )}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Profile log-likelihood derivation is an intermediate step not in the provided decls."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle {\\begin{aligned}\\ln \\alpha -\\psi (\\alpha )&=\\ln \\left({\\frac {1}{N}}\\sum _{i=1}^{N}x_{i}\\right)-{\\frac {1}{N}}\\sum _{i=1}^{N}\\ln x_{i}\\\\[1ex]&=\\ln {\\bar {x}}-{\\overline {\\ln x}}\\end{aligned}}}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "MLE optimality condition is not in the provided decls."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\ln \\alpha -\\psi (\\alpha )\\approx {\\frac {1}{2\\alpha }}\\left(1+{\\frac {1}{6\\alpha +1}}\\right)}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Numerical approximation for MLE is not in the provided decls."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle {\\begin{aligned}s&=\\ln \\left({\\frac {1}{N}}\\sum _{i=1}^{N}x_{i}\\right)-{\\frac {1}{N}}\\sum _{i=1}^{N}\\ln x_{i}\\\\[1ex]&=\\ln {\\bar {x}}-{\\overline {\\ln x}}\\end{aligned}}}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Definition of statistic s for MLE is not in the provided decls."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle k\\approx {\\frac {3-s+{\\sqrt {\\left(s-3\\right)^{2}+24s}}}{12s}}}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Approximation formula for shape parameter is not in the provided decls."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\alpha \\leftarrow \\alpha -{\\frac {\\ln \\alpha -\\psi (k)-s}{{\\frac {1}{\\alpha }}-\\psi \\prime (\\alpha )}}.}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Newton–Raphson update for MLE is not in the provided decls."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle {\\begin{aligned}{\\hat {\\alpha }}{\\hat {\\theta }}&={\\bar {x}}&&{\\text{and}}&\\psi ({\\hat {\\alpha }})+\\ln {\\hat {\\theta }}&={\\overline {\\ln x}}.\\end{aligned}}}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "MLE conditions for gamma distribution are not in the provided decls."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\Pr({\\text{underflow}})=1-(1-F(\\varepsilon ;\\alpha ,\\theta ))^{N}}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Underflow probability formula is not in the provided decls."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle {\\hat {\\alpha }}={\\frac {N\\sum \\limits _{i=1}^{N}x_{i}}{N\\sum \\limits _{i=1}^{N}x_{i}\\ln x_{i}-\\sum \\limits _{i=1}^{N}x_{i}\\sum \\limits _{i=1}^{N}\\ln x_{i}}}}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Closed-form estimator for shape parameter is not in the provided decls."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle {\\hat {\\theta }}={\\frac {1}{N^{2}}}\\left(N\\sum _{i=1}^{N}x_{i}\\ln x_{i}-\\sum _{i=1}^{N}x_{i}\\sum _{i=1}^{N}\\ln x_{i}\\right)}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Closed-form estimator for scale parameter is not in the provided decls."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle {\\hat {\\alpha }}={\\frac {\\bar {x}}{\\hat {\\theta }}}}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Simplified estimator expression is not in the provided decls."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle {\\hat {\\theta }}={\\overline {x\\ln x}}-{\\bar {x}}{\\overline {\\ln x}}.}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Simplified scale estimator using sample means is not in the provided decls."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle {\\tilde {\\theta }}={\\frac {N}{N-1}}{\\hat {\\theta }}}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Bias-corrected scale estimator is not in the provided decls."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle {\\tilde {\\alpha }}={\\hat {\\alpha }}-{\\frac {1}{N}}\\left(3{\\hat {\\alpha }}-{\\frac {2}{3}}\\left({\\frac {\\hat {\\alpha }}{1+{\\hat {\\alpha }}}}\\right)-{\\frac {4}{5}}{\\frac {\\hat {\\alpha }}{(1+{\\hat {\\alpha }})^{2}}}\\right)}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Bias-corrected shape estimator is not in the provided decls."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\Pr(\\theta \\mid \\alpha ,x_{1},\\dots ,x_{N})\\propto {\\frac {1}{\\theta }}\\prod _{i=1}^{N}f(x_{i};\\alpha ,\\theta )}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Bayesian posterior density for gamma scale is not in the provided decls."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle y\\equiv \\sum _{i=1}^{N}x_{i},\\qquad \\Pr(\\theta \\mid \\alpha ,x_{1},\\dots ,x_{N})=C(x_{i})\\theta ^{-N\\alpha -1}e^{-y/\\theta }}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Posterior density rewriting via sufficient statistic is not in the provided decls."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle {\\begin{aligned}\\int _{0}^{\\infty }\\theta ^{-N\\alpha -1+m}e^{-y/\\theta }\\,d\\theta &=\\int _{0}^{\\infty }x^{N\\alpha -1-m}e^{-xy}\\,dx\\\\&=y^{-(N\\alpha -m)}\\Gamma (N\\alpha -m)\\!\\end{aligned}}}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Integration constant computation is a proof intermediate not in the provided decls."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\operatorname {E} [x^{m}]={\\frac {\\Gamma (N\\alpha -m)}{\\Gamma (N\\alpha )}}y^{m}}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Posterior moment formula is not in the provided decls."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle {\\frac {y}{N\\alpha -1}}\\pm {\\sqrt {\\frac {y^{2}}{\\left(N\\alpha -1\\right)^{2}(N\\alpha -2)}}}.}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Posterior mean ± standard deviation is not in the provided decls."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle p(\\alpha ,\\theta \\mid p,q,r,s)={\\frac {1}{Z}}{\\frac {p^{\\alpha -1}e^{-\\theta ^{-1}q}}{\\Gamma (\\alpha )^{r}\\theta ^{\\alpha s}}},}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Conjugate prior for gamma distribution is not in the provided decls."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle {\\begin{aligned}p'&=p\\prod \\nolimits _{i}x_{i},\\\\q'&=q+\\sum \\nolimits _{i}x_{i},\\\\r'&=r+n,\\\\s'&=s+n,\\end{aligned}}}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Conjugate posterior update rules are not in the provided decls."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle -\\sum _{k=1}^{n}\\ln U_{k}\\sim \\Gamma (n,1)}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Sum-of-log-uniforms gives integer-shape gamma is not in the provided decls."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\theta \\left(\\xi -\\sum _{i=1}^{\\lfloor \\alpha \\rfloor }\\ln U_{i}\\right)\\sim \\Gamma (\\alpha ,\\theta )}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Gamma variate generation algorithm summary is not in the provided decls."
+    }
+  ]
+}

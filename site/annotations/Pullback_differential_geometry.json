@@ -1,0 +1,297 @@
+{
+  "slug": "Pullback_differential_geometry",
+  "wikipedia_title": "Pullback (differential geometry)",
+  "display_title": "Pullback (differential geometry)",
+  "schema_version": 3,
+  "annotation_style": "theorem_article",
+  "annotations": [
+    {
+      "kind": "definition",
+      "label": "Pullback of a smooth function",
+      "anchor": {
+        "section": "Pullback of smooth functions and smooth maps",
+        "snippet": "the pullback of"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Pullback of a scalar function along a map is plain composition (`f ∘ φ`); Mathlib has no dedicated 'pullback' definition for this.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Pullback of a smooth map",
+      "anchor": {
+        "section": "Pullback of smooth functions and smooth maps",
+        "snippet": "More generally, if"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The pullback of a map by another map is just precomposition; Mathlib does not introduce it as a named pullback operation.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Pullback bundle",
+      "anchor": {
+        "section": "Pullback of bundles and sections",
+        "snippet": "is a vector bundle (or indeed any fiber bundle )"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "ContMDiffVectorBundle.pullback",
+        "module": "Mathlib.Geometry.Manifold.VectorBundle.Pullback",
+        "match_kind": "exact"
+      },
+      "note": "Mathlib provides the pullback fiber bundle (`FiberBundle.pullback` / notation `f *ᵖ E`) and the C^n vector-bundle instance `ContMDiffVectorBundle.pullback`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Pullback of a section",
+      "anchor": {
+        "section": "Pullback of bundles and sections",
+        "snippet": "precomposition defines a pullback operation on sections"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Although the pullback bundle exists in Mathlib, the induced pullback of sections (precomposition into the pullback total space) is not given as a named declaration.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Pullback of a multilinear form",
+      "anchor": {
+        "section": "Pullback of multilinear forms",
+        "snippet": "is a multilinear form on V defined by precomposing F with Φ"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "ContinuousMultilinearMap.compContinuousLinearMap",
+        "module": "Mathlib.Topology.Algebra.Module.Multilinear.Basic",
+        "match_kind": "exact"
+      },
+      "note": "Precomposing a continuous multilinear/alternating form by a linear map is `compContinuousLinearMap` (alternating version in `Mathlib.Topology.Algebra.Module.Alternating.Basic`).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Pullback as linear map between dual spaces",
+      "anchor": {
+        "section": "Pullback of multilinear forms",
+        "snippet": "pullback by Φ defines a linear map between dual spaces"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "ContinuousAlternatingMap.compContinuousLinearMapCLM",
+        "module": "Mathlib.Topology.Algebra.Module.Alternating.Topology",
+        "match_kind": "generalization"
+      },
+      "note": "Pullback by a continuous linear map is itself continuous-linear, packaged as `compContinuousLinearMapCLM` (and the multilinear analogue `compContinuousLinearMapL`).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Pushforward of tensors",
+      "anchor": {
+        "section": "Pullback of multilinear forms",
+        "snippet": "instead there is a pushforward operation"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Grep finds no pushforward operation on (multi)linear forms / tensors in the differential-geometric sense in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Pullback via inverse pushforward",
+      "anchor": {
+        "section": "Pullback of multilinear forms",
+        "snippet": "if Φ is invertible, pullback can be defined using pushforward by the inverse function"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "VectorField.mpullback",
+        "module": "Mathlib.Geometry.Manifold.VectorField.Pullback",
+        "match_kind": "special_case"
+      },
+      "note": "Mathlib's vector-field pullback `VectorField.mpullback I I' f V x := (mfderiv I I' f x).inverse (V (f x))` realises exactly the 'inverse-pushforward' definition (with the junk value 0 when the differential is not invertible).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Differential of a smooth map",
+      "anchor": {
+        "section": "Pullback of cotangent vectors and 1-forms",
+        "snippet": "the differential of"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "mfderiv",
+        "module": "Mathlib.Geometry.Manifold.MFDeriv.Defs",
+        "match_kind": "exact"
+      },
+      "note": "The fibrewise differential between tangent spaces is `mfderiv` (with `mfderivWithin` for the within-a-set variant).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Pullback of a 1-form",
+      "anchor": {
+        "section": "Pullback of cotangent vectors and 1-forms",
+        "snippet": "Applying the above bundle map (pointwise) to this section yields the pullback"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "ContinuousLinearMap.comp",
+        "module": "Mathlib.Topology.Algebra.Module.Basic",
+        "match_kind": "special_case"
+      },
+      "note": "Mathlib has no dedicated `pullback` of 1-forms on manifolds; the operation appears only implicitly as `(ω (f x)).comp (fderiv 𝕜 f x)` in the differential-form pullback theorems.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Pullback of a covariant tensor field",
+      "anchor": {
+        "section": "Pullback of (covariant) tensor fields",
+        "snippet": "the pullback of multilinear forms can be combined with the pullback of sections to yield a pullback"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No general pullback of covariant tensor fields is defined in Mathlib; only the alternating (differential-form) case appears in inline form.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Pullback of a differential form",
+      "anchor": {
+        "section": "Pullback of differential forms",
+        "snippet": "then the pullback of"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "ContinuousAlternatingMap.compContinuousLinearMap",
+        "module": "Mathlib.Topology.Algebra.Module.Alternating.Basic",
+        "match_kind": "special_case"
+      },
+      "note": "Mathlib does not name `pullback` for differential forms; the pullback is written inline as `fun x ↦ (ω (f x)).compContinuousLinearMap (fderiv 𝕜 f x)` (e.g. in `extDeriv_pullback`).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Pullback is compatible with the wedge product",
+      "anchor": {
+        "section": "Pullback of differential forms",
+        "snippet": "It is compatible with the wedge product"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Searches for pullback/compContinuousLinearMap interacting with the wedge product return no Mathlib lemma.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Pullback commutes with the exterior derivative",
+      "anchor": {
+        "section": "Pullback of differential forms",
+        "snippet": "It is compatible with the exterior derivative"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "extDeriv_pullback",
+        "module": "Mathlib.Analysis.Calculus.DifferentialForm.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`extDeriv_pullback` (with the within-a-set version `extDerivWithin_pullback`) states `d(f*ω) = f*(dω)` in the normed-space form.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Pullback by a diffeomorphism",
+      "anchor": {
+        "section": "Pullback by diffeomorphisms",
+        "snippet": "When the map"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib's `Diffeomorph` file does not introduce a pullback (of forms or tensor fields) along a diffeomorphism as a named operation.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Pullback action by an automorphism",
+      "anchor": {
+        "section": "Pullback by automorphisms",
+        "snippet": "This induces a pullback action on sections"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No diffeomorphism-group pullback action on sections of an associated bundle is defined in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Lie derivative via pullback",
+      "anchor": {
+        "section": "Pullback and Lie derivative",
+        "snippet": "a notion of Lie derivative on any associated bundle is obtained"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has only Lie-algebra `LieDerivation`; the geometric Lie derivative of sections via pullback of flows is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Pullback connection",
+      "anchor": {
+        "section": "Pullback of connections (covariant derivatives)",
+        "snippet": "then there is a pullback connection"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No connection / covariant-derivative pullback is defined in Mathlib (no general connection framework on manifolds exists yet).",
+      "provenance": "ai"
+    }
+  ]
+}

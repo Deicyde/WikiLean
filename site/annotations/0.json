@@ -1,0 +1,569 @@
+{
+  "slug": "0",
+  "wikipedia_title": "0",
+  "display_title": "0",
+  "schema_version": 3,
+  "annotation_style": "theorem_article",
+  "annotations": [
+    {
+      "kind": "definition",
+      "label": "Zero as empty quantity",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "is a number representing an empty quantity"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Zero",
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has the `Zero` typeclass providing a distinguished `0`, but the informal 'empty quantity' semantics is not itself a theorem.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Zero as additive identity",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "0 is the additive identity of the integers"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "zero_add",
+        "module": "Mathlib.Algebra.Group.Defs",
+        "match_kind": "generalization"
+      },
+      "note": "`zero_add`/`add_zero` from `AddZeroClass` state `0` is the additive identity in any additive monoid, including ℤ.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Multiplication by zero",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "Multiplying any number by 0 results in 0"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "mul_zero",
+        "module": "Mathlib.Algebra.GroupWithZero.Defs",
+        "match_kind": "generalization"
+      },
+      "note": "`mul_zero`/`zero_mul` from `MulZeroClass` give `a * 0 = 0` and `0 * a = 0`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Zero as placeholder digit",
+      "anchor": {
+        "section": "As a digit",
+        "snippet": "the digit 0 plays the role of a placeholder"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Nat.digits",
+        "module": "Mathlib.Data.Nat.Digits.Defs",
+        "match_kind": null
+      },
+      "note": "Positional digit representation is formalized via `Nat.digits`/`Nat.ofDigits`, but the 'placeholder' role of 0 is not stated as a theorem.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Decimal 205",
+      "anchor": {
+        "section": "As a digit",
+        "snippet": "the decimal number 205 is the sum of two hundreds and five ones"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Nat.ofDigits",
+        "module": "Mathlib.Data.Nat.Digits.Defs",
+        "match_kind": null
+      },
+      "note": "`Nat.ofDigits` computes the place-value sum of a digit list, capturing this example, but the specific `205` decomposition is not a declared statement.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Zero smallest nonnegative integer",
+      "anchor": {
+        "section": "Elementary algebra",
+        "snippet": "The number 0 is the smallest nonnegative integer"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Nat.zero_le",
+        "module": null,
+        "match_kind": "special_case"
+      },
+      "note": "`Nat.zero_le : 0 ≤ n` establishes `0` as the least element of ℕ (also reflected by ℕ's `OrderBot`).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Successor of zero",
+      "anchor": {
+        "section": "Elementary algebra",
+        "snippet": "The natural number following 0 is 1"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Holds definitionally since `1` is defined as `Nat.succ 0`, but there is no dedicated named lemma.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Zero as origin of complex plane",
+      "anchor": {
+        "section": "Elementary algebra",
+        "snippet": "0 becomes the origin of the complex plane"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Complex.instZero",
+        "module": "Mathlib.Data.Complex.Basic",
+        "match_kind": null
+      },
+      "note": "ℂ and its element `0` are formalized, but identifying `0` as the geometric 'origin' of the plane is informal.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Zero is even",
+      "anchor": {
+        "section": "Elementary algebra",
+        "snippet": "Zero is even"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Even.zero",
+        "module": "Mathlib.Algebra.Group.Even",
+        "match_kind": "exact"
+      },
+      "note": "`Even.zero : Even (0 : α)` states that zero is even.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Zero neither prime nor composite",
+      "anchor": {
+        "section": "Elementary algebra",
+        "snippet": "It is neither a prime number nor a composite number"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Nat.not_prime_zero",
+        "module": "Mathlib.Data.Nat.Prime.Defs",
+        "match_kind": "invocation"
+      },
+      "note": "`Nat.not_prime_zero` formalizes that 0 is not prime, but Mathlib has no 'composite' predicate to express the second half.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "{0} is a prime ideal",
+      "anchor": {
+        "section": "Elementary algebra",
+        "snippet": "the singleton set {0} is a prime ideal in the ring of the integers"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Ideal.bot_prime",
+        "module": "Mathlib.RingTheory.Ideal.Prime",
+        "match_kind": "generalization"
+      },
+      "note": "`Ideal.bot_prime` shows the zero ideal `⊥ = {0}` is prime in any nontrivial domain, which ℤ is.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Additive identity rule",
+      "anchor": {
+        "section": "Elementary algebra",
+        "snippet": "0 is an identity element"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "add_zero",
+        "module": "Mathlib.Algebra.Group.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`add_zero`/`zero_add` from `AddZeroClass` express that `0` is an additive identity.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Subtraction with zero",
+      "anchor": {
+        "section": "Elementary algebra",
+        "snippet": "Subtraction"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "sub_zero",
+        "module": "Mathlib.Algebra.Group.Basic",
+        "match_kind": "generalization"
+      },
+      "note": "`sub_zero : a - 0 = a` and `zero_sub : 0 - a = -a` hold in any subtraction monoid.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Multiplication by zero rule",
+      "anchor": {
+        "section": "Elementary algebra",
+        "snippet": "Multiplication"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "mul_zero",
+        "module": "Mathlib.Algebra.GroupWithZero.Defs",
+        "match_kind": "generalization"
+      },
+      "note": "`mul_zero`/`zero_mul` give the multiplication-by-zero rule in any `MulZeroClass`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Division involving zero",
+      "anchor": {
+        "section": "Elementary algebra",
+        "snippet": "because 0 has no multiplicative inverse"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "inv_zero",
+        "module": "Mathlib.Algebra.GroupWithZero.Basic",
+        "match_kind": "invocation"
+      },
+      "note": "Mathlib's `GroupWithZero` excludes 0 from units; by convention `inv_zero : 0⁻¹ = 0` and `div_zero : a / 0 = 0`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Exponentiation with zero",
+      "anchor": {
+        "section": "Elementary algebra",
+        "snippet": "Exponentiation"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "pow_zero",
+        "module": "Mathlib.Algebra.Group.Defs",
+        "match_kind": "generalization"
+      },
+      "note": "`pow_zero : a ^ 0 = 1` (and `zero_pow` for `0 ^ n`) formalize exponentiation involving zero.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Indeterminate form 0/0",
+      "anchor": {
+        "section": "Elementary algebra",
+        "snippet": "is a so-called"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib assigns `0 / 0 = 0` by convention (`zero_div`/`div_zero`) rather than treating it as an indeterminate form.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Empty sum and empty product",
+      "anchor": {
+        "section": "Elementary algebra",
+        "snippet": "The sum of 0 numbers"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Finset.prod_empty",
+        "module": "Mathlib.Algebra.BigOperators.Group.Finset.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`Finset.sum_empty = 0` and `Finset.prod_empty = 1` formalize the empty sum and empty product.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Zero factorial",
+      "anchor": {
+        "section": "Elementary algebra",
+        "snippet": "The factorial 0! evaluates to 1"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Nat.factorial_zero",
+        "module": "Mathlib.Data.Nat.Factorial.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`Nat.factorial_zero : 0! = 1`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Zero as cardinality of empty set",
+      "anchor": {
+        "section": "Other uses in mathematics",
+        "snippet": "0 is the cardinality of the empty set"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Cardinal.mk_eq_zero",
+        "module": "Mathlib.SetTheory.Cardinal.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`Cardinal.mk_eq_zero` gives `#(empty) = 0` (also `Set.ncard_empty`, `Finset.card_empty`).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Zero defined as empty set",
+      "anchor": {
+        "section": "Other uses in mathematics",
+        "snippet": "0 is defined to be the empty set"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib builds ℕ inductively and ordinals as quotients of well-orders, so the von Neumann identity `0 = ∅` is not part of the definition.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Zero as lowest ordinal",
+      "anchor": {
+        "section": "Other uses in mathematics",
+        "snippet": "0 is the lowest ordinal number"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Ordinal.bot_eq_zero",
+        "module": "Mathlib.SetTheory.Ordinal.Basic",
+        "match_kind": "exact"
+      },
+      "note": "Ordinals carry `OrderBot` with `bot_eq_zero`, so `0` is the least ordinal.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Zero as least element",
+      "anchor": {
+        "section": "Other uses in mathematics",
+        "snippet": "0 may denote the least element of a lattice"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "OrderBot",
+        "module": "Mathlib.Order.BoundedOrder.Basic",
+        "match_kind": null
+      },
+      "note": "Mathlib formalizes a least element via `OrderBot`/`⊥` but denotes it `⊥` rather than `0`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Zero element",
+      "anchor": {
+        "section": "Other uses in mathematics",
+        "snippet": "0 is commonly used to denote a zero element"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Zero",
+        "module": null,
+        "match_kind": "exact"
+      },
+      "note": "The `Zero` typeclass denotes the distinguished zero element of an algebraic structure.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Zero function",
+      "anchor": {
+        "section": "Other uses in mathematics",
+        "snippet": "Another example is the zero function"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Pi.zero_apply",
+        "module": "Mathlib.Algebra.Group.Pi.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`Pi.instZero` defines the zero function with `Pi.zero_apply : (0 : ∀ i, f i) a = 0`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Zero function is even and odd",
+      "anchor": {
+        "section": "Other uses in mathematics",
+        "snippet": "the zero function is the only function that is both even and odd"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Function.Odd.zero",
+        "module": "Mathlib.Algebra.Group.EvenFunction",
+        "match_kind": null
+      },
+      "note": "`Function.Even.zero` and `Function.Odd.zero` show the zero function is both even and odd, but the uniqueness ('only') claim is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Zero of a function",
+      "anchor": {
+        "section": "Other uses in mathematics",
+        "snippet": "A zero of a function"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Polynomial.IsRoot",
+        "module": "Mathlib.Algebra.Polynomial.Eval.Defs",
+        "match_kind": "special_case"
+      },
+      "note": "`Polynomial.IsRoot p a ↔ p.eval a = 0` captures roots for polynomials; there is no single general 'zero of a function' definition beyond the preimage `f ⁻¹' {0}`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Zero as truth value false",
+      "anchor": {
+        "section": "Other uses in mathematics",
+        "snippet": "0 may be used to denote the truth value false"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib/Lean represent falsity via `False`/`Bool.false`, not via the numeral `0`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Zero as smallest probability",
+      "anchor": {
+        "section": "Other uses in mathematics",
+        "snippet": "0 is the smallest allowed value for the probability of any event"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "ENNReal",
+        "module": "Mathlib.Data.ENNReal.Basic",
+        "match_kind": null
+      },
+      "note": "Measures and probabilities are valued in `ℝ≥0∞`/`ℝ≥0` where `0 ≤ p` always holds, but 'smallest probability' is not a standalone declared theorem.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Zero object",
+      "anchor": {
+        "section": "Other uses in mathematics",
+        "snippet": "the idea of a zero object"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "CategoryTheory.Limits.IsZero",
+        "module": "Mathlib.CategoryTheory.Limits.Shapes.ZeroObjects",
+        "match_kind": "exact"
+      },
+      "note": "`IsZero`/`HasZeroObject` formalize a categorical zero object (simultaneously initial and terminal).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Place-value (Aryabhatiya)",
+      "anchor": {
+        "section": "India",
+        "snippet": "from place to place each is ten times the preceding"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Nat.ofDigits",
+        "module": "Mathlib.Data.Nat.Digits.Defs",
+        "match_kind": null
+      },
+      "note": "`Nat.ofDigits` formalizes positional value where each place is `b` times the preceding, generalizing the base-ten claim.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Brahmagupta: sum of zero with itself",
+      "anchor": {
+        "section": "India",
+        "snippet": "the sum of zero with itself as zero"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "add_zero",
+        "module": "Mathlib.Algebra.Group.Defs",
+        "match_kind": "special_case"
+      },
+      "note": "`0 + 0 = 0` is the instance `add_zero 0` (equivalently `zero_add 0`).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Brahmagupta: division by zero",
+      "anchor": {
+        "section": "India",
+        "snippet": "Zero divided by zero is zero"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "zero_div",
+        "module": "Mathlib.Algebra.GroupWithZero.Basic",
+        "match_kind": "special_case"
+      },
+      "note": "Mathlib's convention `zero_div`/`div_zero` yields `0 / 0 = 0`, agreeing with Brahmagupta's assertion.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Bhaskara: division by zero is infinite",
+      "anchor": {
+        "section": "India",
+        "snippet": "A quantity divided by zero becomes a fraction"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "ENNReal.div_zero",
+        "module": "Mathlib.Data.ENNReal.Inv",
+        "match_kind": "special_case"
+      },
+      "note": "In `ℝ≥0∞`, `ENNReal.div_zero` gives `a / 0 = ∞` for `a ≠ 0`, matching this idea, though Mathlib's field convention is `a / 0 = 0`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "No distinct signed zero in mathematics",
+      "anchor": {
+        "section": "Computer science",
+        "snippet": "represent exactly the same number"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "neg_zero",
+        "module": "Mathlib.Algebra.Group.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`neg_zero : -0 = 0` shows `+0` and `-0` are the same element, with no distinct signed zero.",
+      "provenance": "ai"
+    }
+  ]
+}

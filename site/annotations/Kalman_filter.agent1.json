@@ -1,0 +1,530 @@
+{
+  "slug": "Kalman_filter",
+  "wikipedia_title": "Kalman filter",
+  "display_title": "Kalman filter",
+  "schema_version": 3,
+  "annotations": [
+    {
+      "kind": "definition",
+      "label": "Kalman filtering",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "Kalman filtering (also known as linear quadratic estimation ) is an algorithm that uses a series of measurements observed over time"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "proposition",
+      "label": "Optimality under Gaussian noise",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "Optimality of Kalman filtering assumes that errors have a normal (Gaussian) distribution"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "proposition",
+      "label": "Best linear estimator (MMSE)",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "if the process and measurement covariances are known, then the Kalman filter is the best possible linear estimator in the minimum mean-square-error sense"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "example",
+      "label": "Truck position with GPS and dead reckoning",
+      "anchor": {
+        "section": "Example application",
+        "snippet": "As an example application, consider the problem of determining the precise location of a truck"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "definition",
+      "label": "Kalman filter as recursive estimator",
+      "anchor": {
+        "section": "Technical description and context",
+        "snippet": "The Kalman filter is an efficient recursive filter estimating the internal state of a linear dynamic system from a series of noisy measurements"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "definition",
+      "label": "Underlying linear dynamic system model",
+      "anchor": {
+        "section": "Underlying dynamic system model",
+        "snippet": "Kalman filtering is based on linear dynamic systems discretized in the time domain"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "definition",
+      "label": "State transition equation",
+      "anchor": {
+        "section": "Underlying dynamic system model",
+        "snippet": "The Kalman filter model assumes the true state at time"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "definition",
+      "label": "Observation equation",
+      "anchor": {
+        "section": "Underlying dynamic system model",
+        "snippet": "an observation (or measurement)"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "definition",
+      "label": "Mutual independence of initial state and noise",
+      "anchor": {
+        "section": "Underlying dynamic system model",
+        "snippet": "The initial state, and the noise vectors at each step"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "definition",
+      "label": "Recursive estimator (filter state notation)",
+      "anchor": {
+        "section": "Details",
+        "snippet": "The Kalman filter is a recursive estimator"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "definition",
+      "label": "Predict and update phases",
+      "anchor": {
+        "section": "Details",
+        "snippet": "it is most often conceptualized as two distinct phases"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "definition",
+      "label": "Joseph form of covariance update",
+      "anchor": {
+        "section": "Update",
+        "snippet": "The second formula for the updated ( a posteriori ) estimate covariance above is known as the \"Joseph form\""
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "proposition",
+      "label": "Invariants of the Kalman filter estimates",
+      "anchor": {
+        "section": "Invariants",
+        "snippet": "If the model is accurate, and the values for"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "definition",
+      "label": "Autocovariance least-squares (ALS) estimation",
+      "anchor": {
+        "section": "Estimation of the noise covariances Q k and R k",
+        "snippet": "One practical method of doing this is the autocovariance least-squares (ALS) technique"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "proposition",
+      "label": "Optimal state estimation conditions",
+      "anchor": {
+        "section": "Optimality and performance",
+        "snippet": "The Kalman filter provides an optimal state estimation in cases where"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "proposition",
+      "label": "Whiteness of innovation sequence",
+      "anchor": {
+        "section": "Optimality and performance",
+        "snippet": "If the Kalman filter works optimally, the innovation sequence (the output prediction error) is a white noise"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "example",
+      "label": "Truck on frictionless rails",
+      "anchor": {
+        "section": "Example application, technical",
+        "snippet": "Consider a truck on frictionless, straight rails"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "proposition",
+      "label": "Convergence of gain matrices to asymptotic value",
+      "anchor": {
+        "section": "Asymptotic form",
+        "snippet": "Convergence of the gain matrices"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "definition",
+      "label": "Asymptotic Kalman filter as LTI filter",
+      "anchor": {
+        "section": "Asymptotic form",
+        "snippet": "the Kalman filter becomes a linear time-invariant filter"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "definition",
+      "label": "Discrete Riccati equation for asymptotic covariance",
+      "anchor": {
+        "section": "Asymptotic form",
+        "snippet": "can be computed by first solving the following discrete Riccati equation for the asymptotic state covariance"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "proposition",
+      "label": "Kalman filter as generalized least squares",
+      "anchor": {
+        "section": "Derivations",
+        "snippet": "The Kalman filter can be derived as a generalized least squares method operating on previous data"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "proposition",
+      "label": "Derivation of posteriori covariance (Joseph form)",
+      "anchor": {
+        "section": "Deriving the posteriori estimate covariance matrix",
+        "snippet": "This formula (sometimes known as the Joseph form of the covariance update equation) is valid for any value"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "theorem",
+      "label": "Optimal Kalman gain (MMSE)",
+      "anchor": {
+        "section": "Kalman gain derivation",
+        "snippet": "This gain, which is known as the optimal Kalman gain , is the one that yields MMSE estimates when used"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "proposition",
+      "label": "Simplified posteriori covariance with optimal gain",
+      "anchor": {
+        "section": "Simplification of the posteriori error covariance formula",
+        "snippet": "The formula used to calculate the a posteriori error covariance can be simplified when the Kalman gain equals the optimal value"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "proposition",
+      "label": "Sensitivity recursion under misspecified statistics",
+      "anchor": {
+        "section": "Sensitivity analysis",
+        "snippet": "This sensitivity analysis describes the behavior of the estimation error covariance when the noise covariances"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "definition",
+      "label": "Cholesky (square-root) factorization of covariance",
+      "anchor": {
+        "section": "Factored form",
+        "snippet": "Positive definite matrices have the property that they have a factorization into the product of a non-singular , lower-triangular matrix"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "definition",
+      "label": "U-D decomposition form",
+      "anchor": {
+        "section": "Factored form",
+        "snippet": "An equivalent form, which avoids many of the square root operations"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "definition",
+      "label": "L·D·L^T square-root filter",
+      "anchor": {
+        "section": "Factored form",
+        "snippet": "decomposition of the innovation covariance matrix"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "proposition",
+      "label": "Parallel (prefix-sum) Kalman filter complexity reduction",
+      "anchor": {
+        "section": "Parallel form",
+        "snippet": "it is however possible to express the filter-update routine in terms of an associative operator"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "proposition",
+      "label": "Markov conditional independence of true state",
+      "anchor": {
+        "section": "Relationship to recursive Bayesian estimation",
+        "snippet": "Because of the Markov assumption, the true state is conditionally independent of all earlier states given the immediately previous state"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "proposition",
+      "label": "Conditional independence of measurements",
+      "anchor": {
+        "section": "Relationship to recursive Bayesian estimation",
+        "snippet": "the measurement at the"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "proposition",
+      "label": "Predict and update as probability distributions",
+      "anchor": {
+        "section": "Relationship to recursive Bayesian estimation",
+        "snippet": "This results in the predict and update phases of the Kalman filter written probabilistically"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "definition",
+      "label": "Kalman filter as generative model",
+      "anchor": {
+        "section": "Marginal likelihood",
+        "snippet": "the Kalman filter can be viewed as a generative model"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "definition",
+      "label": "Marginal likelihood",
+      "anchor": {
+        "section": "Marginal likelihood",
+        "snippet": "This probability is known as the marginal likelihood"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "proposition",
+      "label": "Recursive log marginal likelihood update",
+      "anchor": {
+        "section": "Marginal likelihood",
+        "snippet": "to avoid numeric underflow , in a practical implementation it is usually desirable to compute the log marginal likelihood"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "definition",
+      "label": "Information filter (inverse covariance form)",
+      "anchor": {
+        "section": "Information filter",
+        "snippet": "In the information filter, or inverse covariance filter, the estimated covariance and estimated state are replaced by the information matrix and information vector"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "proposition",
+      "label": "Information filter summation update for N measurements",
+      "anchor": {
+        "section": "Information filter",
+        "snippet": "The main advantage of the information filter is that N measurements can be filtered at each time step simply by summing their information matrices and vectors"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "definition",
+      "label": "Optimal fixed-lag smoother",
+      "anchor": {
+        "section": "Fixed-lag smoother",
+        "snippet": "The optimal fixed-lag smoother provides the optimal estimate of"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "definition",
+      "label": "Optimal fixed-interval smoother (Kalman smoothing)",
+      "anchor": {
+        "section": "Fixed-interval smoothers",
+        "snippet": "The optimal fixed-interval smoother provides the optimal estimate of"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "definition",
+      "label": "Rauch–Tung–Striebel smoother",
+      "anchor": {
+        "section": "Rauch–Tung–Striebel",
+        "snippet": "The Rauch–Tung–Striebel (RTS) smoother is an efficient two-pass algorithm for fixed interval smoothing"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "definition",
+      "label": "Modified Bryson–Frazier smoother",
+      "anchor": {
+        "section": "Modified Bryson–Frazier smoother",
+        "snippet": "the modified Bryson–Frazier (MBF) fixed interval smoother developed by Bierman"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "definition",
+      "label": "Minimum-variance smoother",
+      "anchor": {
+        "section": "Minimum-variance smoother",
+        "snippet": "The minimum-variance smoother can attain the best-possible error performance"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "proposition",
+      "label": "Causal part equals minimum-variance Kalman filter",
+      "anchor": {
+        "section": "Minimum-variance smoother",
+        "snippet": "Taking the causal part of this minimum-variance smoother yields"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "definition",
+      "label": "Frequency-weighted Kalman filter",
+      "anchor": {
+        "section": "Frequency-weighted Kalman filters",
+        "snippet": "a frequency shaping function is used to weight the average power of the error spectral density in a specified frequency band"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "definition",
+      "label": "Extended Kalman filter",
+      "anchor": {
+        "section": "Extended Kalman filter",
+        "snippet": "In the extended Kalman filter (EKF), the state transition and observation models need not be linear functions of the state but may instead be nonlinear functions"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "definition",
+      "label": "Unscented Kalman filter",
+      "anchor": {
+        "section": "Unscented Kalman filter",
+        "snippet": "The unscented Kalman filter (UKF)"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "definition",
+      "label": "Sigma points and weights",
+      "anchor": {
+        "section": "Sigma points",
+        "snippet": "sigma points are any set of vectors"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "definition",
+      "label": "UKF predict step",
+      "anchor": {
+        "section": "Predict",
+        "snippet": "The sigma points are propagated through the transition function"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "definition",
+      "label": "UKF update step",
+      "anchor": {
+        "section": "Update (2)",
+        "snippet": "These sigma points are transformed through the measurement function"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "definition",
+      "label": "Discriminative Kalman filter",
+      "anchor": {
+        "section": "Discriminative Kalman filter",
+        "snippet": "When the observation model"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "definition",
+      "label": "Adaptive Kalman filter",
+      "anchor": {
+        "section": "Adaptive Kalman filter",
+        "snippet": "Adaptive Kalman filters allow to adapt for process dynamics which are not modeled in the process model"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "definition",
+      "label": "Kalman–Bucy filter",
+      "anchor": {
+        "section": "Kalman–Bucy filter",
+        "snippet": "Kalman–Bucy filtering (named for Richard Snowden Bucy) is a continuous time version of Kalman filtering"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "proposition",
+      "label": "Covariance differential equation is Riccati",
+      "anchor": {
+        "section": "Kalman–Bucy filter",
+        "snippet": "The second differential equation, for the covariance, is an example of a Riccati equation"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "definition",
+      "label": "Hybrid Kalman filter model",
+      "anchor": {
+        "section": "Hybrid Kalman filter",
+        "snippet": "Most physical systems are represented as continuous-time models while discrete-time measurements are made frequently for state estimation"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "definition",
+      "label": "Hybrid filter predict step",
+      "anchor": {
+        "section": "Predict (2)",
+        "snippet": "The prediction equations are derived from those of continuous-time Kalman filter without update from measurements"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "definition",
+      "label": "Hybrid filter update step",
+      "anchor": {
+        "section": "Update (3)",
+        "snippet": "The update equations are identical to those of the discrete-time Kalman filter"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "definition",
+      "label": "Sparse-signal recovery Kalman variant",
+      "anchor": {
+        "section": "Variants for the recovery of sparse signals",
+        "snippet": "The traditional Kalman filter has also been employed for the recovery of sparse , possibly dynamic, signals from noisy observations"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "proposition",
+      "label": "Kalman filter as Gaussian process regression solver",
+      "anchor": {
+        "section": "Relation to Gaussian processes",
+        "snippet": "Since linear Gaussian state-space models lead to Gaussian processes, Kalman filters can be viewed as sequential solvers for Gaussian process regression"
+      },
+      "provenance": "ai-agent1"
+    }
+  ]
+}

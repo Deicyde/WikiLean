@@ -1,0 +1,409 @@
+{
+  "slug": "Mean",
+  "wikipedia_title": "Mean",
+  "display_title": "Mean",
+  "schema_version": 3,
+  "annotation_style": "theorem_article",
+  "annotations": [
+    {
+      "kind": "definition",
+      "label": "Mean",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "A mean is a quantity representing"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "MeasureTheory.average",
+        "module": "Mathlib.MeasureTheory.Integral.Average",
+        "match_kind": null
+      },
+      "note": "There is no general formalization of the abstract notion of \"mean\", but MeasureTheory.average (⨍ x, f x ∂μ) provides one concrete mean.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Arithmetic mean (lead)",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "is the sum of the values divided by the number of values"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Finset.centroid",
+        "module": "Mathlib.LinearAlgebra.AffineSpace.Centroid",
+        "match_kind": "generalization"
+      },
+      "note": "Finset.centroid is the affine combination with equal weights 1/n, which over ℝ is exactly (1/n)·∑ values, generalizing the arithmetic mean.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Pythagorean means",
+      "anchor": {
+        "section": "Pythagorean means",
+        "snippet": "the three classical Pythagorean means are the arithmetic mean"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Real.geom_mean_le_arith_mean",
+        "module": "Mathlib.Analysis.MeanInequalities",
+        "match_kind": null
+      },
+      "note": "The three means appear as expressions in the AM-GM/HM-GM inequality lemmas, but \"Pythagorean means\" as a grouped concept is not defined.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Arithmetic mean (AM)",
+      "anchor": {
+        "section": "Arithmetic mean (AM)",
+        "snippet": "is the sum of all of the numbers divided by their count"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Finset.centroid",
+        "module": "Mathlib.LinearAlgebra.AffineSpace.Centroid",
+        "match_kind": "generalization"
+      },
+      "note": "Finset.centroid (affine combination with weights 1/n) generalizes the arithmetic mean of a finite list of numbers.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Arithmetic mean example",
+      "anchor": {
+        "section": "Arithmetic mean (AM)",
+        "snippet": "For example, the arithmetic mean of five values"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "A concrete numeric example is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Geometric mean (GM)",
+      "anchor": {
+        "section": "Geometric mean (GM)",
+        "snippet": "The geometric mean is an average that is useful for sets of positive numbers"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Real.geom_mean_le_arith_mean",
+        "module": "Mathlib.Analysis.MeanInequalities",
+        "match_kind": null
+      },
+      "note": "The geometric mean appears as the expression (∏ z i ^ w i)^(1/∑w) inside the AM-GM lemmas, but there is no standalone geometric-mean definition.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Geometric mean example",
+      "anchor": {
+        "section": "Geometric mean (GM)",
+        "snippet": "For example, the geometric mean of five values"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "A concrete numeric example is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Harmonic mean (HM)",
+      "anchor": {
+        "section": "Harmonic mean (HM)",
+        "snippet": "The harmonic mean is an average which is useful for sets of numbers"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Real.harm_mean_le_geom_mean",
+        "module": "Mathlib.Analysis.MeanInequalities",
+        "match_kind": null
+      },
+      "note": "The harmonic mean appears as the expression (∑w)/(∑ w/z) inside the HM-GM lemma, but there is no standalone harmonic-mean definition.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Harmonic mean example",
+      "anchor": {
+        "section": "Harmonic mean (HM)",
+        "snippet": "For example, the harmonic mean of the five values"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "A concrete numeric example is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Five pumps example",
+      "anchor": {
+        "section": "Harmonic mean (HM)",
+        "snippet": "If we have five pumps that can empty a tank"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "A word-problem application is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "AM-GM-HM inequality",
+      "anchor": {
+        "section": "Relationship between AM, GM, and HM",
+        "snippet": "AM, GM, and HM of nonnegative real numbers satisfy these inequalities"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Real.geom_mean_le_arith_mean",
+        "module": "Mathlib.Analysis.MeanInequalities",
+        "match_kind": "generalization"
+      },
+      "note": "GM ≤ AM is Real.geom_mean_le_arith_mean and HM ≤ GM is Real.harm_mean_le_geom_mean, together giving the chain in weighted/general form.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Mean of observations",
+      "anchor": {
+        "section": "Statistical location",
+        "snippet": "The mean of a set of observations is the arithmetic average of the values"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Finset.centroid",
+        "module": "Mathlib.LinearAlgebra.AffineSpace.Centroid",
+        "match_kind": "generalization"
+      },
+      "note": "The sample mean of observations is the equal-weight arithmetic average, formalized as Finset.centroid over ℝ.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Mean of a probability distribution",
+      "anchor": {
+        "section": "Mean of a probability distribution",
+        "snippet": "The mean of a probability distribution is the long-run arithmetic average value"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "MeasureTheory.average",
+        "module": "Mathlib.MeasureTheory.Integral.Average",
+        "match_kind": null
+      },
+      "note": "The mean (expectation) is the integral ∫ x ∂μ, equal to MeasureTheory.average of the identity for a probability measure, but no dedicated \"distribution mean\" definition exists.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Mean of discrete distribution",
+      "anchor": {
+        "section": "Mean of a probability distribution",
+        "snippet": "For a discrete probability distribution"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "MeasureTheory.average",
+        "module": "Mathlib.MeasureTheory.Integral.Average",
+        "match_kind": null
+      },
+      "note": "A discrete-distribution mean ∑ x·p(x) is a special case of the integral/expectation; only the general average/integral infrastructure exists.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Mean of continuous distribution",
+      "anchor": {
+        "section": "Mean of a probability distribution",
+        "snippet": "For a continuous distribution"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "MeasureTheory.average",
+        "module": "Mathlib.MeasureTheory.Integral.Average",
+        "match_kind": null
+      },
+      "note": "A continuous-distribution mean ∫ x·f(x) dx is a special case of the integral/expectation captured by the general average/integral infrastructure.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Power mean",
+      "anchor": {
+        "section": "Power mean",
+        "snippet": "abstracts several other means"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No generalized (power/Hölder) mean definition exists; only related Lp/rpow inequalities are present, not the mean itself.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Quasi-arithmetic mean",
+      "anchor": {
+        "section": "Quasi-arithmetic mean",
+        "snippet": "also known as the quasi-arithmetic mean"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The quasi-arithmetic (Kolmogorov) mean f⁻¹((1/n)∑f(xᵢ)) is not defined in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Weighted arithmetic mean",
+      "anchor": {
+        "section": "Weighted arithmetic mean",
+        "snippet": "is used if one wants to combine average values from different sized samples"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Finset.affineCombination",
+        "module": "Mathlib.LinearAlgebra.AffineSpace.Combination",
+        "match_kind": "generalization"
+      },
+      "note": "Finset.affineCombination ∑ wᵢ·pᵢ with weights summing to 1 is the weighted arithmetic mean, generalized to affine spaces.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Truncated mean",
+      "anchor": {
+        "section": "Truncated mean",
+        "snippet": "one can use a truncated mean"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The truncated/trimmed mean is not defined in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Interquartile mean",
+      "anchor": {
+        "section": "Truncated mean",
+        "snippet": "A specific example of a truncated mean is the interquartile mean"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The interquartile mean is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Mean of a function",
+      "anchor": {
+        "section": "Mean of a function",
+        "snippet": "This can happen when calculating the mean value"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "MeasureTheory.average",
+        "module": "Mathlib.MeasureTheory.Integral.Average",
+        "match_kind": "generalization"
+      },
+      "note": "MeasureTheory.average (⨍ x, f x ∂μ = (μ univ)⁻¹·∫f) generalizes the mean value (1/(b−a))∫ₐᵇ f of a function.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Circular mean",
+      "anchor": {
+        "section": "Mean of angles and cyclical quantities",
+        "snippet": "These quantities can be averaged using the circular mean"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The circular mean of angles (atan2 of summed sines/cosines) is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Fréchet mean",
+      "anchor": {
+        "section": "Fréchet mean",
+        "snippet": "The Fréchet mean gives a manner for determining"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Fréchet mean (minimizer of summed squared metric distances) is not defined in Mathlib; \"Fréchet\" occurrences refer to derivatives.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Center of a triangle",
+      "anchor": {
+        "section": "Center of a triangle",
+        "snippet": "thousands of different definitions for the center of a triangle"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Affine.Simplex.circumcenter",
+        "module": "Mathlib.Geometry.Euclidean.Circumcenter",
+        "match_kind": null
+      },
+      "note": "Specific triangle/simplex centers (circumcenter, incenter, centroid) are formalized, but there is no general \"triangle center\" abstraction.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Swanson's rule",
+      "anchor": {
+        "section": "Swanson's rule",
+        "snippet": "This is an approximation to the mean for a moderately skewed distribution"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Swanson's rule (0.3·P10 + 0.4·P50 + 0.3·P90) is not formalized in Mathlib.",
+      "provenance": "ai"
+    }
+  ]
+}

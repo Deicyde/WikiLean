@@ -1,0 +1,537 @@
+{
+  "slug": "Sylow_theorems",
+  "wikipedia_title": "Sylow theorems",
+  "display_title": "Sylow theorems",
+  "schema_version": 3,
+  "annotation_style": "theorem_article",
+  "annotations": [
+    {
+      "kind": "definition",
+      "label": "p-group",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "a p -group is a group whose cardinality is a power of"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "IsPGroup",
+        "module": "Mathlib.GroupTheory.PGroup",
+        "match_kind": "generalization"
+      },
+      "note": "`IsPGroup p G` is defined as every element having p-power order, equivalent to `Nat.card G = p^n` for finite G (see `IsPGroup.iff_card`).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Sylow p-subgroup",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "A Sylow p -subgroup (sometimes p -Sylow subgroup ) of a finite group"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Sylow",
+        "module": "Mathlib.GroupTheory.Sylow",
+        "match_kind": "exact"
+      },
+      "note": "The `Sylow p G` structure bundles a maximal p-subgroup of `G`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Sylow theorems (lead summary)",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "The Sylow theorems state that for every prime factor"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Sylow",
+        "module": "Mathlib.GroupTheory.Sylow",
+        "match_kind": "invocation"
+      },
+      "note": "All three Sylow theorems are proved in `Mathlib.GroupTheory.Sylow` via `Sylow.nonempty`, `Sylow.isPretransitive_of_finite`, and `card_sylow_modEq_one`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Order of Sylow p-subgroups",
+      "anchor": {
+        "section": "Statement",
+        "snippet": "all members are actually isomorphic to each other and have the largest possible order"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Sylow.card_eq_multiplicity",
+        "module": "Mathlib.GroupTheory.Sylow",
+        "match_kind": "exact"
+      },
+      "note": "`Sylow.card_eq_multiplicity` shows `Nat.card P = p ^ Nat.factorization (Nat.card G) p`, giving the maximal p-power order.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Sylow Theorem 1 (Existence)",
+      "anchor": {
+        "type": "theorem_box",
+        "value": "Theorem (1)"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Sylow.nonempty",
+        "module": "Mathlib.GroupTheory.Sylow",
+        "match_kind": "exact"
+      },
+      "note": "`Sylow.nonempty` (with `Sylow.card_eq_multiplicity`) gives the existence of a Sylow p-subgroup of order p^n for n the p-multiplicity of |G|.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Cauchy's theorem (Corollary)",
+      "anchor": {
+        "type": "theorem_box",
+        "value": "Corollary"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "exists_prime_orderOf_dvd_card",
+        "module": "Mathlib.GroupTheory.Perm.Cycle.Type",
+        "match_kind": "exact"
+      },
+      "note": "`exists_prime_orderOf_dvd_card` is Cauchy's theorem: a prime dividing |G| yields an element of that order.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Sylow Theorem 2 (Conjugacy)",
+      "anchor": {
+        "type": "theorem_box",
+        "value": "Theorem (2)"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Sylow.isPretransitive_of_finite",
+        "module": "Mathlib.GroupTheory.Sylow",
+        "match_kind": "exact"
+      },
+      "note": "Together with `IsPGroup.exists_le_sylow`, the transitive G-action on `Sylow p G` (`Sylow.isPretransitive_of_finite`) gives Sylow II.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Sylow Theorem 3 (Number of Sylow subgroups)",
+      "anchor": {
+        "type": "theorem_box",
+        "value": "Theorem (3)"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "card_sylow_modEq_one",
+        "module": "Mathlib.GroupTheory.Sylow",
+        "match_kind": "exact"
+      },
+      "note": "`card_sylow_modEq_one` proves n_p ≡ 1 (mod p), with `Sylow.card_dvd_index` giving n_p ∣ [G:P].",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Subgroup of every prime-power order",
+      "anchor": {
+        "section": "Consequences",
+        "snippet": "then there exists a subgroup of"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "exists_subgroup_card_pow_prime",
+        "module": "Mathlib.GroupTheory.Sylow",
+        "match_kind": "exact"
+      },
+      "note": "`exists_subgroup_card_pow_prime` produces a subgroup of order p^n whenever p^n ∣ |G|.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Sylow subgroups have equal order and are conjugate",
+      "anchor": {
+        "section": "Consequences",
+        "snippet": "The Sylow theorems imply that for a prime number"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Sylow.isPretransitive_of_finite",
+        "module": "Mathlib.GroupTheory.Sylow",
+        "match_kind": "exact"
+      },
+      "note": "`Sylow.isPretransitive_of_finite` says G acts transitively on Sylow p-subgroups; `Sylow.equiv` provides the resulting isomorphism.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Normality of unique Sylow subgroup",
+      "anchor": {
+        "section": "Consequences",
+        "snippet": "An important consequence of Theorem 2"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Sylow.normal_of_subsingleton",
+        "module": "Mathlib.GroupTheory.Sylow",
+        "match_kind": "exact"
+      },
+      "note": "`Sylow.normal_of_subsingleton` (with `Sylow.unique_of_normal`) shows a unique Sylow subgroup is normal.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "n_p divides |G|",
+      "anchor": {
+        "section": "Consequences",
+        "snippet": "The third bullet point of the third theorem has as an immediate consequence"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Sylow.card_dvd_index",
+        "module": "Mathlib.GroupTheory.Sylow",
+        "match_kind": "exact"
+      },
+      "note": "`Sylow.card_dvd_index` gives `Nat.card (Sylow p G) ∣ P.index`, the stronger form implying n_p ∣ |G|.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Sylow p-subgroup (infinite group)",
+      "anchor": {
+        "section": "Sylow theorems for infinite groups",
+        "snippet": "One defines a Sylow p -subgroup in an infinite group to be a p -subgroup"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Sylow",
+        "module": "Mathlib.GroupTheory.Sylow",
+        "match_kind": "exact"
+      },
+      "note": "The `Sylow` structure is defined for arbitrary groups as a maximal p-subgroup, with no finiteness assumption.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Sylow theorem for infinite groups",
+      "anchor": {
+        "type": "theorem_box",
+        "value": "Theorem"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "IsPGroup.exists_le_sylow",
+        "module": "Mathlib.GroupTheory.Sylow",
+        "match_kind": "exact"
+      },
+      "note": "`IsPGroup.exists_le_sylow` shows every p-subgroup is contained in a Sylow p-subgroup, proved via Zorn without finiteness.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Sylow subgroups of dihedral group (n odd)",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "A simple illustration of Sylow subgroups and the Sylow theorems are the dihedral group"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has `DihedralGroup` but no specific computation of its Sylow subgroups.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Sylow 2-subgroups of dihedral group (n even)",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "By contrast, if n is even, then 4 divides the order of the group"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No file in `Mathlib/GroupTheory/SpecificGroups/Dihedral.lean` mentions Sylow.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Sylow p-subgroups of GL_2(F_q)",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "Another example are the Sylow p-subgroups of GL"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib defines `GeneralLinearGroup` but does not identify its Sylow subgroups.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Diagonal matrix Sylow subgroup",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "One such subgroup P , is the set of diagonal matrices"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No Mathlib formalization of upper-triangular Sylow subgroups of GL_n(F_q).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Burnside's p^a q^b theorem",
+      "anchor": {
+        "section": "Example applications",
+        "snippet": "Burnside's p a q b theorem states that if the order of a group is the product of one or two prime powers"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has Burnside's transfer/fusion theorems but not the p^a q^b solvability theorem.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Groups of order 15 are cyclic",
+      "anchor": {
+        "section": "Cyclic group orders",
+        "snippet": "Let G be a group of order 15 = 3 · 5"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No specific Mathlib lemma asserts groups of order 15 are cyclic.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Groups of order pq are cyclic",
+      "anchor": {
+        "section": "Cyclic group orders",
+        "snippet": "if n = pq , where p and q are distinct prime numbers such that p does not divide q-1 , then every group of order n is cyclic"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has Sylow infrastructure but no generic `isCyclic_of_card_eq_pq` lemma.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "No simple group of order 30",
+      "anchor": {
+        "section": "Small groups are not simple",
+        "snippet": "If | G | = 30 and G were simple"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No Mathlib statement that no simple group of order 30 exists.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "No simple group of order 42",
+      "anchor": {
+        "section": "Small groups are not simple",
+        "snippet": "Next suppose | G | = 42 = 2 · 3 · 7 and G were simple"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No Mathlib statement about non-existence of simple groups of order 42.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Smallest non-cyclic simple group is A_5",
+      "anchor": {
+        "section": "Small groups are not simple",
+        "snippet": "the smallest simple non-cyclic group is A"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "alternatingGroup.isSimpleGroup",
+        "module": "Mathlib.GroupTheory.SpecificGroups.Alternating.Simple",
+        "match_kind": "special_case"
+      },
+      "note": "`alternatingGroup.isSimpleGroup` proves A_n is simple for n ≥ 5, but minimality of A_5 among non-cyclic simple groups is not stated.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Wilson's theorem",
+      "anchor": {
+        "section": "Wilson's theorem",
+        "snippet": "Part of Wilson's theorem states that"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Nat.prime_iff_fac_equiv_neg_one",
+        "module": "Mathlib.NumberTheory.Wilson",
+        "match_kind": "exact"
+      },
+      "note": "`Nat.prime_iff_fac_equiv_neg_one` states `(n-1)! ≡ -1 (mod n) ↔ n prime` for `n ≠ 1`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Burnside's fusion theorem",
+      "anchor": {
+        "section": "Fusion results",
+        "snippet": "a slight generalization known as Burnside's fusion theorem states that if G is a finite group with Sylow"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Sylow.conj_eq_normalizer_conj_of_mem",
+        "module": "Mathlib.GroupTheory.Sylow",
+        "match_kind": "special_case"
+      },
+      "note": "`Sylow.conj_eq_normalizer_conj_of_mem` proves the fusion property for elements in a commutative Sylow subgroup, a special case of the general fusion theorem; the focal subgroup theorem is also formalized in `Mathlib.GroupTheory.Focal`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "p-nilpotency from central Sylow normalizer",
+      "anchor": {
+        "section": "Fusion results",
+        "snippet": "if G is a finite group whose Sylow p -subgroup P is contained in the center of its normalizer"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "ker_transferSylow_isComplement'",
+        "module": "Mathlib.GroupTheory.Transfer",
+        "match_kind": "exact"
+      },
+      "note": "`ker_transferSylow_isComplement'` is Burnside's normal p-complement theorem: if N(P) ≤ C(P) then P has a normal complement.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Theorem 1 (proof statement)",
+      "anchor": {
+        "type": "theorem_box",
+        "value": "Theorem (1)"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "exists_subgroup_card_pow_prime",
+        "module": "Mathlib.GroupTheory.Sylow",
+        "match_kind": "exact"
+      },
+      "note": "Documented in the file as 'Sylow's first theorem', producing a subgroup of order p^n when p^n ∣ |G|.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Fixed-points lemma",
+      "anchor": {
+        "type": "theorem_box",
+        "value": "Lemma"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "IsPGroup.card_modEq_card_fixedPoints",
+        "module": "Mathlib.GroupTheory.PGroup",
+        "match_kind": "exact"
+      },
+      "note": "`IsPGroup.card_modEq_card_fixedPoints` says |X| ≡ |X^G| (mod p) for a finite p-group G acting on X.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Theorem 2 (proof statement)",
+      "anchor": {
+        "type": "theorem_box",
+        "value": "Theorem (2)"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Sylow.isPretransitive_of_finite",
+        "module": "Mathlib.GroupTheory.Sylow",
+        "match_kind": "exact"
+      },
+      "note": "`Sylow.isPretransitive_of_finite` formalizes the conjugacy of Sylow p-subgroups.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Theorem 3 (proof statement)",
+      "anchor": {
+        "type": "theorem_box",
+        "value": "Theorem (3)"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "card_sylow_modEq_one",
+        "module": "Mathlib.GroupTheory.Sylow",
+        "match_kind": "exact"
+      },
+      "note": "`card_sylow_modEq_one` and `Sylow.card_dvd_index` together give Sylow III.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Constructive existence of Sylow p-subgroup",
+      "anchor": {
+        "section": "Algorithms",
+        "snippet": "if H is a p -subgroup of G and the index"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "exists_subgroup_card_pow_succ",
+        "module": "Mathlib.GroupTheory.Sylow",
+        "match_kind": "exact"
+      },
+      "note": "`exists_subgroup_card_pow_succ` produces K ⊇ H of order p^(n+1) when p^(n+1) ∣ |G| and |H| = p^n.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Polynomial-time Sylow algorithm for permutation groups",
+      "anchor": {
+        "section": "Algorithms",
+        "snippet": "it has been proven, in Kantor"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Algorithmic complexity results for computing Sylow subgroups are outside Mathlib's scope.",
+      "provenance": "ai"
+    }
+  ]
+}

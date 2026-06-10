@@ -1,0 +1,617 @@
+{
+  "slug": "Zorns_lemma",
+  "wikipedia_title": "Zorn's lemma",
+  "display_title": "Zorn's lemma",
+  "schema_version": 3,
+  "annotation_style": "theorem_article",
+  "annotations": [
+    {
+      "kind": "theorem",
+      "label": "Zorn's lemma (statement)",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "a partially ordered set containing upper bounds for every chain"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "zorn_le",
+        "module": "Mathlib.Order.Zorn",
+        "match_kind": "generalization"
+      },
+      "note": "`zorn_le` states that if every chain in a preorder is `BddAbove` then a maximal element exists, generalizing the poset statement.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Hausdorff maximal principle (earlier formulation)",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "every totally ordered subset of a given partially ordered set is contained in a maximal totally ordered subset"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "IsChain.exists_maxChain",
+        "module": "Mathlib.Order.Zorn",
+        "match_kind": "exact"
+      },
+      "note": "`IsChain.exists_maxChain` says every chain is contained in a maximal chain, exactly the Hausdorff maximal principle.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Partially ordered set",
+      "anchor": {
+        "section": "Statement of the lemma",
+        "snippet": "is said to be (partially) ordered by"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "PartialOrder",
+        "module": "Mathlib.Order.Defs.PartialOrder",
+        "match_kind": "exact"
+      },
+      "note": "`PartialOrder` is the reflexive/transitive/antisymmetric relation `≤`, the standard poset definition.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Greater than or equal to",
+      "anchor": {
+        "section": "Statement of the lemma",
+        "snippet": "is said to be greater than or equal to"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "GE.ge",
+        "module": null,
+        "match_kind": "exact"
+      },
+      "note": "The relation `a ≥ b ↔ b ≤ a` is core notation `GE.ge` on top of the order `≤` provided by `Preorder`/`PartialOrder`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Totally ordered set",
+      "anchor": {
+        "section": "Statement of the lemma",
+        "snippet": "An ordered set in which every pair of elements is comparable is called totally ordered"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "LinearOrder",
+        "module": "Mathlib.Order.Defs.LinearOrder",
+        "match_kind": "exact"
+      },
+      "note": "`LinearOrder` is a partial order in which any two elements are comparable, i.e. a total order.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Inherited order on a subset",
+      "anchor": {
+        "section": "Statement of the lemma",
+        "snippet": "can itself be seen as partially ordered by restricting the order relation inherited"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Subtype.partialOrder",
+        "module": "Mathlib.Order.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`Subtype.partialOrder` gives a subset the partial order restricted from the ambient type.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Chain",
+      "anchor": {
+        "section": "Statement of the lemma",
+        "snippet": "is called a chain"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "IsChain",
+        "module": "Mathlib.Order.Preorder.Chain",
+        "match_kind": "exact"
+      },
+      "note": "`IsChain r s` is a set pairwise comparable under `r`, exactly the notion of a chain.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Maximal element",
+      "anchor": {
+        "section": "Statement of the lemma",
+        "snippet": "is maximal (with respect to ≤) if there is no other element of P greater than"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "IsMax",
+        "module": "Mathlib.Order.Max",
+        "match_kind": "exact"
+      },
+      "note": "`IsMax a` means no element is strictly greater than `a`, the standard definition of a maximal element.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Totally ordered set has at most one maximal element",
+      "anchor": {
+        "section": "Statement of the lemma",
+        "snippet": "a totally ordered set can have at most one maximal element"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No direct lemma found asserting uniqueness of a maximal element in a linear order, though `IsMax`/`IsGreatest` infrastructure exists.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Upper bound",
+      "anchor": {
+        "section": "Statement of the lemma",
+        "snippet": "an element u of P is an upper bound of S if it is greater than or equal to every element"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "upperBounds",
+        "module": "Mathlib.Order.Bounds.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`upperBounds s` is exactly the set of elements `≥` every member of `s`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Nonemptiness property is redundant",
+      "anchor": {
+        "section": "Statement of the lemma",
+        "snippet": "property (1) is redundant, since property (2) says"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This is an expository remark about the statement's hypotheses, not a theorem in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Inductive set (Bourbaki)",
+      "anchor": {
+        "section": "Statement of the lemma",
+        "snippet": "a partially ordered set is called inductive if each chain has an upper bound in the set"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "ChainCompletePartialOrder",
+        "module": "Mathlib.Order.BourbakiWitt",
+        "match_kind": null
+      },
+      "note": "Mathlib has `ChainCompletePartialOrder` (every nonempty chain has a supremum), related but stronger than Bourbaki's 'each chain has an upper bound'; no named 'inductive set' definition exists.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Zorn's lemma fails for a proper class",
+      "anchor": {
+        "section": "Statement of the lemma",
+        "snippet": "Zorn's lemma can fail for a partially ordered class , not a set"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This counterexample about proper classes is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Zorn's lemma (poset form)",
+      "anchor": {
+        "type": "theorem_box",
+        "value": "Zorn's lemma — [ 8 ] [ 9 ] Let [MATH] be"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "zorn_le",
+        "module": "Mathlib.Order.Zorn",
+        "match_kind": "generalization"
+      },
+      "note": "`zorn_le` proves existence of a maximal element when every chain is bounded above, stated for preorders (generalizing posets).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Zorn's lemma (inductive set form)",
+      "anchor": {
+        "type": "theorem_box",
+        "value": "Zorn's lemma — [ 11 ] Each inductive set"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "exists_maximal_of_chains_bounded",
+        "module": "Mathlib.Order.Zorn",
+        "match_kind": "generalization"
+      },
+      "note": "`exists_maximal_of_chains_bounded`, the file's primary form, gives a maximal element whenever every chain has an upper bound.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Corollary (maximal element above a given element)",
+      "anchor": {
+        "type": "theorem_box",
+        "value": "Corollary"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "zorn_le_nonempty_Ici₀",
+        "module": "Mathlib.Order.Zorn",
+        "match_kind": "generalization"
+      },
+      "note": "`zorn_le_nonempty_Ici₀` yields a maximal element `m` with `x ≤ m`, exactly the corollary that a maximal element exists above any given element.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Every vector space has a basis",
+      "anchor": {
+        "section": "Every vector space has a basis",
+        "snippet": "every vector space V has a basis"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Module.Basis.exists_basis",
+        "module": "Mathlib.LinearAlgebra.Basis.VectorSpace",
+        "match_kind": "generalization"
+      },
+      "note": "`Module.Basis.exists_basis` proves every vector space over a division ring has a basis (generalizing fields).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Nontrivial ring with unity contains a maximal ideal",
+      "anchor": {
+        "section": "Every nontrivial ring with unity contains a maximal ideal",
+        "snippet": "every nontrivial ring R with unity contains a maximal ideal"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Ideal.exists_maximal",
+        "module": "Mathlib.RingTheory.Ideal.Maximal",
+        "match_kind": "exact"
+      },
+      "note": "`Ideal.exists_maximal` shows any nontrivial ring has a maximal ideal (Krull's theorem).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Tychonoff's theorem",
+      "anchor": {
+        "section": "A proof of Tychonoff's theorem",
+        "snippet": "which in turn implies Tychonoff's theorem"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "isCompact_univ_pi",
+        "module": "Mathlib.Topology.Compactness.Compact",
+        "match_kind": "exact"
+      },
+      "note": "`isCompact_univ_pi` (Tychonoff) proves a product of compact sets is compact.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Tychonoff's theorem implies the axiom of choice",
+      "anchor": {
+        "section": "A proof of Tychonoff's theorem",
+        "snippet": "Tychonoff's theorem implies (thus is equivalent to) the axiom of choice"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The reverse implication (Tychonoff ⇒ AC) is not formalized; Mathlib assumes choice as an axiom.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Equivalent formulations of Zorn's lemma",
+      "anchor": {
+        "type": "theorem_box",
+        "value": "Proposition [ 16 ] [ 17 ]"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The proposition asserting the equivalence of several formulations is not formalized as such in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Inflationary maps have fixed points (equivalent to Zorn)",
+      "anchor": {
+        "section": "Equivalent formulations",
+        "snippet": "is called an inflationary map"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "ChainCompletePartialOrder.nonempty_fixedPoints_of_inflationary",
+        "module": "Mathlib.Order.BourbakiWitt",
+        "match_kind": "exact"
+      },
+      "note": "The Bourbaki-Witt theorem `nonempty_fixedPoints_of_inflationary` proves an inflationary map on a chain-complete partial order has a fixed point.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Stronger Zorn's lemma (well-ordered chains)",
+      "anchor": {
+        "type": "theorem_box",
+        "value": "Lemma"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "zorn_le",
+        "module": "Mathlib.Order.Zorn",
+        "match_kind": null
+      },
+      "note": "Mathlib has Zorn requiring all chains bounded; the strengthening that only well-ordered chains need upper bounds is not separately formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Hausdorff maximal principle",
+      "anchor": {
+        "section": "Proof from the Hausdorff maximal principle",
+        "snippet": "is an alternative formulation of Zorn's lemma asserting that"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "IsChain.exists_maxChain",
+        "module": "Mathlib.Order.Zorn",
+        "match_kind": "exact"
+      },
+      "note": "`IsChain.exists_maxChain` is the Hausdorff maximal principle: every chain extends to a maximal chain.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Lemma 1 (least upper bound form)",
+      "anchor": {
+        "type": "theorem_box",
+        "value": "Lemma 1"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This is a proof-internal lemma of a specific Zorn-from-HMP argument, not a standalone Mathlib declaration.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Lemma 2 (subsets closed under unions)",
+      "anchor": {
+        "type": "theorem_box",
+        "value": "Lemma 2"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This is a proof-internal lemma in the article's derivation, not a standalone Mathlib declaration.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Zorn's lemma implies the axiom of choice",
+      "anchor": {
+        "section": "Zorn's lemma implies the axiom of choice",
+        "snippet": "Zorn's lemma implies the axiom of choice illustrates a typical application"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib takes choice as an axiom and does not formalize the implication Zorn ⇒ AC.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Zorn's lemma implies the well-ordering theorem",
+      "anchor": {
+        "section": "Zorn's lemma implies the axiom of choice",
+        "snippet": "Zorn's lemma implies the well-ordering theorem"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "exists_wellFoundedLT",
+        "module": "Mathlib.SetTheory.Cardinal.Order",
+        "match_kind": null
+      },
+      "note": "The well-ordering theorem `exists_wellFoundedLT` is proved (via cardinals/choice), but the specific implication from Zorn's lemma is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Dcpo with least element has a maximal element",
+      "anchor": {
+        "type": "theorem_box",
+        "value": "Lemma [ 26 ]"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "zorn_le",
+        "module": "Mathlib.Order.Zorn",
+        "match_kind": null
+      },
+      "note": "Mathlib has general Zorn (`zorn_le`) and chain-complete order infrastructure, but no direct 'dcpo with a least element has a maximal element' lemma.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Equivalence with HMP, axiom of choice, well-ordering",
+      "anchor": {
+        "section": "Equivalent forms of Zorn's lemma",
+        "snippet": "Zorn's lemma is equivalent (in ZF ) to three main results"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The ZF-equivalence of Zorn, HMP, AC and well-ordering is not formalized as an equivalence in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Equivalent to strong completeness theorem",
+      "anchor": {
+        "section": "Equivalent forms of Zorn's lemma",
+        "snippet": "Zorn's lemma is also equivalent to the strong completeness theorem of first-order logic"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The equivalence of Zorn's lemma with the strong completeness theorem is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Banach's extension theorem / Hahn–Banach",
+      "anchor": {
+        "section": "Equivalent forms of Zorn's lemma",
+        "snippet": "Banach's extension theorem which is used to prove"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "exists_extension_of_le_sublinear",
+        "module": "Mathlib.Analysis.Convex.Cone.Extension",
+        "match_kind": "exact"
+      },
+      "note": "`exists_extension_of_le_sublinear` is the Hahn–Banach extension theorem for a functional dominated by a sublinear function.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Every vector space has a basis (equivalent)",
+      "anchor": {
+        "section": "Equivalent forms of Zorn's lemma",
+        "snippet": "Every vector space has a basis , a result from linear algebra"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Module.Basis.exists_basis",
+        "module": "Mathlib.LinearAlgebra.Basis.VectorSpace",
+        "match_kind": "generalization"
+      },
+      "note": "`Module.Basis.exists_basis` shows every vector space over a division ring has a basis.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Krull's theorem (maximal ideal)",
+      "anchor": {
+        "section": "Equivalent forms of Zorn's lemma",
+        "snippet": "Every commutative unital ring has a maximal ideal"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Ideal.exists_maximal",
+        "module": "Mathlib.RingTheory.Ideal.Maximal",
+        "match_kind": "exact"
+      },
+      "note": "`Ideal.exists_maximal` (Krull's theorem) gives a maximal ideal in any nontrivial ring.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Tychonoff's theorem (equivalent)",
+      "anchor": {
+        "section": "Equivalent forms of Zorn's lemma",
+        "snippet": "Tychonoff's theorem in topology (to which it is also equivalent"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "isCompact_univ_pi",
+        "module": "Mathlib.Topology.Compactness.Compact",
+        "match_kind": "exact"
+      },
+      "note": "`isCompact_univ_pi` proves Tychonoff's theorem; the equivalence with AC itself is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Every proper filter is contained in an ultrafilter",
+      "anchor": {
+        "section": "Equivalent forms of Zorn's lemma",
+        "snippet": "Every proper filter is contained in an ultrafilter"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Ultrafilter.exists_le",
+        "module": "Mathlib.Order.Filter.Ultrafilter.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`Ultrafilter.exists_le` shows every proper (`NeBot`) filter is refined by an ultrafilter.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Weak Zorn under ZF+DC (finite chains)",
+      "anchor": {
+        "section": "Analogs under weakenings of the axiom of choice",
+        "snippet": "any partially ordered set with exclusively finite chains must have a maximal element"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib uses full choice and does not track the ZF+DC weakening for posets with only finite chains.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Zorn's lemma for preordered sets",
+      "anchor": {
+        "type": "theorem_box",
+        "value": "Zorn's lemma — [ 37 ] Let [MATH] be a pr"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "zorn_le",
+        "module": "Mathlib.Order.Zorn",
+        "match_kind": "exact"
+      },
+      "note": "`zorn_le` is stated under `[Preorder α]`, exactly Zorn's lemma for preordered sets.",
+      "provenance": "ai"
+    }
+  ]
+}

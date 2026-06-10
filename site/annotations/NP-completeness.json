@@ -1,0 +1,441 @@
+{
+  "slug": "NP-completeness",
+  "wikipedia_title": "NP-completeness",
+  "display_title": "NP-completeness",
+  "schema_version": 3,
+  "annotation_style": "theorem_article",
+  "annotations": [
+    {
+      "kind": "definition",
+      "label": "NP-complete problem (informal)",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "a problem is NP-complete when"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has computability theory but no complexity-class hierarchy (P, NP, NP-complete).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Class NP",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "Problems that meet the first three criteria belong to the class NP"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No definition of the complexity class NP exists in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "NP-complete (formal)",
+      "anchor": {
+        "section": "Formal definition and related complexity classes",
+        "snippet": "is NP-complete if"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No formal NP-completeness predicate exists in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Class P",
+      "anchor": {
+        "section": "Formal definition and related complexity classes",
+        "snippet": "A decision problem that is solvable in polynomial time belongs to the class P"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No notion of polynomial-time complexity class P exists in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "NP-hard",
+      "anchor": {
+        "section": "Formal definition and related complexity classes",
+        "snippet": "A problem is said to be NP-hard if everything in NP can be transformed in polynomial time into it"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No NP-hardness predicate exists in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Cook–Levin theorem",
+      "anchor": {
+        "section": "Known NP-complete problems",
+        "snippet": "The Cook–Levin theorem states that the Boolean satisfiability problem is NP-complete"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Neither SAT nor NP-completeness exist in Mathlib, so Cook–Levin is absent.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Karp's 21 NP-complete problems",
+      "anchor": {
+        "section": "Known NP-complete problems",
+        "snippet": "Richard Karp proved that several other problems were also NP-complete"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has no complexity-theoretic results in the Karp lineage.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "List of NP-complete problems",
+      "anchor": {
+        "section": "Known NP-complete problems",
+        "snippet": "The list below contains some well-known problems that are NP-complete when expressed as decision problems"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No catalogue of NP-complete problems exists in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "3-SAT vs 2-SAT vs Max-2-SAT",
+      "anchor": {
+        "section": "Known NP-complete problems",
+        "snippet": "the 3-satisfiability problem, a restriction of the Boolean satisfiability problem, remains NP-complete"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib does not formalize SAT, 2-SAT, 3-SAT, or their complexities.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Graph coloring boundary",
+      "anchor": {
+        "section": "Known NP-complete problems",
+        "snippet": "Determining whether a graph can be colored with 2 colors is in P, but with 3 colors is NP-complete"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "SimpleGraph.Colorable",
+        "module": "Mathlib.Combinatorics.SimpleGraph.Coloring.VertexColoring",
+        "match_kind": null
+      },
+      "note": "Graph colorability is formalized via `SimpleGraph.Colorable`, but no complexity classification exists.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Cycle/bipartite vs maximum subgraph",
+      "anchor": {
+        "section": "Known NP-complete problems",
+        "snippet": "Determining if a graph is a cycle or is bipartite is very easy"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "SimpleGraph.IsBipartite",
+        "module": "Mathlib.Combinatorics.SimpleGraph.Bipartite",
+        "match_kind": null
+      },
+      "note": "Bipartiteness and cycle predicates exist but no complexity-class statements about them.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Knapsack approximation vs exact",
+      "anchor": {
+        "section": "Known NP-complete problems",
+        "snippet": "A solution of the knapsack problem within any fixed percentage of the optimal solution can be computed in polynomial time"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The knapsack problem and approximation schemes are not in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Graph isomorphism as NP-intermediate",
+      "anchor": {
+        "section": "Intermediate problems",
+        "snippet": "An interesting example is the graph isomorphism problem"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "SimpleGraph.Iso",
+        "module": "Mathlib.Combinatorics.SimpleGraph.Basic",
+        "match_kind": null
+      },
+      "note": "Mathlib defines graph isomorphism but says nothing about its complexity status.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Existence of NP-intermediate problems",
+      "anchor": {
+        "section": "Intermediate problems",
+        "snippet": "This class is called NP-Intermediate problems and exists if and only if P≠NP"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Ladner's theorem and the P vs NP question are not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Superpolynomial time for known NP-complete algorithms",
+      "anchor": {
+        "section": "Solving NP-complete problems",
+        "snippet": "all known algorithms for NP-complete problems require time that is superpolynomial in the input size"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has no notion of runtime/complexity to express superpolynomial bounds.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Polynomial-time Turing reduction",
+      "anchor": {
+        "section": "Completeness under different types of reduction",
+        "snippet": "is polynomial-time Turing-reducible to a problem"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "TuringReducible",
+        "module": "Mathlib.Computability.TuringDegree",
+        "match_kind": "generalization"
+      },
+      "note": "Mathlib defines plain Turing reducibility with no resource bounds, not the polynomial-time variant.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Logarithmic-space many-one reduction",
+      "anchor": {
+        "section": "Completeness under different types of reduction",
+        "snippet": "the logarithmic-space many-one reduction which is a many-one reduction that can be computed with only a logarithmic amount of space"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "ManyOneReducible",
+        "module": "Mathlib.Computability.Reduce",
+        "match_kind": "generalization"
+      },
+      "note": "Mathlib has unbounded many-one reducibility but no log-space resource-bounded variant.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Log-space implies polynomial-time reduction",
+      "anchor": {
+        "section": "Completeness under different types of reduction",
+        "snippet": "every computation that can be done in logarithmic space can also be done in polynomial time"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has no space- or time-bounded computation model to express L ⊆ P.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "AC0 reductions strictly weaker",
+      "anchor": {
+        "section": "Completeness under different types of reduction",
+        "snippet": "reductions define a strictly smaller class than polynomial-time reductions"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "AC0 and circuit complexity are absent from Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Presburger arithmetic requires more than exponential time",
+      "anchor": {
+        "section": "Common misconceptions",
+        "snippet": "some problems have been proven to require more time, for example Presburger arithmetic"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Presburger arithmetic and its time-complexity lower bounds are not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Halting problem unsolvable",
+      "anchor": {
+        "section": "Common misconceptions",
+        "snippet": "they can never be solved at all, for example the halting problem"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "halting_problem",
+        "module": "Mathlib.Computability.Halting",
+        "match_kind": "exact"
+      },
+      "note": "Mathlib proves `halting_problem`: the predicate `(eval c n).Dom` is not a `ComputablePred`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Valiant–Vazirani theorem",
+      "anchor": {
+        "section": "Common misconceptions",
+        "snippet": "there are NP-problems with at most one solution that are NP-hard under randomized polynomial-time reduction"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Randomized reductions and NP are not in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Subexponential algorithms via planar separator",
+      "anchor": {
+        "section": "Common misconceptions",
+        "snippet": "the independent set and dominating set problems for planar graphs are NP-complete, but can be solved in subexponential time using the planar separator theorem"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Planar separator theorem and planar-graph algorithms are not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Polynomial-time algorithms must err often unless P=NP",
+      "anchor": {
+        "section": "Common misconceptions",
+        "snippet": "any polynomial-time algorithm must asymptotically be wrong on more than polynomially many of the exponentially many inputs of a certain size"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No complexity-theoretic average-case results live in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "BQP and NP-completeness",
+      "anchor": {
+        "section": "Common misconceptions",
+        "snippet": "BQP is not believed to contain all of NP, and if it does not, then it cannot contain any NP-complete problem"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "BQP and quantum complexity classes are absent from Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Non-closure of NPC",
+      "anchor": {
+        "section": "Properties",
+        "snippet": "the set NPC of all NP-complete problems is not closed under"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Without NP-completeness in Mathlib, closure properties of NPC cannot be stated.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "NPC closure under complement equivalent to NP=co-NP",
+      "anchor": {
+        "section": "Properties",
+        "snippet": "It is not known whether NPC is closed under complementation"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Neither NP nor co-NP are formalized in Mathlib.",
+      "provenance": "ai"
+    }
+  ]
+}

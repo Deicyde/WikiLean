@@ -1,0 +1,937 @@
+{
+  "slug": "Ricci_calculus",
+  "wikipedia_title": "Ricci calculus",
+  "display_title": "Ricci calculus",
+  "schema_version": 3,
+  "annotation_style": "theorem_article",
+  "annotations": [
+    {
+      "kind": "definition",
+      "label": "Component of a tensor",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "A component of a tensor is a real number that is used as a coefficient of a basis element"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Basis.repr",
+        "module": "Mathlib.LinearAlgebra.Basis.Defs",
+        "match_kind": "generalization"
+      },
+      "note": "A component as the coefficient of a basis element is captured by the coordinate map `Basis.repr`, but Mathlib has no dedicated 'tensor component' notion.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Einstein notation",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "the Ricci calculus incorporates Einstein notation"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Einstein summation is a notational convention that Mathlib does not use.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Latin index convention",
+      "anchor": {
+        "section": "Space and time coordinates",
+        "snippet": "is used to indicate restriction to 3-dimensional Euclidean space"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Choosing Latin letters for spatial indices is a notational convention, not a formalizable statement.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Greek index convention",
+      "anchor": {
+        "section": "Space and time coordinates",
+        "snippet": "is used for 4-dimensional spacetime"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Choosing Greek letters for spacetime indices is a notational convention, not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Coordinate vector in 3-D Euclidean space",
+      "anchor": {
+        "section": "Coordinate and index notation",
+        "snippet": "in 3-D Euclidean space and using Cartesian coordinates"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "EuclideanSpace",
+        "module": "Mathlib.Analysis.InnerProductSpace.PiL2",
+        "match_kind": "special_case"
+      },
+      "note": "`EuclideanSpace ℝ (Fin 3)` realizes a 3-D Cartesian coordinate vector, but the indexed example itself is only illustrative notation.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Labelling indices with diacritics",
+      "anchor": {
+        "section": "Reference to basis",
+        "snippet": "Indices themselves may be labelled using diacritic -like symbols"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Decorating indices with diacritics is purely a notational device.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Lorentz transformation indices",
+      "anchor": {
+        "section": "Reference to basis",
+        "snippet": "An example is in Lorentz transformations from one frame of reference to another"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This illustrates primed/unprimed index labels and is a notation example, not a formalized result.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Upper vs lower indices",
+      "anchor": {
+        "section": "Upper and lower indices",
+        "snippet": "distinguishes between lower indices (subscripts) and upper indices (superscripts)"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Module.Dual",
+        "module": "Mathlib.LinearAlgebra.Dual.Defs",
+        "match_kind": null
+      },
+      "note": "The contravariant/covariant distinction underlying upper vs lower indices is the difference between a module and its dual `Module.Dual`, but index position itself is notational.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Dropping index distinction with identity metric",
+      "anchor": {
+        "section": "Upper and lower indices",
+        "snippet": "In the special case that the metric tensor is everywhere equal to the identity matrix"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "InnerProductSpace.toDual",
+        "module": "Mathlib.Analysis.InnerProductSpace.Dual",
+        "match_kind": null
+      },
+      "note": "With the standard metric the musical isomorphism `toDual` identifies a space with its dual, but no lemma states that index distinction can be dropped.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Covariant components",
+      "anchor": {
+        "section": "Covariant tensor components",
+        "snippet": "A lower index (subscript) indicates covariance of the components with respect to that index"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Module.Dual",
+        "module": "Mathlib.LinearAlgebra.Dual.Defs",
+        "match_kind": null
+      },
+      "note": "Covariant components correspond to elements of the dual space `Module.Dual`, but the covariance transformation law is not formalized as such.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Contravariant components",
+      "anchor": {
+        "section": "Contravariant tensor components",
+        "snippet": "An upper index (superscript) indicates contravariance of the components with respect to that index"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Module.Dual",
+        "module": "Mathlib.LinearAlgebra.Dual.Defs",
+        "match_kind": null
+      },
+      "note": "Contravariant components are coordinates of vectors in the primal space dual to the covectors of `Module.Dual`, but the contravariance law is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Mixed-variance components",
+      "anchor": {
+        "section": "Mixed-variance tensor components",
+        "snippet": "A tensor may have both upper and lower indices"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "TensorProduct",
+        "module": "Mathlib.LinearAlgebra.TensorProduct.Basic",
+        "match_kind": null
+      },
+      "note": "Mixed tensors are elements of tensor products of a space and its dual (`TensorProduct`), but there is no indexed mixed-variance type.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Index ordering is significant",
+      "anchor": {
+        "section": "Mixed-variance tensor components",
+        "snippet": "Ordering of indices is significant, even when of differing variance"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Non-commutativity of tensor factors is inherent in tensor products but is not stated as a named result about index ordering.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Tensor type (p, q)",
+      "anchor": {
+        "section": "Tensor type and degree",
+        "snippet": "a tensor with p upper and q lower indices is said to be of type"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has no dedicated type-(p,q) mixed-variance tensor construction.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Degree of a tensor",
+      "anchor": {
+        "section": "Tensor type and degree",
+        "snippet": "is called the degree of the tensor"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The notion of tensor degree p+q as used in Ricci calculus is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Summation convention",
+      "anchor": {
+        "section": "Summation convention",
+        "snippet": "indicates a pair of indices that are summed over"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The implicit summation convention over repeated indices is a notational device not used in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Tensor contraction",
+      "anchor": {
+        "section": "Summation convention",
+        "snippet": "The operation implied by such a summation is called tensor contraction"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "TensorProduct.contractLeft",
+        "module": "Mathlib.LinearAlgebra.Contraction",
+        "match_kind": "special_case"
+      },
+      "note": "Contraction of a vector against a dual vector is `TensorProduct.contractLeft`/`contractRight`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Multi-index notation",
+      "anchor": {
+        "section": "Multi-index notation",
+        "snippet": "one shorthand is to use a capital letter for the list"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Capital-letter multi-index shorthand is purely notational.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Sequential summation notation",
+      "anchor": {
+        "section": "Sequential summation",
+        "snippet": "A pair of vertical bars | ⋅ | around a set of all-upper indices or all-lower indices"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The vertical-bar sequential-summation notation is a notational convention.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Raising and lowering indices",
+      "anchor": {
+        "section": "Raising and lowering indices",
+        "snippet": "By contracting an index with a non-singular metric tensor , the type of a tensor can be changed"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "InnerProductSpace.toDual",
+        "module": "Mathlib.Analysis.InnerProductSpace.Dual",
+        "match_kind": "special_case"
+      },
+      "note": "The metric-induced musical isomorphism `toDual` lowers (and its inverse raises) an index on a vector, but general tensor index raising/lowering is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Tensor equality componentwise",
+      "anchor": {
+        "section": "General outlines for index notation and operations",
+        "snippet": "Tensors are equal if and only if every corresponding component is equal"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Basis.ext_elem_iff",
+        "module": "Mathlib.LinearAlgebra.Basis.Defs",
+        "match_kind": "generalization"
+      },
+      "note": "`Basis.ext_elem_iff` states two module elements are equal iff all their basis coordinates agree.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Free indices",
+      "anchor": {
+        "section": "Free and dummy indices",
+        "snippet": "Indices not involved in contractions are called free indices"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The free-index terminology of index notation has no Mathlib counterpart.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Dummy indices",
+      "anchor": {
+        "section": "Free and dummy indices",
+        "snippet": "Indices used in contractions are termed dummy indices"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The dummy-index terminology is a feature of index notation not present in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Number of equations represented",
+      "anchor": {
+        "section": "A tensor equation represents many ordinary (real-valued) equations",
+        "snippet": "If a tensor equality has n free indices, and if the dimensionality of the underlying vector space is m"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The m^n counting of scalar equations is a meta-fact about index notation, not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "64 equations in four dimensions",
+      "anchor": {
+        "section": "A tensor equation represents many ordinary (real-valued) equations",
+        "snippet": "is in four dimensions"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This is a numerical illustration of index-equation counting, not a formalizable statement.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Indices are replaceable labels",
+      "anchor": {
+        "section": "Indices are replaceable labels",
+        "snippet": "Replacing any index symbol throughout by another leaves the tensor equation unchanged"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Relabeling dummy indices corresponds to sum reindexing but is a notational meta-rule, not formalized as such.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Correct vs erroneous index change",
+      "anchor": {
+        "section": "Indices are replaceable labels",
+        "snippet": "An example of a correct change is"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This illustrates valid vs invalid index relabeling, a notational concern.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Free indices consistent across terms",
+      "anchor": {
+        "section": "Indices are the same in every term",
+        "snippet": "The free indices in a tensor expression always appear in the same (upper or lower) position throughout every term"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This well-formedness rule for index expressions is notational, not a formalized theorem.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Bracket/punctuation shown once",
+      "anchor": {
+        "section": "Brackets and punctuation used once where implied",
+        "snippet": "the bracket or punctuation symbols denoting the rules are only shown on one group"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This is a typographical shorthand convention.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Symmetrized part of tensor",
+      "anchor": {
+        "section": "Symmetric part of tensor",
+        "snippet": "around multiple indices denotes the symmetrized part of the tensor"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has no symmetrization operation for multilinear maps/tensors (only alternatization for the antisymmetric part).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Two-index symmetrization",
+      "anchor": {
+        "section": "Symmetric part of tensor",
+        "snippet": "two symmetrizing indices mean there are two indices to permute and sum over"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No tensor symmetrization operation exists in Mathlib to instantiate this example.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Symmetrization distributive over addition",
+      "anchor": {
+        "section": "Symmetric part of tensor",
+        "snippet": "The symmetrization is distributive over addition"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Since no symmetrization map is defined, its additivity is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Antisymmetrized part of tensor",
+      "anchor": {
+        "section": "Antisymmetric or alternating part of tensor",
+        "snippet": "denotes the anti symmetrized part of the tensor"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "MultilinearMap.alternatization",
+        "module": "Mathlib.LinearAlgebra.Alternating.Basic",
+        "match_kind": null
+      },
+      "note": "`MultilinearMap.alternatization` produces the alternating part by summing signed permutations, but without the 1/n! normalization used in Ricci calculus.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Electromagnetic tensor / Gauss's law",
+      "anchor": {
+        "section": "Antisymmetric or alternating part of tensor",
+        "snippet": "if F represents the electromagnetic tensor"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The electromagnetic field tensor and Gauss's law are physics examples not present in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Antisymmetrization distributive over addition",
+      "anchor": {
+        "section": "Antisymmetric or alternating part of tensor",
+        "snippet": "the antisymmetrization is distributive over addition"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "MultilinearMap.alternatization",
+        "module": "Mathlib.LinearAlgebra.Alternating.Basic",
+        "match_kind": "generalization"
+      },
+      "note": "`MultilinearMap.alternatization` is bundled as an `AddMonoidHom`, so it distributes over addition via `map_add`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Decomposition into symmetric and antisymmetric parts",
+      "anchor": {
+        "section": "Sum of symmetric and antisymmetric parts",
+        "snippet": "Any tensor can be written as the sum of its symmetric and antisymmetric parts on two indices"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Without a symmetrization operation, the symmetric-plus-antisymmetric decomposition is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Derivative index notation",
+      "anchor": {
+        "section": "Differentiation",
+        "snippet": "derivatives may be indicated by adding indices after a comma or semicolon"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Comma/semicolon derivative-index notation is a notational device.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Partial derivative comma notation",
+      "anchor": {
+        "section": "Partial derivative",
+        "snippet": "a comma is placed before an appended lower index of the coordinate variable"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "fderiv",
+        "module": "Mathlib.Analysis.Calculus.FDeriv.Basic",
+        "match_kind": null
+      },
+      "note": "The partial-derivative operation is `fderiv`/`mfderiv`, but the comma-index coordinate notation is Ricci-specific.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Partial derivative product rule",
+      "anchor": {
+        "section": "Partial derivative",
+        "snippet": "This derivative is characterized by the product rule and the derivatives of the coordinates"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "fderiv_mul",
+        "module": "Mathlib.Analysis.Calculus.FDeriv.Mul",
+        "match_kind": "generalization"
+      },
+      "note": "The Leibniz/product rule for the (Fréchet) derivative is `fderiv_mul`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Covariant derivative semicolon notation",
+      "anchor": {
+        "section": "Covariant derivative",
+        "snippet": "a semicolon ( ; ) placed before an appended lower (covariant) index indicates covariant differentiation"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "CovariantDerivative",
+        "module": "Mathlib.Geometry.Manifold.VectorBundle.CovariantDerivative.Basic",
+        "match_kind": "generalization"
+      },
+      "note": "Covariant differentiation is formalized as `CovariantDerivative`/`IsCovariantDerivativeOn` on a vector bundle; only the semicolon notation is Ricci-specific.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Covariant derivative transforms as a tensor",
+      "anchor": {
+        "section": "Covariant derivative",
+        "snippet": "The components of this derivative of a tensor field transform covariantly"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "TensorialAt",
+        "module": "Mathlib.Geometry.Manifold.VectorBundle.Tensoriality",
+        "match_kind": null
+      },
+      "note": "Tensoriality (`TensorialAt`) is built into Mathlib's covariant derivative, which outputs a section of Hom(TM,V), but no componentwise covariance lemma is stated.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Covariant derivative product rule",
+      "anchor": {
+        "section": "Covariant derivative",
+        "snippet": "This derivative is characterized by the product rule"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "IsCovariantDerivativeOn.leibniz",
+        "module": "Mathlib.Geometry.Manifold.VectorBundle.CovariantDerivative.Basic",
+        "match_kind": "exact"
+      },
+      "note": "The Leibniz (product) rule is the `leibniz` field of the `IsCovariantDerivativeOn` definition.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Affine connection",
+      "anchor": {
+        "section": "Connection types",
+        "snippet": "A Koszul connection on the tangent bundle of a differentiable manifold is called an affine connection"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "CovariantDerivative",
+        "module": "Mathlib.Geometry.Manifold.VectorBundle.CovariantDerivative.Basic",
+        "match_kind": "generalization"
+      },
+      "note": "An affine connection is a covariant derivative on the tangent bundle; Mathlib's `CovariantDerivative` (Koszul connection) covers any vector bundle and is used as an affine connection in the Torsion file.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Metric connection",
+      "anchor": {
+        "section": "Connection types",
+        "snippet": "A connection is a metric connection when the covariant derivative of the metric tensor vanishes"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has no metric-compatibility (∇g=0) condition on connections.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Riemannian connection",
+      "anchor": {
+        "section": "Connection types",
+        "snippet": "An affine connection that is also a metric connection is called a Riemannian connection"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Without metric connections, the Riemannian (metric-compatible affine) connection is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Levi-Civita connection",
+      "anchor": {
+        "section": "Connection types",
+        "snippet": "A Riemannian connection that is torsion-free"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Although torsion is formalized, the metric-compatible torsion-free Levi-Civita connection is not.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Christoffel symbols of the second kind",
+      "anchor": {
+        "section": "Connection types",
+        "snippet": "are called Christoffel symbols of the second kind"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Christoffel symbols are not defined in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Exterior derivative",
+      "anchor": {
+        "section": "Exterior derivative",
+        "snippet": "The exterior derivative of a totally antisymmetric type"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "extDeriv",
+        "module": "Mathlib.Analysis.Calculus.DifferentialForm.Basic",
+        "match_kind": "special_case"
+      },
+      "note": "`extDeriv` formalizes the exterior derivative of a differential form on a normed space (the manifold version is not yet present).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Lie derivative",
+      "anchor": {
+        "section": "Lie derivative",
+        "snippet": "The Lie derivative is another derivative that is covariant under basis transformations"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "VectorField.mlieBracket",
+        "module": "Mathlib.Geometry.Manifold.VectorField.LieBracket",
+        "match_kind": "special_case"
+      },
+      "note": "The Lie derivative of a vector field (the Lie bracket) is `mlieBracket`, but the general Lie derivative of arbitrary tensor fields is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Lie derivative of vector along itself is zero",
+      "anchor": {
+        "section": "Lie derivative",
+        "snippet": "the Lie derivative of a contravariant vector field along itself is zero"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "VectorField.mlieBracket_self",
+        "module": "Mathlib.Geometry.Manifold.VectorField.LieBracket",
+        "match_kind": "exact"
+      },
+      "note": "`mlieBracket_self` states `[X,X]=0`, i.e. the Lie derivative of a vector field along itself vanishes.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Kronecker delta as identity",
+      "anchor": {
+        "section": "Kronecker delta",
+        "snippet": "The Kronecker delta is like the identity matrix when multiplied and contracted"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Matrix.one_apply",
+        "module": "Mathlib.Data.Matrix.Diagonal",
+        "match_kind": "exact"
+      },
+      "note": "`Matrix.one_apply` gives `(1)ᵢⱼ = if i=j then 1 else 0`, the Kronecker delta as the identity matrix.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Kronecker delta is an invariant type-(1,1) tensor",
+      "anchor": {
+        "section": "Kronecker delta",
+        "snippet": "are the same in any basis and form an invariant tensor of type"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The basis-independent (1,1) tensor is the identity endomorphism, but its invariance under basis change is not stated as a named result.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Generalized Kronecker delta",
+      "anchor": {
+        "section": "Kronecker delta",
+        "snippet": "The Kronecker delta is one of the family of generalized Kronecker deltas"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The generalized Kronecker delta is not defined in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Torsion tensor",
+      "anchor": {
+        "section": "Torsion tensor",
+        "snippet": "An affine connection has a torsion tensor"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "CovariantDerivative.torsion",
+        "module": "Mathlib.Geometry.Manifold.VectorBundle.CovariantDerivative.Torsion",
+        "match_kind": "exact"
+      },
+      "note": "`CovariantDerivative.torsion` (and `IsCovariantDerivativeOn.torsion`) defines the torsion tensor of an affine connection.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Riemann curvature tensor as commutator",
+      "anchor": {
+        "section": "Riemann curvature tensor",
+        "snippet": "then it is the commutator of the covariant derivative with itself"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No Riemann curvature tensor is defined in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Ricci identities",
+      "anchor": {
+        "section": "Riemann curvature tensor",
+        "snippet": "which are often referred to as the Ricci identities"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Lacking a curvature tensor, the Ricci identities are not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Metric tensor and length of curves",
+      "anchor": {
+        "section": "Metric tensor",
+        "snippet": "is used for lowering indices and gives the length of any space-like curve"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "RiemannianMetric",
+        "module": "Mathlib.Topology.VectorBundle.Riemannian",
+        "match_kind": null
+      },
+      "note": "The metric is `RiemannianMetric` and curve length is `pathELength`, but the index-lowering role of the metric is handled separately by the musical isomorphism.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Inverse metric tensor",
+      "anchor": {
+        "section": "Metric tensor",
+        "snippet": "of the metric tensor is another important tensor, used for raising indices"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "InnerProductSpace.toDual",
+        "module": "Mathlib.Analysis.InnerProductSpace.Dual",
+        "match_kind": null
+      },
+      "note": "Raising indices corresponds to the inverse musical isomorphism `toDual.symm`; Mathlib has no explicit inverse-metric tensor object.",
+      "provenance": "ai"
+    }
+  ]
+}

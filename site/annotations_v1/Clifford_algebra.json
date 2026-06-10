@@ -1,0 +1,689 @@
+{
+  "slug": "Clifford_algebra",
+  "wikipedia_title": "Clifford algebra",
+  "display_title": "Clifford algebra",
+  "schema_version": 1,
+  "source": "claude-agent-sdk/annotate_articles.py",
+  "annotations": [
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle v^{2}=Q(v)1\\ \\forall \\ v\\in V,}"
+      },
+      "status": "formalized",
+      "decl": "CliffordAlgebra.ι_sq_scalar",
+      "module": "Mathlib.LinearAlgebra.CliffordAlgebra.Basic",
+      "note": "This is exactly the fundamental Clifford identity stated by ι_sq_scalar."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle uv+vu=2\\langle u,v\\rangle 1\\ {\\text{ for all }}u,v\\in V,}"
+      },
+      "status": "partial",
+      "decl": "CliffordAlgebra.ι_sq_scalar",
+      "module": "Mathlib.LinearAlgebra.CliffordAlgebra.Basic",
+      "note": "Polarized form of ι_sq_scalar in characteristic ≠ 2; not a separately named decl in the list."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\langle u,v\\rangle ={\\frac {1}{2}}\\left(Q(u+v)-Q(u)-Q(v)\\right)}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Polarization identity for the associated bilinear form; no matching decl in the provided list."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle j(v)^{2}=Q(v)1_{A}{\\text{ for all }}v\\in V}"
+      },
+      "status": "formalized",
+      "decl": "CliffordAlgebra.lift",
+      "module": "Mathlib.LinearAlgebra.CliffordAlgebra.Basic",
+      "note": "This is the precise hypothesis on j appearing in the universal property captured by lift."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle j(v)j(v)=\\langle v,v\\rangle 1_{A}\\quad {\\text{ for all }}v\\in V.}"
+      },
+      "status": "partial",
+      "decl": "CliffordAlgebra.lift",
+      "module": "Mathlib.LinearAlgebra.CliffordAlgebra.Basic",
+      "note": "Restatement of the lift hypothesis using the associated bilinear form; same idea, different phrasing."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle j(v)j(w)+j(w)j(v)=(\\langle v,w\\rangle +\\langle w,v\\rangle )1_{A}\\quad {\\text{ for all }}v,w\\in V,}"
+      },
+      "status": "partial",
+      "decl": "CliffordAlgebra.lift",
+      "module": "Mathlib.LinearAlgebra.CliffordAlgebra.Basic",
+      "note": "Polarized restatement of lift's hypothesis valid in characteristic ≠ 2; not a separate decl."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle v\\otimes v-Q(v)1}"
+      },
+      "status": "formalized",
+      "decl": "CliffordAlgebra.Rel",
+      "module": "Mathlib.LinearAlgebra.CliffordAlgebra.Basic",
+      "note": "This is the generator of the defining ideal, captured by the inductive Rel."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\operatorname {Cl} (V,Q)=T(V)/I_{Q}.}"
+      },
+      "status": "formalized",
+      "decl": "CliffordAlgebra",
+      "module": "Mathlib.LinearAlgebra.CliffordAlgebra.Basic",
+      "note": "Mathlib defines CliffordAlgebra as exactly this quotient (RingQuot of Rel on the tensor algebra)."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\langle e_{i},e_{j}\\rangle =0}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Orthogonality condition on a basis; no standalone decl in the provided list."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\langle e_{i},e_{i}\\rangle =Q(e_{i}).}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Pointwise relation between bilinear form and Q on basis; no matching decl in list."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle e_{i}e_{j}=-e_{j}e_{i}}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Anticommutation on an orthogonal basis is a proof intermediate, not a standalone decl in the list."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle e_{i}^{2}=Q(e_{i}).}"
+      },
+      "status": "formalized",
+      "decl": "CliffordAlgebra.ι_sq_scalar",
+      "module": "Mathlib.LinearAlgebra.CliffordAlgebra.Basic",
+      "note": "Instance of ι_sq_scalar applied to a basis vector."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\{e_{i_{1}}e_{i_{2}}\\cdots e_{i_{k}}\\mid 1\\leq i_{1}<i_{2}<\\cdots <i_{k}\\leq n{\\text{ and }}0\\leq k\\leq n\\}.}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Explicit basis of the Clifford algebra; not present as a decl in the provided list."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\dim \\operatorname {Cl} (V,Q)=\\sum _{k=0}^{n}{\\binom {n}{k}}=2^{n}.}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Dimension formula 2^n is not represented by any decl in the provided list."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle Q(v)=v_{1}^{2}+\\dots +v_{p}^{2}-v_{p+1}^{2}-\\dots -v_{p+q}^{2},}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Standard signature (p,q) quadratic form over the reals; no decl in the provided list."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle Q(z)=z_{1}^{2}+z_{2}^{2}+\\dots +z_{n}^{2}.}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Standard complex quadratic form; no matching decl in the provided list."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle v\\cdot w=v_{1}w_{1}+v_{2}w_{2}+v_{3}w_{3}.}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Concrete R^3 dot product; not represented in the provided list."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle vw+wv=2(v\\cdot w).}"
+      },
+      "status": "partial",
+      "decl": "CliffordAlgebra.ι_sq_scalar",
+      "module": "Mathlib.LinearAlgebra.CliffordAlgebra.Basic",
+      "note": "Polarized Clifford identity specialised to R^3; same idea as ι_sq_scalar in different form."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle e_{2}e_{3}=-e_{3}e_{2},\\,\\,\\,e_{1}e_{3}=-e_{3}e_{1},\\,\\,\\,e_{1}e_{2}=-e_{2}e_{1},}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Computational anticommutation in Cl_{3,0}; not a standalone decl in the list."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle e_{1}^{2}=e_{2}^{2}=e_{3}^{2}=1.}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Specific squares in Cl_{3,0}; not present as a decl in the provided list."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle A=a_{0}+a_{1}e_{1}+a_{2}e_{2}+a_{3}e_{3}+a_{4}e_{2}e_{3}+a_{5}e_{1}e_{3}+a_{6}e_{1}e_{2}+a_{7}e_{1}e_{2}e_{3}.}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "General element form in Cl_{3,0}; not a decl in the provided list."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle q=q_{0}+q_{1}e_{2}e_{3}+q_{2}e_{1}e_{3}+q_{3}e_{1}e_{2}.}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Even subalgebra element of Cl_{3,0}; no matching decl in the provided list."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle i=e_{2}e_{3},j=e_{1}e_{3},k=e_{1}e_{2},}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Identification of quaternion basis with Cl_{3,0} elements; not in the provided decl list."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle i^{2}=(e_{2}e_{3})^{2}=e_{2}e_{3}e_{2}e_{3}=-e_{2}e_{2}e_{3}e_{3}=-1,}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Computational identity verifying i^2 = -1; an intermediate proof step, no standalone decl."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle ij=e_{2}e_{3}e_{1}e_{3}=-e_{2}e_{3}e_{3}e_{1}=-e_{2}e_{1}=e_{1}e_{2}=k.}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Computational identity verifying ij = k; an intermediate proof step, not a standalone decl."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle ijk=e_{2}e_{3}e_{1}e_{3}e_{1}e_{2}=-1.}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Computation verifying ijk = -1; an intermediate proof step, not a standalone decl."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle d(v,w)=v_{1}w_{1}+v_{2}w_{2}+v_{3}w_{3}.}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Degenerate bilinear form for dual quaternion construction; not in the provided list."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle vw+wv=-2\\,d(v,w).}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Specific Clifford product relation with sign convention; no matching decl in the list."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle e_{m}e_{n}=-e_{n}e_{m},\\,\\,\\,m\\neq n,}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Anticommutation relation in Cl(R^4,d); not a standalone decl in the list."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle e_{1}^{2}=e_{2}^{2}=e_{3}^{2}=-1,\\,\\,e_{4}^{2}=0.}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Specific squares in dual-quaternion Clifford algebra; no matching decl in the list."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle H=h_{0}+h_{1}e_{2}e_{3}+h_{2}e_{3}e_{1}+h_{3}e_{1}e_{2}+h_{4}e_{4}e_{1}+h_{5}e_{4}e_{2}+h_{6}e_{4}e_{3}+h_{7}e_{1}e_{2}e_{3}e_{4}.}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Explicit even-subalgebra element in Cl(R^4,d); no matching decl in the list."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle i=e_{2}e_{3},j=e_{3}e_{1},k=e_{1}e_{2},\\,\\,\\varepsilon =e_{1}e_{2}e_{3}e_{4}.}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Dual quaternion basis identification; no matching decl in the list."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\varepsilon ^{2}=(e_{1}e_{2}e_{3}e_{4})^{2}=e_{1}e_{2}e_{3}e_{4}e_{1}e_{2}e_{3}e_{4}=-e_{1}e_{2}e_{3}(e_{4}e_{4})e_{1}e_{2}e_{3}=0,}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Computation showing ε^2 = 0; intermediate proof step, not a standalone decl."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\varepsilon i=(e_{1}e_{2}e_{3}e_{4})e_{2}e_{3}=e_{1}e_{2}e_{3}e_{4}e_{2}e_{3}=e_{2}e_{3}(e_{1}e_{2}e_{3}e_{4})=i\\varepsilon .}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Computation showing ε commutes with i; an intermediate proof step, not a decl."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle e_{i_{1}}e_{i_{2}}\\cdots e_{i_{k}}\\mapsto e_{i_{1}}\\wedge e_{i_{2}}\\wedge \\cdots \\wedge e_{i_{k}}.}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Linear isomorphism Cl → ⋀V on basis; no matching decl in the provided list."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle f_{k}(v_{1},\\ldots ,v_{k})={\\frac {1}{k!}}\\sum _{\\sigma \\in \\mathrm {S} _{k}}\\operatorname {sgn}(\\sigma )\\,v_{\\sigma (1)}\\cdots v_{\\sigma (k)}}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Antisymmetrization map producing the Cl → ⋀V isomorphism; not in the provided list."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\operatorname {Gr} _{F}\\operatorname {Cl} (V,Q)=\\bigoplus _{k}F^{k}/F^{k-1}}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Associated graded of the natural filtration; no matching decl in the provided list."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\alpha :\\operatorname {Cl} (V,Q)\\to \\operatorname {Cl} (V,Q).}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Main involution α (a.k.a. involute); not in the provided list."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\operatorname {Cl} (V,Q)=\\operatorname {Cl} ^{[0]}(V,Q)\\oplus \\operatorname {Cl} ^{[1]}(V,Q)}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Z/2-grading decomposition into even/odd parts; no matching decl in the provided list."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\operatorname {Cl} ^{[i]}(V,Q)=\\left\\{x\\in \\operatorname {Cl} (V,Q)\\mid \\alpha (x)=(-1)^{i}x\\right\\}.}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Eigenspace definition of the Z/2-graded pieces; no matching decl in the provided list."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\operatorname {Cl} ^{[i]}(V,Q)\\operatorname {Cl} ^{[j]}(V,Q)=\\operatorname {Cl} ^{[i+j]}(V,Q)}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Multiplicativity of the Z/2-grading; no matching decl in the provided list."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\operatorname {Cl} ^{\\leqslant i}(V,Q)\\cdot \\operatorname {Cl} ^{\\leqslant j}(V,Q)\\subset \\operatorname {Cl} ^{\\leqslant i+j}(V,Q).}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Filtration multiplicativity; no matching decl in the provided list."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\operatorname {Cl} _{p,q}^{[0]}(\\mathbf {R} )\\cong {\\begin{cases}\\operatorname {Cl} _{p,q-1}(\\mathbf {R} )&q>0\\\\\\operatorname {Cl} _{q,p-1}(\\mathbf {R} )&p>0\\end{cases}}}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Even-subalgebra reduction in signature (p,q); no matching decl in the provided list."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle v_{1}\\otimes v_{2}\\otimes \\cdots \\otimes v_{k}\\mapsto v_{k}\\otimes \\cdots \\otimes v_{2}\\otimes v_{1}.}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Reversion antiautomorphism on the tensor algebra; no matching decl in the provided list."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle {\\bar {x}}=\\alpha (x^{\\mathrm {t} })=\\alpha (x)^{\\mathrm {t} }.}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Clifford conjugation as composition of reversion and involute; no decl in the provided list."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\alpha (x)=\\pm x\\qquad x^{\\mathrm {t} }=\\pm x\\qquad {\\bar {x}}=\\pm x}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Action of α, reversion, conjugation on pure-degree elements; no matching decl in the list."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle Q(x)=\\left\\langle x^{\\mathrm {t} }x\\right\\rangle _{0}}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Extension of Q to all of Cl(V,Q) via scalar part of x^t x; not in the provided list."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle Q(v_{1}v_{2}\\cdots v_{k})=Q(v_{1})Q(v_{2})\\cdots Q(v_{k})}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Multiplicativity of the extended Q on products of vectors; no matching decl in the list."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\langle x,y\\rangle =\\left\\langle x^{\\mathrm {t} }y\\right\\rangle _{0}.}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Associated bilinear form on Cl(V,Q) via reversion; no matching decl in the list."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\langle ax,y\\rangle =\\left\\langle x,a^{\\mathrm {t} }y\\right\\rangle ,}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Adjoint property of left multiplication under the Clifford inner product; not in the list."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\langle xa,y\\rangle =\\left\\langle x,ya^{\\mathrm {t} }\\right\\rangle .}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Adjoint property of right multiplication under the Clifford inner product; not in the list."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\operatorname {Cl} _{p+2,q}(\\mathbf {R} )=\\mathrm {M} _{2}(\\mathbf {R} )\\otimes \\operatorname {Cl} _{q,p}(\\mathbf {R} )}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Bott periodicity-style structure isomorphism over R; no matching decl in the provided list."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\operatorname {Cl} _{p+1,q+1}(\\mathbf {R} )=\\mathrm {M} _{2}(\\mathbf {R} )\\otimes \\operatorname {Cl} _{p,q}(\\mathbf {R} )}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Structure isomorphism between real Clifford algebras of shifted signatures; not in the list."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\operatorname {Cl} _{p,q+2}(\\mathbf {R} )=\\mathbf {H} \\otimes \\operatorname {Cl} _{q,p}(\\mathbf {R} ).}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Structure isomorphism involving the quaternions H; no matching decl in the provided list."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\alpha (x)vx^{-1}\\in V.}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Twisted conjugation action defining the Lipschitz group; no matching decl in the list."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle 1\\rightarrow K^{\\times }\\rightarrow \\Gamma \\rightarrow \\operatorname {O} _{V}(K)\\rightarrow 1,}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Exact sequence for the Lipschitz group; no matching decl in the provided list."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle 1\\rightarrow K^{\\times }\\rightarrow \\Gamma ^{0}\\rightarrow \\operatorname {SO} _{V}(K)\\rightarrow 1.}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Exact sequence for the even Lipschitz group; no matching decl in the provided list."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle Q(x)=x^{\\mathrm {t} }x.}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Spinor norm on the Lipschitz group; no matching decl in the provided list."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle {\\begin{aligned}1\\to \\{\\pm 1\\}\\to \\operatorname {Pin} _{V}(K)&\\to \\operatorname {O} _{V}(K)\\to K^{\\times }/\\left(K^{\\times }\\right)^{2},\\\\1\\to \\{\\pm 1\\}\\to \\operatorname {Spin} _{V}(K)&\\to \\operatorname {SO} _{V}(K)\\to K^{\\times }/\\left(K^{\\times }\\right)^{2}.\\end{aligned}}}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Pin/Spin exact sequences with spinor norm; no matching decl in the provided list."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle 1\\to \\mu _{2}\\rightarrow \\operatorname {Pin} _{V}\\rightarrow \\operatorname {O} _{V}\\rightarrow 1}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Algebraic-group short exact sequence with μ_2; no matching decl in the provided list."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle 1\\to H^{0}(\\mu _{2};K)\\to H^{0}(\\operatorname {Pin} _{V};K)\\to H^{0}(\\operatorname {O} _{V};K)\\to H^{1}(\\mu _{2};K).}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Long exact Galois cohomology sequence; no matching decl in the provided list."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle 1\\to \\{\\pm 1\\}\\to \\operatorname {Pin} _{V}(K)\\to \\operatorname {O} _{V}(K)\\to K^{\\times }/\\left(K^{\\times }\\right)^{2},}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Pin exact sequence recovered from cohomology; no matching decl in the provided list."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\mathrm {Pin} _{p,q}=\\left\\{v_{1}v_{2}\\cdots v_{r}\\mid \\forall i\\,\\|v_{i}\\|=\\pm 1\\right\\}.}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Definition of Pin_{p,q} as products of unit vectors; no matching decl in the provided list."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\operatorname {Cl} _{p,q}^{[0]}=\\{x\\in \\operatorname {Cl} _{p,q}\\mid \\alpha (x)=x\\}.}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Even subalgebra as α-fixed points; no matching decl in the provided list."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\operatorname {Cl} _{p,q}^{[0]}\\approx \\operatorname {Cl} _{p,q-1},{\\text{ for }}q>0}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Even-subalgebra reduction for q>0; no matching decl in the provided list."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\operatorname {Cl} _{p,q}^{[0]}\\approx \\operatorname {Cl} _{q,p-1},{\\text{ for }}p>0}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Even-subalgebra reduction for p>0; no matching decl in the provided list."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\gamma _{i}\\gamma _{j}+\\gamma _{j}\\gamma _{i}=2\\eta _{ij},}"
+      },
+      "status": "partial",
+      "decl": "CliffordAlgebra.ι_sq_scalar",
+      "module": "Mathlib.LinearAlgebra.CliffordAlgebra.Basic",
+      "note": "Dirac anticommutation is the polarized Clifford identity for Minkowski Q; same idea as ι_sq_scalar."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\begin{aligned}\\sigma ^{\\mu \\nu }&=-{\\frac {i}{4}}\\left[\\gamma ^{\\mu },\\,\\gamma ^{\\nu }\\right],\\\\\\left[\\sigma ^{\\mu \\nu },\\,\\sigma ^{\\rho \\tau }\\right]&=i\\left(\\eta ^{\\tau \\mu }\\sigma ^{\\rho \\nu }+\\eta ^{\\nu \\tau }\\sigma ^{\\mu \\rho }-\\eta ^{\\rho \\mu }\\sigma ^{\\tau \\nu }-\\eta ^{\\nu \\rho }\\sigma ^{\\mu \\tau }\\right).\\end{aligned}}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Spin Lie algebra generators σ^{μν} and their commutation relations; no matching decl in the list."
+    }
+  ]
+}

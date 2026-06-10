@@ -1,0 +1,489 @@
+{
+  "slug": "Chinese_remainder_theorem",
+  "wikipedia_title": "Chinese remainder theorem",
+  "display_title": "Chinese remainder theorem",
+  "schema_version": 3,
+  "annotation_style": "theorem_article",
+  "annotations": [
+    {
+      "kind": "theorem",
+      "label": "Chinese remainder theorem (remainders form)",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "states that if one knows the remainders of the Euclidean division of an integer n"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Nat.chineseRemainderOfFinset",
+        "module": "Mathlib.Data.Nat.ChineseRemainder",
+        "match_kind": "exact"
+      },
+      "note": "Nat.chineseRemainderOfFinset produces a value satisfying all congruences for a finset of pairwise-coprime moduli, the natural-number form of the lead statement.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Sunzi example (3, 5, 7 → 105)",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "If one knows that the remainder of n divided by 3 is 2"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This concrete worked numeric example is not stated as a declaration in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Sunzi's original problem",
+      "anchor": {
+        "section": "History",
+        "snippet": "There are certain things whose number is unknown"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "A historical numeric puzzle, not formalized as a Mathlib declaration.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "CRT assertion (unique integer x)",
+      "anchor": {
+        "section": "Statement",
+        "snippet": "asserts that if the n i are pairwise coprime"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Nat.chineseRemainderOfFinset",
+        "module": "Mathlib.Data.Nat.ChineseRemainder",
+        "match_kind": "exact"
+      },
+      "note": "Nat.chineseRemainderOfFinset gives existence and chineseRemainderOfList_modEq_unique gives uniqueness modulo the product.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "CRT restated via congruences",
+      "anchor": {
+        "section": "Statement",
+        "snippet": "This may be restated as follows in terms of congruences"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Nat.chineseRemainderOfFinset",
+        "module": "Mathlib.Data.Nat.ChineseRemainder",
+        "match_kind": "exact"
+      },
+      "note": "The decl is stated directly in terms of Nat.ModEq congruences for a finset of pairwise-coprime moduli.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "CRT as ring isomorphism",
+      "anchor": {
+        "section": "Statement",
+        "snippet": "In abstract algebra , the theorem is often restated as: if the n i are pairwise coprime, the map"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "ZMod.chineseRemainder",
+        "module": "Mathlib.Data.ZMod.Basic",
+        "match_kind": "special_case"
+      },
+      "note": "ZMod.chineseRemainder is the ring isomorphism ZMod (m*n) ≃+* ZMod m × ZMod n for two coprime moduli; the k-factor version is Ideal.quotientInfRingEquivPiQuotient.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "CRT as Helly family of arithmetic progressions",
+      "anchor": {
+        "section": "Statement",
+        "snippet": "the infinite arithmetic progressions of integers form a Helly family"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has no notion of Helly family (only Radon's theorem), so this reformulation is absent.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Uniqueness of the solution",
+      "anchor": {
+        "section": "Uniqueness",
+        "snippet": "Suppose that x and y are both solutions to all the congruences"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Nat.chineseRemainder_modEq_unique",
+        "module": "Mathlib.Data.Nat.ModEq",
+        "match_kind": "special_case"
+      },
+      "note": "Nat.chineseRemainder_modEq_unique proves any common solution is congruent mod n*m (two moduli); chineseRemainderOfList_modEq_unique handles the general case.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Existence via injective/surjective map",
+      "anchor": {
+        "section": "Existence (first proof)",
+        "snippet": "maps congruence classes modulo N to sequences of congruence classes modulo n i"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Ideal.quotientInfToPiQuotient_surj",
+        "module": "Mathlib.RingTheory.Ideal.Quotient.Operations",
+        "match_kind": "generalization"
+      },
+      "note": "The surjectivity (hence existence) of the map to the product is proven in Ideal.quotientInfToPiQuotient_surj, though Mathlib proves it via coprimality rather than the finite counting argument.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Existence by explicit construction",
+      "anchor": {
+        "section": "Existence (constructive proof)",
+        "snippet": "Existence may be established by an explicit construction of x"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Nat.chineseRemainder",
+        "module": "Mathlib.Data.Nat.ModEq",
+        "match_kind": "exact"
+      },
+      "note": "Nat.chineseRemainder is a constructive (computable) definition producing the explicit solution.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Solution for two moduli via Bézout",
+      "anchor": {
+        "section": "Case of two moduli",
+        "snippet": "Bézout's identity asserts the existence of two integers"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Nat.chineseRemainder",
+        "module": "Mathlib.Data.Nat.ModEq",
+        "match_kind": "exact"
+      },
+      "note": "Nat.chineseRemainder solves the two-modulus case using the gcd/Bézout-based chineseRemainder' construction.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "General case by induction",
+      "anchor": {
+        "section": "General case",
+        "snippet": "The two first equations have a solution"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Nat.chineseRemainderOfList",
+        "module": "Mathlib.Data.Nat.ChineseRemainder",
+        "match_kind": "exact"
+      },
+      "note": "Nat.chineseRemainderOfList builds the general solution by recursion over the list, combining two congruences at a time.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Direct construction of solution",
+      "anchor": {
+        "section": "Existence (direct construction)",
+        "snippet": "A solution of the system of congruences is"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Nat.chineseRemainderOfList",
+        "module": "Mathlib.Data.Nat.ChineseRemainder",
+        "match_kind": "generalization"
+      },
+      "note": "Mathlib constructs a solution recursively but does not formalize the explicit closed-form sum x = Σ aᵢ Nᵢ Mᵢ.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Systematic search method",
+      "anchor": {
+        "section": "Systematic search",
+        "snippet": "it suffices to check successively the integers from 0 to N until finding the solution"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This brute-force search algorithm is not formalized as a Mathlib declaration.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Search by sieving",
+      "anchor": {
+        "section": "Search by sieving",
+        "snippet": "The search of the solution may be made dramatically faster by sieving"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The sieving search algorithm is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Computation using existence construction",
+      "anchor": {
+        "section": "Using the existence construction",
+        "snippet": "the solution may be obtained by the computation of the Bézout coefficients of the moduli"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Nat.chineseRemainder'",
+        "module": "Mathlib.Data.Nat.ModEq",
+        "match_kind": "invocation"
+      },
+      "note": "The Bézout-coefficient construction is realized by Nat.chineseRemainder', but the specific worked computation is not a formalized statement.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Reformulation as linear Diophantine system",
+      "anchor": {
+        "section": "As a linear Diophantine system",
+        "snippet": "may be rewritten as a system of linear Diophantine equations"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has no formalization of CRT recast as a linear Diophantine system solved via Smith/Hermite normal form.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "CRT over principal ideal domains",
+      "anchor": {
+        "section": "Over principal ideal domains",
+        "snippet": "These two versions of the theorem are true in this context"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Ideal.quotientInfRingEquivPiQuotient",
+        "module": "Mathlib.RingTheory.Ideal.Quotient.Operations",
+        "match_kind": "generalization"
+      },
+      "note": "Ideal.quotientInfRingEquivPiQuotient holds for any commutative ring with pairwise-coprime ideals, which generalizes the PID case.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "CRT for polynomials",
+      "anchor": {
+        "section": "Over univariate polynomial rings and Euclidean domains",
+        "snippet": "The Chinese remainder theorem for polynomials is thus"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Ideal.quotientInfRingEquivPiQuotient",
+        "module": "Mathlib.RingTheory.Ideal.Quotient.Operations",
+        "match_kind": "generalization"
+      },
+      "note": "There is no polynomial-specific CRT, but Ideal.quotientInfRingEquivPiQuotient instantiated at R = K[X] yields the polynomial Chinese remainder theorem.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Lagrange interpolation as special case",
+      "anchor": {
+        "section": "Lagrange interpolation",
+        "snippet": "A special case of Chinese remainder theorem for polynomials is Lagrange interpolation"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Lagrange.interpolate",
+        "module": "Mathlib.LinearAlgebra.Lagrange",
+        "match_kind": "exact"
+      },
+      "note": "Lagrange.interpolate with Lagrange.eval_interpolate_at_node formalizes Lagrange interpolation directly.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Hermite interpolation",
+      "anchor": {
+        "section": "Hermite interpolation",
+        "snippet": "Hermite interpolation is an application of the Chinese remainder theorem for univariate polynomials"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib's Hermite files cover Hermite orthogonal polynomials, not Hermite interpolation.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Generalization to non-coprime moduli",
+      "anchor": {
+        "section": "Generalization to non-coprime moduli",
+        "snippet": "The system of simultaneous congruences"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Nat.chineseRemainder'",
+        "module": "Mathlib.Data.Nat.ModEq",
+        "match_kind": "special_case"
+      },
+      "note": "Nat.chineseRemainder' handles the two-modulus non-coprime case under the gcd-compatibility hypothesis, but the general k-modulus solvability criterion is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Two congruences (non-coprime) case",
+      "anchor": {
+        "section": "Generalization to non-coprime moduli",
+        "snippet": "To illustrate this for the case of two congruences"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Nat.chineseRemainder'",
+        "module": "Mathlib.Data.Nat.ModEq",
+        "match_kind": "exact"
+      },
+      "note": "Nat.chineseRemainder' solves two congruences a ≡ b [MOD gcd n m], exactly the non-coprime two-modulus case.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Coprime (comaximal) ideals",
+      "anchor": {
+        "section": "Generalization to arbitrary rings",
+        "snippet": "Two ideals I and J are coprime if there are elements"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Ideal.isCoprime_iff_exists",
+        "module": "Mathlib.RingTheory.Ideal.Operations",
+        "match_kind": "exact"
+      },
+      "note": "Ideal.isCoprime_iff_exists characterizes coprime ideals as ∃ i ∈ I, j ∈ J, i + j = 1, matching the comaximal definition.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "CRT for arbitrary rings",
+      "anchor": {
+        "section": "Generalization to arbitrary rings",
+        "snippet": "Let I 1 , ..., I k be two-sided ideals of a ring"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Ideal.quotientInfRingEquivPiQuotient",
+        "module": "Mathlib.RingTheory.Ideal.Quotient.Operations",
+        "match_kind": "special_case"
+      },
+      "note": "Mathlib's ideal CRT requires a commutative ring, so the noncommutative two-sided-ideal version stated here is only covered in the commutative special case.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Intersection equals product (commutative case)",
+      "anchor": {
+        "section": "Generalization to arbitrary rings",
+        "snippet": "the ideal intersection of pairwise coprime ideals is equal to their product"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Ideal.prod_eq_iInf_of_pairwise_isCoprime",
+        "module": "Mathlib.RingTheory.Ideal.Operations",
+        "match_kind": "exact"
+      },
+      "note": "Ideal.prod_eq_iInf_of_pairwise_isCoprime states the product of pairwise-coprime ideals equals their intersection (iInf).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Central pairwise orthogonal idempotents",
+      "anchor": {
+        "section": "Interpretation in terms of idempotents",
+        "snippet": "are central idempotents that are pairwise orthogonal"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "CompleteOrthogonalIdempotents",
+        "module": "Mathlib.RingTheory.Idempotents",
+        "match_kind": "exact"
+      },
+      "note": "CompleteOrthogonalIdempotents captures a family of idempotents that are pairwise orthogonal and sum to 1, with centrality handled via ringEquivOfIsMulCentral.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Idempotent equivalence form of CRT",
+      "anchor": {
+        "section": "Interpretation in terms of idempotents",
+        "snippet": "is the equivalence between giving pairwise coprime two-sided ideals with a zero intersection"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "CompleteOrthogonalIdempotents.ringEquivOfComm",
+        "module": "Mathlib.RingTheory.Idempotents",
+        "match_kind": "invocation"
+      },
+      "note": "CompleteOrthogonalIdempotents.ringEquivOfComm gives the product decomposition from central orthogonal idempotents, but the full bidirectional equivalence with coprime zero-intersection ideals is not packaged as one theorem.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Decomposition of surjections of finite abelian groups",
+      "anchor": {
+        "section": "Decomposition of surjections of finite abelian groups",
+        "snippet": "we can use the Chinese remainder theorem to give a complete description of any such map"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This CRT-based description of surjections between finite abelian groups is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Dedekind's theorem (linear independence of characters)",
+      "anchor": {
+        "section": "Dedekind's theorem",
+        "snippet": "Then any finite family ( f i ) i ∈ I of distinct monoid homomorphisms f i : M → k is linearly independent"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "linearIndependent_monoidHom",
+        "module": "Mathlib.LinearAlgebra.LinearIndependent.Basic",
+        "match_kind": "exact"
+      },
+      "note": "linearIndependent_monoidHom is exactly Dedekind's linear independence of distinct monoid homomorphisms into a domain.",
+      "provenance": "ai"
+    }
+  ]
+}

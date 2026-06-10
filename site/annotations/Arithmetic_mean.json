@@ -1,0 +1,361 @@
+{
+  "slug": "Arithmetic_mean",
+  "wikipedia_title": "Arithmetic mean",
+  "display_title": "Arithmetic mean",
+  "schema_version": 3,
+  "annotation_style": "theorem_article",
+  "annotations": [
+    {
+      "kind": "definition",
+      "label": "Arithmetic mean",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "the sum of a collection of numbers divided by the count of numbers in the collection"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "MeasureTheory.average",
+        "module": "Mathlib.MeasureTheory.Integral.Average",
+        "match_kind": "generalization"
+      },
+      "note": "`MeasureTheory.average` for a finite counting measure equals (∑ f i)/n; `Finset.centerMass` with uniform weights also expresses this.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Arithmetic mean formula",
+      "anchor": {
+        "section": "Definition",
+        "snippet": "the arithmetic mean is defined by the formula"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Finset.centerMass",
+        "module": "Mathlib.Analysis.Convex.Combination",
+        "match_kind": "generalization"
+      },
+      "note": "`Finset.centerMass` with weights w ≡ 1 is exactly (∑ z_i)/n, recovering the standard arithmetic-mean formula.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Mean of monthly salaries",
+      "anchor": {
+        "section": "Definition",
+        "snippet": "if the monthly salaries of"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Numerical illustration of the mean formula; no such example in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Population mean and sample mean",
+      "anchor": {
+        "section": "Definition",
+        "snippet": "the mean of that population is called the population mean"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib does not distinguish 'population mean' vs 'sample mean' statistical terminology; only the abstract average is present.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Centroid (mean of vectors)",
+      "anchor": {
+        "section": "Definition",
+        "snippet": "can be similarly defined for vectors in multiple dimensions"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Finset.centerMass",
+        "module": "Mathlib.Analysis.Convex.Combination",
+        "match_kind": "generalization"
+      },
+      "note": "`Finset.centerMass` is defined for vectors in any module, covering the centroid as a special case with uniform weights.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Residuals sum to zero",
+      "anchor": {
+        "section": "Motivating properties",
+        "snippet": "the numbers to the left of the mean are balanced by the numbers to the right"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No direct lemma `∑ (x_i − mean) = 0` was found in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Translational invariance of the mean",
+      "anchor": {
+        "section": "Motivating properties",
+        "snippet": "the mean is translationally invariant"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No statement of `mean(x + c) = mean(x) + c` found, though `integral_add_const` provides related infrastructure.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Mean minimizes sum of squared deviations",
+      "anchor": {
+        "section": "Motivating properties",
+        "snippet": "it minimizes the sum of squared deviations from the typical value"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The least-squares characterization of the mean does not appear to be in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Sample mean as best predictor",
+      "anchor": {
+        "section": "Motivating properties",
+        "snippet": "The sample mean is also the best single predictor because it has the lowest root mean squared error"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No RMSE-minimization statement for the sample mean is present in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Sample mean is unbiased estimator",
+      "anchor": {
+        "section": "Motivating properties",
+        "snippet": "the estimate of it that is unbiased is the arithmetic mean of a sample drawn from the population"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Unbiasedness of the sample mean estimator is not formalized; no statistics framework with 'unbiased estimator' was found.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Scale independence (first-order homogeneity)",
+      "anchor": {
+        "section": "Motivating properties",
+        "snippet": "The arithmetic mean is independent of scale of the units of measurement"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Finset.centerMass_smul",
+        "module": "Mathlib.Analysis.Convex.Combination",
+        "match_kind": "generalization"
+      },
+      "note": "`Finset.centerMass_smul` shows the center of mass is homogeneous in the points, giving scale linearity of the mean.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Mean lies between extremes",
+      "anchor": {
+        "section": "Additional properties",
+        "snippet": "always between the largest and smallest values in that sample"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Finset.centerMass_le_sup",
+        "module": "Mathlib.Analysis.Convex.Combination",
+        "match_kind": "generalization"
+      },
+      "note": "`Finset.centerMass_le_sup` (with its dual `inf_le_centerMass`) bounds the weighted mean by the max/min values.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Mean of means of equal-sized groups",
+      "anchor": {
+        "section": "Additional properties",
+        "snippet": "is the arithmetic mean of the arithmetic means of each group"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Finset.centerMass_segment'",
+        "module": "Mathlib.Analysis.Convex.Combination",
+        "match_kind": "generalization"
+      },
+      "note": "`Finset.centerMass_segment'` combines center-of-mass values over disjoint index families, generalizing pooling of equal-sized group means.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Mean equals median for arithmetic progression",
+      "anchor": {
+        "section": "Contrast with median",
+        "snippet": "When the values in a data set form an arithmetic progression, the median and arithmetic mean are equal"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No median-vs-mean lemma for arithmetic progressions was found in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Mean vs median differ",
+      "anchor": {
+        "section": "Contrast with median",
+        "snippet": "In other cases, the mean and median can differ significantly"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Illustrative example not present in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Weighted average",
+      "anchor": {
+        "section": "Weighted average",
+        "snippet": "an average in which some data points count more heavily than others"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Finset.centerMass",
+        "module": "Mathlib.Analysis.Convex.Combination",
+        "match_kind": "exact"
+      },
+      "note": "`Finset.centerMass t w z = (∑ w i • z i) / ∑ w i` is precisely the weighted average.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Mean of a function",
+      "anchor": {
+        "section": "Functions",
+        "snippet": "the mean of a function is loosely defined as the average value of the function over its domain"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "MeasureTheory.average",
+        "module": "Mathlib.MeasureTheory.Integral.Average",
+        "match_kind": "exact"
+      },
+      "note": "`MeasureTheory.average μ f = ⨍ x, f x ∂μ` is the integral average of a function over its domain.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Mean of a probability distribution",
+      "anchor": {
+        "section": "Continuous probability distributions",
+        "snippet": "is called the mean of the probability distribution"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "MeasureTheory.average",
+        "module": "Mathlib.MeasureTheory.Integral.Average",
+        "match_kind": "generalization"
+      },
+      "note": "For a probability measure, `MeasureTheory.average μ id` equals the integral ∫ x ∂μ — the distribution's mean.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Mean, median, mode equal for normal distribution",
+      "anchor": {
+        "section": "Continuous probability distributions",
+        "snippet": "all measures of its central tendency, including not just the mean but also the median mentioned above and the mode"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "`ProbabilityTheory.gaussianReal` exists but no lemma equating its mean, median, and mode is present.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Arithmetic mean of angles fails",
+      "anchor": {
+        "section": "Angles",
+        "snippet": "Taking the arithmetic mean of 1"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No formalization of the failure of naive averaging on angles.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Mean as central point with modular distance",
+      "anchor": {
+        "section": "Angles",
+        "snippet": "define the mean as the central point"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No circular/angular mean definition was found in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Bar notation for arithmetic mean",
+      "anchor": {
+        "section": "Symbols and encoding",
+        "snippet": "often denoted by a bar"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib uses `⨍` notation for `MeasureTheory.average`, not the over-bar convention from statistics.",
+      "provenance": "ai"
+    }
+  ]
+}

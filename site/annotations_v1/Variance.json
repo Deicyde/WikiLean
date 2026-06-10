@@ -1,0 +1,729 @@
+{
+  "slug": "Variance",
+  "wikipedia_title": "Variance",
+  "display_title": "Variance",
+  "schema_version": 1,
+  "source": "claude-agent-sdk/annotate_articles.py",
+  "annotations": [
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\operatorname {Var} (X)=\\operatorname {E} \\left[(X-\\mu )^{2}\\right].}"
+      },
+      "status": "formalized",
+      "decl": "ProbabilityTheory.variance",
+      "module": "Mathlib.Probability.Moments.Variance",
+      "note": "This is exactly the Mathlib definition of variance as E[(X−μ)²]."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\operatorname {Var} (X)=\\operatorname {Cov} (X,X).}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Identity relating variance to covariance is not in the provided decl list."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle {\\begin{aligned}\\operatorname {Var} (X)&=\\operatorname {E} \\left[{\\left(X-\\operatorname {E} [X]\\right)}^{2}\\right]\\\\[4pt]&=\\operatorname {E} \\left[X^{2}-2X\\operatorname {E} [X]+\\operatorname {E} [X]^{2}\\right]\\\\[4pt]&=\\operatorname {E} \\left[X^{2}\\right]-2\\operatorname {E} [X]\\operatorname {E} [X]+\\operatorname {E} [X]^{2}\\\\[4pt]&=\\operatorname {E} \\left[X^{2}\\right]-2\\operatorname {E} [X]^{2}+\\operatorname {E} [X]^{2}\\\\[4pt]&=\\operatorname {E} \\left[X^{2}\\right]-\\operatorname {E} [X]^{2}\\end{aligned}}}"
+      },
+      "status": "formalized",
+      "decl": "ProbabilityTheory.variance_eq_sub",
+      "module": "Mathlib.Probability.Moments.Variance",
+      "note": "Mathlib's variance_eq_sub establishes Var(X) = E[X²] − E[X]² for L² random variables."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\operatorname {Var} (X)=\\sum _{i=1}^{n}p_{i}\\cdot {\\left(x_{i}-\\mu \\right)}^{2},}"
+      },
+      "status": "partial",
+      "decl": "ProbabilityTheory.variance",
+      "module": "Mathlib.Probability.Moments.Variance",
+      "note": "Discrete formula is a special case of the general variance integral but not a separate Mathlib decl."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\mu =\\sum _{i=1}^{n}p_{i}x_{i}.}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Discrete expected value formula is not among the provided variance-related decls."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\operatorname {Var} (X)={\\frac {1}{n}}\\sum _{i=1}^{n}(x_{i}-\\mu )^{2},}"
+      },
+      "status": "partial",
+      "decl": "ProbabilityTheory.variance",
+      "module": "Mathlib.Probability.Moments.Variance",
+      "note": "Uniform discrete variance is a special case of Mathlib's general variance definition."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\mu ={\\frac {1}{n}}\\sum _{i=1}^{n}x_{i}.}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Arithmetic mean formula is not in the provided list."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\operatorname {Var} (X)={\\frac {1}{n^{2}}}\\sum _{i=1}^{n}\\sum _{j=1}^{n}{\\frac {1}{2}}{\\left(x_{i}-x_{j}\\right)}^{2}={\\frac {1}{n^{2}}}\\sum _{i}\\sum _{j>i}{\\left(x_{i}-x_{j}\\right)}^{2}.}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Pairwise-distance expression for variance is not present as a Mathlib decl in the list."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle {\\begin{aligned}\\operatorname {Var} (X)=\\sigma ^{2}&=\\int _{\\mathbb {R} }{\\left(x-\\mu \\right)}^{2}f(x)\\,dx\\\\[4pt]&=\\int _{\\mathbb {R} }x^{2}f(x)\\,dx-2\\mu \\int _{\\mathbb {R} }xf(x)\\,dx+\\mu ^{2}\\int _{\\mathbb {R} }f(x)\\,dx\\\\[4pt]&=\\int _{\\mathbb {R} }x^{2}\\,dF(x)-2\\mu \\int _{\\mathbb {R} }x\\,dF(x)+\\mu ^{2}\\int _{\\mathbb {R} }\\,dF(x)\\\\[4pt]&=\\int _{\\mathbb {R} }x^{2}\\,dF(x)-2\\mu \\cdot \\mu +\\mu ^{2}\\cdot 1\\\\[4pt]&=\\int _{\\mathbb {R} }x^{2}\\,dF(x)-\\mu ^{2},\\end{aligned}}}"
+      },
+      "status": "partial",
+      "decl": "ProbabilityTheory.variance_eq_sub",
+      "module": "Mathlib.Probability.Moments.Variance",
+      "note": "Continuous derivation reduces to the E[X²]−μ² identity captured by variance_eq_sub."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\operatorname {Var} (X)=\\int _{\\mathbb {R} }x^{2}f(x)\\,dx-\\mu ^{2},}"
+      },
+      "status": "partial",
+      "decl": "ProbabilityTheory.variance_eq_sub",
+      "module": "Mathlib.Probability.Moments.Variance",
+      "note": "Integral form of E[X²]−μ², a special case of the variance_eq_sub identity."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\mu =\\int _{\\mathbb {R} }xf(x)\\,dx=\\int _{\\mathbb {R} }x\\,dF(x).}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Continuous expected value formula is not among the provided variance decls."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\operatorname {Var} (X)=\\int _{-\\infty }^{+\\infty }x^{2}f(x)\\,dx-\\mu ^{2},}"
+      },
+      "status": "partial",
+      "decl": "ProbabilityTheory.variance_eq_sub",
+      "module": "Mathlib.Probability.Moments.Variance",
+      "note": "Same E[X²]−μ² form written with explicit integration limits; covered by variance_eq_sub."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle f(x)=\\lambda e^{-\\lambda x}}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Exponential density is not in the provided variance-related decl list."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\operatorname {E} [X]=\\int _{0}^{\\infty }x\\lambda e^{-\\lambda x}\\,dx={\\frac {1}{\\lambda }}.}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Mean of exponential distribution not present in the provided decls."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle {\\begin{aligned}\\operatorname {E} \\left[X^{2}\\right]&=\\int _{0}^{\\infty }x^{2}\\lambda e^{-\\lambda x}\\,dx\\\\&={\\left[-x^{2}e^{-\\lambda x}\\right]}_{0}^{\\infty }+\\int _{0}^{\\infty }2xe^{-\\lambda x}\\,dx\\\\&=0+{\\frac {2}{\\lambda }}\\operatorname {E} [X]\\\\&={\\frac {2}{\\lambda ^{2}}}.\\end{aligned}}}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Intermediate computation of E[X²] for exponential not in the provided list."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\operatorname {Var} (X)=\\operatorname {E} \\left[X^{2}\\right]-\\operatorname {E} [X]^{2}={\\frac {2}{\\lambda ^{2}}}-\\left({\\frac {1}{\\lambda }}\\right)^{2}={\\frac {1}{\\lambda ^{2}}}.}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Specific variance of exponential distribution not present in the provided decls."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle {\\begin{aligned}\\operatorname {Var} (X)&=\\sum _{i=1}^{6}{\\frac {1}{6}}\\left(i-{\\frac {7}{2}}\\right)^{2}\\\\[5pt]&={\\frac {1}{6}}\\left((-5/2)^{2}+(-3/2)^{2}+(-1/2)^{2}+(1/2)^{2}+(3/2)^{2}+(5/2)^{2}\\right)\\\\[5pt]&={\\frac {35}{12}}\\approx 2.92.\\end{aligned}}}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Specific computation for a fair six-sided die is not in the provided decls."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle {\\begin{aligned}\\operatorname {Var} (X)&=\\operatorname {E} \\left(X^{2}\\right)-(\\operatorname {E} (X))^{2}\\\\[5pt]&={\\frac {1}{n}}\\sum _{i=1}^{n}i^{2}-\\left({\\frac {1}{n}}\\sum _{i=1}^{n}i\\right)^{2}\\\\[5pt]&={\\frac {(n+1)(2n+1)}{6}}-\\left({\\frac {n+1}{2}}\\right)^{2}\\\\[4pt]&={\\frac {n^{2}-1}{12}}.\\end{aligned}}}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Variance of a uniform n-sided die not in the provided decl list."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\operatorname {Var} (X)\\geq 0.}"
+      },
+      "status": "formalized",
+      "decl": "ProbabilityTheory.variance_nonneg",
+      "module": "Mathlib.Probability.Moments.Variance",
+      "note": "Exactly the nonnegativity statement provided by variance_nonneg."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\operatorname {Var} (a)=0.}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Variance of a constant is not in the provided decl list."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\operatorname {Var} (X)=0\\iff \\exists a:P(X=a)=1.}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Characterization Var(X)=0 ⇔ X a.s. constant is not in the provided decls."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\operatorname {Var} [X]=\\operatorname {E} (\\operatorname {Var} [X\\mid Y])+\\operatorname {Var} (\\operatorname {E} [X\\mid Y]).}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Law of total variance is not in the provided decl list."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\operatorname {E} (\\operatorname {Var} [X\\mid Y])=\\sum _{i}p_{i}\\sigma _{i}^{2},}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Decomposition term not in the provided decls."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\operatorname {Var} (\\operatorname {E} [X\\mid Y])=\\sum _{i}p_{i}\\mu _{i}^{2}-\\left(\\sum _{i}p_{i}\\mu _{i}\\right)^{2}=\\sum _{i}p_{i}\\mu _{i}^{2}-\\mu ^{2},}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Decomposition term for Var(E[X|Y]) not in the provided decls."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\operatorname {Var} [X]=\\sum _{i}p_{i}\\sigma _{i}^{2}+\\left(\\sum _{i}p_{i}\\mu _{i}^{2}-\\mu ^{2}\\right).}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Combined total variance decomposition not in the provided decls."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle {\\mathit {MS}}_{\\text{total}}={\\mathit {MS}}_{\\text{between}}+{\\mathit {MS}}_{\\text{within}};}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "ANOVA mean-square decomposition not in the provided decls."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle {\\mathit {MS}}_{\\text{total}}={\\mathit {MS}}_{\\text{regression}}+{\\mathit {MS}}_{\\text{residual}}.}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Regression mean-square decomposition not in the provided decls."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle {\\mathit {SS}}_{\\text{total}}={\\mathit {SS}}_{\\text{between}}+{\\mathit {SS}}_{\\text{within}},}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "ANOVA sum-of-squares decomposition not in the provided decls."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle {\\mathit {SS}}_{\\text{total}}={\\mathit {SS}}_{\\text{regression}}+{\\mathit {SS}}_{\\text{residual}}.}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Regression sum-of-squares decomposition not in the provided decls."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle 2\\int _{0}^{\\infty }u(1-F(u))\\,du-{\\left[\\int _{0}^{\\infty }(1-F(u))\\,du\\right]}^{2}.}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "CDF-based variance formula for nonnegative variables not in the provided decls."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\operatorname {Var} (X+a)=\\operatorname {Var} (X).}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Translation invariance of variance not present in the provided decls."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\operatorname {Var} (aX)=a^{2}\\operatorname {Var} (X).}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Scaling property of variance not in the provided decl list."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle {\\begin{aligned}\\operatorname {Var} (aX+bY)&=a^{2}\\operatorname {Var} (X)+b^{2}\\operatorname {Var} (Y)+2ab\\,\\operatorname {Cov} (X,Y)\\\\[1ex]\\operatorname {Var} (aX-bY)&=a^{2}\\operatorname {Var} (X)+b^{2}\\operatorname {Var} (Y)-2ab\\,\\operatorname {Cov} (X,Y)\\end{aligned}}}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Variance of linear combination of two variables not in the provided decls."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\operatorname {Var} \\left(\\sum _{i=1}^{N}X_{i}\\right)=\\sum _{i,j=1}^{N}\\operatorname {Cov} (X_{i},X_{j})=\\sum _{i=1}^{N}\\operatorname {Var} (X_{i})+\\sum _{i,j=1,i\\neq j}^{N}\\operatorname {Cov} (X_{i},X_{j}),}"
+      },
+      "status": "partial",
+      "decl": "ProbabilityTheory.variance_sum",
+      "module": "Mathlib.Probability.Moments.Variance",
+      "note": "Mathlib's variance_sum gives the variance of a sum in terms of covariances, matching this identity."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle {\\begin{aligned}\\operatorname {Var} \\left(\\sum _{i=1}^{N}a_{i}X_{i}\\right)&=\\sum _{i,j=1}^{N}a_{i}a_{j}\\operatorname {Cov} (X_{i},X_{j})\\\\&=\\sum _{i=1}^{N}a_{i}^{2}\\operatorname {Var} (X_{i})+\\sum _{i\\neq j}a_{i}a_{j}\\operatorname {Cov} (X_{i},X_{j})\\\\&=\\sum _{i=1}^{N}a_{i}^{2}\\operatorname {Var} (X_{i})+2\\sum _{1\\leq i<j\\leq N}a_{i}a_{j}\\operatorname {Cov} (X_{i},X_{j}).\\end{aligned}}}"
+      },
+      "status": "partial",
+      "decl": "ProbabilityTheory.variance_sum",
+      "module": "Mathlib.Probability.Moments.Variance",
+      "note": "Weighted version of Bienaymé's identity is closely related to variance_sum but with scalar coefficients."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\operatorname {Cov} (X_{i},X_{j})=0\\ ,\\ \\forall \\ (i\\neq j),}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Definition of pairwise uncorrelatedness is not in the provided variance decls."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\operatorname {Var} \\left(\\sum _{i=1}^{N}X_{i}\\right)=\\sum _{i=1}^{N}\\operatorname {Var} (X_{i}).}"
+      },
+      "status": "partial",
+      "decl": "ProbabilityTheory.variance_sum",
+      "module": "Mathlib.Probability.Moments.Variance",
+      "note": "Variance-sum-for-uncorrelated is a direct consequence/special case of variance_sum."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\operatorname {Var} \\left(c^{\\mathsf {T}}X\\right)=c^{\\mathsf {T}}\\Sigma c.}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Matrix-form variance of a linear combination not in the provided decls."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\operatorname {Var} \\left({\\bar {x}}\\right)=\\operatorname {Var} \\left({\\frac {1}{n}}1'X\\right)={\\frac {1}{n^{2}}}1'\\Sigma 1.}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Matrix-form variance of the sample mean not in the provided decls."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\operatorname {Var} \\left(\\sum _{i=1}^{n}X_{i}\\right)=\\sum _{i=1}^{n}\\operatorname {Var} (X_{i}).}"
+      },
+      "status": "partial",
+      "decl": "ProbabilityTheory.variance_sum",
+      "module": "Mathlib.Probability.Moments.Variance",
+      "note": "Variance of sum of uncorrelated variables is the special case of variance_sum with zero cross-covariances."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\operatorname {Var} \\left({\\overline {X}}\\right)=\\operatorname {Var} \\left({\\frac {1}{n}}\\sum _{i=1}^{n}X_{i}\\right)={\\frac {1}{n^{2}}}\\sum _{i=1}^{n}\\operatorname {Var} \\left(X_{i}\\right)={\\frac {1}{n^{2}}}n\\sigma ^{2}={\\frac {\\sigma ^{2}}{n}}.}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Variance of the sample mean σ²/n is not in the provided decls."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\operatorname {Var} (X+Y)=\\operatorname {Var} (X)+\\operatorname {Var} (Y).}"
+      },
+      "status": "partial",
+      "decl": "ProbabilityTheory.variance_sum",
+      "module": "Mathlib.Probability.Moments.Variance",
+      "note": "Two-variable case of variance additivity for uncorrelated variables; a special case of variance_sum."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle {\\begin{aligned}\\operatorname {Var} (X+Y)&=\\operatorname {E} \\left[(X+Y)^{2}\\right]-(\\operatorname {E} [X+Y])^{2}\\\\[5pt]&=\\operatorname {E} \\left[X^{2}+2XY+Y^{2}\\right]-(\\operatorname {E} [X]+\\operatorname {E} [Y])^{2}.\\end{aligned}}}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Intermediate expansion step in proof; not a standalone Mathlib decl."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle {\\begin{aligned}\\operatorname {Var} (X+Y)&=\\operatorname {E} {\\left[X^{2}\\right]}+2\\operatorname {E} [XY]+\\operatorname {E} {\\left[Y^{2}\\right]}-\\left(\\operatorname {E} [X]^{2}+2\\operatorname {E} [X]\\operatorname {E} [Y]+\\operatorname {E} [Y]^{2}\\right)\\\\[5pt]&=\\operatorname {E} \\left[X^{2}\\right]+\\operatorname {E} \\left[Y^{2}\\right]-\\operatorname {E} [X]^{2}-\\operatorname {E} [Y]^{2}\\\\[5pt]&=\\operatorname {Var} (X)+\\operatorname {Var} (Y).\\end{aligned}}}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Proof-intermediate computation; not represented as a separate Mathlib decl."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\operatorname {Var} \\left(\\sum _{i=1}^{n}X_{i}\\right)=\\sum _{i=1}^{n}\\sum _{j=1}^{n}\\operatorname {Cov} \\left(X_{i},X_{j}\\right)=\\sum _{i=1}^{n}\\operatorname {Var} \\left(X_{i}\\right)+2\\sum _{1\\leq i<j\\leq n}\\operatorname {Cov} \\left(X_{i},X_{j}\\right).}"
+      },
+      "status": "formalized",
+      "decl": "ProbabilityTheory.variance_sum",
+      "module": "Mathlib.Probability.Moments.Variance",
+      "note": "This is Bienaymé's identity — directly captured by Mathlib's variance_sum lemma."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\operatorname {Var} \\left({\\overline {X}}\\right)={\\frac {\\sigma ^{2}}{n}}+{\\frac {n-1}{n}}\\rho \\sigma ^{2}.}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Variance of sample mean with equal correlation ρ not in the provided decls."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\operatorname {Var} \\left({\\overline {X}}\\right)={\\frac {1}{n}}+{\\frac {n-1}{n}}\\rho .}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Standardized version of correlated-mean variance not in the provided decls."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\lim _{n\\to \\infty }\\operatorname {Var} \\left({\\overline {X}}\\right)=\\rho .}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Limiting variance of standardized correlated mean is not in the provided decls."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\operatorname {Var} \\left(\\sum _{i=1}^{N}X_{i}\\right)=\\operatorname {E} \\left[N\\right]\\operatorname {Var} (X)+\\operatorname {Var} (N)(\\operatorname {E} \\left[X\\right])^{2}}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Variance for random-sized sum (compound) not in the provided decls."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\operatorname {Var} (aX\\pm bY)=a^{2}\\operatorname {Var} (X)+b^{2}\\operatorname {Var} (Y)\\pm 2ab\\,\\operatorname {Cov} (X,Y).}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Weighted-sum variance identity not in the provided decls."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\operatorname {Var} \\left(\\sum _{i}^{n}a_{i}X_{i}\\right)=\\sum _{i=1}^{n}a_{i}^{2}\\operatorname {Var} (X_{i})+2\\sum _{1\\leq i}\\sum _{<j\\leq n}a_{i}a_{j}\\operatorname {Cov} (X_{i},X_{j})}"
+      },
+      "status": "partial",
+      "decl": "ProbabilityTheory.variance_sum",
+      "module": "Mathlib.Probability.Moments.Variance",
+      "note": "General weighted Bienaymé identity is closely related to variance_sum but with scalar coefficients."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\operatorname {Var} (XY)=[\\operatorname {E} (X)]^{2}\\operatorname {Var} (Y)+[\\operatorname {E} (Y)]^{2}\\operatorname {Var} (X)+\\operatorname {Var} (X)\\operatorname {Var} (Y).}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Variance of product of independent variables not in the provided decls."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\operatorname {Var} (XY)=\\operatorname {E} \\left(X^{2}\\right)\\operatorname {E} \\left(Y^{2}\\right)-[\\operatorname {E} (X)]^{2}[\\operatorname {E} (Y)]^{2}.}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Alternative form for variance of independent product not in the provided decls."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle {\\begin{aligned}\\operatorname {Var} (XY)={}&\\operatorname {E} \\left[X^{2}Y^{2}\\right]-[\\operatorname {E} (XY)]^{2}\\\\[5pt]={}&\\operatorname {Cov} \\left(X^{2},Y^{2}\\right)+\\operatorname {E} (X^{2})\\operatorname {E} \\left(Y^{2}\\right)-[\\operatorname {E} (XY)]^{2}\\\\[5pt]={}&\\operatorname {Cov} \\left(X^{2},Y^{2}\\right)+\\left(\\operatorname {Var} (X)+[\\operatorname {E} (X)]^{2}\\right)\\left(\\operatorname {Var} (Y)+[\\operatorname {E} (Y)]^{2}\\right)\\\\[5pt]&-[\\operatorname {Cov} (X,Y)+\\operatorname {E} (X)\\operatorname {E} (Y)]^{2}\\end{aligned}}}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Variance of product of dependent variables not in the provided decls."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\operatorname {Var} \\left[f(X)\\right]\\approx \\left(f'(\\operatorname {E} \\left[X\\right])\\right)^{2}\\operatorname {Var} \\left[X\\right]}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Delta-method approximation for variance of f(X) not in the provided decls."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle {\\begin{aligned}\\sigma ^{2}&={\\frac {1}{N}}\\sum _{i=1}^{N}{\\left(x_{i}-\\mu \\right)}^{2}={\\frac {1}{N}}\\sum _{i=1}^{N}\\left(x_{i}^{2}-2\\mu x_{i}+\\mu ^{2}\\right)\\\\[5pt]&=\\left({\\frac {1}{N}}\\sum _{i=1}^{N}x_{i}^{2}\\right)-2\\mu \\left({\\frac {1}{N}}\\sum _{i=1}^{N}x_{i}\\right)+\\mu ^{2}\\\\[5pt]&=\\operatorname {E} [x_{i}^{2}]-\\mu ^{2},\\end{aligned}}}"
+      },
+      "status": "partial",
+      "decl": "ProbabilityTheory.variance_eq_sub",
+      "module": "Mathlib.Probability.Moments.Variance",
+      "note": "Population variance equals E[X²]−μ², a special case of variance_eq_sub for the uniform measure."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\sigma ^{2}={\\frac {1}{N^{2}}}\\sum _{i<j}\\left(x_{i}-x_{j}\\right)^{2}={\\frac {1}{2N^{2}}}\\sum _{i,j=1}^{N}\\left(x_{i}-x_{j}\\right)^{2}.}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Pairwise-distance formula for population variance not in the provided decls."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle {\\begin{aligned}&{\\frac {1}{2N^{2}}}\\sum _{i,j=1}^{N}{\\left(x_{i}-x_{j}\\right)}^{2}\\\\[5pt]={}&{\\frac {1}{2N^{2}}}\\sum _{i,j=1}^{N}\\left(x_{i}^{2}-2x_{i}x_{j}+x_{j}^{2}\\right)\\\\[5pt]={}&{\\frac {1}{2N}}\\sum _{j=1}^{N}\\left({\\frac {1}{N}}\\sum _{i=1}^{N}x_{i}^{2}\\right)-\\left({\\frac {1}{N}}\\sum _{i=1}^{N}x_{i}\\right)\\left({\\frac {1}{N}}\\sum _{j=1}^{N}x_{j}\\right)+{\\frac {1}{2N}}\\sum _{i=1}^{N}\\left({\\frac {1}{N}}\\sum _{j=1}^{N}x_{j}^{2}\\right)\\\\[5pt]={}&{\\frac {1}{2}}\\left(\\sigma ^{2}+\\mu ^{2}\\right)-\\mu ^{2}+{\\frac {1}{2}}\\left(\\sigma ^{2}+\\mu ^{2}\\right)\\\\[5pt]={}&\\sigma ^{2}.\\end{aligned}}}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Intermediate proof of pairwise-distance identity not a standalone Mathlib decl."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle {\\tilde {S}}_{Y}^{2}={\\frac {1}{n}}\\sum _{i=1}^{n}\\left(Y_{i}-{\\overline {Y}}\\right)^{2}=\\left({\\frac {1}{n}}\\sum _{i=1}^{n}Y_{i}^{2}\\right)-{\\overline {Y}}^{2}={\\frac {1}{n^{2}}}\\sum _{i,j\\,:\\,i<j}\\left(Y_{i}-Y_{j}\\right)^{2}.}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Biased sample variance formula not in the provided decls."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle {\\overline {Y}}={\\frac {1}{n}}\\sum _{i=1}^{n}Y_{i}.}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Sample mean definition not in the provided variance decls."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle {\\begin{aligned}\\operatorname {E} [{\\tilde {S}}_{Y}^{2}]&=\\operatorname {E} \\left[{\\frac {1}{n}}\\sum _{i=1}^{n}{\\left(Y_{i}-{\\frac {1}{n}}\\sum _{j=1}^{n}Y_{j}\\right)}^{2}\\right]\\\\[5pt]&={\\frac {1}{n}}\\sum _{i=1}^{n}\\operatorname {E} \\left[Y_{i}^{2}-{\\frac {2}{n}}Y_{i}\\sum _{j=1}^{n}Y_{j}+{\\frac {1}{n^{2}}}\\sum _{j=1}^{n}Y_{j}\\sum _{k=1}^{n}Y_{k}\\right]\\\\[5pt]&={\\frac {1}{n}}\\sum _{i=1}^{n}\\left(\\operatorname {E} \\left[Y_{i}^{2}\\right]-{\\frac {2}{n}}\\left(\\sum _{j\\neq i}\\operatorname {E} \\left[Y_{i}Y_{j}\\right]+\\operatorname {E} \\left[Y_{i}^{2}\\right]\\right)+{\\frac {1}{n^{2}}}\\sum _{j=1}^{n}\\sum _{k\\neq j}^{n}\\operatorname {E} \\left[Y_{j}Y_{k}\\right]+{\\frac {1}{n^{2}}}\\sum _{j=1}^{n}\\operatorname {E} \\left[Y_{j}^{2}\\right]\\right)\\\\[5pt]&={\\frac {1}{n}}\\sum _{i=1}^{n}\\left({\\frac {n-2}{n}}\\operatorname {E} \\left[Y_{i}^{2}\\right]-{\\frac {2}{n}}\\sum _{j\\neq i}\\operatorname {E} \\left[Y_{i}Y_{j}\\right]+{\\frac {1}{n^{2}}}\\sum _{j=1}^{n}\\sum _{k\\neq j}^{n}\\operatorname {E} \\left[Y_{j}Y_{k}\\right]+{\\frac {1}{n^{2}}}\\sum _{j=1}^{n}\\operatorname {E} \\left[Y_{j}^{2}\\right]\\right)\\\\[5pt]&={\\frac {1}{n}}\\sum _{i=1}^{n}\\left[{\\frac {n-2}{n}}\\left(\\sigma ^{2}+\\mu ^{2}\\right)-{\\frac {2}{n}}(n-1)\\mu ^{2}+{\\frac {1}{n^{2}}}n(n-1)\\mu ^{2}+{\\frac {1}{n}}\\left(\\sigma ^{2}+\\mu ^{2}\\right)\\right]\\\\[5pt]&={\\frac {n-1}{n}}\\sigma ^{2}.\\end{aligned}}}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Bias computation for sample variance not in the provided decls."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle S^{2}={\\frac {n}{n-1}}{\\tilde {S}}_{Y}^{2}={\\frac {n}{n-1}}\\left[{\\frac {1}{n}}\\sum _{i=1}^{n}\\left(Y_{i}-{\\overline {Y}}\\right)^{2}\\right]={\\frac {1}{n-1}}\\sum _{i=1}^{n}\\left(Y_{i}-{\\overline {Y}}\\right)^{2}}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Unbiased sample variance definition not in the provided decls."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle (n-1){\\frac {S^{2}}{\\sigma ^{2}}}\\sim \\chi _{n-1}^{2},}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Chi-squared distribution of (n−1)S²/σ² not in the provided decls."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\operatorname {E} \\left(S^{2}\\right)=\\operatorname {E} \\left({\\frac {\\sigma ^{2}}{n-1}}\\chi _{n-1}^{2}\\right)=\\sigma ^{2},}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Unbiasedness of S² not in the provided decls."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\operatorname {Var} \\left[S^{2}\\right]=\\operatorname {Var} \\left({\\frac {\\sigma ^{2}}{n-1}}\\chi _{n-1}^{2}\\right)={\\frac {\\sigma ^{4}}{{\\left(n-1\\right)}^{2}}}\\operatorname {Var} \\left(\\chi _{n-1}^{2}\\right)={\\frac {2\\sigma ^{4}}{n-1}}.}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Variance of S² under normality not in the provided decls."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\operatorname {E} \\left[S^{2}\\right]=\\sigma ^{2};\\quad \\operatorname {Var} \\left[S^{2}\\right]={\\frac {\\sigma ^{4}}{n}}\\left(\\kappa -1+{\\frac {2}{n-1}}\\right)={\\frac {1}{n}}\\left(\\mu _{4}-{\\frac {n-3}{n-1}}\\sigma ^{4}\\right),}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "General iid moments of S² not in the provided decls."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\sigma _{y}^{2}\\leq 2y_{\\max }(A-H),}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Harmonic/arithmetic-mean variance bound not in the provided decls."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle {\\begin{aligned}\\sigma _{y}^{2}&\\leq {\\frac {y_{\\max }(A-H)(y_{\\max }-A)}{y_{\\max }-H}},\\\\[1ex]\\sigma _{y}^{2}&\\geq {\\frac {y_{\\min }(A-H)(A-y_{\\min })}{H-y_{\\min }}},\\end{aligned}}}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Refined variance bounds via harmonic/arithmetic means not in the provided decls."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle I=n\\left(\\mathbf {1} _{3\\times 3}\\operatorname {tr} (\\Sigma )-\\Sigma \\right).}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Moment-of-inertia formula from covariance matrix not in the provided decls."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\Sigma ={\\begin{bmatrix}10&0&0\\\\0&0.1&0\\\\0&0&0.1\\end{bmatrix}}.}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Numerical example covariance matrix not a Mathlib decl."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle I=n{\\begin{bmatrix}0.2&0&0\\\\0&10.1&0\\\\0&0&10.1\\end{bmatrix}}.}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Numerical example inertia tensor not a Mathlib decl."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle {\\text{Semivariance}}={\\frac {1}{n}}\\sum _{i:x_{i}<\\mu }{\\left(x_{i}-\\mu \\right)}^{2}}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Semivariance is not in the provided decl list."
+    }
+  ]
+}

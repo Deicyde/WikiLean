@@ -1,0 +1,921 @@
+{
+  "slug": "Category_mathematics",
+  "wikipedia_title": "Category (mathematics)",
+  "display_title": "Category (mathematics)",
+  "schema_version": 3,
+  "annotation_style": "theorem_article",
+  "annotations": [
+    {
+      "kind": "definition",
+      "label": "Category (informal)",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "is a collection of \"objects\" that are linked by \"arrows\""
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "CategoryTheory.Category",
+        "module": "Mathlib.CategoryTheory.Category.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`Category` is a typeclass of objects with morphisms (arrows), composition, and identities.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Functor",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "A mapping between two categories compatible with their respective structures is called a functor"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "CategoryTheory.Functor",
+        "module": "Mathlib.CategoryTheory.Functor.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`Functor C D` is a structure-preserving map between categories, with notation `C ⥤ D`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Definition of a category",
+      "anchor": {
+        "section": "Definition",
+        "snippet": "One commonly used definition is as follows"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "CategoryTheory.Category",
+        "module": "Mathlib.CategoryTheory.Category.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`Category` (extending `CategoryStruct`) is exactly this standard definition with hom-types, identities, composition and axioms.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Category axioms (associativity and units)",
+      "anchor": {
+        "section": "Definition",
+        "snippet": "such that the following axioms hold"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "CategoryTheory.Category",
+        "module": "Mathlib.CategoryTheory.Category.Basic",
+        "match_kind": "exact"
+      },
+      "note": "The fields `id_comp`, `comp_id`, and `assoc` of `Category` are precisely the unit and associativity axioms.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Hom-class notation",
+      "anchor": {
+        "section": "Definition",
+        "snippet": "to denote the hom-class of all morphisms from"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Quiver.Hom",
+        "module": "Mathlib.Combinatorics.Quiver.Basic",
+        "match_kind": "exact"
+      },
+      "note": "Morphisms from `X` to `Y` form the type `X ⟶ Y` (`Quiver.Hom`), the formal counterpart of the hom-class notation.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Uniqueness of identity morphism",
+      "anchor": {
+        "section": "Definition",
+        "snippet": "one can prove that there is exactly one identity morphism for every object"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "CategoryTheory.id_of_comp_left_id",
+        "module": "Mathlib.CategoryTheory.Category.Basic",
+        "match_kind": "special_case"
+      },
+      "note": "Identities are bundled as data, but `id_of_comp_left_id` proves any morphism acting as a (left) identity equals `𝟙 X`, capturing uniqueness.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Object-free definition of categories",
+      "anchor": {
+        "section": "Definition",
+        "snippet": "categories can be defined without reference to objects at all"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib defines categories via a type of objects (`Quiver`/`Category`) and has no arrows-only/object-free formulation.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Small and large categories",
+      "anchor": {
+        "section": "Small and large categories",
+        "snippet": "is called small if both"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "CategoryTheory.SmallCategory",
+        "module": "Mathlib.CategoryTheory.Category.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`SmallCategory` (objects and morphisms in the same universe) and `LargeCategory` formalize the small/large distinction.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Locally small category",
+      "anchor": {
+        "section": "Small and large categories",
+        "snippet": "A locally small category is a category such that for all objects"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "CategoryTheory.LocallySmall",
+        "module": "Mathlib.CategoryTheory.EssentiallySmall",
+        "match_kind": "exact"
+      },
+      "note": "`LocallySmall.{w} C` asserts every hom-type `X ⟶ Y` is `w`-small.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Category of sets (Set)",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "forms a large category, Set"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "CategoryTheory.types",
+        "module": "Mathlib.CategoryTheory.Types.Basic",
+        "match_kind": "exact"
+      },
+      "note": "The instance `CategoryTheory.types : Category (Type u)` makes sets and functions a (large) category.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Category Rel",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "The category Rel consists of all sets (as objects) with binary relations between them"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "CategoryTheory.RelCat",
+        "module": "Mathlib.CategoryTheory.Category.RelCat",
+        "match_kind": "exact"
+      },
+      "note": "`RelCat` is the large category of types with binary relations as morphisms.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Discrete category",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "Such categories are called discrete"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "CategoryTheory.Discrete",
+        "module": "Mathlib.CategoryTheory.Discrete.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`Discrete α` carries the discrete `SmallCategory` whose only morphisms are identities.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Preordered set as a category",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "forms a small category, where the objects are the members of"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Preorder.smallCategory",
+        "module": "Mathlib.CategoryTheory.Category.Preorder",
+        "match_kind": "exact"
+      },
+      "note": "Any preorder is a `SmallCategory` with a unique morphism `X ⟶ Y` iff `X ≤ Y`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Thin category",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "such a category is called thin"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Quiver.IsThin",
+        "module": "Mathlib.Combinatorics.Quiver.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`Quiver.IsThin` states every hom-type is a `Subsingleton`, i.e. at most one morphism between any two objects.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Monoid as a category",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "forms a small category with a single object"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "CategoryTheory.SingleObj",
+        "module": "Mathlib.CategoryTheory.SingleObj",
+        "match_kind": "exact"
+      },
+      "note": "`SingleObj M` is the one-object category whose endomorphism monoid recovers the monoid `M`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Group as a category",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "can be seen as a category with a single object in which every morphism is invertible"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "CategoryTheory.SingleObj",
+        "module": "Mathlib.CategoryTheory.SingleObj",
+        "match_kind": "special_case"
+      },
+      "note": "When `M` is a group, `SingleObj M` is the one-object groupoid in which every morphism is invertible.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Isomorphism",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "A morphism that is invertible in this sense is called an isomorphism"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "CategoryTheory.Iso",
+        "module": "Mathlib.CategoryTheory.Iso",
+        "match_kind": "exact"
+      },
+      "note": "`Iso X Y` (notation `X ≅ Y`) bundles a morphism with a two-sided inverse; `IsIso` is the unbundled predicate.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Groupoid",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "A groupoid is a category in which every morphism is an isomorphism"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "CategoryTheory.Groupoid",
+        "module": "Mathlib.CategoryTheory.Groupoid",
+        "match_kind": "exact"
+      },
+      "note": "`Groupoid` extends `Category` with an inverse for every morphism.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Fundamental groupoid",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "called the fundamental groupoid of"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "FundamentalGroupoid",
+        "module": "Mathlib.AlgebraicTopology.FundamentalGroupoid.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`FundamentalGroupoid X` has a `Groupoid` instance with homotopy classes of paths as morphisms.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Free category generated by a graph",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "is called the free category generated by the graph"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "CategoryTheory.Paths",
+        "module": "Mathlib.CategoryTheory.PathCategory.Basic",
+        "match_kind": "generalization"
+      },
+      "note": "`Paths V` is the path/free category generated by a quiver (directed graph), with the universal `lift` property.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Category Ord",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "forms a category, Ord"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Preord",
+        "module": "Mathlib.Order.Category.Preord",
+        "match_kind": "exact"
+      },
+      "note": "`Preord` is the category of preordered sets with monotone maps, matching Ord.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Concrete category",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "i.e. a category whose objects can be identified with sets with some type of additional structure"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "CategoryTheory.ConcreteCategory",
+        "module": "Mathlib.CategoryTheory.ConcreteCategory.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`ConcreteCategory` equips a category with a faithful forgetful functor to types.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Category of groups (Grp)",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "forms a large category, Grp"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "GrpCat",
+        "module": "Mathlib.Algebra.Category.Grp.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`GrpCat` is the bundled large category of groups and group homomorphisms.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Category Ab",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "consisting of all abelian groups and their group homomorphisms"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Ab",
+        "module": "Mathlib.Algebra.Category.Grp.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`Ab` is an abbreviation for `AddCommGrpCat`, the category of abelian groups and homomorphisms.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Category of graphs",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "The class of all graphs forms another concrete category"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "CategoryTheory.Quiv",
+        "module": "Mathlib.CategoryTheory.Category.Quiv",
+        "match_kind": "generalization"
+      },
+      "note": "Mathlib has `Quiv`, the category of quivers (directed multigraphs) with prefunctors, but no category of simple graphs.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Fiber bundles as a concrete category",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "Fiber bundles with bundle maps between them form a concrete category"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Fiber bundles exist in Mathlib but are not organized into a category of bundles with bundle maps.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Category Cat",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "The category Cat consists of all small categories, with functors between them as morphisms"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "CategoryTheory.Cat",
+        "module": "Mathlib.CategoryTheory.Category.Cat",
+        "match_kind": "exact"
+      },
+      "note": "`Cat` is the large category of small categories with functors as morphisms.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Functor category",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "a functor category has as objects functors between two fixed categories"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "CategoryTheory.Functor.category",
+        "module": "Mathlib.CategoryTheory.Functor.Category",
+        "match_kind": "exact"
+      },
+      "note": "`Functor.category` is the category `C ⥤ D` with natural transformations as morphisms.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Dual (opposite) category",
+      "anchor": {
+        "section": "Construction of new categories",
+        "snippet": "This is called the dual or opposite category"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "CategoryTheory.Category.opposite",
+        "module": "Mathlib.CategoryTheory.Opposites",
+        "match_kind": "exact"
+      },
+      "note": "`Category.opposite` provides the category structure on `Cᵒᵖ` by reversing morphisms.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Product category",
+      "anchor": {
+        "section": "Construction of new categories",
+        "snippet": "one can form the product category"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "CategoryTheory.prod",
+        "module": "Mathlib.CategoryTheory.Products.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`CategoryTheory.prod` gives the Cartesian product category structure on `C × D`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Quotient category",
+      "anchor": {
+        "section": "Construction of new categories",
+        "snippet": "one can construct the quotient category"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "CategoryTheory.Quotient",
+        "module": "Mathlib.CategoryTheory.Quotient",
+        "match_kind": "exact"
+      },
+      "note": "`Quotient r` is the category obtained by quotienting hom-sets by a `HomRel`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Overcategory (slice category)",
+      "anchor": {
+        "section": "Construction of new categories",
+        "snippet": "the overcategory or slice category"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "CategoryTheory.Over",
+        "module": "Mathlib.CategoryTheory.Comma.Over.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`Over X` is the slice/over category of objects equipped with a morphism to `X`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Undercategory and comma category",
+      "anchor": {
+        "section": "Construction of new categories",
+        "snippet": "The dual notion is that of an undercategory or coslice category"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "CategoryTheory.Under",
+        "module": "Mathlib.CategoryTheory.Comma.Over.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`Under X` is the coslice category, and the general `Comma L R` construction is also formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Localization",
+      "anchor": {
+        "section": "Construction of new categories",
+        "snippet": "turns the morphisms from"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "CategoryTheory.Localization",
+        "module": "Mathlib.CategoryTheory.Localization.Construction",
+        "match_kind": "exact"
+      },
+      "note": "`Localization W` constructs the category where morphisms in `W` become isomorphisms, with the `IsLocalization` predicate characterizing it.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Monomorphism",
+      "anchor": {
+        "section": "Types of morphisms",
+        "snippet": "a monomorphism (or monic ) if it is left-cancellable"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "CategoryTheory.Mono",
+        "module": "Mathlib.CategoryTheory.Category.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`Mono f` is the left-cancellation (postcomposition) property defining monomorphisms.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Epimorphism",
+      "anchor": {
+        "section": "Types of morphisms",
+        "snippet": "an epimorphism (or epic ) if it is right-cancellable"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "CategoryTheory.Epi",
+        "module": "Mathlib.CategoryTheory.Category.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`Epi f` is the right-cancellation (precomposition) property defining epimorphisms.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Bimorphism",
+      "anchor": {
+        "section": "Types of morphisms",
+        "snippet": "a bimorphism if it is both a monomorphism and an epimorphism"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Both `Mono` and `Epi` exist, but there is no bundled `Bimorphism` definition for their conjunction.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Retraction",
+      "anchor": {
+        "section": "Types of morphisms",
+        "snippet": "a retraction if it has a right inverse"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "CategoryTheory.IsSplitEpi",
+        "module": "Mathlib.CategoryTheory.EpiMono",
+        "match_kind": "exact"
+      },
+      "note": "`IsSplitEpi f` (via `SplitEpi`, with `section_ ≫ f = 𝟙`) is the property of having a right inverse.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Section",
+      "anchor": {
+        "section": "Types of morphisms",
+        "snippet": "a section if it has a left inverse"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "CategoryTheory.IsSplitMono",
+        "module": "Mathlib.CategoryTheory.EpiMono",
+        "match_kind": "exact"
+      },
+      "note": "`IsSplitMono f` (via `SplitMono`, with `f ≫ retraction = 𝟙`) is the property of having a left inverse.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Isomorphism (morphism)",
+      "anchor": {
+        "section": "Types of morphisms",
+        "snippet": "an isomorphism if it has an inverse"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "CategoryTheory.IsIso",
+        "module": "Mathlib.CategoryTheory.Iso",
+        "match_kind": "exact"
+      },
+      "note": "`IsIso f` asserts existence of a two-sided inverse; `Iso` is the bundled form.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Endomorphism",
+      "anchor": {
+        "section": "Types of morphisms",
+        "snippet": "an endomorphism if"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "CategoryTheory.End",
+        "module": "Mathlib.CategoryTheory.Endomorphism",
+        "match_kind": "exact"
+      },
+      "note": "`End X := X ⟶ X` is the type of endomorphisms of an object.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Endomorphisms form a monoid",
+      "anchor": {
+        "section": "Types of morphisms",
+        "snippet": "is a set and forms a monoid under morphism composition"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "CategoryTheory.End.monoid",
+        "module": "Mathlib.CategoryTheory.Endomorphism",
+        "match_kind": "exact"
+      },
+      "note": "`End.monoid` provides the `Monoid (End X)` instance under composition.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Automorphism",
+      "anchor": {
+        "section": "Types of morphisms",
+        "snippet": "is both an endomorphism and an isomorphism"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "CategoryTheory.Aut",
+        "module": "Mathlib.CategoryTheory.Endomorphism",
+        "match_kind": "exact"
+      },
+      "note": "`Aut X := X ≅ X` is the type of automorphisms (self-isomorphisms) of `X`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Automorphisms form a group",
+      "anchor": {
+        "section": "Types of morphisms",
+        "snippet": "it forms a group under morphism composition called the automorphism group of"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "CategoryTheory.Aut",
+        "module": "Mathlib.CategoryTheory.Endomorphism",
+        "match_kind": "exact"
+      },
+      "note": "`Aut X` carries a `Group` instance under composition of isomorphisms.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Retractions are epimorphisms, sections are monomorphisms",
+      "anchor": {
+        "section": "Types of morphisms",
+        "snippet": "Every retraction is an epimorphism"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "CategoryTheory.IsSplitEpi.epi",
+        "module": "Mathlib.CategoryTheory.EpiMono",
+        "match_kind": "exact"
+      },
+      "note": "`IsSplitEpi.epi` shows split epis are epis, dually `IsSplitMono.mono` shows split monos are monos.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Equivalence of mono+retraction, epi+section, isomorphism",
+      "anchor": {
+        "section": "Types of morphisms",
+        "snippet": "The following three statements are equivalent"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "CategoryTheory.isIso_of_mono_of_isSplitEpi",
+        "module": "Mathlib.CategoryTheory.EpiMono",
+        "match_kind": "special_case"
+      },
+      "note": "The individual implications (`isIso_of_mono_of_isSplitEpi`, `IsSplitEpi.of_iso`, etc.) are present but not packaged as one three-way equivalence.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Commutative diagram",
+      "anchor": {
+        "section": "Types of morphisms",
+        "snippet": "can most conveniently be represented with commutative diagrams"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "CategoryTheory.CommSq",
+        "module": "Mathlib.CategoryTheory.CommSq",
+        "match_kind": "special_case"
+      },
+      "note": "`CommSq` formalizes commutative squares, but there is no general object for arbitrary commutative diagrams (which are just stated as equalities of composites).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Preadditive category",
+      "anchor": {
+        "section": "Types of categories",
+        "snippet": "Such a category is called preadditive"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "CategoryTheory.Preadditive",
+        "module": "Mathlib.CategoryTheory.Preadditive.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`Preadditive` makes each hom-set an abelian group with bilinear composition.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Additive category",
+      "anchor": {
+        "section": "Types of categories",
+        "snippet": "it is called an additive category"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "CategoryTheory.Preadditive",
+        "module": "Mathlib.CategoryTheory.Preadditive.Basic",
+        "match_kind": null
+      },
+      "note": "Mathlib has `Preadditive` plus biproduct classes (`HasBinaryBiproducts`, zero object) but no single bundled `AdditiveCategory` class.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Abelian category",
+      "anchor": {
+        "section": "Types of categories",
+        "snippet": "then we speak of an abelian category"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "CategoryTheory.Abelian",
+        "module": "Mathlib.CategoryTheory.Abelian.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`Abelian` extends `Preadditive` with normal monos/epis, kernels and cokernels.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Abelian groups as an abelian category",
+      "anchor": {
+        "section": "Types of categories",
+        "snippet": "A typical example of an abelian category is the category of abelian groups"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "AddCommGrpCat",
+        "module": "Mathlib.Algebra.Category.Grp.Abelian",
+        "match_kind": "invocation"
+      },
+      "note": "The instance `Abelian AddCommGrpCat` establishes that the category of abelian groups is abelian.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Enriched category",
+      "anchor": {
+        "section": "Types of categories",
+        "snippet": "can be formalized in the concept of an enriched category"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "CategoryTheory.EnrichedCategory",
+        "module": "Mathlib.CategoryTheory.Enriched.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`EnrichedCategory V C` formalizes categories whose hom-objects live in a monoidal category `V`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Complete category",
+      "anchor": {
+        "section": "Types of categories",
+        "snippet": "A category is called complete if all small limits exist in it"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "CategoryTheory.Limits.HasLimits",
+        "module": "Mathlib.CategoryTheory.Limits.HasLimits",
+        "match_kind": "exact"
+      },
+      "note": "`HasLimits` (i.e. `HasLimitsOfSize.{v,v}`) asserts all small limits exist, the completeness condition.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Complete categories examples",
+      "anchor": {
+        "section": "Types of categories",
+        "snippet": "The categories of sets, abelian groups and topological spaces are complete"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "CategoryTheory.Limits.Types.hasLimitsOfSize",
+        "module": "Mathlib.CategoryTheory.Limits.Types.Limits",
+        "match_kind": "invocation"
+      },
+      "note": "`Type` has a `HasLimitsOfSize` instance, and analogous `HasLimits` instances exist for `AddCommGrp` and `TopCat`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Cartesian closed category",
+      "anchor": {
+        "section": "Types of categories",
+        "snippet": "A category is called cartesian closed if it has finite direct products"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "CategoryTheory.CartesianClosed",
+        "module": "Mathlib.CategoryTheory.Monoidal.Closed.Cartesian",
+        "match_kind": "exact"
+      },
+      "note": "`CartesianClosed` is now an alias for `MonoidalClosed` with respect to the cartesian monoidal structure.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Cartesian closed examples",
+      "anchor": {
+        "section": "Types of categories",
+        "snippet": "the category of complete partial orders with Scott-continuous functions"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "CategoryTheory.MonoidalClosed",
+        "module": "Mathlib.CategoryTheory.Monoidal.Closed.Types",
+        "match_kind": "special_case"
+      },
+      "note": "`Type` (and functor categories into `Type`) have cartesian-closed instances, but the cited ωCPO/Scott-continuous example is not formalized as a cartesian closed category.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Topos",
+      "anchor": {
+        "section": "Types of categories",
+        "snippet": "A topos is a certain type of cartesian closed category"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "CategoryTheory.Classifier",
+        "module": "Mathlib.CategoryTheory.Subobject.Classifier.Defs",
+        "match_kind": null
+      },
+      "note": "Subobject classifiers (`Classifier`/`HasClassifier`) and the ingredients of an elementary topos exist, but there is no bundled `Topos` class.",
+      "provenance": "ai"
+    }
+  ]
+}

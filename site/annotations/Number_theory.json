@@ -1,0 +1,1135 @@
+{
+  "slug": "Number_theory",
+  "wikipedia_title": "Number theory",
+  "display_title": "Number theory",
+  "schema_version": 3,
+  "annotation_style": "theorem_article",
+  "annotations": [
+    {
+      "kind": "definition",
+      "label": "Number theory",
+      "anchor": {
+        "section": "Definition",
+        "snippet": "Number theory is the branch of mathematics that studies integers"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "A branch of mathematics, not a formalizable mathematical statement.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Integers",
+      "anchor": {
+        "section": "Definition",
+        "snippet": "The integers comprise a set that extends the set of natural numbers"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Int",
+        "module": null,
+        "match_kind": "exact"
+      },
+      "note": "The integer type `Int` (`ℤ`) is a Lean core definition used throughout Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Elementary number theory",
+      "anchor": {
+        "section": "Definition",
+        "snippet": "Elementary number theory studies aspects of integers"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "A subfield of mathematics, not a formalizable statement.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Geometric number theory",
+      "anchor": {
+        "section": "Definition",
+        "snippet": "Geometric number theory uses concepts from geometry to study numbers"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "A subfield of mathematics, not a formalizable statement.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Pythagorean triples (Plimpton 322)",
+      "anchor": {
+        "section": "History",
+        "snippet": "a list of Pythagorean triples , that is, integers"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "PythagoreanTriple",
+        "module": "Mathlib.NumberTheory.PythagoreanTriples",
+        "match_kind": "exact"
+      },
+      "note": "`PythagoreanTriple x y z` is defined as `x^2 + y^2 = z^2` over the integers.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "History",
+          "snippet": "a list of Pythagorean triples , that is, integers"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\left({\\frac {1}{2}}\\left(x-{\\frac {1}{x}}\\right)\\right)^{2}+1=\\left({\\frac {1}{2}}\\left(x+{\\frac {1}{x}}\\right)\\right)^{2},}"
+        }
+      ]
+    },
+    {
+      "kind": "definition",
+      "label": "Diophantine equations",
+      "anchor": {
+        "section": "History",
+        "snippet": "Diophantine equations are polynomial equations to which rational or integer solutions are sought"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib treats specific Diophantine equations (Pell, FLT) but has no general 'Diophantine equation' object.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Arithmetic",
+      "anchor": {
+        "section": "Elementary number theory",
+        "snippet": "Arithmetic is the study of numerical operations"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "A descriptive notion of a field of study, not a formalizable statement.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Multiplication",
+      "anchor": {
+        "section": "Elementary number theory",
+        "snippet": "Multiplication, for instance, is an operation that combines two numbers"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Mul",
+        "module": null,
+        "match_kind": "generalization"
+      },
+      "note": "Multiplication is given by the core `Mul`/`HMul` typeclass, instantiated for `ℤ` and `ℕ`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Divisibility",
+      "anchor": {
+        "section": "Elementary number theory",
+        "snippet": "Divisibility is a property between two nonzero integers related to division"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Dvd.dvd",
+        "module": null,
+        "match_kind": "generalization"
+      },
+      "note": "The divisibility relation `∣` is the core `Dvd` typeclass, available on `ℤ`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Euclid's division lemma",
+      "anchor": {
+        "section": "Elementary number theory",
+        "snippet": "Euclid's division lemma asserts that"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Nat.div_add_mod",
+        "module": null,
+        "match_kind": "special_case"
+      },
+      "note": "`Nat.div_add_mod` (with `Nat.mod_lt`) gives the division-with-remainder decomposition; `Int.emod_add_ediv` is the integer analogue.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Divisibility rule for 3",
+      "anchor": {
+        "section": "Elementary number theory",
+        "snippet": "any integer is divisible by 3 if its decimal digit sum is divisible by 3"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Nat.three_dvd_iff",
+        "module": "Mathlib.Data.Nat.Digits.Div",
+        "match_kind": "exact"
+      },
+      "note": "`Nat.three_dvd_iff` states `3 ∣ n ↔ 3 ∣ (digits 10 n).sum`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Common divisor",
+      "anchor": {
+        "section": "Elementary number theory",
+        "snippet": "A common divisor of several nonzero integers is an integer that divides all of them"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "There is no standalone 'common divisor' predicate; only `Dvd` and `gcd` exist.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Greatest common divisor",
+      "anchor": {
+        "section": "Elementary number theory",
+        "snippet": "The greatest common divisor (gcd) is the largest of such divisors"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Nat.gcd",
+        "module": null,
+        "match_kind": "exact"
+      },
+      "note": "`Nat.gcd` (and `GCDMonoid.gcd`) give the greatest common divisor, characterized by `Nat.gcd_dvd`/`Nat.dvd_gcd`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Coprime integers",
+      "anchor": {
+        "section": "Elementary number theory",
+        "snippet": "Two integers are said to be coprime or relatively prime to one another"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Nat.Coprime",
+        "module": null,
+        "match_kind": "exact"
+      },
+      "note": "`Nat.Coprime m n` is defined as `gcd m n = 1`; `IsCoprime` is the general ring version.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Euclidean algorithm",
+      "anchor": {
+        "section": "Elementary number theory",
+        "snippet": "The Euclidean algorithm computes the greatest common divisor of two integers"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "EuclideanDomain.gcd",
+        "module": "Mathlib.Algebra.EuclideanDomain.Defs",
+        "match_kind": "generalization"
+      },
+      "note": "`Nat.gcd` and `EuclideanDomain.gcd` are defined by the Euclidean recursion, with Bézout as `Nat.gcd_eq_gcd_ab`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Diophantine equation",
+      "anchor": {
+        "section": "Elementary number theory",
+        "snippet": "A Diophantine equation has several unknowns and integer coefficients"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No general 'Diophantine equation' definition exists in Mathlib, only specific instances.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Pythagorean triples",
+      "anchor": {
+        "section": "Elementary number theory",
+        "snippet": "whose solutions are called Pythagorean triples if they are all integers"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "PythagoreanTriple",
+        "module": "Mathlib.NumberTheory.PythagoreanTriples",
+        "match_kind": "exact"
+      },
+      "note": "`PythagoreanTriple x y z := x^2 + y^2 = z^2` over `ℤ`, with full parametrization proved.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Continued fraction",
+      "anchor": {
+        "section": "Elementary number theory",
+        "snippet": "Another kind of expression is the continued fraction"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "GenContFract",
+        "module": "Mathlib.Algebra.ContinuedFractions.Basic",
+        "match_kind": "generalization"
+      },
+      "note": "`GenContFract` formalizes (generalized) continued fractions, with convergence results.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Prime number",
+      "anchor": {
+        "section": "Elementary number theory",
+        "snippet": "A prime number is an integer greater than"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Nat.Prime",
+        "module": "Mathlib.Data.Nat.Prime.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`Nat.Prime` defines primality on `ℕ`; `Prime` is the general commutative-monoid version.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Composite number",
+      "anchor": {
+        "section": "Elementary number theory",
+        "snippet": "that is not prime is called a composite number"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has no named 'composite' predicate; it is expressed via `¬ Nat.Prime` together with `1 < n`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Euclid's theorem (infinitude of primes)",
+      "anchor": {
+        "section": "Elementary number theory",
+        "snippet": "Euclid's theorem demonstrates that there are infinitely many prime numbers"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Nat.exists_infinite_primes",
+        "module": "Mathlib.Data.Nat.Prime.Infinite",
+        "match_kind": "exact"
+      },
+      "note": "`Nat.exists_infinite_primes` shows for every `n` there is a prime `p ≥ n`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Sieve of Eratosthenes",
+      "anchor": {
+        "section": "Elementary number theory",
+        "snippet": "The sieve of Eratosthenes was devised as an efficient algorithm for identifying all primes"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Eratosthenes sieving algorithm is not formalized (Mathlib's SelbergSieve is a different analytic tool).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Factorization",
+      "anchor": {
+        "section": "Elementary number theory",
+        "snippet": "Factorization is a method of expressing a number as a product"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Nat.factorization",
+        "module": "Mathlib.Data.Nat.Factorization.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`Nat.factorization` records a number's prime-power exponents as a finitely supported function.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Integer factorization",
+      "anchor": {
+        "section": "Elementary number theory",
+        "snippet": "integer factorization is the decomposition of an integer into a product of integers"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Nat.factorization",
+        "module": "Mathlib.Data.Nat.Factorization.Defs",
+        "match_kind": "exact"
+      },
+      "note": "Decomposition into a product is captured by `Nat.factorization` / `UniqueFactorizationMonoid`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Prime factorization",
+      "anchor": {
+        "section": "Elementary number theory",
+        "snippet": "is known as prime factorization"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Nat.primeFactorsList",
+        "module": "Mathlib.Data.Nat.Factors",
+        "match_kind": "exact"
+      },
+      "note": "`Nat.primeFactorsList` is the list of prime factors with `prod_primeFactorsList` recovering `n`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Euclid's lemma",
+      "anchor": {
+        "section": "Elementary number theory",
+        "snippet": "if a prime divides a product of integers, then that prime divides at least one of the factors"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Nat.Prime.dvd_mul",
+        "module": "Mathlib.Data.Nat.Prime.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`Nat.Prime.dvd_mul`/`Prime.dvd_or_dvd` state `p ∣ m*n ↔ p ∣ m ∨ p ∣ n`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Fundamental theorem of arithmetic",
+      "anchor": {
+        "section": "Elementary number theory",
+        "snippet": "The theorem states that every integer greater than"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Nat.primeFactorsList_unique",
+        "module": "Mathlib.Data.Nat.Factors",
+        "match_kind": "exact"
+      },
+      "note": "`Nat.primeFactorsList_unique` (with `UniqueFactorizationMonoid.factors_unique`) gives existence and uniqueness of prime factorization.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Unique prime factorization example",
+      "anchor": {
+        "section": "Elementary number theory",
+        "snippet": "is expressed uniquely as"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "A specific numeric factorization example; no named decl, though provable by `decide`/`norm_num`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Modular arithmetic",
+      "anchor": {
+        "section": "Elementary number theory",
+        "snippet": "Modular arithmetic works with finite sets of integers"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "ZMod",
+        "module": "Mathlib.Data.ZMod.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`ZMod n` is the ring of integers modulo `n`.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Elementary number theory",
+          "snippet": "Modular arithmetic works with finite sets of integers"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle a^{\\varphi (n)}\\equiv 1{\\pmod {n}},}"
+        }
+      ]
+    },
+    {
+      "kind": "definition",
+      "label": "Congruence",
+      "anchor": {
+        "section": "Elementary number theory",
+        "snippet": "A congruence of two integers"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Int.ModEq",
+        "module": "Mathlib.Data.Int.ModEq",
+        "match_kind": "exact"
+      },
+      "note": "`Int.ModEq n a b` (`a ≡ b [ZMOD n]`) defines congruence; `Nat.ModEq` is the natural-number version.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Elementary number theory",
+          "snippet": "A congruence of two integers"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle a^{\\varphi (n)}\\equiv 1{\\pmod {n}},}"
+        }
+      ]
+    },
+    {
+      "kind": "definition",
+      "label": "Residue class",
+      "anchor": {
+        "section": "Elementary number theory",
+        "snippet": "is a set that contains all integers congruent to a specified"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "ZMod",
+        "module": "Mathlib.Data.ZMod.Defs",
+        "match_kind": "generalization"
+      },
+      "note": "Residue classes mod `n` are exactly the elements of `ZMod n`.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Elementary number theory",
+          "snippet": "is a set that contains all integers congruent to a specified"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle a^{\\varphi (n)}\\equiv 1{\\pmod {n}},}"
+        }
+      ]
+    },
+    {
+      "kind": "theorem",
+      "label": "Fermat's little theorem",
+      "anchor": {
+        "section": "Elementary number theory",
+        "snippet": "An influential theorem is Fermat's little theorem"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "ZMod.pow_card",
+        "module": "Mathlib.FieldTheory.Finite.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`ZMod.pow_card` gives `a^p = a`, with `ZMod.pow_card_sub_one_eq_one` the `a^(p-1)=1` form.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Elementary number theory",
+          "snippet": "An influential theorem is Fermat's little theorem"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle a^{\\varphi (n)}\\equiv 1{\\pmod {n}},}"
+        }
+      ]
+    },
+    {
+      "kind": "theorem",
+      "label": "Euler's theorem",
+      "anchor": {
+        "section": "Elementary number theory",
+        "snippet": "Euler's theorem extends this to assert that every integer"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Nat.ModEq.pow_totient",
+        "module": "Mathlib.FieldTheory.Finite.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`Nat.ModEq.pow_totient` states `x^φ(n) ≡ 1 [MOD n]` for `x` coprime to `n`.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Elementary number theory",
+          "snippet": "Euler's theorem extends this to assert that every integer"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle a^{\\varphi (n)}\\equiv 1{\\pmod {n}},}"
+        }
+      ]
+    },
+    {
+      "kind": "definition",
+      "label": "Analytic number theory",
+      "anchor": {
+        "section": "Analytic number theory",
+        "snippet": "Analytic number theory, in contrast to elementary number theory"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "A subfield of mathematics, not a formalizable statement.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Analysis (limit)",
+      "anchor": {
+        "section": "Analytic number theory",
+        "snippet": "Analysis is the branch of mathematics that studies the limit"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Filter.Tendsto",
+        "module": "Mathlib.Order.Filter.Basic",
+        "match_kind": null
+      },
+      "note": "The limit notion is formalized via `Filter.Tendsto`, but 'analysis' as a field is not a statement.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Limit of a sequence",
+      "anchor": {
+        "section": "Analytic number theory",
+        "snippet": "For example, the limit of the sequence"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Filter.Tendsto",
+        "module": "Mathlib.Order.Filter.Basic",
+        "match_kind": "generalization"
+      },
+      "note": "Limits of sequences are expressed as `Filter.Tendsto u atTop (nhds L)`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Complex numbers and imaginary unit",
+      "anchor": {
+        "section": "Analytic number theory",
+        "snippet": "The complex numbers extend the real numbers with the imaginary unit"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Complex.I",
+        "module": "Mathlib.Data.Complex.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`Complex` (`ℂ`) and the imaginary unit `Complex.I` (with `I^2 = -1`) are defined.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Real and imaginary parts",
+      "anchor": {
+        "section": "Analytic number theory",
+        "snippet": "Every complex number can be expressed as"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Complex.re",
+        "module": "Mathlib.Data.Complex.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`Complex.re` and `Complex.im` give the real and imaginary parts of a complex number.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Prime-counting function",
+      "anchor": {
+        "section": "Analytic number theory",
+        "snippet": "The distribution of primes , described by the function"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Nat.primeCounting",
+        "module": "Mathlib.NumberTheory.PrimeCounting",
+        "match_kind": "exact"
+      },
+      "note": "`Nat.primeCounting` (notation `π`) counts primes ≤ n.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Prime number theorem",
+      "anchor": {
+        "section": "Analytic number theory",
+        "snippet": "The prime number theorem in analytic number theory provides a formalisation"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The prime number theorem is proved in the external PrimeNumberTheoremAnd project, not in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Riemann zeta function",
+      "anchor": {
+        "section": "Analytic number theory",
+        "snippet": "It is defined as the series"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "riemannZeta",
+        "module": "Mathlib.NumberTheory.LSeries.RiemannZeta",
+        "match_kind": "exact"
+      },
+      "note": "`riemannZeta` is the analytically continued zeta function, equal to `∑ 1/n^s` for `re s > 1`.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Analytic number theory",
+          "snippet": "It is defined as the series"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\zeta (s)=\\sum _{n=1}^{\\infty }{\\frac {1}{n^{s}}}={\\frac {1}{1^{s}}}+{\\frac {1}{2^{s}}}+{\\frac {1}{3^{s}}}+\\cdots }"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\zeta (s)=\\prod _{p{\\text{ prime}}}\\left(1-{\\frac {1}{p^{s}}}\\right)^{-1}.}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Euler product formula",
+      "anchor": {
+        "section": "Analytic number theory",
+        "snippet": "Euler demonstrated a link involving the infinite product over all prime numbers"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "riemannZeta_eulerProduct",
+        "module": "Mathlib.NumberTheory.EulerProduct.DirichletLSeries",
+        "match_kind": "exact"
+      },
+      "note": "`riemannZeta_eulerProduct` proves the product over primes equals `ζ(s)` for `re s > 1`.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Analytic number theory",
+          "snippet": "Euler demonstrated a link involving the infinite product over all prime numbers"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\zeta (s)=\\sum _{n=1}^{\\infty }{\\frac {1}{n^{s}}}={\\frac {1}{1^{s}}}+{\\frac {1}{2^{s}}}+{\\frac {1}{3^{s}}}+\\cdots }"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\zeta (s)=\\prod _{p{\\text{ prime}}}\\left(1-{\\frac {1}{p^{s}}}\\right)^{-1}.}"
+        }
+      ]
+    },
+    {
+      "kind": "theorem",
+      "label": "Riemann hypothesis",
+      "anchor": {
+        "section": "Analytic number theory",
+        "snippet": "Riemann extended the definition to a complex variable and conjectured"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "RiemannHypothesis",
+        "module": "Mathlib.NumberTheory.LSeries.RiemannZeta",
+        "match_kind": "exact"
+      },
+      "note": "The statement `RiemannHypothesis` is formalized as a `Prop` (unproven conjecture).",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Analytic number theory",
+          "snippet": "Riemann extended the definition to a complex variable and conjectured"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\zeta (s)=\\sum _{n=1}^{\\infty }{\\frac {1}{n^{s}}}={\\frac {1}{1^{s}}}+{\\frac {1}{2^{s}}}+{\\frac {1}{3^{s}}}+\\cdots }"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\zeta (s)=\\prod _{p{\\text{ prime}}}\\left(1-{\\frac {1}{p^{s}}}\\right)^{-1}.}"
+        }
+      ]
+    },
+    {
+      "kind": "definition",
+      "label": "Prime ideals",
+      "anchor": {
+        "section": "Analytic number theory",
+        "snippet": "one may define prime ideals (generalizations of prime numbers in the field of algebraic numbers)"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Ideal.IsPrime",
+        "module": "Mathlib.RingTheory.Ideal.Prime",
+        "match_kind": "exact"
+      },
+      "note": "`Ideal.IsPrime` is the standard prime-ideal class.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Dedekind zeta functions",
+      "anchor": {
+        "section": "Analytic number theory",
+        "snippet": "Dedekind zeta functions , which are generalizations of the Riemann zeta function"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "dedekindZeta",
+        "module": "Mathlib.NumberTheory.NumberField.DedekindZeta",
+        "match_kind": "exact"
+      },
+      "note": "`dedekindZeta` defines the Dedekind zeta function of a number field.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Elementary proof",
+      "anchor": {
+        "section": "Analytic number theory",
+        "snippet": "Elementary number theory works with elementary proofs"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "A meta-mathematical notion about proof methods, not a formalizable statement.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Algebraic number",
+      "anchor": {
+        "section": "Algebraic number theory",
+        "snippet": "An algebraic number is any complex number that is a solution to some polynomial equation"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "IsAlgebraic",
+        "module": "Mathlib.RingTheory.Algebraic.Defs",
+        "match_kind": "generalization"
+      },
+      "note": "`IsAlgebraic R x` (e.g. over `ℚ`) means `x` is a root of a nonzero polynomial; `Transcendental` is its negation.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Algebraic number field",
+      "anchor": {
+        "section": "Algebraic number theory",
+        "snippet": "Fields of algebraic numbers are also called algebraic number fields"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "NumberField",
+        "module": "Mathlib.NumberTheory.NumberField.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`NumberField K` is a finite-dimensional field extension of `ℚ`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Algebraic number theory",
+      "anchor": {
+        "section": "Algebraic number theory",
+        "snippet": "Algebraic number theory studies algebraic number fields"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "A subfield of mathematics, not a formalizable statement.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Quadratic field",
+      "anchor": {
+        "section": "Algebraic number theory",
+        "snippet": "A quadratic field consists of all numbers of the form"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Zsqrtd",
+        "module": "Mathlib.NumberTheory.Zsqrtd.Basic",
+        "match_kind": null
+      },
+      "note": "`Zsqrtd d` formalizes `ℤ[√d]` with integer coefficients; the rational quadratic field `ℚ(√d)` is not a dedicated definition.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Field extension",
+      "anchor": {
+        "section": "Algebraic number theory",
+        "snippet": "a field L is said to be an extension of a field K if L contains K"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "IntermediateField",
+        "module": "Mathlib.FieldTheory.IntermediateField.Basic",
+        "match_kind": null
+      },
+      "note": "Field extensions are modeled by `[Field K] [Field L] [Algebra K L]` and `IntermediateField`, with no single 'field extension' predicate.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Abelian extension",
+      "anchor": {
+        "section": "Algebraic number theory",
+        "snippet": "Abelian extensions—that is, extensions L of K such that the Galois group"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "IsAbelianGalois",
+        "module": "Mathlib.FieldTheory.Galois.Abelian",
+        "match_kind": "exact"
+      },
+      "note": "`IsAbelianGalois K L` is a Galois extension with commutative Galois group.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Central problem of Diophantine geometry",
+      "anchor": {
+        "section": "Diophantine geometry",
+        "snippet": "The central problem of Diophantine geometry is to determine when a Diophantine equation has integer or rational solutions"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "A description of an open research problem, not a formalizable statement.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Rational and integral points",
+      "anchor": {
+        "section": "Diophantine geometry",
+        "snippet": "one asks whether there are any rational points (points all of whose coordinates are rationals)"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No general notion of rational/integral points on a variety is defined in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Rational points on the unit circle",
+      "anchor": {
+        "section": "Diophantine geometry",
+        "snippet": "Consider, for instance, the Pythagorean equation"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "PythagoreanTriple.coprime_classification",
+        "module": "Mathlib.NumberTheory.PythagoreanTriples",
+        "match_kind": "special_case"
+      },
+      "note": "The Pythagorean-triple classification parametrizes the rational points of the unit circle, but they are not stated as such.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Finiteness of points depends on genus",
+      "anchor": {
+        "section": "Diophantine geometry",
+        "snippet": "depends crucially on the genus of the curve"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Mordell conjecture (Faltings's theorem) is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Diophantine approximation",
+      "anchor": {
+        "section": "Diophantine geometry",
+        "snippet": "There is also the closely linked area of Diophantine approximations"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Real.exists_rat_abs_sub_lt_one_div_den_sq_of_irrational",
+        "module": "Mathlib.NumberTheory.DiophantineApproximation.Basic",
+        "match_kind": null
+      },
+      "note": "Dirichlet's approximation theorem and related results are formalized, but 'Diophantine approximation' as an area is not a single statement.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Good rational approximation",
+      "anchor": {
+        "section": "Diophantine geometry",
+        "snippet": "a good approximation to"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Real.infinite_rat_abs_sub_lt_one_div_den_sq_of_irrational",
+        "module": "Mathlib.NumberTheory.DiophantineApproximation.Basic",
+        "match_kind": "exact"
+      },
+      "note": "This theorem captures 'good approximations' `|ξ - p/q| < 1/q^2`, infinitely many for irrational `ξ`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Transcendental number",
+      "anchor": {
+        "section": "Diophantine geometry",
+        "snippet": "if a number can be approximated better than any algebraic number, then it is a transcendental number"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Transcendental",
+        "module": "Mathlib.RingTheory.Algebraic.Defs",
+        "match_kind": "generalization"
+      },
+      "note": "`Transcendental R x` means `x` is not algebraic; `Liouville.transcendental` realizes the approximation criterion.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "π and e are transcendental",
+      "anchor": {
+        "section": "Diophantine geometry",
+        "snippet": "It is by this argument that π and e have been shown to be transcendental"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": null,
+        "module": "Mathlib.NumberTheory.Transcendental.Lindemann.AnalyticalPart",
+        "match_kind": null
+      },
+      "note": "Only the analytical part of the Lindemann–Weierstrass theorem is in Mathlib; transcendence of `π` and `e` is not yet a completed theorem.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Geometry of numbers",
+      "anchor": {
+        "section": "Diophantine geometry",
+        "snippet": "Diophantine geometry should not be confused with the geometry of numbers"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "MeasureTheory.exists_ne_zero_mem_lattice_of_measure_mul_two_pow_lt_measure",
+        "module": "Mathlib.MeasureTheory.Group.GeometryOfNumbers",
+        "match_kind": "special_case"
+      },
+      "note": "Minkowski's fundamental theorem, the core of the geometry of numbers, is formalized, though the field itself is not a statement.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Arithmetic geometry",
+      "anchor": {
+        "section": "Diophantine geometry",
+        "snippet": "Arithmetic geometry is a contemporary term for the same domain covered by Diophantine geometry"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "A subfield of mathematics, not a formalizable statement.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Probabilistic number theory",
+      "anchor": {
+        "section": "Other subfields",
+        "snippet": "Probabilistic number theory starts with questions such as the following"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "A subfield of mathematics, not a formalizable statement.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Combinatorial number theory",
+      "anchor": {
+        "section": "Other subfields",
+        "snippet": "Combinatorics in number theory starts with questions like the following"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "A subfield of mathematics, not a formalizable statement.",
+      "provenance": "ai"
+    }
+  ]
+}

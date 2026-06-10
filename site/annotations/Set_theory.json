@@ -1,0 +1,553 @@
+{
+  "slug": "Set_theory",
+  "wikipedia_title": "Set theory",
+  "display_title": "Set theory",
+  "schema_version": 3,
+  "annotation_style": "theorem_article",
+  "annotations": [
+    {
+      "kind": "example",
+      "label": "Bolzano's correspondence between intervals",
+      "anchor": {
+        "section": "Early history",
+        "snippet": "introduced one-to-one correspondence of infinite sets, for example between the intervals"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Cardinal.mk_Ioo_real",
+        "module": "Mathlib.Analysis.Real.Cardinality",
+        "match_kind": null
+      },
+      "note": "Mathlib proves bounded open intervals all have cardinality continuum (`Cardinal.mk_Ioo_real`), hence are equinumerous, but Bolzano's explicit interval bijection is not a named result.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Cardinality",
+      "anchor": {
+        "section": "Naive set theory",
+        "snippet": "developed the notion of cardinality , comparing the sizes of two sets"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Cardinal",
+        "module": "Mathlib.SetTheory.Cardinal.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`Cardinal` is defined as the quotient of types by equinumerosity, with `Cardinal.mk` assigning each type its cardinality.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Uncountability of the real numbers",
+      "anchor": {
+        "section": "Naive set theory",
+        "snippet": "the set of all real numbers is uncountable"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Cardinal.not_countable_real",
+        "module": "Mathlib.Analysis.Real.Cardinality",
+        "match_kind": "exact"
+      },
+      "note": "`Cardinal.not_countable_real` (and `instance : Uncountable ℝ`) state that the reals are not countable.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Cantor's theorem",
+      "anchor": {
+        "section": "Naive set theory",
+        "snippet": "the size of the power set of A is strictly larger than the size of A"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Cardinal.cantor",
+        "module": "Mathlib.SetTheory.Cardinal.Order",
+        "match_kind": "exact"
+      },
+      "note": "`Cardinal.cantor : a < 2 ^ a` is exactly Cantor's theorem, with the underlying diagonal argument in `Function.cantor_surjective`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Transfinite numbers (cardinals and ordinals)",
+      "anchor": {
+        "section": "Naive set theory",
+        "snippet": "Cantor developed a theory of transfinite numbers , called cardinals and ordinals"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Ordinal",
+        "module": "Mathlib.SetTheory.Ordinal.Basic",
+        "match_kind": "exact"
+      },
+      "note": "Both `Ordinal` and `Cardinal` are fully developed, including their transfinite arithmetic.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Axiom of unrestricted comprehension (Basic Law V)",
+      "anchor": {
+        "section": "Naive set theory",
+        "snippet": "there is the set of all and only the objects that have that property"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib uses ZFC-style separation (`ZFSet.sep`); the inconsistent unrestricted comprehension schema is deliberately not an axiom.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Russell's paradox",
+      "anchor": {
+        "section": "Naive set theory",
+        "snippet": "Let R be the set of all sets that are not members of themselves"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Class.univ_notMem_univ",
+        "module": "Mathlib.SetTheory.ZFC.Class",
+        "match_kind": null
+      },
+      "note": "Mathlib proves there is no universal set (`Class.univ_notMem_univ`), the consistent counterpart, but does not derive the paradox itself from naive comprehension.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Membership relation",
+      "anchor": {
+        "section": "Basic concepts and notation",
+        "snippet": "a fundamental binary relation between an object o and a set A"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Set.Mem",
+        "module": "Mathlib.Data.Set.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`Set.Mem` gives the `Membership α (Set α)` instance providing the `∈` relation.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Subset (set inclusion)",
+      "anchor": {
+        "section": "Basic concepts and notation",
+        "snippet": "If all the members of set A are also members of set B"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Set.Subset",
+        "module": "Mathlib.Data.Set.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`Set.Subset` defines `s₁ ⊆ s₂` as `∀ a, a ∈ s₁ → a ∈ s₂`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Proper subset",
+      "anchor": {
+        "section": "Basic concepts and notation",
+        "snippet": "We call A a proper subset of B if and only if A is a subset of B , but A is not equal to B"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Set.ssubset_iff_subset_ne",
+        "module": "Mathlib.Data.Set.Basic",
+        "match_kind": "exact"
+      },
+      "note": "The `⊂` relation has the instance `HasSSubset (Set α)`, and `Set.ssubset_iff_subset_ne` characterizes it as `s ⊆ t ∧ s ≠ t`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Union of sets",
+      "anchor": {
+        "section": "Basic concepts and notation",
+        "snippet": "a member of A , or B , or both"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Set.union",
+        "module": "Mathlib.Data.Set.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`Set.union` is defined as `{a | a ∈ s₁ ∨ a ∈ s₂}`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Intersection of sets",
+      "anchor": {
+        "section": "Basic concepts and notation",
+        "snippet": "members of both A and B"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Set.inter",
+        "module": "Mathlib.Data.Set.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`Set.inter` is defined as `{a | a ∈ s₁ ∧ a ∈ s₂}`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Set difference",
+      "anchor": {
+        "section": "Basic concepts and notation",
+        "snippet": "all members of U that are not members of A"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Set.diff",
+        "module": "Mathlib.Data.Set.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`Set.diff` is defined as `{a ∈ s | a ∉ t}`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Complement",
+      "anchor": {
+        "section": "Basic concepts and notation",
+        "snippet": "is also called the complement of A in U"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Set.compl",
+        "module": "Mathlib.Data.Set.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`Set.compl` is defined as `{a | a ∉ s}`, the complement within the ambient type.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Symmetric difference",
+      "anchor": {
+        "section": "Basic concepts and notation",
+        "snippet": "a member of exactly one of A and B"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "symmDiff",
+        "module": "Mathlib.Order.SymmDiff",
+        "match_kind": "generalization"
+      },
+      "note": "`symmDiff` (notation `∆`) is defined for any generalized Boolean algebra, with sets as an instance.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Cartesian product",
+      "anchor": {
+        "section": "Basic concepts and notation",
+        "snippet": "all possible ordered pairs"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Set.prod",
+        "module": "Mathlib.Data.Set.Operations",
+        "match_kind": "exact"
+      },
+      "note": "`Set.prod` (notation `×ˢ`) is the set of pairs `(a,b)` with `a ∈ s` and `b ∈ t`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Empty set",
+      "anchor": {
+        "section": "Basic concepts and notation",
+        "snippet": "the unique set containing no elements"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Set.instEmptyCollectionSet",
+        "module": "Mathlib.Data.Set.Defs",
+        "match_kind": "exact"
+      },
+      "note": "The `EmptyCollection (Set α)` instance gives `∅ = {a | False}`, the set with no members.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Power set",
+      "anchor": {
+        "section": "Basic concepts and notation",
+        "snippet": "the set whose members are all of the possible subsets of A"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Set.powerset",
+        "module": "Mathlib.Data.Set.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`Set.powerset s = {t | t ⊆ s}`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Pure set",
+      "anchor": {
+        "section": "Ontology",
+        "snippet": "A set is pure if all of its members are sets"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "ZFSet",
+        "module": "Mathlib.SetTheory.ZFC.Basic",
+        "match_kind": null
+      },
+      "note": "Mathlib's `ZFSet`/`PSet` cumulative hierarchy consists entirely of pure sets (it has no urelements), but no explicit `IsPure` predicate is defined.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Rank in the cumulative hierarchy",
+      "anchor": {
+        "section": "Ontology",
+        "snippet": "defined to be the least ordinal that is strictly greater than the rank of any of its elements"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "ZFSet.rank",
+        "module": "Mathlib.SetTheory.ZFC.Rank",
+        "match_kind": "exact"
+      },
+      "note": "`ZFSet.rank` is defined as `⨆ y ∈ x, succ (rank y)`, exactly the least ordinal strictly above the ranks of its elements.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Urelements",
+      "anchor": {
+        "section": "Formalized set theory",
+        "snippet": "objects that can be members of sets but that are not themselves sets and do not have any members"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib's ZFC (`ZFSet`) is a theory of pure sets with no urelements, so the concept is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Descriptive set theory",
+      "anchor": {
+        "section": "Descriptive set theory",
+        "snippet": "the study of subsets of the real line and, more generally, subsets of Polish spaces"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "PolishSpace",
+        "module": "Mathlib.Topology.MetricSpace.Polish",
+        "match_kind": null
+      },
+      "note": "Polish spaces (and related Borel/analytic-set machinery) are formalized, but descriptive set theory is a field rather than a single declaration.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Fuzzy set membership",
+      "anchor": {
+        "section": "Fuzzy set theory",
+        "snippet": "an object has a degree of membership in a set, a number between 0 and 1"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Fuzzy sets and graded membership are not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Degree of membership in 'tall people'",
+      "anchor": {
+        "section": "Fuzzy set theory",
+        "snippet": "can be a real number such as 0.75"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This is an illustrative fuzzy-set example, and fuzzy set theory is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Inner model of ZF",
+      "anchor": {
+        "section": "Inner model theory",
+        "snippet": "a transitive class that includes all the ordinals and satisfies all the axioms of ZF"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has `Class` and transitivity notions but no formalization of inner models satisfying ZF.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Constructible universe L",
+      "anchor": {
+        "section": "Inner model theory",
+        "snippet": "The canonical example is the constructible universe L developed by Gödel"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Gödel's constructible universe L is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Large cardinal",
+      "anchor": {
+        "section": "Large cardinals",
+        "snippet": "A large cardinal is a cardinal number with an extra property"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Cardinal.IsInaccessible",
+        "module": "Mathlib.SetTheory.Cardinal.Regular",
+        "match_kind": "special_case"
+      },
+      "note": "Specific large-cardinal notions such as `Cardinal.IsInaccessible` (and `IsStrongLimit`, `IsRegular`) are defined, but there is no general definition of 'large cardinal'.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Determinacy",
+      "anchor": {
+        "section": "Determinacy",
+        "snippet": "certain two-player games of perfect information are determined from the start"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Combinatorial games (`SetTheory.Game`) exist, but determinacy of Gale–Stewart/infinite perfect-information games is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Axiom of determinacy implies regularity of reals",
+      "anchor": {
+        "section": "Determinacy",
+        "snippet": "AD implies that all subsets of the real line are well behaved"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The axiom of determinacy and its consequences for the reals are not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Forcing",
+      "anchor": {
+        "section": "Forcing",
+        "snippet": "Forcing adjoins to some given model of set theory additional sets in order to create a larger model"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Forcing and the construction of generic extensions are not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Cardinal invariant",
+      "anchor": {
+        "section": "Cardinal invariants",
+        "snippet": "A cardinal invariant is a property of the real line measured by a cardinal number"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Cardinal invariants of the continuum are not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Set-theoretic topology",
+      "anchor": {
+        "section": "Set-theoretic topology",
+        "snippet": "studies questions of general topology that are set-theoretic in nature"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "While general topology is extensively formalized, 'set-theoretic topology' is a research field, not a declaration.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Combinatorial set theory",
+      "anchor": {
+        "section": "Combinatorial set theory",
+        "snippet": "concerns extensions of finite combinatorics to infinite sets"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Combinatorial set theory is a field rather than a single declaration, and its core results are largely not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Function as a relation between sets",
+      "anchor": {
+        "section": "Mathematical education",
+        "snippet": "defining a mathematical function as a relation from one set"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Rel",
+        "module": "Mathlib.Data.Rel",
+        "match_kind": null
+      },
+      "note": "Relations between types are formalized as `Rel`, but Mathlib treats functions as primitive type-theoretic maps (`α → β`) rather than defining them as functional relations.",
+      "provenance": "ai"
+    }
+  ]
+}

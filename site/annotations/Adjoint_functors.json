@@ -1,0 +1,1189 @@
+{
+  "slug": "Adjoint_functors",
+  "wikipedia_title": "Adjoint functors",
+  "display_title": "Adjoint functors",
+  "schema_version": 3,
+  "annotation_style": "theorem_article",
+  "annotations": [
+    {
+      "kind": "definition",
+      "label": "Adjunction between categories",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "is a pair of functors (assumed to be covariant )"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "CategoryTheory.Adjunction",
+        "module": "Mathlib.CategoryTheory.Adjunction.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`Adjunction F G` (notation `F ⊣ G`) bundles an adjunction between functors `F : C ⥤ D` and `G : D ⥤ C`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Left and right adjoint",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "is called a left adjoint functor or left adjoint to"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "CategoryTheory.Functor.IsLeftAdjoint",
+        "module": "Mathlib.CategoryTheory.Adjunction.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`Functor.IsLeftAdjoint`/`Functor.IsRightAdjoint` assert that a functor is a left/right adjoint.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Equivalence gives an adjunction",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "every equivalence gives an adjunction"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "CategoryTheory.Equivalence.toAdjunction",
+        "module": "Mathlib.CategoryTheory.Adjunction.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`Equivalence.toAdjunction` produces `e.functor ⊣ e.inverse` from any equivalence.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Right adjunct (Mac Lane)",
+      "anchor": {
+        "section": "Terminology and notation",
+        "snippet": "the right adjunct of"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "CategoryTheory.Adjunction.homEquiv",
+        "module": "Mathlib.CategoryTheory.Adjunction.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`Adjunction.homEquiv` is the natural bijection `(F.obj X ⟶ Y) ≃ (X ⟶ G.obj Y)` sending a morphism to its (right) adjunct.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Adjoining identity to a rng",
+      "anchor": {
+        "section": "Solutions to optimization problems",
+        "snippet": "Then F is the left adjoint functor of"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Unitization",
+        "module": "Mathlib.Algebra.Algebra.Unitization",
+        "match_kind": null
+      },
+      "note": "The unitization construction and its universal property exist, but there is no category of rngs with a formalized adjunction to unital rings.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Adjoint functors occur in pairs",
+      "anchor": {
+        "section": "Symmetry of optimization problems",
+        "snippet": "adjoint functors occur in pairs"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "CategoryTheory.Adjunction",
+        "module": "Mathlib.CategoryTheory.Adjunction.Basic",
+        "match_kind": "exact"
+      },
+      "note": "An `Adjunction` `F ⊣ G` is precisely such a pair, and `Adjunction.isLeftAdjoint`/`isRightAdjoint` record that each member determines the other's role.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Left adjoint via universal morphisms",
+      "anchor": {
+        "section": "Definition via universal morphisms",
+        "snippet": "is a left adjoint functor if for each object"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "CategoryTheory.leftAdjointOfStructuredArrowInitials",
+        "module": "Mathlib.CategoryTheory.Adjunction.Comma",
+        "match_kind": "exact"
+      },
+      "note": "Initial objects of all `StructuredArrow` categories on `G` yield a left adjoint via `leftAdjointOfStructuredArrowInitials`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Right adjoint via universal morphisms",
+      "anchor": {
+        "section": "Definition via universal morphisms",
+        "snippet": "is a right adjoint functor if for each object"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "CategoryTheory.rightAdjointOfCostructuredArrowTerminals",
+        "module": "Mathlib.CategoryTheory.Adjunction.Comma",
+        "match_kind": "exact"
+      },
+      "note": "Terminal objects of all `CostructuredArrow` categories yield a right adjoint via `rightAdjointOfCostructuredArrowTerminals`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Left adjoint iff right adjoint",
+      "anchor": {
+        "section": "Definition via universal morphisms",
+        "snippet": "as the terminology implies"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "CategoryTheory.Adjunction.isRightAdjoint",
+        "module": "Mathlib.CategoryTheory.Adjunction.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`Adjunction.isLeftAdjoint` and `isRightAdjoint` show `F ⊣ G` makes `F` a left adjoint and `G` a right adjoint simultaneously.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Adjunction via hom-sets",
+      "anchor": {
+        "section": "Definition via hom-sets",
+        "snippet": "can be defined as consisting of two functors"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "CategoryTheory.Adjunction.mkOfHomEquiv",
+        "module": "Mathlib.CategoryTheory.Adjunction.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`CoreHomEquiv` + `Adjunction.mkOfHomEquiv` build an adjunction from a natural family of hom-set bijections.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Definition via hom-sets",
+          "snippet": "can be defined as consisting of two functors"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\Phi :\\mathrm {Hom} _{\\mathcal {C}}(F-,-)\\to \\mathrm {Hom} _{\\mathcal {D}}(-,G-).}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\Phi _{Y,X}:\\mathrm {Hom} _{\\mathcal {C}}(FY,X)\\to \\mathrm {Hom} _{\\mathcal {D}}(Y,GX)}"
+        }
+      ]
+    },
+    {
+      "kind": "definition",
+      "label": "Adjunction via counit–unit",
+      "anchor": {
+        "section": "Definition via counit–unit",
+        "snippet": "A third way of defining an adjunction between two categories"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "CategoryTheory.Adjunction",
+        "module": "Mathlib.CategoryTheory.Adjunction.Basic",
+        "match_kind": "exact"
+      },
+      "note": "Mathlib's primitive `Adjunction` structure is exactly the counit–unit definition (fields `unit`, `counit`, triangle identities).",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Definition via counit–unit",
+          "snippet": "A third way of defining an adjunction between two categories"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle {\\begin{aligned}\\varepsilon &amp;:FG\\to 1_{\\mathcal {C}}\\\\\\eta &amp;:1_{\\mathcal {D}}\\to GF\\end{aligned}}}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle F\\xrightarrow {\\overset {}{\\;F\\eta \\;}} FGF\\xrightarrow {\\overset {}{\\;\\varepsilon F\\,}} F}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle G\\xrightarrow {\\overset {}{\\;\\eta G\\;}} GFG\\xrightarrow {\\overset {}{\\;G\\varepsilon \\,}} G}"
+        }
+      ]
+    },
+    {
+      "kind": "definition",
+      "label": "Triangle identities",
+      "anchor": {
+        "section": "Definition via counit–unit",
+        "snippet": "They are sometimes called the triangle identities"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "CategoryTheory.Adjunction.left_triangle",
+        "module": "Mathlib.CategoryTheory.Adjunction.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`Adjunction.left_triangle`/`right_triangle` (and the `*_triangle_components` structure fields) are the two triangle identities.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Tensor-hom adjunction",
+      "anchor": {
+        "section": "History",
+        "snippet": "in the category of abelian groups"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "CategoryTheory.MonoidalClosed.ihom.adjunction",
+        "module": "Mathlib.CategoryTheory.Monoidal.Closed.Basic",
+        "match_kind": "generalization"
+      },
+      "note": "`ihom.adjunction` gives `(A ⊗ -) ⊣ ihom A` in any monoidal closed category; abelian groups (ℤ-modules) are the special case via the `ModuleCat` monoidal closed instance.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Free group functor left adjoint to forgetful",
+      "anchor": {
+        "section": "Free groups",
+        "snippet": "be the functor assigning to each set Y the free group"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "GrpCat.adj",
+        "module": "Mathlib.Algebra.Category.Grp.Adjunctions",
+        "match_kind": "exact"
+      },
+      "note": "`GrpCat.adj : free ⊣ forget GrpCat` is the free-group/forgetful adjunction.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Free objects are left adjoints",
+      "anchor": {
+        "section": "Free constructions and forgetful functors",
+        "snippet": "Free objects are all examples of a left adjoint to a forgetful functor"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "CategoryTheory.Monad.adj",
+        "module": "Mathlib.CategoryTheory.Monad.Algebra",
+        "match_kind": null
+      },
+      "note": "Many specific free⊣forgetful adjunctions exist (groups, monoids, modules, Eilenberg–Moore `Monad.adj`), but there is no single general theorem asserting all free constructions are left adjoints.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Limit functor right adjoint to diagonal",
+      "anchor": {
+        "section": "Diagonal functors and limits",
+        "snippet": "Any limit functor is right adjoint to a corresponding diagonal functor"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "CategoryTheory.Limits.constLimAdj",
+        "module": "Mathlib.CategoryTheory.Limits.HasLimits",
+        "match_kind": "exact"
+      },
+      "note": "`constLimAdj : const J ⊣ lim` exhibits the limit functor as right adjoint to the (diagonal) constant functor.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Products",
+      "anchor": {
+        "section": "Diagonal functors and limits",
+        "snippet": "the product group X 1 × X 2"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "CategoryTheory.Limits.constLimAdj",
+        "module": "Mathlib.CategoryTheory.Limits.HasLimits",
+        "match_kind": "special_case"
+      },
+      "note": "Categorical products exist (`HasProducts`); the diagonal–product adjunction is the discrete-shape special case of `constLimAdj`, not stated separately for binary products.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Kernels",
+      "anchor": {
+        "section": "Diagonal functors and limits",
+        "snippet": "Consider the category D of homomorphisms of abelian groups."
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "CategoryTheory.Limits.kernel",
+        "module": "Mathlib.CategoryTheory.Limits.Shapes.Kernels",
+        "match_kind": null
+      },
+      "note": "Kernels exist as limits, but the framing of the kernel functor as an adjoint over the category of homomorphisms is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Colimit functor left adjoint to diagonal",
+      "anchor": {
+        "section": "Colimits and diagonal functors",
+        "snippet": "Any colimit functor is left adjoint to a corresponding diagonal functor"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "CategoryTheory.Limits.colimConstAdj",
+        "module": "Mathlib.CategoryTheory.Limits.HasLimits",
+        "match_kind": "exact"
+      },
+      "note": "`colimConstAdj : colim ⊣ const J` exhibits the colimit functor as left adjoint to the diagonal.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Coproducts",
+      "anchor": {
+        "section": "Colimits and diagonal functors",
+        "snippet": "of abelian groups their direct sum"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "CategoryTheory.Limits.colimConstAdj",
+        "module": "Mathlib.CategoryTheory.Limits.HasLimits",
+        "match_kind": "special_case"
+      },
+      "note": "Coproducts exist (`HasCoproducts`); the diagonal–coproduct adjunction is the discrete-shape special case of `colimConstAdj`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Adjoining identity to a rng",
+      "anchor": {
+        "section": "Algebra",
+        "snippet": "This constructs a left adjoint to the functor taking a ring to the underlying rng."
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Unitization",
+        "module": "Mathlib.Algebra.Algebra.Unitization",
+        "match_kind": null
+      },
+      "note": "`Unitization` realizes the construction with its universal property, but no category-of-rngs adjunction is formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Adjoining identity to a semigroup",
+      "anchor": {
+        "section": "Algebra",
+        "snippet": "This construction gives a functor that is a left adjoint to the functor taking a monoid to the underlying semigroup."
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "MonCat.adjoinOneAdj",
+        "module": "Mathlib.Algebra.Category.MonCat.Adjunctions",
+        "match_kind": "exact"
+      },
+      "note": "`MonCat.adjoinOneAdj : adjoinOne ⊣ forget₂ MonCat Semigrp` is exactly this adjunction.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Ring extensions",
+      "anchor": {
+        "section": "Algebra",
+        "snippet": "Then F is left adjoint to the forgetful functor"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "ModuleCat.extendRestrictScalarsAdj",
+        "module": "Mathlib.Algebra.Category.ModuleCat.ChangeOfRings",
+        "match_kind": "special_case"
+      },
+      "note": "For modules over commutative rings, `extendRestrictScalarsAdj` shows extension of scalars `S ⊗_R -` is left adjoint to restriction of scalars.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Tensor products",
+      "anchor": {
+        "section": "Algebra",
+        "snippet": "is a right adjoint to F"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "ModuleCat.restrictCoextendScalarsAdj",
+        "module": "Mathlib.Algebra.Category.ModuleCat.ChangeOfRings",
+        "match_kind": "special_case"
+      },
+      "note": "`restrictCoextendScalarsAdj` gives the right-adjoint (coextension/Hom) counterpart of the change-of-rings adjunctions for modules.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Monoid and group rings",
+      "anchor": {
+        "section": "Algebra",
+        "snippet": "The integral monoid ring construction gives a functor from monoids to rings."
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "MonoidAlgebra.liftMagma",
+        "module": "Mathlib.Algebra.MonoidAlgebra.Basic",
+        "match_kind": null
+      },
+      "note": "The monoid-algebra universal property is formalized (e.g. `MonoidAlgebra.liftMagma`/`lift`), but not packaged as a categorical adjunction between monoids and rings.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Field of fractions",
+      "anchor": {
+        "section": "Algebra",
+        "snippet": "from fields has a left adjoint"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "IsFractionRing",
+        "module": "Mathlib.RingTheory.Localization.FractionRing",
+        "match_kind": null
+      },
+      "note": "`IsFractionRing`/`FractionRing` provide the field-of-fractions universal property, but no categorical adjunction with the category of integral domains is formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Polynomial rings",
+      "anchor": {
+        "section": "Algebra",
+        "snippet": "it assigns to every ring R the pair (R[x],x)"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Polynomial.aeval",
+        "module": "Mathlib.Algebra.Polynomial.Eval",
+        "match_kind": null
+      },
+      "note": "The universal property of `R[x]` (evaluation) is formalized, but the adjunction with a category of pointed rings is not.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Abelianization",
+      "anchor": {
+        "section": "Algebra",
+        "snippet": "It has a left adjoint called abelianization"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "GrpCat.abelianizeAdj",
+        "module": "Mathlib.Algebra.Category.Grp.Adjunctions",
+        "match_kind": "exact"
+      },
+      "note": "`GrpCat.abelianizeAdj : abelianize ⊣ forget₂ CommGrpCat GrpCat` is the abelianization adjunction.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Grothendieck group",
+      "anchor": {
+        "section": "Algebra",
+        "snippet": "takes the underlying monoid (ignoring inverses) has a left adjoint"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "GrothendieckGroup",
+        "module": "Mathlib.GroupTheory.MonoidLocalization.GrothendieckGroup",
+        "match_kind": null
+      },
+      "note": "The Grothendieck group construction and universal property exist, but group completion as a left adjoint to the forgetful functor is not formalized as an adjunction.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Frobenius reciprocity",
+      "anchor": {
+        "section": "Algebra",
+        "snippet": "Frobenius reciprocity in the representation theory of groups"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Rep.indResAdjunction",
+        "module": "Mathlib.RepresentationTheory.Induced",
+        "match_kind": "exact"
+      },
+      "note": "`Rep.indResAdjunction : indFunctor ⊣ resFunctor` is precisely the induction–restriction (Frobenius reciprocity) adjunction.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Forgetful functor with left and right adjoint",
+      "anchor": {
+        "section": "Topology",
+        "snippet": "creating the discrete space on a set Y , and a right adjoint H"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "TopCat.adj₁",
+        "module": "Mathlib.Topology.Category.TopCat.Adjunctions",
+        "match_kind": "exact"
+      },
+      "note": "`TopCat.adj₁ : discrete ⊣ forget` and `TopCat.adj₂ : forget ⊣ trivial` give the discrete left adjoint and indiscrete right adjoint to the forgetful functor.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Suspensions and loop spaces",
+      "anchor": {
+        "section": "Topology",
+        "snippet": "The suspension functor is therefore left adjoint to the loop space functor"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The suspension–loop space adjunction is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Stone–Čech compactification",
+      "anchor": {
+        "section": "Topology",
+        "snippet": "the inclusion functor to the category of topological spaces"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "stoneCechExtend",
+        "module": "Mathlib.Topology.Compactification.StoneCech",
+        "match_kind": null
+      },
+      "note": "The Stone–Čech universal property (`stoneCechUnit`, `stoneCechExtend`) is formalized, but not as a categorical adjunction with the inclusion functor.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Direct and inverse images of sheaves",
+      "anchor": {
+        "section": "Topology",
+        "snippet": "f −1 is left adjoint to f ∗"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "TopCat.Sheaf.pullbackPushforwardAdjunction",
+        "module": "Mathlib.Topology.Sheaves.Functors",
+        "match_kind": "exact"
+      },
+      "note": "`TopCat.Sheaf.pullbackPushforwardAdjunction : pullback A f ⊣ pushforward A f` is the inverse-image/direct-image sheaf adjunction.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Soberification",
+      "anchor": {
+        "section": "Topology",
+        "snippet": "that is known as soberification"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Sober spaces are defined (`Topology.Sober`), but the soberification reflector/adjunction is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Galois connection",
+      "anchor": {
+        "section": "Posets",
+        "snippet": "is called a Galois connection"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "GaloisConnection",
+        "module": "Mathlib.Order.GaloisConnection.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`GaloisConnection l u` is the order-theoretic adjunction `l a ≤ b ↔ a ≤ u b`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Galois connection gives closure operators",
+      "anchor": {
+        "section": "Posets",
+        "snippet": "Any Galois connection gives rise to closure operators"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "GaloisConnection.closureOperator",
+        "module": "Mathlib.Order.Closure",
+        "match_kind": "exact"
+      },
+      "note": "`GaloisConnection.closureOperator` builds the induced closure operator `u ∘ l`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Syntax and semantics are adjoint",
+      "anchor": {
+        "section": "Posets",
+        "snippet": "syntax and semantics are adjoint"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The syntax–semantics Galois connection of formal logic is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Equivalence yields adjoint pair",
+      "anchor": {
+        "section": "Category theory",
+        "snippet": "the two functors F and G form an adjoint pair"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "CategoryTheory.Equivalence.toAdjunction",
+        "module": "Mathlib.CategoryTheory.Adjunction.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`Equivalence.toAdjunction` turns the equivalence's functor/inverse into an adjoint pair.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Category theory",
+          "snippet": "the two functors F and G form an adjoint pair"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle {\\begin{aligned}\\varepsilon '&amp;=\\varepsilon \\circ (F\\eta ^{-1}G)\\circ (FG\\varepsilon ^{-1})\\\\\\eta '&amp;=(GF\\eta ^{-1})\\circ (G\\varepsilon ^{-1}F)\\circ \\eta \\end{aligned}}}"
+        }
+      ]
+    },
+    {
+      "kind": "example",
+      "label": "Connected components functor",
+      "anchor": {
+        "section": "Category theory",
+        "snippet": "which assigns to a category its set of connected components is left-adjoint"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "CategoryTheory.ConnectedComponents.typeToCatHomEquiv",
+        "module": "Mathlib.CategoryTheory.ConnectedComponents",
+        "match_kind": null
+      },
+      "note": "`ConnectedComponents` and the bijection `typeToCatHomEquiv` give the π₀ ⊣ discrete hom-set adjunction, but it is not packaged as a `Cat`-level `Adjunction`.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Category theory",
+          "snippet": "which assigns to a category its set of connected components is left-adjoint"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle {\\begin{aligned}\\varepsilon '&amp;=\\varepsilon \\circ (F\\eta ^{-1}G)\\circ (FG\\varepsilon ^{-1})\\\\\\eta '&amp;=(GF\\eta ^{-1})\\circ (G\\varepsilon ^{-1}F)\\circ \\eta \\end{aligned}}}"
+        }
+      ]
+    },
+    {
+      "kind": "example",
+      "label": "Currying in cartesian closed category",
+      "anchor": {
+        "section": "Category theory",
+        "snippet": "This pair is often referred to as currying and uncurrying"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "CategoryTheory.MonoidalClosed.ihom.adjunction",
+        "module": "Mathlib.CategoryTheory.Monoidal.Closed.Basic",
+        "match_kind": "generalization"
+      },
+      "note": "`ihom.adjunction` with `MonoidalClosed.curry`/`uncurry` gives the currying adjunction; cartesian closed categories are the cartesian-monoidal special case (`CartesianClosed`).",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Category theory",
+          "snippet": "This pair is often referred to as currying and uncurrying"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle {\\begin{aligned}\\varepsilon '&amp;=\\varepsilon \\circ (F\\eta ^{-1}G)\\circ (FG\\varepsilon ^{-1})\\\\\\eta '&amp;=(GF\\eta ^{-1})\\circ (G\\varepsilon ^{-1}F)\\circ \\eta \\end{aligned}}}"
+        }
+      ]
+    },
+    {
+      "kind": "example",
+      "label": "Quantifiers as adjoints to pullback",
+      "anchor": {
+        "section": "Categorical logic",
+        "snippet": "quantifiers are identified with adjoints to the pullback functor"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Set.image_preimage",
+        "module": "Mathlib.Data.Set.Lattice.Image",
+        "match_kind": null
+      },
+      "note": "The poset-level existential adjoint `Set.image_preimage` exists, but the hyperdoctrine framing of ∃/∀ as adjoints to the pullback functor is not formalized.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Categorical logic",
+          "snippet": "quantifiers are identified with adjoints to the pullback functor"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\{y\\in Y\\mid \\exists x.\\,\\psi _{f}(x,y)\\land \\phi _{S}(x)\\}}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle f^{*}:{\\text{Sub}}(Y)\\longrightarrow {\\text{Sub}}(X)}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle {\\operatorname {Hom} }(\\exists _{f}S,T)\\cong {\\operatorname {Hom} }(S,f^{*}T),}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\exists _{f}S\\subseteq T\\leftrightarrow S\\subseteq f^{-1}[T].}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\exists _{f}S=\\{y\\in Y\\mid \\exists (x\\in f^{-1}[\\{y\\}]).\\,x\\in S\\;\\}=f[S].}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\forall _{f}S=\\{y\\in Y\\mid \\forall (x\\in f^{-1}[\\{y\\}]).\\,x\\in S\\;\\}.}"
+        }
+      ]
+    },
+    {
+      "kind": "example",
+      "label": "Direct image as left adjoint in Set",
+      "anchor": {
+        "section": "Categorical logic",
+        "snippet": "the category of sets and functions"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Set.image_preimage",
+        "module": "Mathlib.Data.Set.Lattice.Image",
+        "match_kind": "special_case"
+      },
+      "note": "`Set.image_preimage : GaloisConnection (image f) (preimage f)` is the direct-image-left-adjoint-to-preimage as a poset adjunction.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Categorical logic",
+          "snippet": "the category of sets and functions"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\{y\\in Y\\mid \\exists x.\\,\\psi _{f}(x,y)\\land \\phi _{S}(x)\\}}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle f^{*}:{\\text{Sub}}(Y)\\longrightarrow {\\text{Sub}}(X)}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle {\\operatorname {Hom} }(\\exists _{f}S,T)\\cong {\\operatorname {Hom} }(S,f^{*}T),}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\exists _{f}S\\subseteq T\\leftrightarrow S\\subseteq f^{-1}[T].}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\exists _{f}S=\\{y\\in Y\\mid \\exists (x\\in f^{-1}[\\{y\\}]).\\,x\\in S\\;\\}=f[S].}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\forall _{f}S=\\{y\\in Y\\mid \\forall (x\\in f^{-1}[\\{y\\}]).\\,x\\in S\\;\\}.}"
+        }
+      ]
+    },
+    {
+      "kind": "example",
+      "label": "Expectation as adjoint of Dirac delta",
+      "anchor": {
+        "section": "Probability",
+        "snippet": "the Dirac delta measure defines a functor"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The expectation/Dirac-delta adjunction from categorical probability is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Full data of an adjunction",
+      "anchor": {
+        "section": "Adjunctions in full",
+        "snippet": "An adjunction between categories C and D consists of"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "CategoryTheory.Adjunction.CoreHomEquivUnitCounit",
+        "module": "Mathlib.CategoryTheory.Adjunction.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`CoreHomEquivUnitCounit` (with `Adjunction.mk'` and `homEquiv`) bundles functors, unit, counit, and the hom-set equivalence with their compatibilities.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Universal morphisms induce hom-set adjunction",
+      "anchor": {
+        "section": "Universal morphisms induce hom-set adjunction",
+        "snippet": "one may construct the induced hom-set adjunction by doing the following steps"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "CategoryTheory.Adjunction.adjunctionOfEquivLeft",
+        "module": "Mathlib.CategoryTheory.Adjunction.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`leftAdjointOfEquiv`/`adjunctionOfEquivLeft` (and `Comma.adjunctionOfStructuredArrowInitials`) construct the adjunction from universal/initial-morphism data.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Counit–unit induces hom-set adjunction",
+      "anchor": {
+        "section": "counit–unit adjunction induces hom-set adjunction",
+        "snippet": "we can construct a hom-set adjunction by finding the natural transformation"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "CategoryTheory.Adjunction.homEquiv",
+        "module": "Mathlib.CategoryTheory.Adjunction.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`Adjunction.homEquiv` constructs the natural hom-set bijection from the unit/counit (with `homEquiv_unit`/`homEquiv_counit`).",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "counit–unit adjunction induces hom-set adjunction",
+          "snippet": "we can construct a hom-set adjunction by finding the natural transformation"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle {\\begin{aligned}\\Phi _{Y,X}(f)=G(f)\\circ \\eta _{Y}\\\\\\Psi _{Y,X}(g)=\\varepsilon _{X}\\circ F(g)\\end{aligned}}}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle {\\begin{aligned}\\Psi \\Phi f&amp;=\\varepsilon _{X}\\circ FG(f)\\circ F(\\eta _{Y})\\\\&amp;=f\\circ \\varepsilon _{FY}\\circ F(\\eta _{Y})\\\\&amp;=f\\circ 1_{FY}=f\\end{aligned}}}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle {\\begin{aligned}\\Phi \\Psi g&amp;=G(\\varepsilon _{X})\\circ GF(g)\\circ \\eta _{Y}\\\\&amp;=G(\\varepsilon _{X})\\circ \\eta _{GX}\\circ g\\\\&amp;=1_{GX}\\circ g=g\\end{aligned}}}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Hom-set adjunction induces counit–unit",
+      "anchor": {
+        "section": "Hom-set adjunction induces all of the above",
+        "snippet": "which defines families of initial and terminal morphisms"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "CategoryTheory.Adjunction.mkOfHomEquiv",
+        "module": "Mathlib.CategoryTheory.Adjunction.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`Adjunction.mkOfHomEquiv` produces the unit and counit (and triangle identities) from a natural hom-set equivalence.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Hom-set adjunction induces all of the above",
+          "snippet": "which defines families of initial and terminal morphisms"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle {\\begin{aligned}\\Phi _{Y,X}(f)=G(f)\\circ \\eta _{Y}\\\\\\Phi _{Y,X}^{-1}(g)=\\varepsilon _{X}\\circ F(g)\\end{aligned}}}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle 1_{FY}=\\varepsilon _{FY}\\circ F(\\eta _{Y}),}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle 1_{GX}=G(\\varepsilon _{X})\\circ \\eta _{GX}.}"
+        }
+      ]
+    },
+    {
+      "kind": "theorem",
+      "label": "Freyd adjoint functor theorem",
+      "anchor": {
+        "section": "Existence",
+        "snippet": "the adjoint functor theorem of Peter J. Freyd"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "CategoryTheory.isRightAdjoint_of_preservesLimits_of_solutionSetCondition",
+        "module": "Mathlib.CategoryTheory.Adjunction.AdjointFunctorTheorems",
+        "match_kind": "exact"
+      },
+      "note": "This is the general adjoint functor theorem: a limit-preserving functor satisfying the solution set condition has a left adjoint.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Adjoints for locally presentable categories",
+      "anchor": {
+        "section": "Existence",
+        "snippet": "F has a right adjoint if and only if F preserves small colimits"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Locally presentable categories are defined, but the adjoint functor theorem characterizing adjoints via (co)limit preservation for them is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Uniqueness of adjoints",
+      "anchor": {
+        "section": "Uniqueness",
+        "snippet": "then G and G ′ are naturally isomorphic"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "CategoryTheory.Adjunction.rightAdjointUniq",
+        "module": "Mathlib.CategoryTheory.Adjunction.Unique",
+        "match_kind": "exact"
+      },
+      "note": "`rightAdjointUniq` (and `leftAdjointUniq`) give the natural isomorphism between any two right (resp. left) adjoints of a functor.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Adjointness preserved under natural isomorphism",
+      "anchor": {
+        "section": "Uniqueness",
+        "snippet": "then F is also left adjoint to G ′"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "CategoryTheory.Adjunction.ofNatIsoRight",
+        "module": "Mathlib.CategoryTheory.Adjunction.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`ofNatIsoRight` (and `ofNatIsoLeft`) transport an adjunction along a natural isomorphism of either functor.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Uniqueness",
+          "snippet": "then F is also left adjoint to G ′"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle {\\begin{aligned}\\eta '&amp;=(\\tau \\ast \\sigma )\\circ \\eta \\\\\\varepsilon '&amp;=\\varepsilon \\circ (\\sigma ^{-1}\\ast \\tau ^{-1}).\\end{aligned}}}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Composition of adjunctions",
+      "anchor": {
+        "section": "Composition",
+        "snippet": "Adjunctions can be composed in a natural fashion."
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "CategoryTheory.Adjunction.comp",
+        "module": "Mathlib.CategoryTheory.Adjunction.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`Adjunction.comp` composes `F ⊣ G` and `H ⊣ I` to `F ⋙ H ⊣ I ⋙ G`.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Composition",
+          "snippet": "Adjunctions can be composed in a natural fashion."
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle F\\circ F':E\\rightarrow C}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle G'\\circ G:C\\to E.}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle {\\begin{aligned}&amp;1_{\\mathcal {E}}{\\xrightarrow {\\eta '}}G'F'{\\xrightarrow {G'\\eta F'}}G'GFF'\\\\&amp;FF'G'G{\\xrightarrow {F\\varepsilon 'G}}FG{\\xrightarrow {\\varepsilon }}1_{\\mathcal {C}}.\\end{aligned}}}"
+        }
+      ]
+    },
+    {
+      "kind": "theorem",
+      "label": "Adjoints preserve limits/colimits",
+      "anchor": {
+        "section": "Limit preservation",
+        "snippet": "every functor that has a left adjoint (and therefore is a right adjoint) is continuous"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "CategoryTheory.Adjunction.rightAdjoint_preservesLimits",
+        "module": "Mathlib.CategoryTheory.Adjunction.Limits",
+        "match_kind": "exact"
+      },
+      "note": "`rightAdjoint_preservesLimits` and `leftAdjoint_preservesColimits` give RAPL/LAPC.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Right adjoint of additive functor is additive",
+      "anchor": {
+        "section": "Additivity",
+        "snippet": "then G is also an additive functor"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "CategoryTheory.Adjunction.right_adjoint_additive",
+        "module": "Mathlib.CategoryTheory.Adjunction.Additive",
+        "match_kind": "exact"
+      },
+      "note": "`Adjunction.right_adjoint_additive` shows the right adjoint of an additive functor is additive (and dually `left_adjoint_additive`).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Adjoints between additive categories are additive",
+      "anchor": {
+        "section": "Additivity",
+        "snippet": "then any pair of adjoint functors between them are automatically additive"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "CategoryTheory.Functor.additive_of_preservesBinaryBiproducts",
+        "module": "Mathlib.CategoryTheory.Preadditive.AdditiveFunctor",
+        "match_kind": null
+      },
+      "note": "The pieces exist (adjoints preserve biproducts and `additive_of_preservesBinaryBiproducts`), but the unconditional 'adjoints between additive categories are automatically additive' statement is not packaged as one lemma.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Universal morphisms yield left adjoint",
+      "anchor": {
+        "section": "Universal constructions",
+        "snippet": "then G has a left adjoint"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "CategoryTheory.adjunctionOfStructuredArrowInitials",
+        "module": "Mathlib.CategoryTheory.Adjunction.Comma",
+        "match_kind": "exact"
+      },
+      "note": "`adjunctionOfStructuredArrowInitials` gives a left adjoint to `G` from initial objects in all structured-arrow categories.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Equivalence half is left adjoint",
+      "anchor": {
+        "section": "Equivalences of categories",
+        "snippet": "is one half of an equivalence of categories then it is the left adjoint"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "CategoryTheory.Equivalence.isLeftAdjoint_functor",
+        "module": "Mathlib.CategoryTheory.Adjunction.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`Equivalence.isLeftAdjoint_functor` shows the functor of an equivalence is a left adjoint (and `isRightAdjoint_inverse` dually).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Adjunction restricts to equivalence",
+      "anchor": {
+        "section": "Equivalences of categories",
+        "snippet": "extends an equivalence of certain subcategories"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "CategoryTheory.Reflective",
+        "module": "Mathlib.CategoryTheory.Adjunction.Reflective",
+        "match_kind": null
+      },
+      "note": "Reflective/coreflective subcategory machinery captures special cases, but the general fixed-point equivalence induced by any adjunction is not formalized as a single result.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Adjunction gives rise to a monad",
+      "anchor": {
+        "section": "Monads",
+        "snippet": "gives rise to an associated monad"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "CategoryTheory.Adjunction.toMonad",
+        "module": "Mathlib.CategoryTheory.Monad.Adjunction",
+        "match_kind": "exact"
+      },
+      "note": "`Adjunction.toMonad` builds the monad `G ⋙ F` from `L ⊣ R` (and `toComonad` dually).",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Monads",
+          "snippet": "gives rise to an associated monad"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle T:{\\mathcal {D}}\\to {\\mathcal {D}}}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\eta :1_{\\mathcal {D}}\\to T}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\mu :T^{2}\\to T\\,}"
+        }
+      ]
+    },
+    {
+      "kind": "theorem",
+      "label": "Every monad arises from an adjunction",
+      "anchor": {
+        "section": "Monads",
+        "snippet": "Every monad arises from some adjunction"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "CategoryTheory.Monad.adjToMonadIso",
+        "module": "Mathlib.CategoryTheory.Monad.Adjunction",
+        "match_kind": "exact"
+      },
+      "note": "The Eilenberg–Moore adjunction `Monad.adj : T.free ⊣ T.forget` realizes any monad, with `Monad.adjToMonadIso : T.adj.toMonad ≅ T`.",
+      "provenance": "ai"
+    }
+  ]
+}

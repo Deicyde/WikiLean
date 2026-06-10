@@ -1,0 +1,139 @@
+{
+  "slug": "Exponential_growth",
+  "wikipedia_title": "Exponential growth",
+  "display_title": "Exponential growth",
+  "schema_version": 1,
+  "source": "claude-agent-sdk/annotate_articles.py",
+  "annotations": [
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle x_{t}=x_{0}(1+r)^{t}}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Discrete compound growth formula; not a standalone Mathlib declaration."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle x(t)=a\\cdot b^{t/\\tau }}"
+      },
+      "status": "partial",
+      "decl": "Real.rpow",
+      "module": "Mathlib.Analysis.SpecialFunctions.Pow.Real",
+      "note": "General exponential function form expressible via rpow, but no standalone decl for this formula."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle x(0)=a\\,,}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Initial-value equation specific to this formulation; not a Mathlib decl."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle x(t+\\tau )=a\\cdot b^{(t+\\tau )/\\tau }=a\\cdot b^{t/\\tau }\\cdot b^{\\tau /\\tau }=x(t)\\cdot b\\,.}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Ad-hoc derivation showing growth-factor property; no dedicated Mathlib decl."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle x(t)=a\\cdot b^{t/\\tau }=1\\cdot 2^{t/(10{\\text{ min}})}}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Worked numerical example, not a formalized statement."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle x(1{\\text{ hr}})=1\\cdot 2^{(60{\\text{ min}})/(10{\\text{ min}})}=1\\cdot 2^{6}=64.}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Numerical evaluation of the example, not a Mathlib declaration."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle x(t)=x_{0}\\cdot e^{kt}=x_{0}\\cdot e^{t/\\tau }=x_{0}\\cdot 2^{t/T}=x_{0}\\cdot \\left(1+{\\frac {r}{100}}\\right)^{t/p},}"
+      },
+      "status": "partial",
+      "decl": "Real.exp",
+      "module": "Mathlib.Analysis.Complex.Exponential",
+      "note": "Equivalent exponential forms expressed via Real.exp, but this specific identity is not a Mathlib decl."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle k={\\frac {1}{\\tau }}={\\frac {\\ln 2}{T}}={\\frac {\\ln \\left(1+{\\frac {r}{100}}\\right)}{p}}}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Relation between rate constants; not a standalone Mathlib decl."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\log x(t)=\\log x_{0}+t\\cdot \\log(1+r).}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Log-linearization identity; intermediate manipulation rather than a Mathlib decl."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle {\\frac {dx}{dt}}=kx}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Linear ODE statement; no provided Mathlib decl captures this equation directly."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle {\\begin{aligned}{\\frac {dx}{dt}}&=kx\\\\[5pt]{\\frac {dx}{x}}&=k\\,dt\\\\[5pt]\\int _{x_{0}}^{x(t)}{\\frac {dx}{x}}&=k\\int _{0}^{t}\\,dt\\\\[5pt]\\ln {\\frac {x(t)}{x_{0}}}&=kt.\\end{aligned}}}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Step-by-step integration derivation, not a standalone Mathlib decl."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle x(t)=x_{0}e^{kt}.}"
+      },
+      "status": "partial",
+      "decl": "Real.exp",
+      "module": "Mathlib.Analysis.Complex.Exponential",
+      "note": "Solution expressed via Real.exp, but this exact solution formula is not a dedicated decl."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\lim _{t\\to \\infty }{\\frac {t^{\\alpha }}{ae^{t}}}=0.}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Asymptotic dominance of exp over polynomials; no matching decl in the provided list."
+    }
+  ]
+}

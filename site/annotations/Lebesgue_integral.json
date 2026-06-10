@@ -1,0 +1,777 @@
+{
+  "slug": "Lebesgue_integral",
+  "wikipedia_title": "Lebesgue integral",
+  "display_title": "Lebesgue integral",
+  "schema_version": 3,
+  "annotation_style": "theorem_article",
+  "annotations": [
+    {
+      "kind": "definition",
+      "label": "Lebesgue integral",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "The Lebesgue integral , named after French mathematician Henri Lebesgue , is one way to make this concept rigorous"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "MeasureTheory.integral",
+        "module": "Mathlib.MeasureTheory.Integral.Bochner.Basic",
+        "match_kind": "generalization"
+      },
+      "note": "Mathlib's `MeasureTheory.integral` is the Bochner generalization of the Lebesgue integral and `MeasureTheory.lintegral` handles the non-negative case.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Lebesgue integration (term)",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "The term Lebesgue integration can mean either the general theory of integration of a function with respect to a general measure"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "MeasureTheory.lintegral",
+        "module": "Mathlib.MeasureTheory.Integral.Lebesgue.Basic",
+        "match_kind": "generalization"
+      },
+      "note": "Integration against a general measure is captured by `MeasureTheory.lintegral` (non-negative) and `MeasureTheory.integral` (Bochner).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Distribution function of f",
+      "anchor": {
+        "section": "Relation between the viewpoints",
+        "snippet": "Define the distribution function of f as the \"width of a slab\""
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "MeasureTheory.lintegral_eq_lintegral_meas_le",
+        "module": "Mathlib.MeasureTheory.Integral.Layercake",
+        "match_kind": "invocation"
+      },
+      "note": "Mathlib has the layer-cake formula `lintegral_eq_lintegral_meas_le` using the level sets μ{f > t}, but no top-level definition named `distributionFunction`.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Relation between the viewpoints",
+          "snippet": "Define the distribution function of f as the \"width of a slab\""
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle F(y)=\\mu \\{x|f(x)&gt;y\\}.}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\int f\\,d\\mu =\\int _{0}^{\\infty }F(y)\\,dy}"
+        }
+      ]
+    },
+    {
+      "kind": "definition",
+      "label": "Lebesgue integral via slabs",
+      "anchor": {
+        "section": "Relation between the viewpoints",
+        "snippet": "The Lebesgue integral can then be defined by"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "MeasureTheory.lintegral_eq_lintegral_meas_lt",
+        "module": "Mathlib.MeasureTheory.Integral.Layercake",
+        "match_kind": "exact"
+      },
+      "note": "The slab/horizontal-slice formula is `lintegral_eq_lintegral_meas_lt` / `lintegral_eq_lintegral_meas_le` (layer-cake).",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Relation between the viewpoints",
+          "snippet": "The Lebesgue integral can then be defined by"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle F(y)=\\mu \\{x|f(x)&gt;y\\}.}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\int f\\,d\\mu =\\int _{0}^{\\infty }F(y)\\,dy}"
+        }
+      ]
+    },
+    {
+      "kind": "definition",
+      "label": "Measure space",
+      "anchor": {
+        "section": "Measurable functions",
+        "snippet": "We start with a measure space ( E , X , μ ) where E is a set"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "MeasureTheory.MeasureSpace",
+        "module": "Mathlib.MeasureTheory.Measure.MeasureSpaceDef",
+        "match_kind": "exact"
+      },
+      "note": "`MeasureSpace` is defined as a `MeasurableSpace` together with a `volume` measure.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Measurable function",
+      "anchor": {
+        "section": "Measurable functions",
+        "snippet": "A real-valued function f on E is measurable if the pre-image of every interval of the form ( t , ∞) is in X"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Measurable",
+        "module": "Mathlib.MeasureTheory.MeasurableSpace.Defs",
+        "match_kind": "generalization"
+      },
+      "note": "`Measurable f` says preimages of all measurable sets are measurable; for ℝ-valued functions this matches the (t, ∞)-preimage definition.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Measurable functions",
+          "snippet": "A real-valued function f on E is measurable if the pre-image of every interval of the form ( t , ∞) is in X"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\{x\\,\\mid \\,f(x)&gt;t\\}\\in X\\quad \\forall t\\in \\mathbb {R} .}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Equivalence with Borel preimages and closure under limits",
+      "anchor": {
+        "section": "Measurable functions",
+        "snippet": "We can show that this is equivalent to requiring that the pre-image of any Borel subset of R be in X"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Measurable.iSup",
+        "module": "Mathlib.MeasureTheory.Constructions.BorelSpace.Order",
+        "match_kind": "invocation"
+      },
+      "note": "Closure under suprema/limits is `Measurable.iSup`/`Measurable.iInf`, and ℝ's Borel σ-algebra is the default `BorelSpace ℝ` instance making (t,∞)-preimage equivalence built in.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Measurable functions",
+          "snippet": "We can show that this is equivalent to requiring that the pre-image of any Borel subset of R be in X"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\sup _{k\\in \\mathbb {N} }f_{k},\\quad \\liminf _{k\\in \\mathbb {N} }f_{k},\\quad \\limsup _{k\\in \\mathbb {N} }f_{k}}"
+        }
+      ]
+    },
+    {
+      "kind": "definition",
+      "label": "Integral of an indicator function",
+      "anchor": {
+        "section": "Indicator functions",
+        "snippet": "To assign a value to the integral of the indicator function 1 S of a measurable set S consistent with the given measure μ"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "MeasureTheory.lintegral_indicator",
+        "module": "Mathlib.MeasureTheory.Integral.Lebesgue.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`lintegral_indicator` reduces ∫⁻ 1_S to a restricted measure, giving μ(S) via `setLIntegral_one`.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Indicator functions",
+          "snippet": "To assign a value to the integral of the indicator function 1 S of a measurable set S consistent with the given measure μ"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\int 1_{S}\\,d\\mu =\\mu (S).}"
+        }
+      ]
+    },
+    {
+      "kind": "definition",
+      "label": "Measurable simple function",
+      "anchor": {
+        "section": "Simple functions (2)",
+        "snippet": "is called a measurable simple function"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "MeasureTheory.SimpleFunc",
+        "module": "Mathlib.MeasureTheory.Function.SimpleFunc",
+        "match_kind": "exact"
+      },
+      "note": "`SimpleFunc α β` is exactly a measurable function with finite range.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Simple functions (2)",
+          "snippet": "is called a measurable simple function"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\sum _{k}a_{k}1_{S_{k}}}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\int \\left(\\sum _{k}a_{k}1_{S_{k}}\\right)\\,d\\mu =\\sum _{k}a_{k}\\int 1_{S_{k}}\\,d\\mu =\\sum _{k}a_{k}\\,\\mu (S_{k})}"
+        }
+      ]
+    },
+    {
+      "kind": "definition",
+      "label": "Integral of a non-negative simple function",
+      "anchor": {
+        "section": "Simple functions (2)",
+        "snippet": "We extend the integral by linearity to non-negative measurable simple functions"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "MeasureTheory.SimpleFunc.lintegral",
+        "module": "Mathlib.MeasureTheory.Function.SimpleFunc",
+        "match_kind": "exact"
+      },
+      "note": "`SimpleFunc.lintegral` sums y · μ(f⁻¹{y}) over the finite range, the standard definition.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Simple functions (2)",
+          "snippet": "We extend the integral by linearity to non-negative measurable simple functions"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\sum _{k}a_{k}1_{S_{k}}}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\int \\left(\\sum _{k}a_{k}1_{S_{k}}\\right)\\,d\\mu =\\sum _{k}a_{k}\\int 1_{S_{k}}\\,d\\mu =\\sum _{k}a_{k}\\,\\mu (S_{k})}"
+        }
+      ]
+    },
+    {
+      "kind": "definition",
+      "label": "Integral of a real-valued simple function",
+      "anchor": {
+        "section": "Simple functions (2)",
+        "snippet": "Some care is needed when defining the integral of a real-valued simple function, to avoid the undefined expression ∞ − ∞"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "MeasureTheory.SimpleFunc.integral",
+        "module": "Mathlib.MeasureTheory.Integral.Bochner.L1",
+        "match_kind": "exact"
+      },
+      "note": "`SimpleFunc.integral` defines the integral for real- and Banach-valued simple functions.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Simple functions (2)",
+          "snippet": "Some care is needed when defining the integral of a real-valued simple function, to avoid the undefined expression ∞ − ∞"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle f=\\sum _{k}a_{k}1_{S_{k}}}"
+        }
+      ]
+    },
+    {
+      "kind": "definition",
+      "label": "Integral of a simple function over a measurable subset",
+      "anchor": {
+        "section": "Simple functions (2)",
+        "snippet": "If B is a measurable subset of E and s is a measurable simple function one defines"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "MeasureTheory.SimpleFunc.lintegral",
+        "module": "Mathlib.MeasureTheory.Function.SimpleFunc",
+        "match_kind": "invocation"
+      },
+      "note": "Integration over a subset B is obtained by `SimpleFunc.lintegral _ (μ.restrict B)` and is the basis of `setLIntegral` notation.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Simple functions (2)",
+          "snippet": "If B is a measurable subset of E and s is a measurable simple function one defines"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\int _{B}s\\,\\mathrm {d} \\mu =\\int 1_{B}\\,s\\,\\mathrm {d} \\mu =\\sum _{k}a_{k}\\,\\mu (S_{k}\\cap B).}"
+        }
+      ]
+    },
+    {
+      "kind": "definition",
+      "label": "Integral of a non-negative measurable function",
+      "anchor": {
+        "section": "Non-negative functions",
+        "snippet": "Let f be a non-negative measurable function on E , which we allow to attain the value +∞"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "MeasureTheory.lintegral",
+        "module": "Mathlib.MeasureTheory.Integral.Lebesgue.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`MeasureTheory.lintegral μ f` is the supremum over simple functions below f, allowing values in ℝ≥0∞.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Non-negative functions",
+          "snippet": "Let f be a non-negative measurable function on E , which we allow to attain the value +∞"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\int _{E}f\\,d\\mu =\\sup \\left\\{\\,\\int _{E}s\\,d\\mu :0\\leq s\\leq f,\\ s\\ {\\text{simple}}\\,\\right\\}.}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Dyadic simple-function approximation",
+      "anchor": {
+        "section": "Non-negative functions",
+        "snippet": "It is often useful to have a particular sequence of simple functions that approximates the Lebesgue integral well"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "MeasureTheory.SimpleFunc.eapprox",
+        "module": "Mathlib.MeasureTheory.Function.SimpleFunc",
+        "match_kind": "exact"
+      },
+      "note": "`SimpleFunc.eapprox` is the canonical monotone dyadic approximation with `iSup_eapprox_apply` proving pointwise convergence.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Non-negative functions",
+          "snippet": "It is often useful to have a particular sequence of simple functions that approximates the Lebesgue integral well"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\int f\\,d\\mu =\\lim _{n\\to \\infty }\\int s_{n}\\,d\\mu }"
+        }
+      ]
+    },
+    {
+      "kind": "definition",
+      "label": "Positive and negative parts of a signed function",
+      "anchor": {
+        "section": "Signed functions",
+        "snippet": "To handle signed functions, we need a few more definitions"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "MeasureTheory.integral_eq_lintegral_pos_part_sub_lintegral_neg_part",
+        "module": "Mathlib.MeasureTheory.Integral.Bochner.Basic",
+        "match_kind": "invocation"
+      },
+      "note": "Mathlib has `posPart`/`negPart` on functions and `Lp.posPart`/`Lp.negPart`, used in `integral_eq_lintegral_pos_part_sub_lintegral_neg_part`.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Signed functions",
+          "snippet": "To handle signed functions, we need a few more definitions"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle f=f^{+}-f^{-},}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle {\\begin{aligned}f^{+}(x)&amp;={\\begin{cases}f(x){\\hphantom {-}}&amp;{\\text{if }}f(x)&gt;0,\\\\0&amp;{\\text{otherwise}},\\end{cases}}\\\\f^{-}(x)&amp;={\\begin{cases}-f(x)&amp;{\\text{if }}f(x)&lt;0,\\\\0&amp;{\\text{otherwise}}.\\end{cases}}\\end{aligned}}}"
+        }
+      ]
+    },
+    {
+      "kind": "definition",
+      "label": "Existence of the Lebesgue integral of a signed function",
+      "anchor": {
+        "section": "Signed functions",
+        "snippet": "We say that the Lebesgue integral of the measurable function f exists , or is defined if at least one of"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "MeasureTheory.Integrable",
+        "module": "Mathlib.MeasureTheory.Function.L1Space.Integrable",
+        "match_kind": "special_case"
+      },
+      "note": "Mathlib's `Integrable` requires BOTH parts finite (the L¹ notion), so the weaker \"at least one finite\" existence predicate has no direct counterpart.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Signed functions",
+          "snippet": "We say that the Lebesgue integral of the measurable function f exists , or is defined if at least one of"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\min \\left(\\int f^{+}\\,d\\mu ,\\int f^{-}\\,d\\mu \\right)&lt;\\infty .}"
+        }
+      ]
+    },
+    {
+      "kind": "definition",
+      "label": "Lebesgue integrable function (L^1)",
+      "anchor": {
+        "section": "Signed functions",
+        "snippet": "we say that f is Lebesgue integrable"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "MeasureTheory.Integrable",
+        "module": "Mathlib.MeasureTheory.Function.L1Space.Integrable",
+        "match_kind": "exact"
+      },
+      "note": "`MeasureTheory.Integrable f μ` means f is AE strongly measurable with finite integral of `‖f‖`, the L¹ definition.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Signed functions",
+          "snippet": "we say that f is Lebesgue integrable"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\int |f|\\,\\mathrm {d} \\mu &lt;\\infty ,}"
+        }
+      ]
+    },
+    {
+      "kind": "definition",
+      "label": "Lebesgue integral via improper Riemann integral",
+      "anchor": {
+        "section": "Via improper Riemann integral",
+        "snippet": "The Lebesgue integral may then be defined as the improper Riemann integral of f ∗"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "MeasureTheory.AECover.integrable",
+        "module": "Mathlib.MeasureTheory.Integral.IntegralEqImproper",
+        "match_kind": "invocation"
+      },
+      "note": "Mathlib does not define the Lebesgue integral as an improper Riemann integral, but `IntegralEqImproper` proves the resulting equality for integrable functions.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Via improper Riemann integral",
+          "snippet": "The Lebesgue integral may then be defined as the improper Riemann integral of f ∗"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle f^{*}(t)\\ {\\stackrel {\\text{def}}{=}}\\ \\mu \\left(\\{x\\in E\\mid f(x)&gt;t\\}\\right).}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\int _{E}f\\,d\\mu \\ {\\stackrel {\\text{def}}{=}}\\ \\int _{0}^{\\infty }f^{*}(t)\\,dt.}"
+        }
+      ]
+    },
+    {
+      "kind": "definition",
+      "label": "Integral of a complex-valued function",
+      "anchor": {
+        "section": "Complex-valued functions",
+        "snippet": "If h = f + ig for real-valued integrable functions f , g , then the integral of h is defined by"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "MeasureTheory.integral_re_add_im",
+        "module": "Mathlib.MeasureTheory.Integral.Bochner.ContinuousLinearMap",
+        "match_kind": "exact"
+      },
+      "note": "`integral_re_add_im` proves ∫ f = (∫ re f) + i · (∫ im f); the Bochner `integral` already handles ℂ-valued functions directly.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Complex-valued functions",
+          "snippet": "If h = f + ig for real-valued integrable functions f , g , then the integral of h is defined by"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\int h\\,d\\mu =\\int f\\,d\\mu +i\\int g\\,d\\mu .}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Complex Lebesgue integrability via absolute value",
+      "anchor": {
+        "section": "Complex-valued functions",
+        "snippet": "The function is Lebesgue integrable if and only if its absolute value is Lebesgue integrable"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "MeasureTheory.integrable_norm_iff",
+        "module": "Mathlib.MeasureTheory.Function.L1Space.Integrable",
+        "match_kind": "generalization"
+      },
+      "note": "`integrable_norm_iff` shows Integrable f ↔ Integrable ‖f‖, which for ℂ gives the |·| version.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Dirichlet function: not Riemann-integrable but Lebesgue-integrable",
+      "anchor": {
+        "section": "Example",
+        "snippet": "Consider the indicator function of the rational numbers, 1 Q , also known as the Dirichlet function"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No file/decl in Mathlib explicitly states the Dirichlet function as a non-Riemann/yes-Lebesgue example.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Failure of monotone convergence for Riemann integral",
+      "anchor": {
+        "section": "Failure of monotone convergence",
+        "snippet": "As shown above, the indicator function 1 Q on the rationals is not Riemann integrable"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No explicit Mathlib example demonstrating failure of monotone convergence for the Riemann integral was located.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Failure of monotone convergence",
+          "snippet": "As shown above, the indicator function 1 Q on the rationals is not Riemann integrable"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle g_{k}(x)={\\begin{cases}1&amp;{\\text{if }}x=a_{j},j\\leq k\\\\0&amp;{\\text{otherwise}}\\end{cases}}}"
+        }
+      ]
+    },
+    {
+      "kind": "definition",
+      "label": "Equal almost everywhere",
+      "anchor": {
+        "section": "Basic theorems of the Lebesgue integral",
+        "snippet": "Two functions are said to be equal almost everywhere"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Filter.EventuallyEq",
+        "module": "Mathlib.Order.Filter.Basic",
+        "match_kind": "generalization"
+      },
+      "note": "Mathlib writes `f =ᵐ[μ] g` for `EventuallyEq (ae μ) f g`, the almost-everywhere equality.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Integral respects almost-everywhere equality (non-negative)",
+      "anchor": {
+        "section": "Basic theorems of the Lebesgue integral",
+        "snippet": "If f and g are non-negative measurable functions (possibly assuming the value +∞ ) such that f = g almost everywhere"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "MeasureTheory.lintegral_congr_ae",
+        "module": "Mathlib.MeasureTheory.Integral.Lebesgue.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`lintegral_congr_ae` gives `f =ᵐ[μ] g → ∫⁻ f ∂μ = ∫⁻ g ∂μ`.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Basic theorems of the Lebesgue integral",
+          "snippet": "If f and g are non-negative measurable functions (possibly assuming the value +∞ ) such that f = g almost everywhere"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\int f\\,d\\mu =\\int g\\,d\\mu .}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Integrability respects almost-everywhere equality",
+      "anchor": {
+        "section": "Basic theorems of the Lebesgue integral",
+        "snippet": "If f and g are functions such that f = g almost everywhere, then f is Lebesgue integrable if and only if g is Lebesgue integrable"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "MeasureTheory.integrable_congr",
+        "module": "Mathlib.MeasureTheory.Function.L1Space.Integrable",
+        "match_kind": "exact"
+      },
+      "note": "`integrable_congr` proves `f =ᵐ[μ] g → (Integrable f μ ↔ Integrable g μ)`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Linearity of the Lebesgue integral",
+      "anchor": {
+        "section": "Basic theorems of the Lebesgue integral",
+        "snippet": "Linearity : If f and g are Lebesgue integrable functions and a and b are real numbers"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "MeasureTheory.integral_add",
+        "module": "Mathlib.MeasureTheory.Integral.Bochner.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`integral_add` and `integral_smul` together give linearity on integrable functions.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Basic theorems of the Lebesgue integral",
+          "snippet": "Linearity : If f and g are Lebesgue integrable functions and a and b are real numbers"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\int (af+bg)\\,d\\mu =a\\int f\\,d\\mu +b\\int g\\,d\\mu .}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Monotonicity of the Lebesgue integral",
+      "anchor": {
+        "section": "Basic theorems of the Lebesgue integral",
+        "snippet": "Monotonicity : If f ≤ g"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "MeasureTheory.integral_mono",
+        "module": "Mathlib.MeasureTheory.Integral.Bochner.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`integral_mono` (and `lintegral_mono` for the non-negative case) establishes monotonicity.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Basic theorems of the Lebesgue integral",
+          "snippet": "Monotonicity : If f ≤ g"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\int f\\,d\\mu \\leq \\int g\\,d\\mu .}"
+        }
+      ]
+    },
+    {
+      "kind": "theorem",
+      "label": "Monotone convergence theorem",
+      "anchor": {
+        "section": "Basic theorems of the Lebesgue integral",
+        "snippet": "Monotone convergence theorem : Suppose"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "MeasureTheory.lintegral_iSup",
+        "module": "Mathlib.MeasureTheory.Integral.Lebesgue.Add",
+        "match_kind": "exact"
+      },
+      "note": "`lintegral_iSup` is the monotone convergence theorem (Beppo Levi) for `lintegral`.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Basic theorems of the Lebesgue integral",
+          "snippet": "Monotone convergence theorem : Suppose"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle f_{k}(x)\\leq f_{k+1}(x)\\quad \\forall k\\in \\mathbb {N} ,\\,\\forall x\\in E.}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\lim _{k}\\int f_{k}\\,d\\mu =\\int f\\,d\\mu .}"
+        }
+      ]
+    },
+    {
+      "kind": "theorem",
+      "label": "Fatou's lemma",
+      "anchor": {
+        "section": "Basic theorems of the Lebesgue integral",
+        "snippet": "Fatou's lemma : If"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "MeasureTheory.lintegral_liminf_le",
+        "module": "Mathlib.MeasureTheory.Integral.Lebesgue.Add",
+        "match_kind": "exact"
+      },
+      "note": "`lintegral_liminf_le` is Fatou's lemma; the AE-measurable variant `lintegral_liminf_le'` is also present.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Basic theorems of the Lebesgue integral",
+          "snippet": "Fatou's lemma : If"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\int \\liminf _{k}f_{k}\\,d\\mu \\leq \\liminf _{k}\\int f_{k}\\,d\\mu .}"
+        }
+      ]
+    },
+    {
+      "kind": "theorem",
+      "label": "Dominated convergence theorem",
+      "anchor": {
+        "section": "Basic theorems of the Lebesgue integral",
+        "snippet": "Dominated convergence theorem : Suppose"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "MeasureTheory.tendsto_integral_of_dominated_convergence",
+        "module": "Mathlib.MeasureTheory.Integral.DominatedConvergence",
+        "match_kind": "exact"
+      },
+      "note": "`tendsto_integral_of_dominated_convergence` (and `tendsto_lintegral_of_dominated_convergence` for `lintegral`) state Lebesgue's DCT.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Basic theorems of the Lebesgue integral",
+          "snippet": "Dominated convergence theorem : Suppose"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\lim _{k}\\int f_{k}\\,d\\mu =\\int f\\,d\\mu .}"
+        }
+      ]
+    },
+    {
+      "kind": "example",
+      "label": "sinc function: improperly integrable but not Lebesgue integrable",
+      "anchor": {
+        "section": "Limitations of Lebesgue integral",
+        "snippet": "One example would be the sinc function"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Real.sinc",
+        "module": "Mathlib.Analysis.SpecialFunctions.Trigonometric.Sinc",
+        "match_kind": "invocation"
+      },
+      "note": "`Real.sinc` is defined in Mathlib, but no theorem stating it is improperly Riemann-integrable yet not Lebesgue-integrable was found.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Limitations of Lebesgue integral",
+          "snippet": "One example would be the sinc function"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\operatorname {sinc} (x)={\\frac {\\sin(x)}{x}}}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\int _{-\\infty }^{\\infty }\\left|{\\frac {\\sin(x)}{x}}\\right|dx=\\infty .}"
+        }
+      ]
+    }
+  ]
+}

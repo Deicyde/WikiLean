@@ -1,0 +1,425 @@
+{
+  "slug": "Etale_cohomology",
+  "wikipedia_title": "Étale cohomology",
+  "display_title": "Étale cohomology",
+  "schema_version": 3,
+  "annotation_style": "theorem_article",
+  "annotations": [
+    {
+      "kind": "definition",
+      "label": "The category Et(X)",
+      "anchor": {
+        "section": "Definitions",
+        "snippet": "the category Et( X ) is the category of all étale morphisms from a scheme to X"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "AlgebraicGeometry.Scheme.Etale",
+        "module": "Mathlib.AlgebraicGeometry.Morphisms.Etale",
+        "match_kind": "exact"
+      },
+      "note": "`Scheme.Etale X` is defined as `MorphismProperty.Over @Etale ⊤ X`, the category of schemes étale over `X`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Étale presheaf",
+      "anchor": {
+        "section": "Definitions",
+        "snippet": "we define an étale presheaf on a scheme X to be a contravariant functor from Et( X ) to sets"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "AlgebraicGeometry.Scheme.Etale",
+        "module": "Mathlib.AlgebraicGeometry.Morphisms.Etale",
+        "match_kind": "generalization"
+      },
+      "note": "No dedicated `étalePresheaf` definition, but presheaves on the étale category are obtained via general `Cᵒᵖ ⥤ Type` infrastructure over `Scheme.Etale X`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Étale sheaf",
+      "anchor": {
+        "section": "Definitions",
+        "snippet": "an étale presheaf is called a sheaf if it satisfies the same condition"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "AlgebraicGeometry.Scheme.smallEtaleTopology",
+        "module": "Mathlib.AlgebraicGeometry.Sites.Etale",
+        "match_kind": "generalization"
+      },
+      "note": "Étale sheaves can be expressed as `Sheaf (smallEtaleTopology X) _` via the generic `CategoryTheory.Sheaf` framework; no dedicated named abbreviation.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Étale cohomology groups",
+      "anchor": {
+        "section": "Definitions",
+        "snippet": "The étale cohomology groups H i ( F ) of the sheaf F of abelian groups are defined as the right derived functors of the functor of sections"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "CategoryTheory.Sheaf.H",
+        "module": "Mathlib.CategoryTheory.Sites.SheafCohomology.Basic",
+        "match_kind": "generalization"
+      },
+      "note": "General sheaf cohomology `Sheaf.H F n` is defined as an `Ext` group, which specializes to étale cohomology when applied to `smallEtaleTopology X`; no étale-specific wrapper exists.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Right derived functors R^q f_*",
+      "anchor": {
+        "section": "Definitions",
+        "snippet": "a morphism of schemes f : X → Y induces a map f ∗ from étale sheaves over X to étale sheaves over Y , and its right derived functors are denoted by R q f ∗"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No étale (or general site) higher direct image `R^q f_*` construction is set up; only general `rightDerivedFunctor` infrastructure exists.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Finite locally constant sheaf",
+      "anchor": {
+        "section": "Definitions",
+        "snippet": "An abelian étale sheaf F over X is called finite locally constant if it is represented by an étale cover of X"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No `LocallyConstantSheaf` or finite-locally-constant étale sheaf definition was found in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Constructible sheaf",
+      "anchor": {
+        "section": "Definitions",
+        "snippet": "It is called constructible if X can be covered by a finite family of subschemes on each of which the restriction of F is finite locally constant"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No `ConstructibleSheaf` definition exists in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Torsion sheaf",
+      "anchor": {
+        "section": "Definitions",
+        "snippet": "It is called torsion if F ( U ) is a torsion group for all étale covers U of X"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No `TorsionSheaf` definition was found in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Hierarchy: locally constant ⊂ constructible ⊂ torsion",
+      "anchor": {
+        "section": "Definitions",
+        "snippet": "Finite locally constant sheaves are constructible, and constructible sheaves are torsion"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "None of the three sheaf classes is defined in Mathlib, so the inclusions are not stated.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Torsion sheaf as filtered colimit of constructibles",
+      "anchor": {
+        "section": "Definitions",
+        "snippet": "Every torsion sheaf is a filtered inductive limit of constructible sheaves"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Not present; torsion and constructible étale sheaves are not defined in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "ℓ-adic cohomology group",
+      "anchor": {
+        "section": "ℓ-adic cohomology groups",
+        "snippet": "and defines the ℓ-adic cohomology group"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "AlgebraicGeometry.Scheme.EllAdicCohomology",
+        "module": "Mathlib.AlgebraicGeometry.Sites.ElladicCohomology",
+        "match_kind": "generalization"
+      },
+      "note": "`EllAdicCohomology X ℓ n` is defined as the cohomology of the `ℤ_[ℓ]`-coefficient sheaf on the pro-étale site, the modern equivalent of the inverse-limit definition.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "ℓ-adic sheaf",
+      "anchor": {
+        "section": "ℓ-adic cohomology groups",
+        "snippet": "An ℓ-adic sheaf is a special sort of inverse system of étale sheaves"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "AlgebraicGeometry.Scheme.ellAdicSheaf",
+        "module": "Mathlib.AlgebraicGeometry.Sites.ElladicCohomology",
+        "match_kind": "generalization"
+      },
+      "note": "`ellAdicSheaf X ℓ` is the sheaf `U ↦ C(U, ℤ_[ℓ])` on the pro-étale site, the pro-étale incarnation of an ℓ-adic sheaf.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "H^1 of curve is dual to Tate module of Jacobian",
+      "anchor": {
+        "section": "ℓ-adic cohomology groups",
+        "snippet": "When V is a non-singular algebraic curve of genus g , H 1 is a free Z ℓ -module of rank 2 g , dual to the Tate module of the Jacobian variety of V"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No Tate module, Jacobian variety, or H¹-duality theorem is in Mathlib (the `Jacobian` files concern Jacobian models of elliptic curves).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "H^1(X, G_m) is the Picard group",
+      "anchor": {
+        "section": "Calculation of H 1 ( X , G m )",
+        "snippet": "In particular H 1 ( X , G m ) is the Picard group Pic( X )"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The étale sheaf G_m and the identification H¹(X, G_m) ≅ Pic(X) are not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Vanishing of H^i(X, G_m) for i ≥ 2",
+      "anchor": {
+        "section": "Calculation of H i ( X , G m )",
+        "snippet": "so all the cohomology groups H i ( X , G m ) vanish if i ≥ 2"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Higher G_m cohomology vanishing is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Computation of H^i(X, μ_n)",
+      "anchor": {
+        "section": "Calculation of H i ( X , μ n )",
+        "snippet": "If μ n is the sheaf of n -th roots of unity and n and the characteristic of the field k are coprime integers"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No étale sheaf μ_n nor its cohomology computations are formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Computation of H^i(X, Z/nZ)",
+      "anchor": {
+        "section": "Calculation of H i ( X , Z/ n Z)",
+        "snippet": "The étale group H i ( X , Z / n Z ) is then a free module over the ring Z / n Z and its rank is given by"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Étale cohomology with ℤ/nℤ coefficients and rank formulas are not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Étale cohomology of Spec K equals Galois cohomology",
+      "anchor": {
+        "section": "Examples of étale cohomology groups",
+        "snippet": "If X is the spectrum of a field K with absolute Galois group G , then étale sheaves over X correspond to continuous sets"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The equivalence between étale sheaves on Spec K and continuous G-sets / Galois cohomology is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Complex variety: étale = singular cohomology with finite coefficients",
+      "anchor": {
+        "section": "Examples of étale cohomology groups",
+        "snippet": "If X is a complex variety, then étale cohomology with finite coefficients is isomorphic to singular cohomology with finite coefficients"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The comparison theorem between étale and singular cohomology of complex varieties is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Coherent sheaves: étale cohomology = Serre's",
+      "anchor": {
+        "section": "Examples of étale cohomology groups",
+        "snippet": "If F is a coherent sheaf (or G m ) then the étale cohomology of F is the same as Serre's coherent sheaf cohomology calculated with the Zariski topology"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The agreement of étale and Zariski cohomology on coherent sheaves is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "ℓ-adic cohomology of abelian varieties and curves",
+      "anchor": {
+        "section": "Examples of étale cohomology groups",
+        "snippet": "For abelian varieties and curves there is an elementary description of ℓ-adic cohomology"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No description of ℓ-adic cohomology of abelian varieties or curves via Tate modules is present in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Étale cohomology with compact support",
+      "anchor": {
+        "section": "Poincaré duality and cohomology with compact support",
+        "snippet": "The étale cohomology groups with compact support of a variety X are defined to be"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Compactly-supported étale cohomology is not defined in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Higher direct images with compact support R^q f_!",
+      "anchor": {
+        "section": "Poincaré duality and cohomology with compact support",
+        "snippet": "the higher direct images with compact support R q f ! are defined by"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "`R^q f_!` for étale sheaves is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Poincaré duality for étale cohomology",
+      "anchor": {
+        "section": "Poincaré duality and cohomology with compact support",
+        "snippet": "This is the analogue of Poincaré duality for étale cohomology"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Poincaré duality for étale cohomology is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Point count formula for a curve over F_p",
+      "anchor": {
+        "section": "An application to curves",
+        "snippet": "Let X be a curve of genus g defined over F p , the finite field with p elements"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The point-count formula |X(𝔽_p)| = 1 + p − Tr(Frob | H¹) for curves over 𝔽_p is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Lefschetz fixed-point formula",
+      "anchor": {
+        "section": "Idea of proof",
+        "snippet": "According to the Lefschetz fixed-point theorem , the number of fixed points of any morphism f : X → X is equal to the sum"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Lefschetz fixed-point formula (étale or topological form) is not present in Mathlib.",
+      "provenance": "ai"
+    }
+  ]
+}

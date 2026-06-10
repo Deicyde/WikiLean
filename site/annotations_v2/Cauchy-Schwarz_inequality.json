@@ -1,0 +1,349 @@
+{
+  "slug": "Cauchy-Schwarz_inequality",
+  "wikipedia_title": "Cauchy–Schwarz inequality",
+  "display_title": "Cauchy–Schwarz inequality",
+  "schema_version": 1,
+  "source": "claude-agent-sdk/annotate_articles.py",
+  "annotations": [
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\|\\mathbf {u} \\|:={\\sqrt {\\langle \\mathbf {u} ,\\mathbf {u} \\rangle }},}"
+      },
+      "status": "formalized",
+      "decl": "norm_eq_sqrt_re_inner",
+      "module": "Mathlib.Analysis.InnerProductSpace.Defs",
+      "note": "Mathlib defines the inner product space norm as √(re⟨x,x⟩), captured by `norm_eq_sqrt_re_inner`."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle {\\frac {\\left(u_{1}+u_{2}+\\cdots +u_{n}\\right)^{2}}{v_{1}+v_{2}+\\cdots +v_{n}}}\\leq {\\frac {u_{1}^{2}}{v_{1}}}+{\\frac {u_{2}^{2}}{v_{2}}}+\\cdots +{\\frac {u_{n}^{2}}{v_{n}}},}"
+      },
+      "status": "formalized",
+      "decl": "Finset.sq_sum_div_le_sum_sq_div",
+      "module": "Mathlib.Algebra.Order.BigOperators.Ring.Finset",
+      "note": "Sedrakyan's lemma is `Finset.sq_sum_div_le_sum_sq_div`, doc-string explicitly names it."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle {\\dfrac {\\left(\\sum \\limits _{i=1}^{n}u_{i}\\right)^{2}}{\\sum \\limits _{i=1}^{n}v_{i}}}\\leq \\sum _{i=1}^{n}{\\frac {u_{i}^{2}}{v_{i}}}.}"
+      },
+      "status": "formalized",
+      "decl": "Finset.sq_sum_div_le_sum_sq_div",
+      "module": "Mathlib.Algebra.Order.BigOperators.Ring.Finset",
+      "note": "Same Sedrakyan lemma in summation form; `Finset.sq_sum_div_le_sum_sq_div` matches verbatim."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\langle \\mathbf {u} ,\\mathbf {v} \\rangle ^{2}={\\bigl (}\\|\\mathbf {u} \\|\\|\\mathbf {v} \\|\\cos \\theta {\\bigr )}^{2}\\leq \\|\\mathbf {u} \\|^{2}\\|\\mathbf {v} \\|^{2},}"
+      },
+      "status": "partial",
+      "decl": "real_inner_mul_inner_self_le",
+      "module": "Mathlib.Analysis.InnerProductSpace.Basic",
+      "note": "The squared CS inequality in ℝ is `real_inner_mul_inner_self_le`; the cosθ identity is via `cos_angle`."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\left(u_{1}v_{1}+u_{2}v_{2}\\right)^{2}\\leq \\left(u_{1}^{2}+u_{2}^{2}\\right)\\left(v_{1}^{2}+v_{2}^{2}\\right),}"
+      },
+      "status": "partial",
+      "decl": "Finset.sum_mul_sq_le_sq_mul_sq",
+      "module": "Mathlib.Algebra.Order.BigOperators.Ring.Finset",
+      "note": "Two-variable case of `Finset.sum_mul_sq_le_sq_mul_sq`, the n-ary CS for finsets."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle {\\biggl (}\\sum _{i=1}^{n}u_{i}v_{i}{\\biggr )}^{2}\\leq {\\biggl (}\\sum _{i=1}^{n}u_{i}^{2}{\\biggr )}{\\biggl (}\\sum _{i=1}^{n}v_{i}^{2}{\\biggr )}.}"
+      },
+      "status": "formalized",
+      "decl": "Finset.sum_mul_sq_le_sq_mul_sq",
+      "module": "Mathlib.Algebra.Order.BigOperators.Ring.Finset",
+      "note": "Exact statement: `(∑ f i * g i)^2 ≤ (∑ f i^2) * ∑ g i^2`."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle {\\tfrac {1}{2}}\\sum _{i=1}^{n}\\sum _{j=1}^{n}(u_{i}v_{j}-u_{j}v_{i})^{2}\\geq 0}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Lagrange-identity intermediate term used to prove CS; not a standalone Mathlib statement."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle (u_{1}x+v_{1})^{2}+\\cdots +(u_{n}x+v_{n})^{2}={\\biggl (}\\sum _{i}u_{i}^{2}{\\biggr )}x^{2}+2{\\biggl (}\\sum _{i}u_{i}v_{i}{\\biggr )}x+\\sum _{i}v_{i}^{2}.}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Algebraic expansion used inside the discriminant proof; no standalone declaration."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle {\\biggl (}\\sum _{i}u_{i}v_{i}{\\biggr )}^{2}-{\\biggl (}\\sum _{i}{u_{i}^{2}}{\\biggr )}{\\biggl (}\\sum _{i}{v_{i}^{2}}{\\biggr )}\\leq 0.}"
+      },
+      "status": "partial",
+      "decl": "Finset.sum_mul_sq_le_sq_mul_sq",
+      "module": "Mathlib.Algebra.Order.BigOperators.Ring.Finset",
+      "note": "Rearranged form of the finset CS; the negated version equals the discriminant condition."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle {\\bigl |}\\langle \\mathbf {u} ,\\mathbf {v} \\rangle {\\bigr |}^{2}={\\Biggl |}\\sum _{k=1}^{n}u_{k}{\\bar {v}}_{k}{\\Biggr |}^{2}\\leq \\langle \\mathbf {u} ,\\mathbf {u} \\rangle \\langle \\mathbf {v} ,\\mathbf {v} \\rangle ={\\biggl (}\\sum _{k=1}^{n}u_{k}{\\bar {u}}_{k}{\\biggr )}{\\biggl (}\\sum _{k=1}^{n}v_{k}{\\bar {v}}_{k}{\\biggr )}=\\sum _{j=1}^{n}|u_{j}|^{2}\\sum _{k=1}^{n}|v_{k}|^{2}.}"
+      },
+      "status": "partial",
+      "decl": "inner_mul_inner_self_le",
+      "module": "Mathlib.Analysis.InnerProductSpace.Basic",
+      "note": "Complex CS instance of `inner_mul_inner_self_le`/`norm_inner_le_norm`; coordinate expansion is not a separate decl."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle {\\bigl |}u_{1}{\\bar {v}}_{1}+\\cdots +u_{n}{\\bar {v}}_{n}{\\bigr |}^{2}\\leq {\\bigl (}|u_{1}|{}^{2}+\\cdots +|u_{n}|{}^{2}{\\bigr )}{\\bigl (}|v_{1}|{}^{2}+\\cdots +|v_{n}|{}^{2}{\\bigr )}.}"
+      },
+      "status": "partial",
+      "decl": "norm_inner_le_norm",
+      "module": "Mathlib.Analysis.InnerProductSpace.Basic",
+      "note": "Specialization to ℂⁿ with the standard inner product; proven via `norm_inner_le_norm`."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\left|\\int _{\\mathbb {R} ^{n}}f(x){\\overline {g(x)}}\\,dx\\right|^{2}\\leq \\int _{\\mathbb {R} ^{n}}{\\bigl |}f(x){\\bigr |}^{2}\\,dx\\int _{\\mathbb {R} ^{n}}{\\bigl |}g(x){\\bigr |}^{2}\\,dx.}"
+      },
+      "status": "partial",
+      "decl": "norm_inner_le_norm",
+      "module": "Mathlib.Analysis.InnerProductSpace.Basic",
+      "note": "L² CS follows from `norm_inner_le_norm` applied to the L² inner-product space; no specific integral form decl."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle {\\begin{alignedat}{4}\\|\\mathbf {u} +\\mathbf {v} \\|^{2}&=\\langle \\mathbf {u} +\\mathbf {v} ,\\mathbf {u} +\\mathbf {v} \\rangle &&\\\\&=\\|\\mathbf {u} \\|^{2}+\\langle \\mathbf {u} ,\\mathbf {v} \\rangle +\\langle \\mathbf {v} ,\\mathbf {u} \\rangle +\\|\\mathbf {v} \\|^{2}~&&~{\\text{ where }}\\langle \\mathbf {v} ,\\mathbf {u} \\rangle ={\\overline {\\langle \\mathbf {u} ,\\mathbf {v} \\rangle }}\\\\&=\\|\\mathbf {u} \\|^{2}+2\\operatorname {Re} \\langle \\mathbf {u} ,\\mathbf {v} \\rangle +\\|\\mathbf {v} \\|^{2}&&\\\\&\\leq \\|\\mathbf {u} \\|^{2}+2|\\langle \\mathbf {u} ,\\mathbf {v} \\rangle |+\\|\\mathbf {v} \\|^{2}&&\\\\&\\leq \\|\\mathbf {u} \\|^{2}+2\\|\\mathbf {u} \\|\\|\\mathbf {v} \\|+\\|\\mathbf {v} \\|^{2}~&&~{\\text{ using CS}}\\\\&={\\bigl (}\\|\\mathbf {u} \\|+\\|\\mathbf {v} \\|{\\bigr )}^{2}.&&\\end{alignedat}}}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Algebraic chain inside Mathlib's triangle-inequality proof; not a separate named lemma."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\|\\mathbf {u} +\\mathbf {v} \\|\\leq \\|\\mathbf {u} \\|+\\|\\mathbf {v} \\|.}"
+      },
+      "status": "formalized",
+      "decl": "norm_add_le",
+      "module": "Mathlib.Analysis.Normed.Group.Basic",
+      "note": "The triangle inequality for normed groups is `norm_add_le`."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\cos \\theta _{\\mathbf {u} \\mathbf {v} }={\\frac {\\langle \\mathbf {u} ,\\mathbf {v} \\rangle }{\\|\\mathbf {u} \\|\\|\\mathbf {v} \\|}}.}"
+      },
+      "status": "formalized",
+      "decl": "InnerProductGeometry.cos_angle",
+      "module": "Mathlib.Geometry.Euclidean.Angle.Unoriented.Basic",
+      "note": "`InnerProductGeometry.cos_angle` states `cos (angle x y) = ⟨x,y⟩ / (‖x‖ * ‖y‖)`."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\operatorname {Var} (X)\\geq {\\frac {\\operatorname {Cov} (X,Y)^{2}}{\\operatorname {Var} (Y)}}.}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Covariance Cauchy–Schwarz `Cov² ≤ Var·Var` is not a standalone Mathlib lemma."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\langle X,Y\\rangle :=\\operatorname {E} (XY),}"
+      },
+      "status": "partial",
+      "decl": "MeasureTheory.L2.inner_def",
+      "module": "Mathlib.MeasureTheory.Function.L2Space",
+      "note": "The L² inner product on random variables is `∫ X · conj Y dμ`; Mathlib has it on the L² space, not as `⟨X,Y⟩:=E(XY)`."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle {\\bigl |}\\operatorname {E} (XY){\\bigr |}^{2}\\leq \\operatorname {E} (X^{2})\\operatorname {E} (Y^{2}).}"
+      },
+      "status": "partial",
+      "decl": "norm_inner_le_norm",
+      "module": "Mathlib.Analysis.InnerProductSpace.Basic",
+      "note": "An instance of `norm_inner_le_norm` on the L² space, but not stated for random variables directly."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle {\\begin{aligned}{\\bigl |}\\operatorname {Cov} (X,Y){\\bigr |}^{2}&={\\bigl |}\\operatorname {E} ((X-\\mu )(Y-\\nu )){\\bigr |}^{2}\\\\&={\\bigl |}\\langle X-\\mu ,Y-\\nu \\rangle {\\bigr |}^{2}\\\\&\\leq \\langle X-\\mu ,X-\\mu \\rangle \\langle Y-\\nu ,Y-\\nu \\rangle \\\\&=\\operatorname {E} \\left((X-\\mu )^{2}\\right)\\operatorname {E} \\left((Y-\\nu )^{2}\\right)\\\\&=\\operatorname {Var} (X)\\operatorname {Var} (Y),\\end{aligned}}}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Derivation of |Cov|² ≤ Var·Var via centered inner products; no standalone Mathlib decl."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle |\\langle \\mathbf {u} ,\\mathbf {v} \\rangle |=|\\langle c\\mathbf {v} ,\\mathbf {v} \\rangle |=|c\\langle \\mathbf {v} ,\\mathbf {v} \\rangle |=|c|\\|\\mathbf {v} \\|\\|\\mathbf {v} \\|=\\|c\\mathbf {v} \\|\\|\\mathbf {v} \\|=\\|\\mathbf {u} \\|\\|\\mathbf {v} \\|}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Equality case computation inside the proof; not a named lemma."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle |\\langle \\mathbf {u} ,\\mathbf {v} \\rangle |=|\\langle \\mathbf {v} ,\\mathbf {u} \\rangle |=\\|\\mathbf {v} \\|\\|\\mathbf {u} \\|.}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Symmetric equality-case step inside the proof; no standalone declaration."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\mathbf {z} :=\\mathbf {u} -{\\frac {\\langle \\mathbf {u} ,\\mathbf {v} \\rangle }{\\langle \\mathbf {v} ,\\mathbf {v} \\rangle }}\\mathbf {v} .}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Construction of orthogonal projection used in the proof; not a standalone declaration."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle {\\begin{aligned}\\|\\mathbf {z} \\|^{2}&=\\left\\langle \\mathbf {u} -{\\frac {\\langle \\mathbf {u} ,\\mathbf {v} \\rangle }{\\langle \\mathbf {v} ,\\mathbf {v} \\rangle }}\\mathbf {v} ,\\mathbf {u} -{\\frac {\\langle \\mathbf {u} ,\\mathbf {v} \\rangle }{\\langle \\mathbf {v} ,\\mathbf {v} \\rangle }}\\mathbf {v} \\right\\rangle \\\\&=\\langle \\mathbf {u} ,\\mathbf {u} \\rangle -2{\\frac {\\langle \\mathbf {u} ,\\mathbf {v} \\rangle }{\\langle \\mathbf {v} ,\\mathbf {v} \\rangle }}\\langle \\mathbf {u} ,\\mathbf {v} \\rangle +{\\frac {\\langle \\mathbf {u} ,\\mathbf {v} \\rangle ^{2}}{\\langle \\mathbf {v} ,\\mathbf {v} \\rangle ^{2}}}\\langle \\mathbf {v} ,\\mathbf {v} \\rangle \\\\&=\\langle \\mathbf {u} ,\\mathbf {u} \\rangle -{\\frac {\\langle \\mathbf {u} ,\\mathbf {v} \\rangle ^{2}}{\\langle \\mathbf {v} ,\\mathbf {v} \\rangle }}=\\|\\mathbf {u} \\|^{2}-{\\frac {\\langle \\mathbf {u} ,\\mathbf {v} \\rangle ^{2}}{\\|\\mathbf {v} \\|^{2}}}\\end{aligned}}}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Expansion of ‖z‖² in the orthogonal-projection proof; ad-hoc proof step."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle {\\begin{aligned}\\|\\mathbf {u} \\|^{2}-{\\frac {\\langle \\mathbf {u} ,\\mathbf {v} \\rangle ^{2}}{\\|\\mathbf {v} \\|^{2}}}=\\|\\mathbf {z} \\|^{2}\\geq 0\\end{aligned}}}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Concluding inequality in the projection proof; not a standalone lemma."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle {\\begin{aligned}p(t)&=\\langle t\\alpha \\mathbf {u} ,t\\alpha \\mathbf {u} \\rangle +\\langle t\\alpha \\mathbf {u} ,\\mathbf {v} \\rangle +\\langle \\mathbf {v} ,t\\alpha \\mathbf {u} \\rangle +\\langle \\mathbf {v} ,\\mathbf {v} \\rangle \\\\&=t\\alpha t{\\overline {\\alpha }}\\langle \\mathbf {u} ,\\mathbf {u} \\rangle +t\\alpha \\langle \\mathbf {u} ,\\mathbf {v} \\rangle +t{\\overline {\\alpha }}\\langle \\mathbf {v} ,\\mathbf {u} \\rangle +\\langle \\mathbf {v} ,\\mathbf {v} \\rangle \\\\&=\\lVert \\mathbf {u} \\rVert ^{2}t^{2}+2|\\langle \\mathbf {u} ,\\mathbf {v} \\rangle |t+\\lVert \\mathbf {v} \\rVert ^{2}\\end{aligned}}}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Quadratic-expansion step used in the discriminant proof; not a standalone lemma."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\Delta =4{\\bigl (}\\,|\\langle \\mathbf {u} ,\\mathbf {v} \\rangle |^{2}-\\Vert \\mathbf {u} \\Vert ^{2}\\Vert \\mathbf {v} \\Vert ^{2}{\\bigr )}\\leq 0.}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Discriminant inequality used in the proof; not stated as a Mathlib lemma."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle {\\bigl |}\\varphi (g^{*}f){\\bigr |}^{2}\\leq \\varphi \\left(f^{*}f\\right)\\varphi \\left(g^{*}g\\right),}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Cauchy–Schwarz for positive functionals on C*-algebras is not in Mathlib."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle {\\begin{aligned}\\varphi (a)^{*}\\varphi (a)&\\leq \\Vert \\varphi (1)\\Vert \\varphi \\left(a^{*}a\\right),{\\text{ and }}\\\\[5mu]\\Vert \\varphi \\left(a^{*}b\\right)\\Vert ^{2}&\\leq \\Vert \\varphi \\left(a^{*}a\\right)\\Vert \\cdot \\Vert \\varphi \\left(b^{*}b\\right)\\Vert .\\end{aligned}}}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Modified Schwarz inequality for 2-positive maps between C*-algebras is not in Mathlib."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle {\\begin{aligned}{\\biggl (}\\sum _{i=1}^{n}a_{i}b_{i}{\\biggr )}^{2}~&\\leq ~{\\biggl (}\\sum _{i=1}^{n}a_{i}^{1+s}b_{i}^{1-s}{\\biggr )}{\\biggl (}\\sum _{i=1}^{n}a_{i}^{1-s}b_{i}^{1+s}{\\biggr )}\\\\&\\leq ~{\\biggl (}\\sum _{i=1}^{n}a_{i}^{1+t}b_{i}^{1-t}{\\biggr )}{\\biggl (}\\sum _{i=1}^{n}a_{i}^{1-t}b_{i}^{1+t}{\\biggr )}~\\leq ~{\\biggl (}\\sum _{i=1}^{n}a_{i}^{2}{\\biggr )}{\\biggl (}\\sum _{i=1}^{n}b_{i}^{2}{\\biggr )}.\\end{aligned}}}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Callebaut's refinement chain interpolating between CS bounds is not in Mathlib."
+    },
+    {
+      "anchor": {
+        "type": "theorem_box",
+        "value": "Cauchy–Schwarz inequality — Let u {\\displaystyle \\mathbf {u}"
+      },
+      "status": "formalized",
+      "decl": "norm_inner_le_norm",
+      "module": "Mathlib.Analysis.InnerProductSpace.Basic",
+      "note": "Main CS statement `|⟨u,v⟩| ≤ ‖u‖‖v‖` over ℝ or ℂ is `norm_inner_le_norm`."
+    },
+    {
+      "anchor": {
+        "type": "theorem_box",
+        "value": "Cauchy–Schwarz inequality for positive functionals on C*-alg"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Cauchy–Schwarz for positive linear functionals on C*-algebras is not in Mathlib."
+    },
+    {
+      "anchor": {
+        "type": "theorem_box",
+        "value": "Kadison–Schwarz inequality &#91; 27 &#93; &#91; 28 &#93; &#1"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Kadison–Schwarz inequality for unital positive maps is not present in Mathlib."
+    },
+    {
+      "anchor": {
+        "type": "theorem_box",
+        "value": "Cauchy–Schwarz inequality &#160; (Modified Schwarz inequalit"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Modified Schwarz inequality for 2-positive maps is not in Mathlib."
+    },
+    {
+      "anchor": {
+        "type": "theorem_box",
+        "value": "Callebaut's Inequality &#91; 30 &#93; — For reals 0 &#x2264;"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Callebaut's interpolating inequality is not present in Mathlib."
+    }
+  ]
+}

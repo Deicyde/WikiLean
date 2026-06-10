@@ -1,0 +1,1764 @@
+{
+  "slug": "Lp_space",
+  "wikipedia_title": "Lp space",
+  "display_title": "Lp space",
+  "schema_version": 3,
+  "annotation_style": "theorem_article",
+  "annotations": [
+    {
+      "kind": "definition",
+      "label": "Euclidean norm",
+      "anchor": {
+        "section": "The p -norm in finite dimensions",
+        "snippet": "The Euclidean length of a vector"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "EuclideanSpace.norm_eq",
+        "module": "Mathlib.Analysis.InnerProductSpace.PiL2",
+        "match_kind": "exact"
+      },
+      "note": "EuclideanSpace.norm_eq states the norm of x is sqrt of sum of squares of components.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "The p -norm in finite dimensions",
+          "snippet": "The Euclidean length of a vector"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\|x\\|_{2}=\\left({x_{1}}^{2}+{x_{2}}^{2}+\\dotsb +{x_{n}}^{2}\\right)^{1/2}.}"
+        }
+      ]
+    },
+    {
+      "kind": "definition",
+      "label": "p-norm in finite dimensions",
+      "anchor": {
+        "section": "The p -norm in finite dimensions",
+        "snippet": "For a real number"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "PiLp.norm_eq_sum",
+        "module": "Mathlib.Analysis.Normed.Lp.PiLp",
+        "match_kind": "exact"
+      },
+      "note": "PiLp p β with norm_eq_sum gives (∑ ‖f i‖^p)^(1/p) for 0 < p.toReal.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "The p -norm in finite dimensions",
+          "snippet": "For a real number"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\|x\\|_{p}=\\left(|x_{1}|^{p}+|x_{2}|^{p}+\\dotsb +|x_{n}|^{p}\\right)^{1/p}.}"
+        }
+      ]
+    },
+    {
+      "kind": "definition",
+      "label": "Maximum norm (infinity-norm)",
+      "anchor": {
+        "section": "The p -norm in finite dimensions",
+        "snippet": "maximum norm (or uniform norm) is the limit"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "PiLp.norm_eq_ciSup",
+        "module": "Mathlib.Analysis.Normed.Lp.PiLp",
+        "match_kind": "exact"
+      },
+      "note": "PiLp.norm_eq_ciSup gives ‖f‖ = ⨆ i, ‖f i‖ for PiLp ∞.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "The p -norm in finite dimensions",
+          "snippet": "maximum norm (or uniform norm) is the limit"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\|x\\|_{\\infty }=\\max \\left\\{|x_{1}|,|x_{2}|,\\dotsc ,|x_{n}|\\right\\}}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "p-norm satisfies norm properties",
+      "anchor": {
+        "section": "The p -norm in finite dimensions",
+        "snippet": "satisfy the properties of a \"length function\""
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "PiLp.instNormedAddCommGroup",
+        "module": "Mathlib.Analysis.Normed.Lp.PiLp",
+        "match_kind": "exact"
+      },
+      "note": "PiLp p β under [Fact (1 ≤ p)] carries a NormedAddCommGroup instance encoding the norm axioms.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Finite-dimensional p-norm space is Banach",
+      "anchor": {
+        "section": "The p -norm in finite dimensions",
+        "snippet": "this space is complete , thus making it a Banach space"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "PiLp.completeSpace",
+        "module": "Mathlib.Analysis.Normed.Lp.PiLp",
+        "match_kind": "exact"
+      },
+      "note": "PiLp.completeSpace gives CompleteSpace (PiLp p β) when each β i is complete.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Euclidean norm bounded by 1-norm",
+      "anchor": {
+        "section": "Relations between p -norms",
+        "snippet": "the Euclidean norm of any vector is bounded by its 1-norm"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No explicit Mathlib lemma comparing the PiLp 2 norm to the PiLp 1 norm was found.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Relations between p -norms",
+          "snippet": "the Euclidean norm of any vector is bounded by its 1-norm"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\|x\\|_{2}\\leq \\|x\\|_{1}.}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "p-norm decreases in p",
+      "anchor": {
+        "section": "Relations between p -norms",
+        "snippet": "does not grow with"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "MeasureTheory.MemLp.mono_exponent",
+        "module": "Mathlib.MeasureTheory.Function.LpSeminorm.CompareExp",
+        "match_kind": "generalization"
+      },
+      "note": "MemLp.mono_exponent gives monotonicity of Lp norms in p for finite measures; the special finite-dim PiLp version is not stated directly.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Reverse inequality between p-norms (Cauchy–Schwarz)",
+      "anchor": {
+        "section": "Relations between p -norms",
+        "snippet": "follows directly from the Cauchy–Schwarz inequality"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "norm_inner_le_norm",
+        "module": "Mathlib.Analysis.InnerProductSpace.Basic",
+        "match_kind": "invocation"
+      },
+      "note": "Cauchy–Schwarz (norm_inner_le_norm) is formalized; the specific p-norm reverse inequality is not stated as a standalone lemma.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "General p-norm comparison via Hölder",
+      "anchor": {
+        "section": "Relations between p -norms",
+        "snippet": "This is a consequence of Hölder's inequality"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "NNReal.inner_le_Lp_mul_Lq",
+        "module": "Mathlib.Analysis.MeanInequalities",
+        "match_kind": "invocation"
+      },
+      "note": "Hölder's inequality for finite sums is formalized; the explicit p-norm comparison via Hölder is not.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "F-norm for 0<p<1",
+      "anchor": {
+        "section": "When 0 < p < 1",
+        "snippet": "defines a subadditive function at the cost of losing absolute homogeneity"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "PiLp.norm_eq_sum",
+        "module": "Mathlib.Analysis.Normed.Lp.PiLp",
+        "match_kind": "generalization"
+      },
+      "note": "PiLp's norm formula covers 0 < p but Mathlib only equips PiLp with a metric/F-norm structure under Fact (1 ≤ p); the F-norm sum for 0<p<1 is not packaged.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Metric on ℓ_p for 0<p<1",
+      "anchor": {
+        "section": "When 0 < p < 1",
+        "snippet": "Hence, the function"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "lp",
+        "module": "Mathlib.Analysis.Normed.Lp.lpSpace",
+        "match_kind": "generalization"
+      },
+      "note": "lp E p is defined for all p including 0<p<1, but its metric in that range is not given a triangle-inequality form.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Failure of local convexity in infinite-dim ℓ_p (0<p<1)",
+      "anchor": {
+        "section": "When 0 < p < 1",
+        "snippet": "is no longer locally convex"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No statement about failure of local convexity for ℓ_p with 0<p<1 was found.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "L^0 norm (Banach F-norm)",
+      "anchor": {
+        "section": "When p = 0",
+        "snippet": "The mathematical definition of the"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "module_note": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has no Banach-style F-norm definition for L^0.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "When p = 0",
+          "snippet": "The mathematical definition of the"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle (x_{n})\\mapsto \\|x\\|:=d(0,x)=\\sum _{n}2^{-n}{\\frac {|x_{n}|}{1+|x_{n}|}}.}"
+        }
+      ]
+    },
+    {
+      "kind": "definition",
+      "label": "Zero \"norm\" (Donoho)",
+      "anchor": {
+        "section": "When p = 0",
+        "snippet": "is the number of non-zero entries of the vector"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "PiLp.norm_eq_card",
+        "module": "Mathlib.Analysis.Normed.Lp.PiLp",
+        "match_kind": "exact"
+      },
+      "note": "PiLp.norm_eq_card defines ‖f‖ on PiLp 0 as the cardinality of the nonzero-coordinate set.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "When p = 0",
+          "snippet": "is the number of non-zero entries of the vector"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle |x_{1}|^{0}+|x_{2}|^{0}+\\cdots +|x_{n}|^{0}.}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Zero \"norm\" is not a norm",
+      "anchor": {
+        "section": "When p = 0",
+        "snippet": "This is not a norm because it is not homogeneous"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No explicit negative result that the 0-norm fails homogeneity is stated.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "ℓ^p sequence space",
+      "anchor": {
+        "section": "ℓ p spaces and sequence spaces",
+        "snippet": "can be extended to vectors that have an infinite number of components"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "lp",
+        "module": "Mathlib.Analysis.Normed.Lp.lpSpace",
+        "match_kind": "exact"
+      },
+      "note": "lp E p is the subtype of ∀ i, E i satisfying Memℓp f p.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "ℓ^p-norm on sequences",
+      "anchor": {
+        "section": "ℓ p spaces and sequence spaces",
+        "snippet": "Define the"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "lp.norm_eq_tsum_rpow",
+        "module": "Mathlib.Analysis.Normed.Lp.lpSpace",
+        "match_kind": "exact"
+      },
+      "note": "lp.norm_eq_tsum_rpow expresses ‖f‖ as (∑' i, ‖f i‖^p)^(1/p).",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "ℓ p spaces and sequence spaces",
+          "snippet": "Define the"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\|x\\|_{p}=\\left(|x_{1}|^{p}+|x_{2}|^{p}+\\cdots +|x_{n}|^{p}+|x_{n+1}|^{p}+\\cdots \\right)^{1/p}}"
+        }
+      ]
+    },
+    {
+      "kind": "example",
+      "label": "Harmonic sequence in ℓ^p",
+      "anchor": {
+        "section": "ℓ p spaces and sequence spaces",
+        "snippet": "as the series"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No explicit example placing the harmonic sequence in ℓ^p for p > 1 was found.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "ℓ p spaces and sequence spaces",
+          "snippet": "as the series"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\left(1,{\\frac {1}{2}},\\ldots ,{\\frac {1}{n}},{\\frac {1}{n+1}},\\ldots \\right)}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle 1^{p}+{\\frac {1}{2^{p}}}+\\cdots +{\\frac {1}{n^{p}}}+{\\frac {1}{(n+1)^{p}}}+\\cdots ,}"
+        }
+      ]
+    },
+    {
+      "kind": "definition",
+      "label": "ℓ^∞ norm and space",
+      "anchor": {
+        "section": "ℓ p spaces and sequence spaces",
+        "snippet": "One also defines the"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "lp.norm_eq_ciSup",
+        "module": "Mathlib.Analysis.Normed.Lp.lpSpace",
+        "match_kind": "exact"
+      },
+      "note": "lp E ∞ with lp.norm_eq_ciSup gives ‖f‖ = ⨆ i, ‖f i‖.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "ℓ p spaces and sequence spaces",
+          "snippet": "One also defines the"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\|x\\|_{\\infty }=\\sup(|x_{1}|,|x_{2}|,\\dotsc ,|x_{n}|,|x_{n+1}|,\\ldots )}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\|x\\|_{\\infty }=\\lim _{p\\to \\infty }\\|x\\|_{p}}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "ℓ^p is a Banach space",
+      "anchor": {
+        "section": "ℓ p spaces and sequence spaces",
+        "snippet": "is indeed a norm, and"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "lp.completeSpace",
+        "module": "Mathlib.Analysis.Normed.Lp.lpSpace",
+        "match_kind": "exact"
+      },
+      "note": "lp.completeSpace gives CompleteSpace (lp E p) when 1 ≤ p and each E i is complete.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "General ℓ^p(I) space",
+      "anchor": {
+        "section": "General ℓ p -space",
+        "snippet": "In complete analogy to the preceding definition"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "lp",
+        "module": "Mathlib.Analysis.Normed.Lp.lpSpace",
+        "match_kind": "exact"
+      },
+      "note": "lp E p is already parameterized over an arbitrary index type α.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "General ℓ p -space",
+          "snippet": "In complete analogy to the preceding definition"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\ell ^{p}(I)=\\left\\{(x_{i})_{i\\in I}\\in \\mathbb {K} ^{I}:\\sum _{i\\in I}|x_{i}|^{p}&lt;+\\infty \\right\\},}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\|x\\|_{p}=\\left(\\sum _{i\\in I}|x_{i}|^{p}\\right)^{1/p}}"
+        }
+      ]
+    },
+    {
+      "kind": "definition",
+      "label": "Euclidean inner product on ℓ^2",
+      "anchor": {
+        "section": "General ℓ p -space",
+        "snippet": "called the Euclidean inner product"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "lp.inner_eq_tsum",
+        "module": "Mathlib.Analysis.InnerProductSpace.l2Space",
+        "match_kind": "exact"
+      },
+      "note": "lp.inner_eq_tsum gives ⟪f, g⟫ = ∑' i, ⟪f i, g i⟫ on ℓ².",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "ℓ^p(I) as L^p with counting measure",
+      "anchor": {
+        "section": "General ℓ p -space",
+        "snippet": "can be turned into a measure space by giving it the discrete"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "MeasureTheory.eLpNorm_dirac",
+        "module": "Mathlib.MeasureTheory.Function.LpSeminorm.Count",
+        "match_kind": "invocation"
+      },
+      "note": "eLpNorm with counting measure is developed in LpSeminorm/Count.lean but the full identification of ℓ^p(I) with Lp under counting measure is not packaged as a single lemma.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "L^p space (p finite)",
+      "anchor": {
+        "section": "L p spaces and Lebesgue integrals",
+        "snippet": "consider the set"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "MeasureTheory.Lp",
+        "module": "Mathlib.MeasureTheory.Function.LpSpace.Basic",
+        "match_kind": "exact"
+      },
+      "note": "MeasureTheory.Lp E p μ defines the L^p space of equivalence classes of strongly measurable functions with finite eLpNorm.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "L p spaces and Lebesgue integrals",
+          "snippet": "consider the set"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\|f\\|_{p}~{\\stackrel {\\scriptscriptstyle {\\text{def}}}{=}}~\\left(\\int _{S}|f|^{p}\\;\\mathrm {d} \\mu \\right)^{1/p}&lt;\\infty .}"
+        }
+      ]
+    },
+    {
+      "kind": "definition",
+      "label": "Equal almost everywhere",
+      "anchor": {
+        "section": "L p spaces and Lebesgue integrals",
+        "snippet": "are said to be equal almost everywhere"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Filter.EventuallyEq",
+        "module": "Mathlib.Order.Filter.Germ.Basic",
+        "match_kind": "exact"
+      },
+      "note": "f =ᵐ[μ] g notation expresses equality almost everywhere via Filter.EventuallyEq on MeasureTheory.ae μ.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "L p spaces and Lebesgue integrals",
+          "snippet": "are said to be equal almost everywhere"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\|f\\|_{\\infty }~{\\stackrel {\\scriptscriptstyle {\\text{def}}}{=}}~\\inf\\{C\\in \\mathbb {R} _{\\geq 0}:|f(s)|\\leq C{\\text{ for almost every }}s\\}.}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\|f\\|_{\\infty }~=~{\\begin{cases}\\operatorname {esssup} |f|&amp;{\\text{if }}\\mu (S)&gt;0,\\\\0&amp;{\\text{if }}\\mu (S)=0.\\end{cases}}}"
+        }
+      ]
+    },
+    {
+      "kind": "definition",
+      "label": "Essentially bounded and L^∞",
+      "anchor": {
+        "section": "L p spaces and Lebesgue integrals",
+        "snippet": "bounded almost everywhere by a real number"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "MeasureTheory.eLpNormEssSup",
+        "module": "Mathlib.MeasureTheory.Function.LpSeminorm.Defs",
+        "match_kind": "exact"
+      },
+      "note": "eLpNormEssSup f μ := essSup ‖f·‖ₑ μ and Lp E ∞ μ encode the essentially bounded functions.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Function equal to ∞ a.e.",
+      "anchor": {
+        "section": "L p spaces and Lebesgue integrals",
+        "snippet": "is a measurable function that is equal to"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This expository example is not formalized as a named statement.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "p-norm relation |f|^p formula",
+      "anchor": {
+        "section": "L p spaces and Lebesgue integrals",
+        "snippet": "Consider for example the identity"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No dedicated lemma states this expository identity.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Minkowski inequality / triangle inequality for L^p",
+      "anchor": {
+        "section": "L p spaces and Lebesgue integrals",
+        "snippet": "it is also a consequence of Minkowski's inequality"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "MeasureTheory.eLpNorm_add_le",
+        "module": "Mathlib.MeasureTheory.Function.LpSeminorm.TriangleInequality",
+        "match_kind": "exact"
+      },
+      "note": "eLpNorm_add_le proves the L^p triangle/Minkowski inequality for 1 ≤ p.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "L p spaces and Lebesgue integrals",
+          "snippet": "it is also a consequence of Minkowski's inequality"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\|f+g\\|_{p}\\leq \\|f\\|_{p}+\\|g\\|_{p}}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Seminorm property of L^p-seminorm",
+      "anchor": {
+        "section": "L p spaces and Lebesgue integrals",
+        "snippet": "Absolute homogeneity , the triangle inequality , and non-negativity are the defining properties of a seminorm"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "MeasureTheory.Lp.instSeminormedAddCommGroup",
+        "module": "Mathlib.MeasureTheory.Function.LpSpace.Basic",
+        "match_kind": "exact"
+      },
+      "note": "Lp E p μ is shown to be a SeminormedAddCommGroup, packaging all seminorm axioms.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Zero set of L^p-seminorm is independent of p",
+      "anchor": {
+        "section": "L p spaces and Lebesgue integrals",
+        "snippet": "all"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "MeasureTheory.eLpNorm_eq_zero_iff",
+        "module": "Mathlib.MeasureTheory.Function.LpSeminorm.Basic",
+        "match_kind": "invocation"
+      },
+      "note": "eLpNorm_eq_zero_iff characterizes vanishing of the L^p seminorm as a.e.-zero, which (uniformly in p) gives the same kernel, but is not stated as a p-independence theorem.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Quotient space L^p",
+      "anchor": {
+        "section": "L p spaces and Lebesgue integrals",
+        "snippet": "the seminorm"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "MeasureTheory.Lp",
+        "module": "Mathlib.MeasureTheory.Function.LpSpace.Basic",
+        "match_kind": "exact"
+      },
+      "note": "MeasureTheory.Lp is built as a subspace of AEEqFun, which is itself the a.e.-equivalence quotient.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "L^p-norm on quotient",
+      "anchor": {
+        "section": "L p spaces and Lebesgue integrals",
+        "snippet": "called the"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "MeasureTheory.Lp.norm_def",
+        "module": "Mathlib.MeasureTheory.Function.LpSpace.Basic",
+        "match_kind": "exact"
+      },
+      "note": "Lp.norm_def states ‖f‖ = (eLpNorm f p μ).toReal on the quotient space.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "L p spaces and Lebesgue integrals",
+          "snippet": "called the"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\|f+{\\mathcal {N}}\\|_{p}\\;{\\stackrel {\\scriptscriptstyle {\\text{def}}}{=}}\\;\\|f\\|_{p}.}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle L^{p}(S,\\mu )~~{\\stackrel {\\scriptscriptstyle {\\text{def}}}{=}}~~{\\mathcal {L}}^{p}(S,\\mu )/{\\mathcal {N}}~=~\\{f+{\\mathcal {N}}:f\\in {\\mathcal {L}}^{p}(S,\\mu )\\}.}"
+        }
+      ]
+    },
+    {
+      "kind": "theorem",
+      "label": "Riesz–Fischer theorem (L^p is Banach)",
+      "anchor": {
+        "section": "L p spaces and Lebesgue integrals",
+        "snippet": "Lebesgue space of"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "MeasureTheory.Lp.instCompleteSpace",
+        "module": "Mathlib.MeasureTheory.Function.LpSpace.Complete",
+        "match_kind": "exact"
+      },
+      "note": "Lp.instCompleteSpace gives CompleteSpace (Lp E p μ) for 1 ≤ p, i.e. Riesz–Fischer.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "ℓ^p as special case of L^p",
+      "anchor": {
+        "section": "Special cases",
+        "snippet": "spaces are a special case of"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "MeasureTheory.eLpNorm_dirac",
+        "module": "Mathlib.MeasureTheory.Function.LpSeminorm.Count",
+        "match_kind": "invocation"
+      },
+      "note": "lp and Lp under counting measure are both defined but no direct isometric identification is provided.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "L^2 is the only Hilbert L^p",
+      "anchor": {
+        "section": "Special cases",
+        "snippet": "is the only Hilbert space among"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No statement characterizing L^2 as the only Hilbertian L^p was found.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Special cases",
+          "snippet": "is the only Hilbert space among"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\langle f,g\\rangle =\\int _{S}f(x){\\overline {g(x)}}\\,\\mathrm {d} \\mu (x).}"
+        }
+      ]
+    },
+    {
+      "kind": "definition",
+      "label": "Inner product on L^2",
+      "anchor": {
+        "section": "Special cases",
+        "snippet": "the inner product on"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "MeasureTheory.L2.inner_def",
+        "module": "Mathlib.MeasureTheory.Function.L2Space",
+        "match_kind": "exact"
+      },
+      "note": "L2.inner_def and the innerProductSpace instance define ⟪f, g⟫ = ∫ a, ⟪f a, g a⟫ ∂μ on Lp E 2 μ.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Special cases",
+          "snippet": "the inner product on"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\langle f,g\\rangle =\\int _{S}f(x){\\overline {g(x)}}\\,\\mathrm {d} \\mu (x).}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Every Hilbert space is isometric to some ℓ^2(I)",
+      "anchor": {
+        "section": "Special cases",
+        "snippet": "As any Hilbert space, every space"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "HilbertBasis",
+        "module": "Mathlib.Analysis.InnerProductSpace.l2Space",
+        "match_kind": "exact"
+      },
+      "note": "A HilbertBasis is an isometric isomorphism of the Hilbert space with ℓ²(ι, 𝕜).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "L^∞ is a commutative C*-algebra",
+      "anchor": {
+        "section": "Special cases",
+        "snippet": "is a commutative C*-algebra with pointwise multiplication"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No CStarAlgebra instance on Lp _ ∞ _ was found.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "L^p quasi-norm for 0<p<1",
+      "anchor": {
+        "section": "When 0 < p < 1 (2)",
+        "snippet": "does not satisfy the triangle inequality and defines only a quasi-norm"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "MeasureTheory.eLpNorm",
+        "module": "Mathlib.MeasureTheory.Function.LpSeminorm.Defs",
+        "match_kind": "generalization"
+      },
+      "note": "eLpNorm is defined for all p > 0 but the quasi-norm structure (and Lp as a metric space) for 0<p<1 is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Completeness of L^p metric (0<p<1)",
+      "anchor": {
+        "section": "When 0 < p < 1 (2)",
+        "snippet": "The resulting metric space is complete"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Lp.instCompleteSpace only covers 1 ≤ p; the 0<p<1 case is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Reverse Minkowski inequality",
+      "anchor": {
+        "section": "When 0 < p < 1 (2)",
+        "snippet": "satisfies a reverse Minkowski inequality"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No reverse Minkowski inequality for 0<p<1 was found in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Clarkson's inequalities and uniform convexity",
+      "anchor": {
+        "section": "When 0 < p < 1 (2)",
+        "snippet": "This result may be used to prove Clarkson's inequalities"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Clarkson's inequalities and uniform convexity of L^p are not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "L^p (0<p<1) is an F-space, not locally convex",
+      "anchor": {
+        "section": "When 0 < p < 1 (2)",
+        "snippet": "is an F-space"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "F-space structure on Lp for 0<p<1 is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Trivial dual of L^p for 0<p<1",
+      "anchor": {
+        "section": "When 0 < p < 1 (2)",
+        "snippet": "The only nonempty convex open set"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Triviality of the dual of L^p for 0<p<1 is not in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Hölder's inequality",
+      "anchor": {
+        "section": "Hölder's inequality",
+        "snippet": "This inequality, called Hölder's inequality"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "ENNReal.lintegral_mul_le_Lp_mul_Lq",
+        "module": "Mathlib.MeasureTheory.Integral.MeanInequalities",
+        "match_kind": "exact"
+      },
+      "note": "Hölder's inequality is proved for sums (NNReal.inner_le_Lp_mul_Lq) and integrals (ENNReal.lintegral_mul_le_Lp_mul_Lq).",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Hölder's inequality",
+          "snippet": "This inequality, called Hölder's inequality"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\sup _{\\|g\\|_{q}\\leq 1}\\,\\int _{S}|fg|\\,\\mathrm {d} \\mu ~&lt;~\\infty }"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\|f\\|_{p}~=~\\sup _{\\|g\\|_{q}\\leq 1}\\,\\int _{S}fg\\,\\mathrm {d} \\mu .}"
+        }
+      ]
+    },
+    {
+      "kind": "theorem",
+      "label": "Generalized Minkowski inequality",
+      "anchor": {
+        "section": "Generalized Minkowski inequality",
+        "snippet": "Minkowski inequality , which states that"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "MeasureTheory.eLpNorm_add_le",
+        "module": "Mathlib.MeasureTheory.Function.LpSeminorm.TriangleInequality",
+        "match_kind": "invocation"
+      },
+      "note": "Standard Minkowski (eLpNorm_add_le) is formalized but the generalized integral form (Minkowski for double integrals) was not found.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Generalized Minkowski inequality",
+          "snippet": "Minkowski inequality , which states that"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\left\\|\\left\\|F(\\,\\cdot ,n)\\right\\|_{L^{p}(M,\\mu )}\\right\\|_{L^{q}(N,\\nu )}~\\leq ~\\left\\|\\left\\|F(m,\\cdot )\\right\\|_{L^{q}(N,\\nu )}\\right\\|_{L^{p}(M,\\mu )}\\ .}"
+        }
+      ]
+    },
+    {
+      "kind": "theorem",
+      "label": "Atomic decomposition for L^p",
+      "anchor": {
+        "section": "Atomic decomposition",
+        "snippet": "has an atomic decomposition"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Atomic decomposition of L^p functions is not in Mathlib.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Atomic decomposition",
+          "snippet": "has an atomic decomposition"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle f~=~\\sum _{n\\in \\mathbb {Z} }r_{n}\\,f_{n}\\,,}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\|f_{n}\\|_{\\infty }~\\leq ~2^{-{\\tfrac {n}{p}}}\\,,}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle {\\tfrac {1}{2}}\\|f\\|_{p}^{p}~\\leq ~\\sum _{n\\in \\mathbb {Z} }r_{n}^{p}~\\leq ~2\\|f\\|_{p}^{p}\\,,}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\|f\\|_{p}^{p}~=~\\sum _{n\\in \\mathbb {Z} }r_{n}^{p}\\,\\|f_{n}\\|_{p}^{p}\\,.}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Explicit construction of atomic decomposition",
+      "anchor": {
+        "section": "Atomic decomposition",
+        "snippet": "An atomic decomposition can be explicitly given"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Explicit atomic decomposition is not formalized.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Atomic decomposition",
+          "snippet": "An atomic decomposition can be explicitly given"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle t_{n}=\\inf\\{t\\in \\mathbb {R} :\\mu (f&gt;t)&lt;2^{n}\\}}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle r_{n}~=~2^{n/p}\\,t_{n}~{\\text{ and }}\\quad f_{n}~=~{\\frac {f}{r_{n}}}\\,\\mathbf {1} _{(t_{n+1}&lt;f\\leq t_{n})}}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Layer-cake formula for L^p-norm",
+      "anchor": {
+        "section": "Atomic decomposition",
+        "snippet": "The complementary cumulative distribution function"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "MeasureTheory.lintegral_comp_eq_lintegral_meas_le_mul",
+        "module": "Mathlib.MeasureTheory.Integral.Layercake",
+        "match_kind": "generalization"
+      },
+      "note": "The general layer cake formula is formalized; the specialization computing the L^p-norm from the distribution function is not a separate lemma.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Atomic decomposition",
+          "snippet": "The complementary cumulative distribution function"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\|f\\|_{p}^{p}~=~p\\,\\int _{0}^{\\infty }t^{p-1}\\mu (|f|&gt;t)\\,\\mathrm {d} t\\,,}"
+        }
+      ]
+    },
+    {
+      "kind": "theorem",
+      "label": "Dual of L^p is L^q",
+      "anchor": {
+        "section": "Dual spaces",
+        "snippet": "The dual space of"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No isometric isomorphism between the dual of L^p and L^q was found in Mathlib.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Dual spaces",
+          "snippet": "The dual space of"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle f\\mapsto \\kappa _{p}(g)(f)=\\int fg\\,\\mathrm {d} \\mu }"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Reflexivity of L^p for 1<p<∞",
+      "anchor": {
+        "section": "Dual spaces",
+        "snippet": "the space"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Reflexivity of L^p is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Dual of L^1 is L^∞ (sigma-finite)",
+      "anchor": {
+        "section": "Dual spaces",
+        "snippet": "If the measure"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The L^1–L^∞ duality theorem is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Dual of L^∞",
+      "anchor": {
+        "section": "Dual spaces",
+        "snippet": "The dual of"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Characterization of the dual of L^∞ is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Embedding criterion for L^p ⊂ L^q (p<q)",
+      "anchor": {
+        "section": "Embeddings",
+        "snippet": "does not contain sets of finite but arbitrarily large measure"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "MeasureTheory.MemLp.mono_exponent_of_measure_support_ne_top",
+        "module": "Mathlib.MeasureTheory.Function.LpSeminorm.CompareExp",
+        "match_kind": "special_case"
+      },
+      "note": "MemLp.mono_exponent_of_measure_support_ne_top is a related sufficient condition; the exact 'no arbitrarily small measure' characterization is not stated.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Embedding criterion for L^q ⊂ L^p (p<q)",
+      "anchor": {
+        "section": "Embeddings",
+        "snippet": "does not contain sets of non-zero but arbitrarily small measure"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "MeasureTheory.MemLp.mono_exponent",
+        "module": "Mathlib.MeasureTheory.Function.LpSeminorm.CompareExp",
+        "match_kind": "special_case"
+      },
+      "note": "MemLp.mono_exponent gives L^q ⊂ L^p for finite measures; the precise 'no arbitrarily small measure' characterization is not stated.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Continuity of embedding via closed graph",
+      "anchor": {
+        "section": "Embeddings",
+        "snippet": "As a consequence of the closed graph theorem , the embedding is continuous"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Continuity of the L^p ↪ L^q inclusion (closed-graph argument) is not formalized as a named lemma.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Embeddings",
+          "snippet": "As a consequence of the closed graph theorem , the embedding is continuous"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\ \\|\\mathbf {1} f^{p}\\|_{1}\\leq \\|\\mathbf {1} \\|_{q/(q-p)}\\|f^{p}\\|_{q/p}}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\ \\|f\\|_{p}\\leq \\mu (S)^{1/p-1/q}\\|f\\|_{q}.}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Optimal constant of embedding",
+      "anchor": {
+        "section": "Embeddings",
+        "snippet": "The constant appearing in the above inequality is optimal"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Optimal constant of the L^p–L^q embedding is not in Mathlib.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Embeddings",
+          "snippet": "The constant appearing in the above inequality is optimal"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\|I\\|_{q,p}=\\mu (S)^{1/p-1/q}}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Density of integrable simple functions",
+      "anchor": {
+        "section": "Dense subspaces",
+        "snippet": "the vector space of integrable simple functions is dense"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "MeasureTheory.Lp.simpleFunc.denseRange",
+        "module": "Mathlib.MeasureTheory.Function.SimpleFuncDenseLp",
+        "match_kind": "exact"
+      },
+      "note": "Lp.simpleFunc.denseRange shows integrable simple functions are dense in Lp E p μ for p ≠ ∞.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Dense subspaces",
+          "snippet": "the vector space of integrable simple functions is dense"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle f=\\sum _{j=1}^{n}a_{j}\\mathbf {1} _{A_{j}},}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Urysohn approximation in normal spaces",
+      "anchor": {
+        "section": "Dense subspaces",
+        "snippet": "there exists a Urysohn function"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "exists_continuous_zero_one_of_isClosed",
+        "module": "Mathlib.Topology.UrysohnsLemma",
+        "match_kind": "exact"
+      },
+      "note": "Urysohn's lemma is formalized in Topology.UrysohnsLemma.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Dense subspaces",
+          "snippet": "there exists a Urysohn function"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle F\\subseteq A\\subseteq U\\subseteq V\\quad {\\text{and}}\\quad \\mu (U\\setminus F)=\\mu (U)-\\mu (F)&lt;\\varepsilon ,}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\int _{S}|\\mathbf {1} _{A}-\\varphi |\\,\\mathrm {d} \\mu &lt;\\varepsilon \\,.}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Density of continuous integrable functions",
+      "anchor": {
+        "section": "Dense subspaces",
+        "snippet": "the space of"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "MeasureTheory.ContinuousMap.toLp_denseRange",
+        "module": "Mathlib.MeasureTheory.Function.ContinuousMapDense",
+        "match_kind": "exact"
+      },
+      "note": "ContinuousMap.toLp_denseRange shows continuous functions are dense in Lp under suitable regularity assumptions.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Continuous compactly supported functions dense in L^p(R^n)",
+      "anchor": {
+        "section": "Dense subspaces",
+        "snippet": "the space of continuous and compactly supported functions"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "MeasureTheory.BoundedContinuousFunction.toLp_denseRange",
+        "module": "Mathlib.MeasureTheory.Function.ContinuousMapDense",
+        "match_kind": "exact"
+      },
+      "note": "BoundedContinuousFunction.toLp_denseRange gives density of continuous (bounded) functions in Lp for weakly regular finite measures, e.g. Lebesgue measure on compact sets.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Grothendieck closed subspace theorem",
+      "anchor": {
+        "section": "Closed subspaces",
+        "snippet": "is a closed subspace of"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Grothendieck's closed subspace theorem for L^p is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Hausdorff–Young inequality",
+      "anchor": {
+        "section": "Hausdorff–Young inequality",
+        "snippet": "is made precise with the Hausdorff–Young inequality"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Hausdorff–Young inequality is not in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Fourier transform fails to map into L^q for p>2",
+      "anchor": {
+        "section": "Hausdorff–Young inequality",
+        "snippet": "the Fourier transform does not map into"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No statement about Fourier transform failing into L^q for p>2 was found.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Every Hilbert space is isometric to ℓ^2(B)",
+      "anchor": {
+        "section": "Hilbert spaces",
+        "snippet": "every Hilbert space is isometrically isomorphic to"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "HilbertBasis",
+        "module": "Mathlib.Analysis.InnerProductSpace.l2Space",
+        "match_kind": "exact"
+      },
+      "note": "HilbertBasis.repr provides the isometric isomorphism to ℓ²(ι, 𝕜).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Distribution function",
+      "anchor": {
+        "section": "Weak L p",
+        "snippet": "The distribution function of"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No dedicated definition of the distribution function λ_f(t) = μ{|f|>t} as a standalone object was found.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Weak L p",
+          "snippet": "The distribution function of"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\lambda _{f}(t)=\\mu \\{x\\in S:|f(x)|&gt;t\\}.}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Markov's inequality bound",
+      "anchor": {
+        "section": "Weak L p",
+        "snippet": "then by Markov's inequality"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "MeasureTheory.mul_meas_ge_le_pow_eLpNorm",
+        "module": "Mathlib.MeasureTheory.Function.LpSeminorm.ChebyshevMarkov",
+        "match_kind": "exact"
+      },
+      "note": "mul_meas_ge_le_pow_eLpNorm is Markov's inequality in terms of the L^p seminorm.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Weak L p",
+          "snippet": "then by Markov's inequality"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\lambda _{f}(t)\\leq {\\frac {\\|f\\|_{p}^{p}}{t^{p}}}}"
+        }
+      ]
+    },
+    {
+      "kind": "definition",
+      "label": "Weak L^p space",
+      "anchor": {
+        "section": "Weak L p",
+        "snippet": "is said to be in the space weak"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Weak L^p space is not formalized in Mathlib.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Weak L p",
+          "snippet": "is said to be in the space weak"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\lambda _{f}(t)\\leq {\\frac {C^{p}}{t^{p}}}}"
+        }
+      ]
+    },
+    {
+      "kind": "definition",
+      "label": "Weak L^p quasi-norm",
+      "anchor": {
+        "section": "Weak L p",
+        "snippet": "The best constant"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Weak L^p quasi-norm is not formalized.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Weak L p",
+          "snippet": "The best constant"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\|f\\|_{p,w}=\\sup _{t&gt;0}~t\\lambda _{f}^{1/p}(t).}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Weak L^p coincides with Lorentz space",
+      "anchor": {
+        "section": "Weak L p",
+        "snippet": "coincide with the Lorentz spaces"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Lorentz spaces are not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Weak L^p quasi-triangle inequality",
+      "anchor": {
+        "section": "Weak L p",
+        "snippet": "is not a true norm, since the triangle inequality fails"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Weak L^p quasi-triangle inequality is not formalized.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Weak L p",
+          "snippet": "is not a true norm, since the triangle inequality fails"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\|f\\|_{p,w}\\leq \\|f\\|_{p}}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Completeness of weak L^p",
+      "anchor": {
+        "section": "Weak L p",
+        "snippet": "are complete"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Completeness of weak L^p is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Weak L^p comparable to L^p norm; Banach for p>1",
+      "anchor": {
+        "section": "Weak L p",
+        "snippet": "is comparable to the"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Comparison of weak L^p with L^p and the Banach structure for p > 1 is not formalized.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Weak L p",
+          "snippet": "is comparable to the"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\||f|\\|_{L^{p,\\infty }}=\\sup _{0&lt;\\mu (E)&lt;\\infty }\\mu (E)^{-1/r+1/p}\\left(\\int _{E}|f|^{r}\\,d\\mu \\right)^{1/r}}"
+        }
+      ]
+    },
+    {
+      "kind": "theorem",
+      "label": "Marcinkiewicz interpolation theorem",
+      "anchor": {
+        "section": "Weak L p",
+        "snippet": "the Marcinkiewicz interpolation theorem"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Marcinkiewicz interpolation theorem is not in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Weighted L^p space",
+      "anchor": {
+        "section": "Weighted L p spaces",
+        "snippet": "weighted"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "MeasureTheory.Lp",
+        "module": "Mathlib.MeasureTheory.Function.LpSpace.Basic",
+        "match_kind": "generalization"
+      },
+      "note": "Weighted L^p is the L^p of w·μ, which is subsumed by Lp E p (w • μ); no special-purpose definition exists.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Muckenhoupt's theorem",
+      "anchor": {
+        "section": "Weighted L p spaces",
+        "snippet": "Muckenhoupt's theorem describes weights"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Muckenhoupt A_p weights and the corresponding theorem are not in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Intrinsic L^p on manifolds",
+      "anchor": {
+        "section": "L p spaces on manifolds",
+        "snippet": "called the intrinsic"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Intrinsic L^p spaces on manifolds (via densities) are not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Vector-valued L^p via Bochner/Pettis",
+      "anchor": {
+        "section": "Vector-valued L p spaces",
+        "snippet": "the spaces of Bochner integrable and Pettis integrable functions"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "MeasureTheory.Lp",
+        "module": "Mathlib.MeasureTheory.Function.LpSpace.Basic",
+        "match_kind": "generalization"
+      },
+      "note": "MeasureTheory.Lp is already defined for Banach-valued strongly measurable functions (Bochner setting); the Pettis-integrable variant is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Vector-valued L^p via tensor products",
+      "anchor": {
+        "section": "Vector-valued L p spaces",
+        "snippet": "Another way involves topological tensor products"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Topological tensor product construction of vector-valued L^p is not in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Grothendieck nuclearity theorem for vector-valued L^p",
+      "anchor": {
+        "section": "Vector-valued L p spaces",
+        "snippet": "Alexander Grothendieck showed that when"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Grothendieck's nuclearity result for vector-valued L^p is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "L^0 space of measurable functions",
+      "anchor": {
+        "section": "L 0 space of measurable functions",
+        "snippet": "is equipped with the topology of convergence in measure"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "MeasureTheory.AEEqFun",
+        "module": "Mathlib.MeasureTheory.Function.AEEqFun",
+        "match_kind": "generalization"
+      },
+      "note": "AEEqFun is the space of a.e.-equivalence classes; TendstoInMeasure formalizes convergence in measure, but L^0 with its TVS topology is not packaged as a single object.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "L^0 is a TVS iff μ has no atoms condition",
+      "anchor": {
+        "section": "L 0 space of measurable functions",
+        "snippet": "is always a topological abelian group"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Characterization of L^0 as a TVS under the no-atom condition is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Local convergence in measure is an F-space",
+      "anchor": {
+        "section": "L 0 space of measurable functions",
+        "snippet": "the weaker topology of local convergence in measure is an F-space"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "F-space structure on L^0 under local convergence in measure is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Lévy metric on L^0",
+      "anchor": {
+        "section": "L 0 space of measurable functions",
+        "snippet": "Such a metric is called"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Lévy metric on L^0 is not formalized in Mathlib.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "L 0 space of measurable functions",
+          "snippet": "Such a metric is called"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle d(f,g)=\\int _{S}\\varphi {\\bigl (}|f(x)-g(x)|{\\bigr )}\\,\\mathrm {d} \\mu (x)}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "L^0 isomorphism for infinite Lebesgue measure",
+      "anchor": {
+        "section": "L 0 space of measurable functions",
+        "snippet": "is isomorphic to the space"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Isomorphism of L^0 spaces under infinite Lebesgue measure is not formalized.",
+      "provenance": "ai"
+    }
+  ]
+}

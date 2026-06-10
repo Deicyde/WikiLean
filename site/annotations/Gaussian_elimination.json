@@ -1,0 +1,527 @@
+{
+  "slug": "Gaussian_elimination",
+  "wikipedia_title": "Gaussian elimination",
+  "display_title": "Gaussian elimination",
+  "schema_version": 3,
+  "annotation_style": "theorem_article",
+  "annotations": [
+    {
+      "kind": "definition",
+      "label": "Gaussian elimination",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "is an algorithm for solving systems of linear equations"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Matrix.exists_list_transvec_mul_diagonal_mul_list_transvec",
+        "module": "Mathlib.LinearAlgebra.Matrix.Transvection",
+        "match_kind": "generalization"
+      },
+      "note": "Mathlib has no general row-reduction algorithm, but proves over a field every matrix factors as transvections·diagonal·transvections (a Gauss-pivot variant).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Elementary row operations",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "There are three types of elementary row operations: swapping two rows"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Matrix.transvection",
+        "module": "Mathlib.LinearAlgebra.Matrix.Transvection",
+        "match_kind": "special_case"
+      },
+      "note": "Transvections (add-multiple-of-row) and `Matrix.updateRow_eq_transvection` are formalized, but the three elementary operations are not unified into a single definition.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Reduced row echelon form",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "a matrix can always be transformed into reduced row echelon form"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No definition of (reduced) row echelon form was found in Mathlib.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "(Lead)",
+          "snippet": "a matrix can always be transformed into reduced row echelon form"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle {\\begin{bmatrix}1&amp;3&amp;1&amp;9\\\\1&amp;1&amp;-1&amp;1\\\\3&amp;11&amp;5&amp;35\\end{bmatrix}}\\to {\\begin{bmatrix}1&amp;3&amp;1&amp;9\\\\0&amp;-2&amp;-2&amp;-8\\\\0&amp;2&amp;2&amp;8\\end{bmatrix}}\\to {\\begin{bmatrix}1&amp;3&amp;1&amp;9\\\\0&amp;-2&amp;-2&amp;-8\\\\0&amp;0&amp;0&amp;0\\end{bmatrix}}\\to {\\begin{bmatrix}1&amp;0&amp;-2&amp;-3\\\\0&amp;1&amp;1&amp;4\\\\0&amp;0&amp;0&amp;0\\end{bmatrix}}}"
+        }
+      ]
+    },
+    {
+      "kind": "theorem",
+      "label": "Uniqueness of reduced row echelon form",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "This final form is unique"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Without an RREF definition in Mathlib, uniqueness is not formalized.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "(Lead)",
+          "snippet": "This final form is unique"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle {\\begin{bmatrix}1&amp;3&amp;1&amp;9\\\\1&amp;1&amp;-1&amp;1\\\\3&amp;11&amp;5&amp;35\\end{bmatrix}}\\to {\\begin{bmatrix}1&amp;3&amp;1&amp;9\\\\0&amp;-2&amp;-2&amp;-8\\\\0&amp;2&amp;2&amp;8\\end{bmatrix}}\\to {\\begin{bmatrix}1&amp;3&amp;1&amp;9\\\\0&amp;-2&amp;-2&amp;-8\\\\0&amp;0&amp;0&amp;0\\end{bmatrix}}\\to {\\begin{bmatrix}1&amp;0&amp;-2&amp;-3\\\\0&amp;1&amp;1&amp;4\\\\0&amp;0&amp;0&amp;0\\end{bmatrix}}}"
+        }
+      ]
+    },
+    {
+      "kind": "definition",
+      "label": "Gauss–Jordan elimination",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "is sometimes called Gauss–Jordan elimination"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No Gauss–Jordan algorithm or RREF computation is present in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Forward elimination and back substitution",
+      "anchor": {
+        "section": "Definitions and example of algorithm",
+        "snippet": "The first part (sometimes called forward elimination) reduces a given system to row echelon form"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib does not define forward-elimination/back-substitution phases.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Row reduction as matrix decomposition",
+      "anchor": {
+        "section": "Definitions and example of algorithm",
+        "snippet": "row reduction produces a matrix decomposition of the original matrix"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Matrix.exists_list_transvec_mul_diagonal_mul_list_transvec",
+        "module": "Mathlib.LinearAlgebra.Matrix.Transvection",
+        "match_kind": "generalization"
+      },
+      "note": "Mathlib provides a related decomposition M = L·D·L' with L, L' products of transvections and D diagonal, rather than the precise LU/PLU statement.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "LU decomposition via Frobenius matrices",
+      "anchor": {
+        "section": "Definitions and example of algorithm",
+        "snippet": "the first part of the algorithm computes an LU decomposition"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Searches for `LU`/`LUDecomposition` returned no LU-decomposition statement in Mathlib (LDL exists but is different).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Three elementary row operations",
+      "anchor": {
+        "section": "Row operations",
+        "snippet": "There are three types of elementary row operations which may be performed on the rows of a matrix"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Matrix.transvection",
+        "module": "Mathlib.LinearAlgebra.Matrix.Transvection",
+        "match_kind": "special_case"
+      },
+      "note": "Only the add-multiple-of-row operation is packaged (as a transvection); the three are not collected as one definition.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Row operations preserve solution set",
+      "anchor": {
+        "section": "Row operations",
+        "snippet": "these operations do not change the solution set"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No theorem about elementary row operations preserving the solution set of a linear system was found.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Leading entry (pivot)",
+      "anchor": {
+        "section": "Echelon form",
+        "snippet": "the leftmost nonzero entry is called the leading entry"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has no notion of leading entry/pivot of a matrix row.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Row echelon form",
+      "anchor": {
+        "section": "Echelon form",
+        "snippet": "the matrix is said to be in row echelon form"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No row-echelon-form predicate was found in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Matrix in row echelon form",
+      "anchor": {
+        "section": "Echelon form",
+        "snippet": "the following matrix is in row echelon form"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Without a row-echelon-form definition, the example is not formalized.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Echelon form",
+          "snippet": "the following matrix is in row echelon form"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle {\\begin{bmatrix}0&amp;\\color {red}{\\mathbf {2} }&amp;1&amp;-1\\\\0&amp;0&amp;\\color {red}{\\mathbf {3} }&amp;1\\\\0&amp;0&amp;0&amp;0\\end{bmatrix}}.}"
+        }
+      ]
+    },
+    {
+      "kind": "definition",
+      "label": "Reduced row echelon form",
+      "anchor": {
+        "section": "Echelon form",
+        "snippet": "A matrix is said to be in reduced row echelon form"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No RREF predicate exists in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Solving a system by row reduction",
+      "anchor": {
+        "section": "Example of the algorithm",
+        "snippet": "Suppose the goal is to find and describe the set of solutions"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This worked numerical example is not formalized in Mathlib.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Example of the algorithm",
+          "snippet": "Suppose the goal is to find and describe the set of solutions"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle {\\begin{alignedat}{4}2x&amp;{}+{}&amp;y&amp;{}-{}&amp;z&amp;{}={}&amp;8&amp;\\qquad (L_{1})\\\\-3x&amp;{}-{}&amp;y&amp;{}+{}&amp;2z&amp;{}={}&amp;-11&amp;\\qquad (L_{2})\\\\-2x&amp;{}+{}&amp;y&amp;{}+{}&amp;2z&amp;{}={}&amp;-3&amp;\\qquad (L_{3})\\end{alignedat}}}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Effect of row operations on determinant",
+      "anchor": {
+        "section": "Computing determinants",
+        "snippet": "how the elementary row operations change the determinant"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Matrix.det_updateRow_smul",
+        "module": "Mathlib.LinearAlgebra.Matrix.Determinant.Basic",
+        "match_kind": "exact"
+      },
+      "note": "Mathlib has `det_updateRow_smul`, `det_updateRow_add`, `det_updateRow_add_smul_self`, and `det_permute` covering the three operations' effects on the determinant.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Determinant via row echelon form",
+      "anchor": {
+        "section": "Computing determinants",
+        "snippet": "the determinant of A is the quotient by d of the product of the elements of the diagonal of B"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Matrix.det_of_upperTriangular",
+        "module": "Mathlib.LinearAlgebra.Matrix.Block",
+        "match_kind": "generalization"
+      },
+      "note": "Mathlib proves the determinant of a (block-)upper-triangular matrix is the product of diagonal entries, but doesn't tie this to a Gaussian-elimination reduction algorithm.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Computing determinants",
+          "snippet": "the determinant of A is the quotient by d of the product of the elements of the diagonal of B"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\det(A)={\\frac {\\prod \\operatorname {diag} (B)}{d}}.}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Arithmetic complexity of determinant computation",
+      "anchor": {
+        "section": "Computing determinants",
+        "snippet": "this method needs only O( n 3 ) arithmetic operations"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib does not contain complexity statements about determinant computation.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Inverse via Gauss–Jordan elimination",
+      "anchor": {
+        "section": "Finding the inverse of a matrix",
+        "snippet": "The matrix A is invertible if and only if it can be reduced to the identity matrix"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Matrix.inv_eq_left_inv",
+        "module": "Mathlib.LinearAlgebra.Matrix.NonsingularInverse",
+        "match_kind": "generalization"
+      },
+      "note": "Mathlib characterizes invertibility via determinant (`isUnit_iff_isUnit_det`) and provides inverse-from-left/right-inverse lemmas, but not via Gauss–Jordan reduction.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Computing a matrix inverse",
+      "anchor": {
+        "section": "Finding the inverse of a matrix",
+        "snippet": "To find the inverse of this matrix, one takes the following matrix augmented by the identity"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The worked augmented-matrix inverse example is not formalized.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Finding the inverse of a matrix",
+          "snippet": "To find the inverse of this matrix, one takes the following matrix augmented by the identity"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle [A|I]=\\left[{\\begin{array}{ccc|ccc}2&amp;-1&amp;0&amp;1&amp;0&amp;0\\\\-1&amp;2&amp;-1&amp;0&amp;1&amp;0\\\\0&amp;-1&amp;2&amp;0&amp;0&amp;1\\end{array}}\\right].}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Rank and basis from echelon form",
+      "anchor": {
+        "section": "Computing ranks and bases",
+        "snippet": "the rank of A is 5, since there are 5 nonzero rows in T"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Without an echelon-form predicate, the rank-equals-number-of-nonzero-rows result is not formalized.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Computing ranks and bases",
+          "snippet": "the rank of A is 5, since there are 5 nonzero rows in T"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle T={\\begin{bmatrix}a&amp;*&amp;*&amp;*&amp;*&amp;*&amp;*&amp;*&amp;*\\\\0&amp;0&amp;b&amp;*&amp;*&amp;*&amp;*&amp;*&amp;*\\\\0&amp;0&amp;0&amp;c&amp;*&amp;*&amp;*&amp;*&amp;*\\\\0&amp;0&amp;0&amp;0&amp;0&amp;0&amp;d&amp;*&amp;*\\\\0&amp;0&amp;0&amp;0&amp;0&amp;0&amp;0&amp;0&amp;e\\\\0&amp;0&amp;0&amp;0&amp;0&amp;0&amp;0&amp;0&amp;0\\end{bmatrix}},}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Arithmetic complexity of Gaussian elimination",
+      "anchor": {
+        "section": "Computational efficiency",
+        "snippet": "for a total of approximately 2 n 3 /3 operations"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has no arithmetic-complexity analysis of Gaussian elimination.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Bareiss algorithm bit complexity",
+      "anchor": {
+        "section": "Bareiss algorithm",
+        "snippet": "it has a bit complexity of O( n 5 ) , and has therefore a strongly-polynomial time complexity"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Searches for `Bareiss` returned no hits in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Bareiss entries are subdeterminants",
+      "anchor": {
+        "section": "Bareiss algorithm",
+        "snippet": "each matrix entry generated by this variant is the determinant of a submatrix of the original matrix"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Bareiss algorithm is absent from Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Numerical stability conditions",
+      "anchor": {
+        "section": "Numeric instability",
+        "snippet": "Gaussian elimination is numerically stable for diagonally dominant or positive-definite matrices"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Numerical-stability results for Gaussian elimination are not in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Gaussian elimination over any field",
+      "anchor": {
+        "section": "Generalizations",
+        "snippet": "Gaussian elimination can be performed over any field"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Matrix.exists_list_transvec_mul_mul_list_transvec_eq_diagonal",
+        "module": "Mathlib.LinearAlgebra.Matrix.Transvection",
+        "match_kind": "generalization"
+      },
+      "note": "The transvection reduction to diagonal form is proved for matrices over an arbitrary field, capturing the field-generality claim.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Buchberger generalization",
+      "anchor": {
+        "section": "Generalizations",
+        "snippet": "Buchberger's algorithm is a generalization of Gaussian elimination to systems of polynomial equations"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No Buchberger algorithm or Gröbner-basis formalization was found in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Tensor rank is NP-hard",
+      "anchor": {
+        "section": "Generalizations",
+        "snippet": "Computing the rank of a tensor of order greater than 2 is NP-hard"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Computational-complexity statements about tensor rank are absent from Mathlib.",
+      "provenance": "ai"
+    }
+  ]
+}

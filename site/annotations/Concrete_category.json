@@ -1,0 +1,377 @@
+{
+  "slug": "Concrete_category",
+  "wikipedia_title": "Concrete category",
+  "display_title": "Concrete category",
+  "schema_version": 3,
+  "annotation_style": "theorem_article",
+  "annotations": [
+    {
+      "kind": "definition",
+      "label": "Concrete category (informal)",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "a concrete category is a category that is equipped with a faithful functor to the category of sets"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "CategoryTheory.ConcreteCategory",
+        "module": "Mathlib.CategoryTheory.ConcreteCategory.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`ConcreteCategory C FC` packages a category with a faithful functor `forget : C ⥤ Type` (Faithful instance given immediately in `Forget.lean`).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Concrete category (elementary form)",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "consists of a class of objects , each equipped with an underlying set"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "CategoryTheory.ConcreteCategory",
+        "module": "Mathlib.CategoryTheory.ConcreteCategory.Basic",
+        "match_kind": "exact"
+      },
+      "note": "The class exposes `ToType X : Type` and `hom : (X ⟶ Y) → ToHom X Y` with `FunLike` coercion, capturing the underlying-set view.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Concrete category (formal)",
+      "anchor": {
+        "section": "Definition",
+        "snippet": "A concrete category is a pair"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "CategoryTheory.ConcreteCategory",
+        "module": "Mathlib.CategoryTheory.ConcreteCategory.Basic",
+        "match_kind": "exact"
+      },
+      "note": "Defined as a class `ConcreteCategory C FC` carrying the faithful functor data `hom`/`ofHom` with bijection axioms.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Forgetful functor interpretation",
+      "anchor": {
+        "section": "Definition",
+        "snippet": "The functor U can often be thought of as a forgetful functor"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "CategoryTheory.forget",
+        "module": "Mathlib.CategoryTheory.ConcreteCategory.Forget",
+        "match_kind": "exact"
+      },
+      "note": "`forget C : C ⥤ Type w` is the canonical faithful functor, with `(forget C).Faithful` instance proven.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Homomorphisms in a concrete category",
+      "anchor": {
+        "section": "Definition",
+        "snippet": "It is customary to call the morphisms in a concrete category homomorphisms"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "CategoryTheory.ConcreteCategory.hom",
+        "module": "Mathlib.CategoryTheory.ConcreteCategory.Basic",
+        "match_kind": "invocation"
+      },
+      "note": "Mathlib does not adopt the word \"homomorphism\" generically; instead `ConcreteCategory.hom : (X ⟶ Y) → ToHom X Y` converts morphisms to bundled functions.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Concretizable category",
+      "anchor": {
+        "section": "Definition",
+        "snippet": "A category C is concretizable if there exists a concrete category"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No predicate \"Concretizable\" exists; only specific `ConcreteCategory` instances are declared.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Every small category is concretizable",
+      "anchor": {
+        "section": "Definition",
+        "snippet": "All small categories are concretizable"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "CategoryTheory.yoneda_faithful",
+        "module": "Mathlib.CategoryTheory.Yoneda",
+        "match_kind": "invocation"
+      },
+      "note": "The faithful Yoneda embedding `C ⥤ Cᵒᵖ ⥤ Type v₁` is proven, but no theorem packages a small `C` as a `ConcreteCategory`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Distinct topologies, same underlying set",
+      "anchor": {
+        "section": "Remarks",
+        "snippet": "if S and T are two different topologies on the same set X"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No declaration exhibits two distinct topologies on the same set as a remark on non-injectivity of `forget TopCat`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Four-element set with two group structures",
+      "anchor": {
+        "section": "Remarks",
+        "snippet": "any set with four elements can be given two non-isomorphic group structures"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has no statement contrasting `ℤ/4` and `ℤ/2 × ℤ/2` as different group structures on a four-element set.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Category of sets with partial functions",
+      "anchor": {
+        "section": "Remarks",
+        "snippet": "the category of sets with partial functions as morphisms"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "PartialFun",
+        "module": "Mathlib.CategoryTheory.Category.PartialFun",
+        "match_kind": "exact"
+      },
+      "note": "`PartialFun` is defined as the category of types with `Part`-valued partial functions as morphisms.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Group as a concrete category",
+      "anchor": {
+        "section": "Further examples",
+        "snippet": "Any group G may be regarded as an \"abstract\" category"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "CategoryTheory.SingleObj",
+        "module": "Mathlib.CategoryTheory.SingleObj",
+        "match_kind": "exact"
+      },
+      "note": "`SingleObj M` realises any monoid/group as a one-object category whose morphisms are elements of `M`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Poset as a concrete category",
+      "anchor": {
+        "section": "Further examples",
+        "snippet": "any poset P may be regarded as an abstract category"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Preorder.smallCategory",
+        "module": "Mathlib.CategoryTheory.Category.Preorder",
+        "match_kind": "exact"
+      },
+      "note": "Any preorder (hence poset) carries a `SmallCategory` instance with unique morphisms encoding `≤`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Category Rel of sets and relations",
+      "anchor": {
+        "section": "Further examples",
+        "snippet": "The category Rel whose objects are sets and whose morphisms are relations"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "CategoryTheory.RelCat",
+        "module": "Mathlib.CategoryTheory.Category.RelCat",
+        "match_kind": "exact"
+      },
+      "note": "`RelCat` is the large category of types with binary relations as morphisms.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Set^op embeds in Rel",
+      "anchor": {
+        "section": "Further examples",
+        "snippet": "The category Set op can be embedded into Rel"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "CategoryTheory.RelCat.graphFunctor",
+        "module": "Mathlib.CategoryTheory.Category.RelCat",
+        "match_kind": "invocation"
+      },
+      "note": "Mathlib has the faithful `graphFunctor : Type u ⥤ RelCat` and `opEquivalence : RelCat ≌ RelCatᵒᵖ`, but does not directly state the `Setᵒᵖ ↪ Rel` embedding.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Opposite of concretizable is concretizable",
+      "anchor": {
+        "section": "Further examples",
+        "snippet": "the opposite of any concretizable category C is again concretizable"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No theorem deriving a `ConcreteCategory Cᵒᵖ` instance from `ConcreteCategory C` appears in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Faithful functor from presheaf category",
+      "anchor": {
+        "section": "Further examples",
+        "snippet": "If C is any small category, then there exists a faithful functor"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "CategoryTheory.yoneda_faithful",
+        "module": "Mathlib.CategoryTheory.Yoneda",
+        "match_kind": "invocation"
+      },
+      "note": "Yoneda gives a faithful (in fact fully faithful) `C ⥤ Cᵒᵖ ⥤ Type v₁`, but no faithful functor `[Cᵒᵖ, Set] → Set` is stated.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Banach spaces with unit ball functor",
+      "anchor": {
+        "section": "Further examples",
+        "snippet": "the category Ban 1 of Banach spaces and linear contractions"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has Banach spaces and contractions individually but no category `Ban₁` nor a unit-ball forgetful functor as a `ConcreteCategory` instance.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Category Cat of small categories",
+      "anchor": {
+        "section": "Further examples",
+        "snippet": "The category Cat whose objects are small categories and whose morphisms are functors"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "CategoryTheory.Cat",
+        "module": "Mathlib.CategoryTheory.Category.Cat",
+        "match_kind": "exact"
+      },
+      "note": "`Cat` is defined as bundled `Category`-instances with functors as morphisms (file comment notes it is not concrete).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "hTop is not concretizable (Freyd)",
+      "anchor": {
+        "section": "Counter-examples",
+        "snippet": "The category hTop , where the objects are topological spaces and the morphisms are homotopy classes of continuous functions, is an example of a category that is not concretizable"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Freyd's theorem on non-concretizability of the homotopy category is absent from Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "N-ary predicate and N-ary operation",
+      "anchor": {
+        "section": "Implicit structure of concrete categories",
+        "snippet": "a subfunctor of U N is called an N-ary predicate and a natural transformation"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib's `Subfunctor` exists generally, but `N`-ary predicates/operations on a concrete category's forgetful functor are not defined.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Models of signature recover C",
+      "anchor": {
+        "section": "Implicit structure of concrete categories",
+        "snippet": "The category of models for this signature then contains a full subcategory which is equivalent to C"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The signature-and-models reconstruction of a concrete category is not present.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Concrete category over X",
+      "anchor": {
+        "section": "Relative concreteness",
+        "snippet": "a concrete category over X"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib's `ConcreteCategory` is fixed to `Type w`; relative concreteness over an arbitrary base `X` is not modelled.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Construct",
+      "anchor": {
+        "section": "Relative concreteness",
+        "snippet": "a concrete category over Set is sometimes called a construct"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The terminology \"construct\" for a concrete category over Set does not appear in Mathlib.",
+      "provenance": "ai"
+    }
+  ]
+}

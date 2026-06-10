@@ -1,0 +1,281 @@
+{
+  "slug": "Galois_theory",
+  "wikipedia_title": "Galois theory",
+  "display_title": "Galois theory",
+  "schema_version": 3,
+  "annotation_style": "theorem_article",
+  "annotations": [
+    {
+      "kind": "definition",
+      "label": "Solvable by radicals",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "an equation is by definition solvable by radicals if its roots may be expressed by a formula involving only integers"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "solvableByRad",
+        "module": "Mathlib.FieldTheory.AbelRuffini",
+        "match_kind": "exact"
+      },
+      "note": "`solvableByRad F E` is the intermediate field of elements obtained from `F` by field operations and `n`-th roots, formalizing solvability by radicals.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Abel–Ruffini theorem (lead statement)",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "which asserts that a general polynomial of degree at least five cannot be solved by radicals"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "isSolvable_gal_of_irreducible",
+        "module": "Mathlib.FieldTheory.AbelRuffini",
+        "match_kind": "generalization"
+      },
+      "note": "Only the easy direction `solvableByRad ⇒ IsSolvable p.Gal` is in Mathlib; the explicit statement that the general degree-≥5 polynomial is not solvable by radicals is not present.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Discriminant detects multiple/real roots",
+      "anchor": {
+        "section": "Pre-history",
+        "snippet": "the discriminant is a symmetric function in the roots that reflects properties of the roots"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Cubic.discr_ne_zero_iff_roots_nodup",
+        "module": "Mathlib.Algebra.CubicDiscriminant",
+        "match_kind": "special_case"
+      },
+      "note": "Cubic discriminant detects distinct roots; general discriminants (`Algebra.discr`, `Polynomial.discriminant`) exist but the broad symmetric-function/root-detection statement is only formalized in special cases.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Abel–Ruffini theorem (historical)",
+      "anchor": {
+        "section": "Pre-history",
+        "snippet": "The quintic was almost proven to have no general solutions by radicals by Paolo Ruffini in 1799"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "isSolvable_gal_of_irreducible",
+        "module": "Mathlib.FieldTheory.AbelRuffini",
+        "match_kind": "generalization"
+      },
+      "note": "Mathlib formalizes one direction of Abel–Ruffini (root solvable by radicals ⇒ Galois group solvable); a concrete unsolvable quintic witnessing impossibility is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Galois group of a polynomial (permutation group)",
+      "anchor": {
+        "section": "Permutation group approach",
+        "snippet": "These permutations together form a permutation group , also called the Galois group of the polynomial"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Polynomial.Gal",
+        "module": "Mathlib.FieldTheory.PolynomialGaloisGroup",
+        "match_kind": "exact"
+      },
+      "note": "`Polynomial.Gal p` is the Galois group of `p`, and `Polynomial.Gal.galActionHom` embeds it into permutations of the roots.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Galois group of x^2 − 4x + 1",
+      "anchor": {
+        "section": "Quadratic equation",
+        "snippet": "We conclude that the Galois group of the polynomial x 2 − 4 x + 1 consists of two permutations"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No worked example computing `(X^2 - 4*X + 1).Gal` appears in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Quartic with Galois group the Klein four-group",
+      "anchor": {
+        "section": "Quartic equation",
+        "snippet": "Galois theory implies that, since the polynomial is irreducible, the Galois group has at least four elements"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has `KleinFour` and `Polynomial.Gal`, but no worked quartic example identifying its Galois group with the Klein four-group.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Modern Galois group of a field extension",
+      "anchor": {
+        "section": "Modern approach by field theory",
+        "snippet": "In the modern approach, one starts with a field extension L / K"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "IsGalois",
+        "module": "Mathlib.FieldTheory.Galois.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`IsGalois F E` (separable + normal) together with the `Gal(E/F) := E ≃ₐ[F] E` notation captures the modern definition.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Absolute Galois group of Q",
+      "anchor": {
+        "section": "Modern approach by field theory",
+        "snippet": "the absolute Galois group of Q , defined to be the Galois group of K / Q where K is an algebraic closure of Q"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Field.absoluteGaloisGroup",
+        "module": "Mathlib.FieldTheory.AbsoluteGaloisGroup",
+        "match_kind": "generalization"
+      },
+      "note": "`Field.absoluteGaloisGroup K := AlgebraicClosure K ≃ₐ[K] AlgebraicClosure K` defines the absolute Galois group of any field; specializing to ℚ gives the article's notion.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Radical extension via cyclic factor groups",
+      "anchor": {
+        "section": "Solvable groups and solution by radicals",
+        "snippet": "then it is a radical extension and the elements of L can then be expressed using the n th root of some element of K"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "solvableByRad",
+        "module": "Mathlib.FieldTheory.AbelRuffini",
+        "match_kind": "generalization"
+      },
+      "note": "Mathlib captures the radical closure via `solvableByRad`, but does not provide a standalone `IsRadicalExtension` predicate built from cyclic factor groups.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Solvable Galois group",
+      "anchor": {
+        "section": "Solvable groups and solution by radicals",
+        "snippet": "If all the factor groups in its composition series are cyclic, the Galois group is called solvable"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "IsSolvable",
+        "module": "Mathlib.GroupTheory.Solvable",
+        "match_kind": "exact"
+      },
+      "note": "`IsSolvable G` (via the derived series) applied to `p.Gal` or `Gal(E/F)` formalizes the notion of a solvable Galois group.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Existence of non-solvable polynomials for n > 4",
+      "anchor": {
+        "section": "Solvable groups and solution by radicals",
+        "snippet": "for every n > 4 , there exist polynomials of degree n which are not solvable by radicals"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No theorem in Mathlib asserts existence of degree-`n` polynomials (for each `n > 4`) that are not solvable by radicals.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Non-solvable quintic x^5 − x − 1",
+      "anchor": {
+        "section": "A non-solvable quintic example",
+        "snippet": "Van der Waerden [ 11 ] cites the polynomial f ( x ) = x 5 − x − 1"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has no proof that `X^5 - X - 1` (or any specific quintic) has non-solvable Galois group.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Inverse Galois problem",
+      "anchor": {
+        "section": "Inverse Galois problem",
+        "snippet": "The inverse Galois problem is to find a field extension with a given Galois group"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No formal statement or namespace for the inverse Galois problem appears in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Every finite group occurs as a Galois group (over some base)",
+      "anchor": {
+        "section": "Inverse Galois problem",
+        "snippet": "all finite groups do occur as Galois groups"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib does not state that every finite group is realized as a Galois group of some field extension.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Shafarevich: solvable finite groups over Q",
+      "anchor": {
+        "section": "Inverse Galois problem",
+        "snippet": "Igor Shafarevich proved that every solvable finite group is the Galois group of some extension of Q"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Shafarevich's theorem on realizing solvable finite groups over ℚ is not in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Jacobson correspondence for purely inseparable extensions",
+      "anchor": {
+        "section": "Inseparable extensions",
+        "snippet": "Jacobson (1944) showed that this establishes a one-to-one correspondence"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has substantial `PurelyInseparable` API but no formalization of Jacobson's bijection between intermediate fields and restricted Lie algebras of derivations.",
+      "provenance": "ai"
+    }
+  ]
+}

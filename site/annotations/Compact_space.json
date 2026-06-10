@@ -1,0 +1,1315 @@
+{
+  "slug": "Compact_space",
+  "wikipedia_title": "Compact space",
+  "display_title": "Compact space",
+  "schema_version": 3,
+  "annotation_style": "theorem_article",
+  "annotations": [
+    {
+      "kind": "theorem",
+      "label": "Extreme value theorem (Euclidean)",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "every continuous real-valued function on a compact space has these properties"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "IsCompact.exists_isMaxOn",
+        "module": "Mathlib.Topology.Order.Compact",
+        "match_kind": "generalization"
+      },
+      "note": "The extreme value theorem is formalized as `IsCompact.exists_isMaxOn`/`IsCompact.exists_isMinOn` for continuous real-valued functions on compact sets.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Compact topological space (open cover)",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "a topological space is compact if every open cover has a finite subcover"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "CompactSpace",
+        "module": "Mathlib.Topology.Defs.Filter",
+        "match_kind": "exact"
+      },
+      "note": "`CompactSpace` is the typeclass for compact topological spaces, and `isCompact_iff_finite_subcover` gives the open cover characterization.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Heine–Borel theorem (lead)",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "For subsets of Euclidean space, compactness is equivalent to being closed and bounded"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "isCompact_iff_isClosed_bounded",
+        "module": "Mathlib.Topology.MetricSpace.Bounded",
+        "match_kind": "exact"
+      },
+      "note": "Stated as the Heine–Borel theorem in proper spaces, which covers Euclidean space.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Compact set (terminology)",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "The term compact set may refer either to a compact topological space"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "IsCompact",
+        "module": "Mathlib.Topology.Defs.Filter",
+        "match_kind": "exact"
+      },
+      "note": "Mathlib's `IsCompact` predicate denotes compact subsets and corresponds to the terminology.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Bolzano's theorem on limit points",
+      "anchor": {
+        "section": "Historical development",
+        "snippet": "any bounded sequence of points (in the line or plane, for instance) has a subsequence that must eventually get arbitrarily close to some other point"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "tendsto_subseq_of_bounded",
+        "module": "Mathlib.Topology.MetricSpace.Sequences",
+        "match_kind": "generalization"
+      },
+      "note": "Bolzano–Weierstrass for bounded sequences is in `Mathlib/Topology/MetricSpace/Sequences.lean` (and `IsSeqCompact` formulations exist).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Arzelà–Ascoli theorem (historical)",
+      "anchor": {
+        "section": "Historical development",
+        "snippet": "it was possible to extract a uniformly convergent sequence of functions from a suitable family of functions"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "BoundedContinuousFunction.arzela_ascoli",
+        "module": "Mathlib.Topology.ContinuousMap.Bounded.ArzelaAscoli",
+        "match_kind": "exact"
+      },
+      "note": "Arzelà–Ascoli is formalized in `Mathlib/Topology/ContinuousMap/Bounded/ArzelaAscoli.lean` and in `ArzelaAscoli.*` lemmas in `Mathlib/Topology/UniformSpace/Ascoli.lean`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Heine's uniform continuity theorem",
+      "anchor": {
+        "section": "Historical development",
+        "snippet": "Eduard Heine showed that a continuous function defined on a closed and bounded interval was in fact uniformly continuous"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "CompactSpace.uniformContinuous_of_continuous",
+        "module": "Mathlib.Topology.UniformSpace.HeineCantor",
+        "match_kind": "generalization"
+      },
+      "note": "Heine–Cantor (continuous on compact ⇒ uniformly continuous) is formalized in `Mathlib/Topology/UniformSpace/HeineCantor.lean`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Heine–Borel lemma",
+      "anchor": {
+        "section": "Historical development",
+        "snippet": "from any countable cover of the interval by smaller open intervals, it was possible to select a finite number of these that also covered it"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "isCompact_iff_isClosed_bounded",
+        "module": "Mathlib.Topology.MetricSpace.Bounded",
+        "match_kind": "generalization"
+      },
+      "note": "Same Heine–Borel statement; the finite-subcover form follows from `isCompact_Icc` plus `isCompact_iff_finite_subcover`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Unit interval is compact",
+      "anchor": {
+        "section": "Basic examples",
+        "snippet": "A nontrivial example of a compact space is the (closed) unit interval"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "isCompact_Icc",
+        "module": "Mathlib.Topology.Order.Compact",
+        "match_kind": "generalization"
+      },
+      "note": "Every `Icc a b` (in particular `[0,1]`) is compact via the `CompactIccSpace` instance.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Half-line [0,∞) not compact",
+      "anchor": {
+        "section": "Basic examples",
+        "snippet": "It is also crucial that the interval be bounded"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Real.noncompactSpace",
+        "module": "Mathlib.Analysis.Normed.Module.Basic",
+        "match_kind": "generalization"
+      },
+      "note": "Real line is shown non-compact via `RealNormedSpace.noncompactSpace`; the specific statement for `[0,∞)` is not a named lemma but is a direct consequence.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Closed disks and circles compact; open disk not",
+      "anchor": {
+        "section": "Basic examples",
+        "snippet": "closed disks are compact since for any infinite number of points sampled from a disk"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "isCompact_closedBall",
+        "module": "Mathlib.Topology.MetricSpace.ProperSpace",
+        "match_kind": "generalization"
+      },
+      "note": "Closed balls in proper spaces are compact (`isCompact_closedBall`) and spheres too (`isCompact_sphere`); open balls in normed spaces aren't compact via `RealNormedSpace.noncompactSpace`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Spheres compact; punctured sphere not; lines/planes not",
+      "anchor": {
+        "section": "Basic examples",
+        "snippet": "Likewise, spheres are compact, but a sphere missing a point is not"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "isCompact_sphere",
+        "module": "Mathlib.Topology.MetricSpace.ProperSpace",
+        "match_kind": "generalization"
+      },
+      "note": "Spheres are compact via `isCompact_sphere`; lines/planes are non-compact via `RealNormedSpace.noncompactSpace`; a specific named lemma for the punctured sphere is not present.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Compactness in Euclidean space",
+      "anchor": {
+        "section": "Definitions",
+        "snippet": "A subset of Euclidean space in particular is compact if and only if it is closed and bounded"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "isCompact_iff_isClosed_bounded",
+        "module": "Mathlib.Topology.MetricSpace.Bounded",
+        "match_kind": "generalization"
+      },
+      "note": "Heine–Borel characterization in proper spaces (incl. Euclidean space).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Bicompactness / open cover definition",
+      "anchor": {
+        "section": "Definitions",
+        "snippet": "the most useful notion of compactness—originally called bicompactness"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "CompactSpace",
+        "module": "Mathlib.Topology.Defs.Filter",
+        "match_kind": "exact"
+      },
+      "note": "Mathlib's `CompactSpace` uses the modern open-cover/cluster-point notion (called bicompactness historically).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Compact topological space (formal)",
+      "anchor": {
+        "section": "Open cover definition",
+        "snippet": "a topological space X is called compact if every open cover of X has a finite subcover"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "CompactSpace",
+        "module": "Mathlib.Topology.Defs.Filter",
+        "match_kind": "exact"
+      },
+      "note": "`CompactSpace` typeclass with `isCompact_iff_finite_subcover` providing the open cover characterization.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Quasi-compact and compactum",
+      "anchor": {
+        "section": "Open cover definition",
+        "snippet": "use the term quasi-compact for the general notion"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "CompactSpace",
+        "module": "Mathlib.Topology.Defs.Filter",
+        "match_kind": "generalization"
+      },
+      "note": "Mathlib's `CompactSpace` does not impose Hausdorffness, so it matches Bourbaki's quasi-compact; the term `Compactum` exists as a category (`Mathlib/Topology/Category/Compactum.lean`).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Compact subset",
+      "anchor": {
+        "section": "Compactness of subsets",
+        "snippet": "A subset K of a topological space X is compact if for every arbitrary collection C of open subsets of X"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "IsCompact",
+        "module": "Mathlib.Topology.Defs.Filter",
+        "match_kind": "exact"
+      },
+      "note": "`IsCompact` is the predicate for compact subsets in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Compactness via subspace topology",
+      "anchor": {
+        "section": "Compactness of subsets",
+        "snippet": "K is compact as a subset of X if and only if the topological space K is compact in the subspace topology"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "isCompact_iff_compactSpace",
+        "module": "Mathlib.Topology.Compactness.Compact",
+        "match_kind": "exact"
+      },
+      "note": "`isCompact_iff_compactSpace` directly equates `IsCompact s` with `CompactSpace s` (subspace topology).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Characterizations of compactness",
+      "anchor": {
+        "section": "Characterization",
+        "snippet": "If X is a topological space then the following are equivalent"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "isCompact_iff_ultrafilter_le_nhds",
+        "module": "Mathlib.Topology.Compactness.Compact",
+        "match_kind": "generalization"
+      },
+      "note": "Various characterizations exist individually (`isCompact_iff_finite_subcover`, `isCompact_iff_finite_subfamily_closed`, `isCompact_iff_ultrafilter_le_nhds`), but no combined TFAE list.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Bourbaki's definition of compact space",
+      "anchor": {
+        "section": "Characterization",
+        "snippet": "Bourbaki defines a compact space (quasi-compact space) as a topological space where each filter has a cluster point"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "CompactSpace",
+        "module": "Mathlib.Topology.Defs.Filter",
+        "match_kind": "exact"
+      },
+      "note": "Mathlib's `CompactSpace` (via `IsCompact`) is defined using filters having cluster points, matching Bourbaki's definition.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Heine–Borel theorem",
+      "anchor": {
+        "section": "Euclidean space",
+        "snippet": "A is compact if and only if it is closed and bounded"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "isCompact_iff_isClosed_bounded",
+        "module": "Mathlib.Topology.MetricSpace.Bounded",
+        "match_kind": "exact"
+      },
+      "note": "`isCompact_iff_isClosed_bounded` in T2 proper spaces.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Equivalent compactness conditions for metric spaces",
+      "anchor": {
+        "section": "Metric spaces",
+        "snippet": "For any metric space ( X , d ) , the following are equivalent"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "UniformSpace.isCompact_iff_isSeqCompact",
+        "module": "Mathlib.Topology.Sequences",
+        "match_kind": "generalization"
+      },
+      "note": "Equivalences exist piecewise (`isCompact_iff_isSeqCompact`, `compactSpace_iff_seqCompactSpace`, totally bounded + complete), but no single TFAE bundle for metric spaces.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Lebesgue's number lemma",
+      "anchor": {
+        "section": "Metric spaces",
+        "snippet": "For every open cover of X , there exists a number δ > 0 such that every subset of X of diameter < δ is contained in some member of the cover"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "lebesgue_number_lemma_of_metric",
+        "module": "Mathlib.Topology.MetricSpace.Pseudo.Lemmas",
+        "match_kind": "exact"
+      },
+      "note": "`lebesgue_number_lemma_of_metric` is the metric-space statement, with a uniform-space version `lebesgue_number_lemma` in `Mathlib/Topology/UniformSpace/Compact.lean`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Compact metric space is second-countable, separable, Lindelöf",
+      "anchor": {
+        "section": "Metric spaces",
+        "snippet": "is second-countable , separable and Lindelöf"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "TopologicalSpace.SecondCountableTopology",
+        "module": "Mathlib.Topology.MetricSpace.ProperSpace",
+        "match_kind": "generalization"
+      },
+      "note": "Compact metric spaces have instances making them second-countable / separable (e.g., `secondCountable_of_proper`); individual lemmas exist but a single combined statement is not found.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Compact metric subset is closed and bounded",
+      "anchor": {
+        "section": "Metric spaces",
+        "snippet": "X is closed and bounded (as a subset of any metric space whose restricted metric is d )"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "IsCompact.isBounded",
+        "module": "Mathlib.Topology.MetricSpace.Bounded",
+        "match_kind": "exact"
+      },
+      "note": "`IsCompact.isBounded` gives bounded; `IsCompact.isClosed` (in T2) gives closed.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Equivalent compactness conditions for ordered spaces",
+      "anchor": {
+        "section": "Ordered spaces",
+        "snippet": "For an ordered space ( X , <) (i.e. a totally ordered set equipped with the order topology), the following are equivalent"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "compactSpace_of_completeLinearOrder",
+        "module": "Mathlib.Topology.Order.Compact",
+        "match_kind": "generalization"
+      },
+      "note": "`compactSpace_of_completeLinearOrder` shows complete linear order with order topology is compact; the converse and TFAE bundle aren't a single named theorem.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Complete lattice",
+      "anchor": {
+        "section": "Ordered spaces",
+        "snippet": "An ordered space satisfying (any one of) these conditions is called a complete lattice"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "CompleteLattice",
+        "module": "Mathlib.Order.CompleteLattice.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`CompleteLattice` is a standard typeclass in Mathlib's order hierarchy.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Sequential properties of compact ordered spaces",
+      "anchor": {
+        "section": "Ordered spaces",
+        "snippet": "the following are equivalent for all ordered spaces"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No combined TFAE for sequential characterizations of compact ordered spaces was found.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Evaluation map is a ring homomorphism",
+      "anchor": {
+        "section": "Characterization by continuous functions",
+        "snippet": "For each p ∈ X , the evaluation map"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "ContinuousMap.evalRingHom",
+        "module": "Mathlib.Topology.ContinuousMap.Algebra",
+        "match_kind": "exact"
+      },
+      "note": "Evaluation at a point is a ring homomorphism `C(X,R) → R` via `ContinuousMap.evalRingHom` (or `Pi.evalRingHom` analogues).",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Characterization by continuous functions",
+          "snippet": "For each p ∈ X , the evaluation map"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle C(X)/M_{p}\\cong \\mathbb {R} .}"
+        }
+      ]
+    },
+    {
+      "kind": "theorem",
+      "label": "Pseudocompactness and realcompactness via maximal ideals",
+      "anchor": {
+        "section": "Characterization by continuous functions",
+        "snippet": "X is pseudocompact if and only if every maximal ideal M of C( X ) is real"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has no formalization of pseudocompactness or realcompactness characterization via maximal ideals of `C(X)`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Non-standard characterization of compactness",
+      "anchor": {
+        "section": "Characterization by continuous functions",
+        "snippet": "a topological space X is compact if and only if every point of the natural extension *X is infinitely close to some point of X"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No nonstandard/hyperreal characterization of compactness was found in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Hyperreal definition of compactness",
+      "anchor": {
+        "section": "Hyperreal definition",
+        "snippet": "A space X is compact if its hyperreal extension *X"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No formalization of hyperreal/nonstandard characterization of compactness in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Open interval not compact via hyperreals",
+      "anchor": {
+        "section": "Hyperreal definition",
+        "snippet": "an open real interval X = (0, 1) is not compact because its hyperreal extension"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No hyperreal-based example for the noncompactness of `(0,1)` is in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Closed subset of compact space is compact",
+      "anchor": {
+        "section": "Sufficient conditions",
+        "snippet": "A closed subset of a compact space is compact"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "IsClosed.isCompact",
+        "module": "Mathlib.Topology.Compactness.Compact",
+        "match_kind": "exact"
+      },
+      "note": "`IsClosed.isCompact` (in `CompactSpace`) and `IsCompact.of_isClosed_subset` give this.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Finite union of compact sets is compact",
+      "anchor": {
+        "section": "Sufficient conditions",
+        "snippet": "The union of finitely many compact sets is compact"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "IsCompact.union",
+        "module": "Mathlib.Topology.Compactness.Compact",
+        "match_kind": "exact"
+      },
+      "note": "`IsCompact.union` gives binary union; the finite union follows by induction.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Continuous image of compact space is compact",
+      "anchor": {
+        "section": "Sufficient conditions",
+        "snippet": "The image of a compact space under a continuous function is compact"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "IsCompact.image",
+        "module": "Mathlib.Topology.Compactness.Compact",
+        "match_kind": "exact"
+      },
+      "note": "`IsCompact.image` formalizes the continuous image of a compact set.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Intersection of compact subsets of Hausdorff space",
+      "anchor": {
+        "section": "Sufficient conditions",
+        "snippet": "The intersection of any non-empty collection of compact subsets of a Hausdorff space is compact"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "IsCompact.inter",
+        "module": "Mathlib.Topology.Separation.Hausdorff",
+        "match_kind": "generalization"
+      },
+      "note": "Binary intersection `IsCompact.inter` (in T2) is formalized; an arbitrary-collection version isn't a single named lemma but follows from `IsCompact.of_isClosed_subset`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Tychonoff's theorem",
+      "anchor": {
+        "section": "Sufficient conditions",
+        "snippet": "The product of any collection of compact spaces is compact"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "isCompact_univ_pi",
+        "module": "Mathlib.Topology.Compactness.Compact",
+        "match_kind": "exact"
+      },
+      "note": "`isCompact_univ_pi` / `isCompact_pi_infinite` formalize Tychonoff's theorem, with `Pi.compactSpace` for the typeclass version.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Compact iff sequentially compact in metrizable space",
+      "anchor": {
+        "section": "Sufficient conditions",
+        "snippet": "In a metrizable space , a subset is compact if and only if it is sequentially compact"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "UniformSpace.isCompact_iff_isSeqCompact",
+        "module": "Mathlib.Topology.Sequences",
+        "match_kind": "exact"
+      },
+      "note": "`isCompact_iff_isSeqCompact` in uniform spaces with countable uniformity (metrizable suffices).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Finite set is compact",
+      "anchor": {
+        "section": "Sufficient conditions",
+        "snippet": "A finite set endowed with any topology is compact"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Finite.compactSpace",
+        "module": "Mathlib.Topology.Compactness.Compact",
+        "match_kind": "exact"
+      },
+      "note": "`Finite.compactSpace` instance and `Set.Finite.isCompact` give the statement.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "KC space",
+      "anchor": {
+        "section": "Properties of compact spaces",
+        "snippet": "A space in which every compact subset is closed is called a KC space"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No `KCSpace` typeclass or related abstraction found in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Compact subset of Hausdorff space is closed",
+      "anchor": {
+        "section": "Properties of compact spaces",
+        "snippet": "A compact subset of a Hausdorff space X is closed"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "IsCompact.isClosed",
+        "module": "Mathlib.Topology.Separation.Hausdorff",
+        "match_kind": "exact"
+      },
+      "note": "`IsCompact.isClosed` in a T2 space gives this directly.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Compact subset of TVS is complete",
+      "anchor": {
+        "section": "Properties of compact spaces",
+        "snippet": "In any topological vector space (TVS), a compact subset is complete"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "IsCompact.isComplete",
+        "module": "Mathlib.Topology.UniformSpace.Cauchy",
+        "match_kind": "generalization"
+      },
+      "note": "`IsCompact.isComplete` shows any compact set in a uniform space is complete; specializes to TVS.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Separation of disjoint compacts in Hausdorff space",
+      "anchor": {
+        "section": "Properties of compact spaces",
+        "snippet": "If A and B are disjoint compact subsets of a Hausdorff space"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "SeparatedNhds.of_isCompact_isCompact",
+        "module": "Mathlib.Topology.Separation.Hausdorff",
+        "match_kind": "exact"
+      },
+      "note": "`SeparatedNhds.of_isCompact_isCompact` formalizes separation of disjoint compacts in a T2 space.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Continuous bijection from compact to Hausdorff is homeomorphism",
+      "anchor": {
+        "section": "Properties of compact spaces",
+        "snippet": "A continuous bijection from a compact space into a Hausdorff space is a homeomorphism"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Continuous.homeoOfEquivCompactToT2",
+        "module": "Mathlib.Topology.Homeomorph.Lemmas",
+        "match_kind": "exact"
+      },
+      "note": "`Continuous.homeoOfEquivCompactToT2` constructs the homeomorphism from a continuous bijection out of a compact space into a T2 space.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Compact Hausdorff is normal and regular",
+      "anchor": {
+        "section": "Properties of compact spaces",
+        "snippet": "A compact Hausdorff space is normal and regular"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "NormalSpace.of_compactSpace_r1Space",
+        "module": "Mathlib.Topology.Separation.Regular",
+        "match_kind": "generalization"
+      },
+      "note": "`NormalSpace.of_compactSpace_r1Space` provides normality (hence regularity) for compact R1 (in particular T2) spaces.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Compact Hausdorff topology extremality",
+      "anchor": {
+        "section": "Properties of compact spaces",
+        "snippet": "no finer topology on X is compact, and no coarser topology on X is Hausdorff"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No named lemma expressing the extremality of compact-Hausdorff topology in the topology lattice was found.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Compact metric subset is bounded",
+      "anchor": {
+        "section": "Properties of compact spaces",
+        "snippet": "If a subset of a metric space ( X , d ) is compact, then it is d -bounded"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "IsCompact.isBounded",
+        "module": "Mathlib.Topology.MetricSpace.Bounded",
+        "match_kind": "exact"
+      },
+      "note": "`IsCompact.isBounded` directly states a compact set in a (pseudo)metric space is bounded.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Extreme value theorem",
+      "anchor": {
+        "section": "Functions and compact spaces",
+        "snippet": "a continuous real-valued function on a nonempty compact space is bounded above and attains its supremum"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "IsCompact.exists_isMaxOn",
+        "module": "Mathlib.Topology.Order.Compact",
+        "match_kind": "exact"
+      },
+      "note": "`IsCompact.exists_isMaxOn` and `IsCompact.bddAbove_image` together give the extreme value theorem.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Pre-image under proper map is compact",
+      "anchor": {
+        "section": "Functions and compact spaces",
+        "snippet": "the pre-image of a compact space under a proper map is compact"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "IsProperMap.isCompact_preimage",
+        "module": "Mathlib.Topology.Maps.Proper.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`IsProperMap.isCompact_preimage` formalizes preimage of compacts under proper maps.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Alexandroff one-point compactification",
+      "anchor": {
+        "section": "Compactifications",
+        "snippet": "Every topological space X is an open dense subspace of a compact space having at most one point more than X"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "OnePoint",
+        "module": "Mathlib.Topology.Compactification.OnePoint.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`OnePoint X` is the Alexandroff one-point compactification, with the `CompactSpace (OnePoint X)` instance.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Compact subset of reals has max and min",
+      "anchor": {
+        "section": "Ordered compact spaces",
+        "snippet": "A nonempty compact subset of the real numbers has a greatest element and a least element"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "IsCompact.exists_isLUB",
+        "module": "Mathlib.Topology.Order.Compact",
+        "match_kind": "generalization"
+      },
+      "note": "`IsCompact.exists_isLUB`/`IsCompact.exists_isMaxOn` give the existence of greatest/least elements on nonempty compact sets in conditionally complete linear orders.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Compact ordered space iff complete lattice",
+      "anchor": {
+        "section": "Ordered compact spaces",
+        "snippet": "Then X is compact if and only if X is a complete lattice"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "compactSpace_of_completeLinearOrder",
+        "module": "Mathlib.Topology.Order.Compact",
+        "match_kind": "special_case"
+      },
+      "note": "One direction (`CompleteLinearOrder` ⇒ compact) is formalized as `compactSpace_of_completeLinearOrder`; the converse is not a single named lemma.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Finite topological space is compact",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "Any finite topological space , including the empty set , is compact"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Finite.compactSpace",
+        "module": "Mathlib.Topology.Compactness.Compact",
+        "match_kind": "exact"
+      },
+      "note": "`Finite.compactSpace` is the instance.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Cofinite topology is compact",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "Any space carrying the cofinite topology is compact"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib does not seem to have a `CofiniteTopology` instance with `CompactSpace` proved.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Alexandroff compactification examples",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "Any locally compact Hausdorff space can be turned into a compact space by adding a single point"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "OnePoint",
+        "module": "Mathlib.Topology.Compactification.OnePoint.Basic",
+        "match_kind": "exact"
+      },
+      "note": "Mathlib's `OnePoint` compactification covers locally-compact Hausdorff spaces with `T4Space (OnePoint X)` instance.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Order topology on bounded totally ordered set compact",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "The right order topology or left order topology on any bounded totally ordered set is compact"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "compactSpace_of_completeLinearOrder",
+        "module": "Mathlib.Topology.Order.Compact",
+        "match_kind": "special_case"
+      },
+      "note": "Mathlib's instance handles the order topology on complete linear orders; specific left/right-order topologies aren't separately formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Discrete spaces and compactness",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "No discrete space with an infinite number of points is compact"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "DiscreteTopology.compactSpace_iff_finite",
+        "module": "Mathlib.Topology.Compactness.Compact",
+        "match_kind": "exact"
+      },
+      "note": "An infinite discrete space is non-compact: combine `DiscreteTopology` with finiteness arguments; lemmas like `Set.Finite.isCompact` and `discreteTopology_iff_*` cover this. Exact name not verified, treating as partial.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Lower limit topology uncountable not compact",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "carrying the lower limit topology , no uncountable set is compact"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Sorgenfrey-line / lower-limit topology noncompactness statement is not present as a named lemma.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Cocountable topology infinite not compact",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "In the cocountable topology on an uncountable set, no infinite set is compact"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No `CocountableTopology` formalization of this statement was found.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "[0,1] compact, (0,1) not, rationals in [0,1] not",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "The closed unit interval [0, 1] is compact"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "isCompact_Icc",
+        "module": "Mathlib.Topology.Order.Compact",
+        "match_kind": "exact"
+      },
+      "note": "`isCompact_Icc` covers `[0,1]`; the open interval and rationals subset are noncompact via `RealNormedSpace.noncompactSpace` and basic arguments.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Real line not compact",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "of all real numbers is not compact as there is a cover of open intervals that does not have a finite subcover"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Real.noncompactSpace",
+        "module": "Mathlib.Topology.Algebra.Ring.Real",
+        "match_kind": "exact"
+      },
+      "note": "Mathlib has a `NoncompactSpace ℝ` instance.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Extended real line is compact",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "the extended real number line carrying the analogous topology is compact"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "compactSpace_of_completeLinearOrder",
+        "module": "Mathlib.Topology.Order.Compact",
+        "match_kind": "invocation"
+      },
+      "note": "`EReal` is a `CompleteLinearOrder` with order topology, giving `CompactSpace EReal` via `compactSpace_of_completeLinearOrder`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "n-sphere and closed unit ball compactness",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "For every natural number n , the n -sphere is compact"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "isCompact_sphere",
+        "module": "Mathlib.Topology.MetricSpace.ProperSpace",
+        "match_kind": "exact"
+      },
+      "note": "`isCompact_sphere` and `isCompact_closedBall` give compactness of spheres and closed balls in proper spaces (in particular Euclidean).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Alaoglu's theorem",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "the closed unit ball of the dual of a normed space is compact for the weak-* topology"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "WeakDual.isCompact_closedBall",
+        "module": "Mathlib.Analysis.Normed.Module.WeakDual",
+        "match_kind": "exact"
+      },
+      "note": "`WeakDual.isCompact_closedBall` is the Banach–Alaoglu theorem (also `WeakDual.isCompact_polar`).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Cantor set is compact",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "The Cantor set is compact"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "isCompact_cantorSet",
+        "module": "Mathlib.Topology.Instances.CantorSet",
+        "match_kind": "exact"
+      },
+      "note": "`isCompact_cantorSet` explicitly proves the Cantor set is compact.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Pointwise convergence topology on functions",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "Consider the set K of all functions f : R → [0, 1]"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Pi.compactSpace",
+        "module": "Mathlib.Topology.Compactness.Compact",
+        "match_kind": "invocation"
+      },
+      "note": "The space `ℝ → [0,1]` is `Pi.compactSpace` (an invocation of Tychonoff); not stated as a named example.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Arzelà–Ascoli theorem",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "A subset of the Banach space of real-valued continuous functions on a compact Hausdorff space is relatively compact if and only if it is equicontinuous and pointwise bounded"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "BoundedContinuousFunction.arzela_ascoli",
+        "module": "Mathlib.Topology.ContinuousMap.Bounded.ArzelaAscoli",
+        "match_kind": "exact"
+      },
+      "note": "Arzelà–Ascoli theorem stated for bounded continuous functions; also `ArzelaAscoli.*` lemmas in `Mathlib/Topology/UniformSpace/Ascoli.lean`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Lipschitz functions compact under uniform distance",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "Consider the set K of all functions f : [0, 1] → [0, 1] satisfying the Lipschitz condition"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No named statement for compactness of the Lipschitz function space `[0,1] → [0,1]` was found; would follow from Arzelà–Ascoli.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Spectrum of bounded linear operator is compact",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "The spectrum of any bounded linear operator on a Banach space is a nonempty compact subset of the complex numbers"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "spectrum.isCompact",
+        "module": "Mathlib.Analysis.Normed.Algebra.Spectrum",
+        "match_kind": "exact"
+      },
+      "note": "`spectrum.isCompact` states the spectrum is compact in a Banach algebra.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Space of Borel probability measures compact",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "The space of Borel probability measures on a compact Hausdorff space is compact for the vague topology"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No single instance stating compactness of probability measures on a compact space under the vague topology was found, though tightness/Prokhorov-related results exist.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Prokhorov's theorem",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "Prokhorov's theorem then asserts that a collection of probability measures is relatively compact for the vague topology if and only if it is tight"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "MeasureTheory.IsTightMeasureSet.isCompact_closure",
+        "module": "Mathlib.MeasureTheory.Measure.Prokhorov",
+        "match_kind": "exact"
+      },
+      "note": "Multiple versions of Prokhorov's theorem are formalized in `Mathlib/MeasureTheory/Measure/Prokhorov.lean`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Tight collection of probability measures",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "A collection of probability measures on the Borel sets of Euclidean space is called tight"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "MeasureTheory.IsTightMeasureSet",
+        "module": "Mathlib.MeasureTheory.Measure.Tight",
+        "match_kind": "exact"
+      },
+      "note": "`IsTightMeasureSet` formalizes tightness, with `isTightMeasureSet_iff_exists_isCompact_measure_compl_le`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Compact real form of semisimple Lie group",
+      "anchor": {
+        "section": "Algebraic examples",
+        "snippet": "Every semisimple Lie group has a compact real form"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No formalization of compact real forms of semisimple Lie groups was found.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "p-adic integers homeomorphic to Cantor set",
+      "anchor": {
+        "section": "Algebraic examples",
+        "snippet": "the p -adic integers are homeomorphic to the Cantor set"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "PadicInt.compactSpace",
+        "module": "Mathlib.NumberTheory.Padics.ProperSpace",
+        "match_kind": "generalization"
+      },
+      "note": "`PadicInt.compactSpace` shows `ℤ_p` is compact, but the homeomorphism to the Cantor set is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Global field quotient by adele ring compact",
+      "anchor": {
+        "section": "Algebraic examples",
+        "snippet": "Any global field K is a discrete additive subgroup of its adele ring"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The compactness of K\\𝔸_K for global fields is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Spectrum of commutative ring compact",
+      "anchor": {
+        "section": "Algebraic examples",
+        "snippet": "The spectrum of any commutative ring with the Zariski topology"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "PrimeSpectrum.compactSpace",
+        "module": "Mathlib.RingTheory.Spectrum.Prime.Topology",
+        "match_kind": "exact"
+      },
+      "note": "`PrimeSpectrum.compactSpace` is the `CompactSpace` instance for `Spec R`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Spectrum of Boolean algebra is compact",
+      "anchor": {
+        "section": "Algebraic examples",
+        "snippet": "The spectrum of a Boolean algebra is compact"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No direct formalization of the Stone spectrum of a Boolean algebra being compact was found.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Structure space of Banach algebra compact",
+      "anchor": {
+        "section": "Algebraic examples",
+        "snippet": "The structure space of a commutative unital Banach algebra is a compact Hausdorff space"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "WeakDual.CharacterSpace.instCompactSpace",
+        "module": "Mathlib.Analysis.Normed.Algebra.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`CompactSpace (characterSpace 𝕜 A)` instance for proper `𝕜` is in `Mathlib/Analysis/Normed/Algebra/Basic.lean`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Hilbert cube is compact",
+      "anchor": {
+        "section": "Algebraic examples",
+        "snippet": "The Hilbert cube is compact"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Pi.compactSpace",
+        "module": "Mathlib.Topology.Compactness.Compact",
+        "match_kind": "invocation"
+      },
+      "note": "The Hilbert cube `ℕ → [0,1]` is compact via `Pi.compactSpace`; no dedicated `HilbertCube` definition remains (the `HilbertCubeEmbedding` file is deprecated).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Profinite group is compact",
+      "anchor": {
+        "section": "Algebraic examples",
+        "snippet": "A profinite group (e.g. Galois group ) is compact"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "ProfiniteGrp",
+        "module": "Mathlib.Topology.Algebra.Category.ProfiniteGrp.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`ProfiniteGrp` builds in `CompactSpace` (via inheritance from `Profinite`); Galois groups are profinite via `InfiniteGalois.ProfiniteGalGrp`.",
+      "provenance": "ai"
+    }
+  ]
+}

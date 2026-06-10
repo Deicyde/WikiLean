@@ -1,0 +1,617 @@
+{
+  "slug": "Solvable_group",
+  "wikipedia_title": "Solvable group",
+  "display_title": "Solvable group",
+  "schema_version": 3,
+  "annotation_style": "theorem_article",
+  "annotations": [
+    {
+      "kind": "definition",
+      "label": "Solvable group (lead)",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "a solvable group or soluble group is a group that can be constructed from abelian groups using extensions"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "IsSolvable",
+        "module": "Mathlib.GroupTheory.Solvable",
+        "match_kind": "exact"
+      },
+      "note": "`IsSolvable G` is defined as the existence of `n` with `derivedSeries G n = ⊥`, equivalent to the extension-of-abelian-groups characterization.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Solvability of polynomial via Galois group",
+      "anchor": {
+        "section": "Motivation",
+        "snippet": "a polynomial equation is solvable in radicals if and only if the corresponding Galois group is solvable"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "isSolvable_gal_of_irreducible",
+        "module": "Mathlib.FieldTheory.AbelRuffini",
+        "match_kind": "special_case"
+      },
+      "note": "Only one direction of Abel–Ruffini is formalized (solvable-by-radicals root ⇒ solvable Galois group); the converse is not in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Solvable Galois group from smallest field extension",
+      "anchor": {
+        "section": "Example",
+        "snippet": "The smallest Galois field extension"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No matching specific worked example was found in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Solvable group (subnormal series definition)",
+      "anchor": {
+        "section": "Definition",
+        "snippet": "A group G is called solvable if it has a subnormal series whose factor groups (quotient groups) are all abelian"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "IsSolvable",
+        "module": "Mathlib.GroupTheory.Solvable",
+        "match_kind": "generalization"
+      },
+      "note": "Mathlib defines `IsSolvable` via the derived series; the equivalent characterization in terms of a subnormal series with abelian quotients is not stated.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Derived series definition of solvable",
+      "anchor": {
+        "section": "Definition",
+        "snippet": "if its derived series , the descending normal series"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "derivedSeries",
+        "module": "Mathlib.GroupTheory.Solvable",
+        "match_kind": "exact"
+      },
+      "note": "`derivedSeries G n` and `isSolvable_def : IsSolvable G ↔ ∃ n, derivedSeries G n = ⊥` provide exactly this definition.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Derived length",
+      "anchor": {
+        "section": "Definition",
+        "snippet": "The least n such that G ( n ) = 1 is called the derived length of the solvable group G"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has `LieAlgebra.derivedLength` for Lie algebras but no derived-length notion for groups.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Finite solvable via composition series",
+      "anchor": {
+        "section": "Definition",
+        "snippet": "For finite groups, an equivalent definition is that a solvable group is a group with a composition series all of whose factors are cyclic groups of prime order"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The equivalence between solvability of finite groups and composition series with prime-cyclic factors is not stated in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Abelian groups are solvable",
+      "anchor": {
+        "section": "Abelian groups",
+        "snippet": "The basic example of solvable groups are abelian groups"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "CommGroup.isSolvable",
+        "module": "Mathlib.GroupTheory.Solvable",
+        "match_kind": "exact"
+      },
+      "note": "Provided as a low-priority instance `CommGroup.isSolvable : IsSolvable G` for `CommGroup G`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Nilpotent groups are solvable",
+      "anchor": {
+        "section": "Nilpotent groups",
+        "snippet": "all nilpotent groups are solvable"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "IsNilpotent.to_isSolvable",
+        "module": "Mathlib.GroupTheory.Nilpotent",
+        "match_kind": "exact"
+      },
+      "note": "`IsNilpotent.to_isSolvable` is an instance that derives `IsSolvable G` from `IsNilpotent G`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Quaternion group is solvable",
+      "anchor": {
+        "section": "Quaternion groups",
+        "snippet": "the quaternion group is a solvable group given by the group extension"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib defines `QuaternionGroup` but no specific `IsSolvable (QuaternionGroup n)` lemma was found.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Extensions of solvable groups are solvable",
+      "anchor": {
+        "section": "Group extensions",
+        "snippet": "if"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "solvable_of_ker_le_range",
+        "module": "Mathlib.GroupTheory.Solvable",
+        "match_kind": "generalization"
+      },
+      "note": "`solvable_of_ker_le_range` produces solvability from solvable kernel/image data, encoding the extension property.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "S_3 solvable non-nilpotent",
+      "anchor": {
+        "section": "Non-abelian group which is non-nilpotent",
+        "snippet": "A small example of a solvable, non-nilpotent group is the symmetric group S 3"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No specific lemma stating `IsSolvable (Equiv.Perm (Fin 3))` and its non-nilpotence was located.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Every group of order < 60 is solvable",
+      "anchor": {
+        "section": "Non-abelian group which is non-nilpotent",
+        "snippet": "every group with order less than 60 is solvable"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No statement about all finite groups of order less than 60 being solvable was found.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Feit–Thompson theorem",
+      "anchor": {
+        "section": "Finite groups of odd order",
+        "snippet": "The Feit–Thompson theorem states that every finite group of odd order is solvable"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Feit–Thompson odd-order theorem is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "S_5 is not solvable",
+      "anchor": {
+        "section": "Non-example",
+        "snippet": "The group S 5 is not solvable"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Equiv.Perm.fin_5_not_solvable",
+        "module": "Mathlib.GroupTheory.Solvable",
+        "match_kind": "exact"
+      },
+      "note": "`Equiv.Perm.fin_5_not_solvable : ¬ IsSolvable (Equiv.Perm (Fin 5))` is proved by an explicit commutator computation.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "S_n not solvable for n>4",
+      "anchor": {
+        "section": "Non-example",
+        "snippet": "we see that S n is not solvable for n > 4"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Equiv.Perm.not_solvable",
+        "module": "Mathlib.GroupTheory.Solvable",
+        "match_kind": "exact"
+      },
+      "note": "`Equiv.Perm.not_solvable` shows `¬ IsSolvable (Equiv.Perm X)` whenever `5 ≤ #X`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Subgroup quotient of GL_2",
+      "anchor": {
+        "section": "Subgroups of GL 2",
+        "snippet": "Consider the subgroups"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No matching example computing solvability from this specific GL₂ subgroup chain was found.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Semidirect decomposition remark",
+      "anchor": {
+        "section": "Remark",
+        "snippet": "Notice that this description gives the decomposition"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This narrative remark about a semidirect-product decomposition has no corresponding Mathlib statement.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Borel subgroup",
+      "anchor": {
+        "section": "Borel subgroups",
+        "snippet": "a Borel subgroup is defined as a subgroup which is closed, connected, and solvable"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib does not define Borel subgroups of algebraic groups.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Borel subgroup in GL_3",
+      "anchor": {
+        "section": "Borel subgroup in GL 3",
+        "snippet": "there are the subgroups"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No Borel-subgroup construction for GL₃ exists in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Borel subgroup in product",
+      "anchor": {
+        "section": "Borel subgroup in product of simple linear algebraic groups",
+        "snippet": "the Borel subgroup can be represented by matrices of the form"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Borel subgroups of products of simple algebraic groups are not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Z-group",
+      "anchor": {
+        "section": "Z-groups",
+        "snippet": "Any finite group whose p -Sylow subgroups are cyclic is a semidirect product of two cyclic groups, in particular solvable"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "IsZGroup",
+        "module": "Mathlib.GroupTheory.SpecificGroups.ZGroup",
+        "match_kind": "exact"
+      },
+      "note": "`IsZGroup G` is defined as `∀ p prime, ∀ P : Sylow p G, IsCyclic P`; an instance shows `Finite G → IsZGroup G → IsSolvable G`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Subgroup of solvable is solvable",
+      "anchor": {
+        "section": "Properties",
+        "snippet": "If G is solvable, and H is a subgroup of G , then H is solvable"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "subgroup_solvable_of_solvable",
+        "module": "Mathlib.GroupTheory.Solvable",
+        "match_kind": "exact"
+      },
+      "note": "Instance `subgroup_solvable_of_solvable : IsSolvable G → IsSolvable H` for any subgroup `H`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Homomorphic image of solvable is solvable",
+      "anchor": {
+        "section": "Properties",
+        "snippet": "If G is solvable, and there is a homomorphism from G onto H , then H is solvable"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "solvable_of_surjective",
+        "module": "Mathlib.GroupTheory.Solvable",
+        "match_kind": "exact"
+      },
+      "note": "`solvable_of_surjective` transfers solvability along any surjective group hom.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Three for the price of two",
+      "anchor": {
+        "section": "Properties",
+        "snippet": "G is solvable if and only if both N and G / N are solvable"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "solvable_of_ker_le_range",
+        "module": "Mathlib.GroupTheory.Solvable",
+        "match_kind": "generalization"
+      },
+      "note": "Both directions are derivable from `solvable_of_ker_le_range`, `subgroup_solvable_of_solvable`, and `solvable_quotient_of_solvable`, but no packaged iff lemma was found.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Direct product of solvable is solvable",
+      "anchor": {
+        "section": "Properties",
+        "snippet": "if G and H are solvable, the direct product G × H is solvable"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "solvable_prod",
+        "module": "Mathlib.GroupTheory.Solvable",
+        "match_kind": "exact"
+      },
+      "note": "Instance `solvable_prod : IsSolvable G → IsSolvable G' → IsSolvable (G × G')`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Solvability closed under extension",
+      "anchor": {
+        "section": "Properties",
+        "snippet": "Solvability is closed under group extension"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "solvable_of_ker_le_range",
+        "module": "Mathlib.GroupTheory.Solvable",
+        "match_kind": "exact"
+      },
+      "note": "`solvable_of_ker_le_range` is exactly the closure-under-extensions statement.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Solvability closed under wreath product",
+      "anchor": {
+        "section": "Properties",
+        "snippet": "It is also closed under wreath product"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Wreath products of groups and their solvability are not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Solvable groups of bounded derived length form a variety",
+      "anchor": {
+        "section": "Properties",
+        "snippet": "the solvable groups of derived length at most N form a subvariety of the variety of groups"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Varieties of groups and the derived-length subvariety are not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Burnside's theorem",
+      "anchor": {
+        "section": "Burnside's theorem",
+        "snippet": "Burnside's theorem states that if G is a finite group of order"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Burnside's p^a q^b theorem is not formalized in Mathlib (only the unrelated normal p-complement theorem and Burnside's counting lemma are present).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Supersolvable group",
+      "anchor": {
+        "section": "Supersolvable groups",
+        "snippet": "a group G is called supersolvable (or supersoluble ) if it has an invariant normal series whose factors are all cyclic"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No `IsSupersolvable`/supersolvable predicate exists in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Supersolvable abelian iff finitely generated",
+      "anchor": {
+        "section": "Supersolvable groups",
+        "snippet": "an abelian group is supersolvable if and only if it is finitely generated"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Depends on a supersolvable definition that is not present.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "A_4 solvable but not supersolvable",
+      "anchor": {
+        "section": "Supersolvable groups",
+        "snippet": "The alternating group A 4 is an example of a finite solvable group that is not supersolvable"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No statement about A₄'s solvability vs. supersolvability appears in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Virtually solvable group",
+      "anchor": {
+        "section": "Virtually solvable groups",
+        "snippet": "A group G is called virtually solvable if it has a solvable subgroup of finite index"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has no virtually-solvable predicate.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Hypoabelian group",
+      "anchor": {
+        "section": "Hypoabelian",
+        "snippet": "A group whose transfinite derived series reaches the trivial group is called a hypoabelian group"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Transfinite derived series and hypoabelian groups are not defined in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Every ordinal is a derived length",
+      "anchor": {
+        "section": "Hypoabelian",
+        "snippet": "every ordinal is the derived length of some group"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No group-theoretic derived-length notion or this realisation result appears in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "p-solvable group",
+      "anchor": {
+        "section": "p-solvable",
+        "snippet": "A finite group is p-solvable for some prime p if every factor in the composition series is a p-group or has order prime to p"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has no `IsPSolvable` predicate.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Solvable iff p-solvable for every p",
+      "anchor": {
+        "section": "p-solvable",
+        "snippet": "A finite group is solvable iff it is p-solvable for every p"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Depends on a p-solvable predicate that is not defined in Mathlib.",
+      "provenance": "ai"
+    }
+  ]
+}

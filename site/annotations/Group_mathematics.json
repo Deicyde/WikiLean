@@ -1,0 +1,931 @@
+{
+  "slug": "Group_mathematics",
+  "wikipedia_title": "Group (mathematics)",
+  "display_title": "Group (mathematics)",
+  "schema_version": 3,
+  "annotation_style": "theorem_article",
+  "annotations": [
+    {
+      "kind": "definition",
+      "label": "Group (informal)",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "a group is a set with an operation that combines any two elements"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Group",
+        "module": "Mathlib.Algebra.Group.Defs",
+        "match_kind": "exact"
+      },
+      "note": "The `Group` typeclass in Mathlib captures exactly the informal notion of a set with a binary operation satisfying the group axioms.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Integers under addition",
+      "anchor": {
+        "section": "First example: the integers",
+        "snippet": "One of the more familiar groups is the set of integers"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Int.instCommGroup",
+        "module": "Mathlib.Data.Int.Defs",
+        "match_kind": "invocation"
+      },
+      "note": "Mathlib equips `ℤ` with an `AddCommGroup` (and hence `AddGroup`) instance.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "First example: the integers",
+          "snippet": "One of the more familiar groups is the set of integers"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\mathbb {Z} =\\{\\ldots ,-4,-3,-2,-1,0,1,2,3,4,\\ldots \\}}"
+        }
+      ]
+    },
+    {
+      "kind": "definition",
+      "label": "Group (formal definition)",
+      "anchor": {
+        "section": "Definition",
+        "snippet": "A group is a set"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Group",
+        "module": "Mathlib.Algebra.Group.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`class Group (G : Type u) extends DivInvMonoid G` is the direct formalization at `Mathlib/Algebra/Group/Defs.lean:1192`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Identity element",
+      "anchor": {
+        "section": "Definition",
+        "snippet": "It is called the identity element"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "One",
+        "module": "Mathlib.Algebra.Group.Defs",
+        "match_kind": "exact"
+      },
+      "note": "The identity is carried by the `One` typeclass with axioms `one_mul`/`mul_one` from `MulOneClass`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Inverse element",
+      "anchor": {
+        "section": "Definition",
+        "snippet": "it is called the inverse of"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Inv",
+        "module": "Mathlib.Algebra.Group.Defs",
+        "match_kind": "exact"
+      },
+      "note": "Inverses are encoded by the `Inv` typeclass together with `inv_mul_cancel` in the `Group` class.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Abelian group",
+      "anchor": {
+        "section": "Notation and terminology",
+        "snippet": "the operation is said to be commutative , and the group is called an abelian group"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "CommGroup",
+        "module": "Mathlib.Algebra.Group.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`class CommGroup extends Group, CommMonoid` at `Mathlib/Algebra/Group/Defs.lean:1275` (additive variant `AddCommGroup`).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Additive and multiplicative group notation",
+      "anchor": {
+        "section": "Notation and terminology",
+        "snippet": "one speaks of an additive group whenever the group operation is notated as addition"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "AddGroup",
+        "module": "Mathlib.Algebra.Group.Defs",
+        "match_kind": "exact"
+      },
+      "note": "Mathlib has parallel `Group`/`AddGroup` hierarchies linked via the `to_additive` attribute and `Additive`/`Multiplicative` type tags.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Dihedral group D4 (symmetries of a square)",
+      "anchor": {
+        "section": "Second example: a symmetry group",
+        "snippet": "These symmetries determine a group called the dihedral group of degree four"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "DihedralGroup",
+        "module": "Mathlib.GroupTheory.SpecificGroups.Dihedral",
+        "match_kind": "generalization"
+      },
+      "note": "`DihedralGroup n` formalizes the dihedral group of order 2n; setting `n = 4` yields D4.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Uniqueness of identity element",
+      "anchor": {
+        "section": "Uniqueness of identity element",
+        "snippet": "The group axioms imply that the identity element is unique"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "left_inv_eq_right_inv",
+        "module": "Mathlib.Algebra.Group.Defs",
+        "match_kind": null
+      },
+      "note": "Mathlib bakes the identity into the `One` typeclass so a separate uniqueness lemma is not stated, though the underlying calculation appears as `left_inv_eq_right_inv`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Uniqueness of inverses",
+      "anchor": {
+        "section": "Uniqueness of inverses",
+        "snippet": "The group axioms also imply that the inverse of each element is unique"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "left_inv_eq_right_inv",
+        "module": "Mathlib.Algebra.Group.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`left_inv_eq_right_inv` (and `inv_eq_of_mul_eq_one_right`) show any left/right inverse equals the canonical inverse.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Unique solution of left equation (left translation is a bijection)",
+      "anchor": {
+        "section": "Division",
+        "snippet": "there is a unique solution"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "mul_right_injective",
+        "module": "Mathlib.Algebra.Group.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`mul_right_injective a` gives injectivity of left translation; combined with `mul_inv_cancel_left` this yields the unique solution `x = a⁻¹b`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Unique solution of right equation (right translation is a bijection)",
+      "anchor": {
+        "section": "Division",
+        "snippet": "the unique solution"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "mul_left_injective",
+        "module": "Mathlib.Algebra.Group.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`mul_left_injective a` provides injectivity of right translation, dual to the left case.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Equivalent definition via one-sided axioms",
+      "anchor": {
+        "section": "Equivalent definition with relaxed axioms",
+        "snippet": "The group axioms for identity and inverses may be \"weakened\" to assert only the existence of a left identity and left inverses"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Group.ofLeftAxioms",
+        "module": "Mathlib.Algebra.Group.MinimalAxioms",
+        "match_kind": "exact"
+      },
+      "note": "`Group.ofLeftAxioms` builds a `Group` from associativity, left identity, and left inverses; `Group.ofRightAxioms` is the mirror version.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Left identity + right inverse insufficient",
+      "anchor": {
+        "section": "Equivalent definition with relaxed axioms",
+        "snippet": "only assuming the existence of a left identity and a right inverse (or vice versa) is not sufficient to define a group"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No counterexample showing left-identity + right-inverse fails to give a group is recorded in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Group homomorphism",
+      "anchor": {
+        "section": "Group homomorphisms",
+        "snippet": "Group homomorphisms"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "MonoidHom",
+        "module": "Mathlib.Algebra.Group.Hom.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`MonoidHom M N` (notation `M →* N`) is Mathlib's bundled multiplicative homomorphism, used for group homomorphisms.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Isomorphism of groups",
+      "anchor": {
+        "section": "Group homomorphisms",
+        "snippet": "An isomorphism is a homomorphism that has an inverse homomorphism"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "MulEquiv",
+        "module": "Mathlib.Algebra.Group.Equiv.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`MulEquiv` (notation `≃*`) bundles a multiplicative bijection with its inverse, i.e. a group isomorphism.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Subgroup",
+      "anchor": {
+        "section": "Subgroups",
+        "snippet": "Informally, a subgroup is a group"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Subgroup",
+        "module": "Mathlib.Algebra.Group.Subgroup.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`structure Subgroup (G : Type*) [Group G] extends Submonoid G` at `Mathlib/Algebra/Group/Subgroup/Defs.lean:295`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Subgroup test",
+      "anchor": {
+        "section": "Subgroups",
+        "snippet": "The subgroup test provides a necessary and sufficient condition"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Subgroup",
+        "module": "Mathlib.Algebra.Group.Subgroup.Defs",
+        "match_kind": null
+      },
+      "note": "The closure conditions are bundled into the `Subgroup` structure; no separate `subgroup_test` lemma in the one-step form `a*b⁻¹ ∈ H` was located.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Subgroup generated by a subset",
+      "anchor": {
+        "section": "Subgroups",
+        "snippet": "the subgroup generated by"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Subgroup.closure",
+        "module": "Mathlib.Algebra.Group.Subgroup.Lattice",
+        "match_kind": "exact"
+      },
+      "note": "`Subgroup.closure k` is the minimal subgroup containing the set `k`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Cosets and normal subgroup",
+      "anchor": {
+        "section": "Cosets",
+        "snippet": "a subgroup"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Subgroup.Normal",
+        "module": "Mathlib.Algebra.Group.Subgroup.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`Subgroup.Normal` is defined at line 605, and cosets are formalized via `QuotientGroup.leftRel` in `Mathlib.GroupTheory.Coset.Basic`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Left cosets form a partition",
+      "anchor": {
+        "section": "Cosets",
+        "snippet": "The left cosets of any subgroup"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "QuotientGroup.leftRel",
+        "module": "Mathlib.GroupTheory.Coset.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`QuotientGroup.leftRel H` is the setoid whose equivalence classes are the left cosets of H, yielding the partition.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Quotient group",
+      "anchor": {
+        "section": "Quotient groups",
+        "snippet": "is called a quotient group or factor group"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "QuotientGroup.Quotient.group",
+        "module": "Mathlib.GroupTheory.QuotientGroup.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`G ⧸ N` with `[N.Normal]` carries a `Group` instance built via `QuotientGroup.con N`.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Quotient groups",
+          "snippet": "is called a quotient group or factor group"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle G/N=\\{gN\\mid g\\in G\\}}"
+        }
+      ]
+    },
+    {
+      "kind": "theorem",
+      "label": "First isomorphism theorem",
+      "anchor": {
+        "section": "Quotient groups",
+        "snippet": "The first isomorphism theorem implies that any surjective homomorphism"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "QuotientGroup.quotientKerEquivOfSurjective",
+        "module": "Mathlib.GroupTheory.QuotientGroup.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`quotientKerEquivOfSurjective` gives `G ⧸ ker φ ≃* H` for surjective `φ`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Presentation of a group",
+      "anchor": {
+        "section": "Presentations",
+        "snippet": "This is called a presentation of"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "PresentedGroup",
+        "module": "Mathlib.GroupTheory.PresentedGroup",
+        "match_kind": "exact"
+      },
+      "note": "`PresentedGroup rels` is `FreeGroup α` modulo the normal closure of `rels`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Every group is a quotient of a free group",
+      "anchor": {
+        "section": "Presentations",
+        "snippet": "Every group is isomorphic to a quotient of a free group"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "FreeGroup.lift",
+        "module": "Mathlib.GroupTheory.FreeGroup.Basic",
+        "match_kind": null
+      },
+      "note": "Mathlib has `FreeGroup.lift` and the surjection `FreeGroup G →* G`, from which the quotient statement follows, but no named lemma packaging the universal-quotient fact was located.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Fundamental group of plane minus a point",
+      "anchor": {
+        "section": "Examples and applications",
+        "snippet": "if the topological space is the plane with one point removed"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "FundamentalGroup",
+        "module": "Mathlib.AlgebraicTopology.FundamentalGroupoid.FundamentalGroup",
+        "match_kind": null
+      },
+      "note": "`FundamentalGroup` is defined but the specific computation π₁(ℝ²∖{0}) ≃ ℤ was not found.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Integers under multiplication not a group",
+      "anchor": {
+        "section": "Integers",
+        "snippet": "The integers, with the operation of multiplication instead of addition"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No explicit statement that `(ℤ, ·)` fails to be a group exists; Mathlib simply omits a `Group ℤ` instance under multiplication.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Nonzero rationals under multiplication",
+      "anchor": {
+        "section": "Rationals",
+        "snippet": "the set of all nonzero rational numbers"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Rat.instField",
+        "module": "Mathlib.Data.Rat.Defs",
+        "match_kind": "invocation"
+      },
+      "note": "`ℚ` is a `Field`, so `ℚˣ` is a `CommGroup` under multiplication via the standard `Units` construction.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Modular addition group Z/nZ",
+      "anchor": {
+        "section": "Modular arithmetic",
+        "snippet": "Modular addition, defined in this way"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "ZMod",
+        "module": "Mathlib.Data.ZMod.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`ZMod n` is the additive group ℤ/nℤ, with `quotientZMultiplesNatEquivZMod` showing `ℤ ⧸ ⟨n⟩ ≃+ ZMod n`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Multiplicative group of integers modulo a prime",
+      "anchor": {
+        "section": "Modular arithmetic",
+        "snippet": "there is also the multiplicative group of integers modulo"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "ZMod.unitsEquivCoprime",
+        "module": "Mathlib.Data.ZMod.Units",
+        "match_kind": "invocation"
+      },
+      "note": "`(ZMod p)ˣ` is the unit group; cardinality and structure are developed in `Mathlib.Data.ZMod.Units`.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Modular arithmetic",
+          "snippet": "there is also the multiplicative group of integers modulo"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle a\\cdot b\\equiv 1{\\pmod {p}},}"
+        }
+      ]
+    },
+    {
+      "kind": "definition",
+      "label": "Cyclic group",
+      "anchor": {
+        "section": "Cyclic groups",
+        "snippet": "A cyclic group is a group all of whose elements are powers of a particular element"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "IsCyclic",
+        "module": "Mathlib.Algebra.Group.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`class IsCyclic (G : Type u) [Pow G ℤ] : Prop` at `Mathlib/Algebra/Group/Defs.lean:1028` asserts every element is a power of a generator.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Cyclic groups",
+          "snippet": "A cyclic group is a group all of whose elements are powers of a particular element"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\dots ,a^{-3},a^{-2},a^{-1},a^{0},a,a^{2},a^{3},\\dots ,}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\dots ,(-a)+(-a),-a,0,a,a+a,\\dots .}"
+        }
+      ]
+    },
+    {
+      "kind": "example",
+      "label": "Group of nth roots of unity",
+      "anchor": {
+        "section": "Cyclic groups",
+        "snippet": "the group of"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "rootsOfUnity",
+        "module": "Mathlib.RingTheory.RootsOfUnity.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`rootsOfUnity n M` is the subgroup of `Mˣ` of n-th roots of unity; `rootsOfUnity.isCyclic` proves cyclicity over an integral domain.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Infinite cyclic group is isomorphic to Z",
+      "anchor": {
+        "section": "Cyclic groups",
+        "snippet": "An infinite cyclic group is isomorphic to"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "intCyclicMulEquiv",
+        "module": "Mathlib.GroupTheory.SpecificGroups.Cyclic",
+        "match_kind": "exact"
+      },
+      "note": "`intCyclicMulEquiv : Multiplicative ℤ ≃* G` (and additive variant `intCyclicAddEquiv`) realize the isomorphism for any infinite cyclic group.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Group action",
+      "anchor": {
+        "section": "Symmetry groups",
+        "snippet": "A group is said to act on another mathematical object"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "MulAction",
+        "module": "Mathlib.Algebra.Group.Action.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`class MulAction (α β) [Monoid α]` formalizes group/monoid actions; specialized to a group it is the standard notion.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "General linear group",
+      "anchor": {
+        "section": "General linear group and representation theory",
+        "snippet": "The general linear group"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "LinearMap.GeneralLinearGroup",
+        "module": "Mathlib.LinearAlgebra.GeneralLinearGroup.Basic",
+        "match_kind": "exact"
+      },
+      "note": "Both `LinearMap.GeneralLinearGroup` and `Matrix.GeneralLinearGroup` are defined; the matrix version is `GLₙ(R)`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Linear representation of a group",
+      "anchor": {
+        "section": "General linear group and representation theory",
+        "snippet": "A representation of a group"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Representation",
+        "module": "Mathlib.RepresentationTheory.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`abbrev Representation k G V := G →* (V →ₗ[k] V)` formalizes linear representations.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Galois group of the quadratic",
+      "anchor": {
+        "section": "Galois groups",
+        "snippet": "the solutions of the quadratic equation"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Polynomial.Gal",
+        "module": "Mathlib.FieldTheory.PolynomialGaloisGroup",
+        "match_kind": null
+      },
+      "note": "`Polynomial.Gal p` defines the Galois group of any polynomial; no decl specifically computes the quadratic case.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Galois groups",
+          "snippet": "the solutions of the quadratic equation"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle x={\\frac {-b\\pm {\\sqrt {b^{2}-4ac}}}{2a}}.}"
+        }
+      ]
+    },
+    {
+      "kind": "definition",
+      "label": "Finite group and order",
+      "anchor": {
+        "section": "Finite groups",
+        "snippet": "A group is called finite if it has a finite number of elements"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Nat.card",
+        "module": "Mathlib.SetTheory.Cardinal.Finite",
+        "match_kind": "invocation"
+      },
+      "note": "Finite groups are `[Group G] [Finite G]`; the order is `Nat.card G` (or `Fintype.card G`).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Symmetric group on n letters",
+      "anchor": {
+        "section": "Finite groups",
+        "snippet": "An important class is the symmetric groups"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Equiv.Perm",
+        "module": "Mathlib.Logic.Equiv.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`Equiv.Perm α` is the symmetric group; for `α = Fin n` it is the symmetric group on n letters.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Cayley's theorem",
+      "anchor": {
+        "section": "Finite groups",
+        "snippet": "any finite group can be expressed as a subgroup of a symmetric group"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "MulAction.toPermHom",
+        "module": "Mathlib.Algebra.Group.Action.End",
+        "match_kind": null
+      },
+      "note": "`MulAction.toPermHom G G : G →* Equiv.Perm G` gives the Cayley embedding, but I did not find a named lemma asserting injectivity as 'Cayley's theorem'.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Order of an element",
+      "anchor": {
+        "section": "Finite groups",
+        "snippet": "The order of an element"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "orderOf",
+        "module": "Mathlib.GroupTheory.OrderOfElement",
+        "match_kind": "exact"
+      },
+      "note": "`orderOf x` is defined at `Mathlib/GroupTheory/OrderOfElement.lean:180` as the smallest positive n with `x^n = 1`.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Finite groups",
+          "snippet": "The order of an element"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\underbrace {a\\cdots a} _{n{\\text{ factors}}},}"
+        }
+      ]
+    },
+    {
+      "kind": "theorem",
+      "label": "Lagrange's theorem",
+      "anchor": {
+        "section": "Finite groups",
+        "snippet": "Lagrange's Theorem states that for a finite group"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Subgroup.card_subgroup_dvd_card",
+        "module": "Mathlib.GroupTheory.Index",
+        "match_kind": "exact"
+      },
+      "note": "`card_subgroup_dvd_card` states |H| divides |G| for a subgroup H of a finite group G.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Structure theorem for finite abelian groups",
+      "anchor": {
+        "section": "Finite abelian groups",
+        "snippet": "Any finite abelian group is isomorphic to a product of finite cyclic groups"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "AddCommGroup.equiv_directSum_zmod_of_finite",
+        "module": "Mathlib.GroupTheory.FiniteAbelian.Basic",
+        "match_kind": "exact"
+      },
+      "note": "Decomposes any finite abelian group as a direct sum of cyclic `ZMod (p^k)` groups.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Groups of prime order are cyclic",
+      "anchor": {
+        "section": "Finite abelian groups",
+        "snippet": "Any group of prime order"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "isCyclic_of_prime_card",
+        "module": "Mathlib.GroupTheory.SpecificGroups.Cyclic",
+        "match_kind": "exact"
+      },
+      "note": "`isCyclic_of_prime_card` proves `IsCyclic G` whenever `Nat.card G` is prime.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Simple group",
+      "anchor": {
+        "section": "Simple groups",
+        "snippet": "A nontrivial group is called simple if it has no such normal subgroup"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "IsSimpleGroup",
+        "module": "Mathlib.GroupTheory.Subgroup.Simple",
+        "match_kind": "exact"
+      },
+      "note": "`class IsSimpleGroup : Prop extends Nontrivial G` at `Mathlib/GroupTheory/Subgroup/Simple.lean:38`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Classification of finite simple groups",
+      "anchor": {
+        "section": "Classification of finite simple groups",
+        "snippet": "The classification of all finite simple groups was a major achievement"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The classification of finite simple groups is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Group via operations (equational definition)",
+      "anchor": {
+        "section": "Groups with additional structure",
+        "snippet": "An equivalent definition of group consists of replacing"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Group.ofLeftAxioms",
+        "module": "Mathlib.Algebra.Group.MinimalAxioms",
+        "match_kind": "generalization"
+      },
+      "note": "`Group.ofLeftAxioms`/`Group.ofRightAxioms` build a `Group` from minimal equational axioms on `Mul`, `Inv`, `One`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Topological group",
+      "anchor": {
+        "section": "Topological groups",
+        "snippet": "Such groups are called topological groups"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "IsTopologicalGroup",
+        "module": "Mathlib.Topology.Algebra.Group.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`class IsTopologicalGroup G` requires continuity of multiplication and inversion.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Lie group",
+      "anchor": {
+        "section": "Lie groups",
+        "snippet": "A Lie group is a group that also has the structure of a differentiable manifold"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "LieGroup",
+        "module": "Mathlib.Geometry.Manifold.Algebra.LieGroup",
+        "match_kind": "exact"
+      },
+      "note": "`class LieGroup` formalizes a group with smooth multiplication and inversion on a manifold.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "General linear group as a Lie group",
+      "anchor": {
+        "section": "Lie groups",
+        "snippet": "A standard example is the general linear group introduced above"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Matrix.GeneralLinearGroup",
+        "module": "Mathlib.LinearAlgebra.GeneralLinearGroup.Basic",
+        "match_kind": null
+      },
+      "note": "GLₙ is defined and the smooth-manifold/Lie-group instance machinery exists, but I did not locate an explicit `LieGroup` instance on `GL n ℝ`.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Lie groups",
+          "snippet": "A standard example is the general linear group introduced above"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\det(A)\\neq 0,}"
+        }
+      ]
+    },
+    {
+      "kind": "definition",
+      "label": "Monoid (relaxation)",
+      "anchor": {
+        "section": "Generalizations",
+        "snippet": "if the requirement that every element has an inverse is eliminated, the resulting algebraic structure is called a monoid"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Monoid",
+        "module": "Mathlib.Algebra.Group.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`class Monoid extends Semigroup, MulOneClass` at `Mathlib/Algebra/Group/Defs.lean:652`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Groupoid",
+      "anchor": {
+        "section": "Generalizations",
+        "snippet": "a groupoid is any small category in which every morphism is an isomorphism"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "CategoryTheory.Groupoid",
+        "module": "Mathlib.CategoryTheory.Groupoid",
+        "match_kind": "exact"
+      },
+      "note": "`class Groupoid (obj : Type u) extends Category obj` with `inv` on every morphism.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "n-ary group",
+      "anchor": {
+        "section": "Generalizations",
+        "snippet": "this gives a notion of"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No n-ary (polyadic) group structure was found in Mathlib.",
+      "provenance": "ai"
+    }
+  ]
+}

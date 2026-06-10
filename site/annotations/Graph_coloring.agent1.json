@@ -1,0 +1,1421 @@
+{
+  "slug": "Graph_coloring",
+  "wikipedia_title": "Graph coloring",
+  "display_title": "Graph coloring",
+  "schema_version": 3,
+  "annotations": [
+    {
+      "kind": "definition",
+      "label": "Graph coloring",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "graph coloring is a methodic assignment of labels"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "theorem",
+      "label": "Five color theorem",
+      "anchor": {
+        "section": "History",
+        "snippet": "every planar map can be colored with no more than five colors"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "definition",
+      "label": "Proper vertex coloring",
+      "anchor": {
+        "section": "Vertex coloring",
+        "snippet": "namely a labeling of the graph's vertices with colors"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "definition",
+      "label": "k-coloring",
+      "anchor": {
+        "section": "Vertex coloring",
+        "snippet": "is called a (proper) k -coloring"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "definition",
+      "label": "Chromatic number",
+      "anchor": {
+        "section": "Vertex coloring",
+        "snippet": "is called its chromatic number"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "definition",
+      "label": "k-colorable and k-chromatic",
+      "anchor": {
+        "section": "Vertex coloring",
+        "snippet": "is k -colorable , and it is k -chromatic if its chromatic number is exactly k"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "definition",
+      "label": "Color class",
+      "anchor": {
+        "section": "Vertex coloring",
+        "snippet": "is called a color class"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "proposition",
+      "label": "k-coloring as partition into independent sets",
+      "anchor": {
+        "section": "Vertex coloring",
+        "snippet": "a k -coloring is the same as a partition of the vertex set into k independent sets"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "example",
+      "label": "Three-coloring count example",
+      "anchor": {
+        "section": "Chromatic polynomial",
+        "snippet": "the graph in the adjacent image can be colored in 12 ways"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "definition",
+      "label": "Chromatic polynomial",
+      "anchor": {
+        "section": "Chromatic polynomial",
+        "snippet": "that counts the number of t -colorings of G"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "proposition",
+      "label": "Chromatic number from chromatic polynomial",
+      "anchor": {
+        "section": "Chromatic polynomial",
+        "snippet": "χ is the smallest positive integer that is not a zero of the chromatic polynomial"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "definition",
+      "label": "Edge coloring",
+      "anchor": {
+        "section": "Edge coloring",
+        "snippet": "is a proper coloring of the edges"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "definition",
+      "label": "k-edge-coloring",
+      "anchor": {
+        "section": "Edge coloring",
+        "snippet": "is called a k -edge-coloring"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "definition",
+      "label": "Chromatic index",
+      "anchor": {
+        "section": "Edge coloring",
+        "snippet": "is the chromatic index , or edge chromatic number"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "definition",
+      "label": "Tait coloring",
+      "anchor": {
+        "section": "Edge coloring",
+        "snippet": "A Tait coloring is a 3-edge coloring of a cubic graph"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "theorem",
+      "label": "Four color theorem via Tait coloring",
+      "anchor": {
+        "section": "Edge coloring",
+        "snippet": "every planar cubic bridgeless graph admits a Tait coloring"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "definition",
+      "label": "Total coloring",
+      "anchor": {
+        "section": "Total coloring",
+        "snippet": "Total coloring is a type of coloring on the vertices and edges of a graph"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "definition",
+      "label": "Total chromatic number",
+      "anchor": {
+        "section": "Total coloring",
+        "snippet": "is the fewest colors needed in any total coloring of G"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "definition",
+      "label": "Face coloring",
+      "anchor": {
+        "section": "Face coloring",
+        "snippet": "the face coloring is the dual of the vertex coloring problem"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "theorem",
+      "label": "Tutte's flow theorem",
+      "anchor": {
+        "section": "Tutte's flow theory",
+        "snippet": "then G admits a nowhere-zero k -flow"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "definition",
+      "label": "Unlabeled coloring",
+      "anchor": {
+        "section": "Unlabeled coloring",
+        "snippet": "is an orbit of a coloring under the action of the automorphism group of the graph"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "proposition",
+      "label": "Unlabeled chromatic polynomial analogue",
+      "anchor": {
+        "section": "Unlabeled coloring",
+        "snippet": "which counts the number of unlabeled colorings of a graph from a given finite color set"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "proposition",
+      "label": "Trivial upper bound χ ≤ n",
+      "anchor": {
+        "section": "Upper bounds on the chromatic number",
+        "snippet": "Assigning distinct colors to distinct vertices always yields a proper coloring"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "proposition",
+      "label": "1-colorable graphs are edgeless",
+      "anchor": {
+        "section": "Upper bounds on the chromatic number",
+        "snippet": "The only graphs that can be 1-colored are edgeless graphs"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "proposition",
+      "label": "Complete graph chromatic number",
+      "anchor": {
+        "section": "Upper bounds on the chromatic number",
+        "snippet": "of n vertices requires"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "proposition",
+      "label": "Lower bound from edges",
+      "anchor": {
+        "section": "Upper bounds on the chromatic number",
+        "snippet": "In an optimal coloring there must be at least one of the graph's m edges between every pair of color classes"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "definition",
+      "label": "χ-bounded family",
+      "anchor": {
+        "section": "Upper bounds on the chromatic number",
+        "snippet": "of graphs is χ -bounded if there is some function"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "proposition",
+      "label": "Perfect graphs χ-bounded by clique number",
+      "anchor": {
+        "section": "Upper bounds on the chromatic number",
+        "snippet": "For the family of the perfect graphs this function is"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "proposition",
+      "label": "2-colorable graphs are bipartite",
+      "anchor": {
+        "section": "Upper bounds on the chromatic number",
+        "snippet": "The 2-colorable graphs are exactly the bipartite graphs"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "theorem",
+      "label": "Planar graphs are 4-colorable",
+      "anchor": {
+        "section": "Upper bounds on the chromatic number",
+        "snippet": "every planar graph can be 4-colored"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "proposition",
+      "label": "Greedy bound χ ≤ Δ+1",
+      "anchor": {
+        "section": "Upper bounds on the chromatic number",
+        "snippet": "every graph can be colored with one more color than the maximum vertex degree"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "proposition",
+      "label": "Δ+1 bound tight for complete graphs and odd cycles",
+      "anchor": {
+        "section": "Upper bounds on the chromatic number",
+        "snippet": "so for these graphs this bound is best possible"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "theorem",
+      "label": "Brooks' theorem",
+      "anchor": {
+        "section": "Upper bounds on the chromatic number",
+        "snippet": "for a connected, simple graph G , unless G is a complete graph or an odd cycle"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "proposition",
+      "label": "Clique number lower bound",
+      "anchor": {
+        "section": "Lower bounds on the chromatic number",
+        "snippet": "then at least k colors are needed to color that clique"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "proposition",
+      "label": "Clique bound tight for perfect graphs",
+      "anchor": {
+        "section": "Lower bounds on the chromatic number",
+        "snippet": "For perfect graphs this bound is tight"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "theorem",
+      "label": "Hoffman's bound",
+      "anchor": {
+        "section": "Lower bounds on the chromatic number",
+        "snippet": "be a real symmetric matrix such that"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "definition",
+      "label": "Vector chromatic number bound",
+      "anchor": {
+        "section": "Lower bounds on the chromatic number",
+        "snippet": "be a positive semi-definite matrix such that"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "proposition",
+      "label": "Lovász number lower bound",
+      "anchor": {
+        "section": "Lower bounds on the chromatic number",
+        "snippet": "The Lovász number of a complementary graph is also a lower bound on the chromatic number"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "proposition",
+      "label": "Fractional chromatic number lower bound",
+      "anchor": {
+        "section": "Lower bounds on the chromatic number",
+        "snippet": "The fractional chromatic number of a graph is a lower bound on the chromatic number as well"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "proposition",
+      "label": "Ordering of the lower bounds",
+      "anchor": {
+        "section": "Lower bounds on the chromatic number",
+        "snippet": "These bounds are ordered as follows"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "proposition",
+      "label": "Large cliques imply high χ, not conversely",
+      "anchor": {
+        "section": "Graphs with high chromatic number",
+        "snippet": "but the opposite is not true"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "example",
+      "label": "Grötzsch graph",
+      "anchor": {
+        "section": "Graphs with high chromatic number",
+        "snippet": "The Grötzsch graph is an example of a 4-chromatic graph without a triangle"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "theorem",
+      "label": "Triangle-free graphs of arbitrarily high χ",
+      "anchor": {
+        "section": "Graphs with high chromatic number",
+        "snippet": "There exist triangle-free graphs with arbitrarily high chromatic number"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "example",
+      "label": "Burling graphs",
+      "anchor": {
+        "section": "Graphs with high chromatic number",
+        "snippet": "whose intersection graph is triangle-free and requires arbitrarily many colors to be properly colored"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "proposition",
+      "label": "Boxes and segments not χ-bounded",
+      "anchor": {
+        "section": "Graphs with high chromatic number",
+        "snippet": "are not χ -bounded"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "proposition",
+      "label": "High χ requires high maximum degree",
+      "anchor": {
+        "section": "Graphs with high chromatic number",
+        "snippet": "graphs with high chromatic number must have high maximum degree"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "theorem",
+      "label": "Erdős: high girth and high χ",
+      "anchor": {
+        "section": "Graphs with high chromatic number",
+        "snippet": "There exist graphs of arbitrarily high girth and chromatic number"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "proposition",
+      "label": "Edge coloring = vertex coloring of line graph",
+      "anchor": {
+        "section": "Bounds on the chromatic index",
+        "snippet": "An edge coloring of G is a vertex coloring of its line graph"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "proposition",
+      "label": "Chromatic index at least max degree",
+      "anchor": {
+        "section": "Bounds on the chromatic index",
+        "snippet": "Since all edges incident to the same vertex need their own color"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "theorem",
+      "label": "Kőnig's theorem",
+      "anchor": {
+        "section": "Bounds on the chromatic index",
+        "snippet": "if G is bipartite"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "theorem",
+      "label": "Vizing's theorem",
+      "anchor": {
+        "section": "Bounds on the chromatic index",
+        "snippet": "has edge-chromatic number"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "theorem",
+      "label": "Gallai–Hasse–Roy–Vitaver theorem",
+      "anchor": {
+        "section": "Other properties",
+        "snippet": "if and only if it has an acyclic orientation for which the longest path has length at most k"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "proposition",
+      "label": "Planar colorings dual to nowhere-zero flows",
+      "anchor": {
+        "section": "Other properties",
+        "snippet": "vertex colorings are essentially dual to nowhere-zero flows"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "theorem",
+      "label": "de Bruijn–Erdős theorem",
+      "anchor": {
+        "section": "Other properties",
+        "snippet": "If all finite subgraphs of an infinite graph G are k -colorable, then so is G"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "theorem",
+      "label": "Fawcett's infinite full coloring theorem",
+      "anchor": {
+        "section": "Other properties",
+        "snippet": "it admits an infinite full coloring"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "proposition",
+      "label": "Reed's conjecture",
+      "anchor": {
+        "section": "Open problems",
+        "snippet": "is that the value is essentially closer to the lower bound"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "proposition",
+      "label": "Chromatic number of the plane",
+      "anchor": {
+        "section": "Open problems",
+        "snippet": "is unknown, although it is one of 5, 6, or 7"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "proposition",
+      "label": "Hadwiger, Erdős–Faber–Lovász, Albertson conjectures",
+      "anchor": {
+        "section": "Open problems",
+        "snippet": "every graph with chromatic number k has a complete graph on k vertices as a minor"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "proposition",
+      "label": "Birkhoff–Lewis conjecture",
+      "anchor": {
+        "section": "Open problems",
+        "snippet": "they conjectured that for planar graphs"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "proposition",
+      "label": "Chromatic polynomial characterization problems",
+      "anchor": {
+        "section": "Open problems",
+        "snippet": "to characterize graphs which have the same chromatic polynomial"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "proposition",
+      "label": "2-coloring = bipartiteness in linear time",
+      "anchor": {
+        "section": "Polynomial time",
+        "snippet": "is equivalent to determining whether or not the graph is bipartite"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "proposition",
+      "label": "Perfect graphs colorable in polynomial time",
+      "anchor": {
+        "section": "Polynomial time",
+        "snippet": "can be computed in polynomial time using semidefinite programming"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "proposition",
+      "label": "Closed-form chromatic polynomials",
+      "anchor": {
+        "section": "Polynomial time",
+        "snippet": "Closed formulas for chromatic polynomials are known for many classes of graphs"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "proposition",
+      "label": "Low branch-width polynomial time",
+      "anchor": {
+        "section": "Polynomial time",
+        "snippet": "then it can be solved in polynomial time using dynamic programming"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "proposition",
+      "label": "Brute-force coloring search",
+      "anchor": {
+        "section": "Exact algorithms",
+        "snippet": "Brute-force search for a k -coloring considers each of the"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "proposition",
+      "label": "Dynamic programming colorability bound",
+      "anchor": {
+        "section": "Exact algorithms",
+        "snippet": "Using dynamic programming and a bound on the number of maximal independent sets"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "proposition",
+      "label": "Inclusion–exclusion colorability bound",
+      "anchor": {
+        "section": "Exact algorithms",
+        "snippet": "Using the principle of inclusion–exclusion and Yates 's algorithm for the fast zeta transform"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "proposition",
+      "label": "Faster 3- and 4-colorability algorithms",
+      "anchor": {
+        "section": "Exact algorithms",
+        "snippet": "Faster algorithms are known for 3- and 4-colorability"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "proposition",
+      "label": "Faster 5- and 6-colorability algorithms",
+      "anchor": {
+        "section": "Exact algorithms",
+        "snippet": "Exponentially faster algorithms are also known for 5- and 6-colorability"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "definition",
+      "label": "Contraction of a graph",
+      "anchor": {
+        "section": "Contraction",
+        "snippet": "is the graph obtained by identifying the vertices u and v"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "proposition",
+      "label": "Chromatic number recurrence (Zykov)",
+      "anchor": {
+        "section": "Contraction",
+        "snippet": "The chromatic number satisfies the recurrence relation"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "proposition",
+      "label": "Chromatic polynomial recurrence",
+      "anchor": {
+        "section": "Contraction",
+        "snippet": "The chromatic polynomial satisfies the following recurrence relation"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "definition",
+      "label": "Deletion–contraction algorithm",
+      "anchor": {
+        "section": "Contraction",
+        "snippet": "a recursive procedure called the deletion–contraction algorithm"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "proposition",
+      "label": "Deletion–contraction running time",
+      "anchor": {
+        "section": "Contraction",
+        "snippet": "The running time satisfies the same recurrence relation as the Fibonacci numbers"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "definition",
+      "label": "Greedy coloring algorithm",
+      "anchor": {
+        "section": "Greedy coloring",
+        "snippet": "The greedy algorithm considers the vertices in a specific order"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "proposition",
+      "label": "Optimal greedy ordering exists",
+      "anchor": {
+        "section": "Greedy coloring",
+        "snippet": "There exists an ordering that leads to a greedy coloring with the optimal number of"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "example",
+      "label": "Crown graph greedy worst case",
+      "anchor": {
+        "section": "Greedy coloring",
+        "snippet": "the crown graph on n vertices can be 2-colored"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "proposition",
+      "label": "Greedy optimal on chordal graphs",
+      "anchor": {
+        "section": "Greedy coloring",
+        "snippet": "the greedy coloring algorithm can be used to find optimal colorings in polynomial time"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "proposition",
+      "label": "Welsh–Powell degree ordering bound",
+      "anchor": {
+        "section": "Greedy coloring",
+        "snippet": "the resulting greedy coloring uses at most"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "definition",
+      "label": "Grundy number",
+      "anchor": {
+        "section": "Greedy coloring",
+        "snippet": "is called the Grundy number of a graph"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "definition",
+      "label": "DSatur and RLF heuristics",
+      "anchor": {
+        "section": "Heuristic algorithms",
+        "snippet": "are the DSatur and recursive largest first (RLF) algorithms"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "definition",
+      "label": "Degree of saturation",
+      "anchor": {
+        "section": "Heuristic algorithms",
+        "snippet": "This is defined as the degree of saturation of a given vertex"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "definition",
+      "label": "Recursive largest first algorithm",
+      "anchor": {
+        "section": "Heuristic algorithms",
+        "snippet": "by constructing each color class one at a time"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "proposition",
+      "label": "DSatur worst-case complexity",
+      "anchor": {
+        "section": "Heuristic algorithms",
+        "snippet": "The worst-case complexity of DSatur is"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "proposition",
+      "label": "DSatur and RLF exact on special graphs",
+      "anchor": {
+        "section": "Heuristic algorithms",
+        "snippet": "DSatur and RLF are exact for bipartite , cycle , and wheel graphs"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "proposition",
+      "label": "LOCAL model coloring upper bound",
+      "anchor": {
+        "section": "Parallel and distributed algorithms",
+        "snippet": "can be c -colored in the deterministic LOCAL model"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "proposition",
+      "label": "LOCAL model matching lower bound",
+      "anchor": {
+        "section": "Parallel and distributed algorithms",
+        "snippet": "A matching lower bound of"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "proposition",
+      "label": "No deterministic coloring of symmetric graphs",
+      "anchor": {
+        "section": "Parallel and distributed algorithms",
+        "snippet": "a deterministic distributed algorithm cannot find a proper vertex coloring"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "proposition",
+      "label": "Distributed greedy needs Θ(n) rounds",
+      "anchor": {
+        "section": "Parallel and distributed algorithms",
+        "snippet": "requires Θ( n ) communication rounds in the worst case"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "theorem",
+      "label": "Cole–Vishkin one-step color reduction",
+      "anchor": {
+        "section": "Parallel and distributed algorithms",
+        "snippet": "there is a distributed algorithm that reduces the number of colors from n to O (log n ) in one synchronous communication step"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "proposition",
+      "label": "Cole–Vishkin 3-coloring of cycle",
+      "anchor": {
+        "section": "Parallel and distributed algorithms",
+        "snippet": "it is possible to obtain a 3-coloring of an n -cycle in O ( log * n ) communication steps"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "theorem",
+      "label": "Linial's lower bound",
+      "anchor": {
+        "section": "Parallel and distributed algorithms",
+        "snippet": "any deterministic distributed algorithm requires Ω( log * n ) communication steps to reduce an n -coloring to a 3-coloring in an n -cycle"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "proposition",
+      "label": "Panconesi–Rizzi distributed edge coloring",
+      "anchor": {
+        "section": "Parallel and distributed algorithms",
+        "snippet": "achieve a (2Δ − 1)-coloring in O (Δ + log * n ) time in this model"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "proposition",
+      "label": "Decentralized coloring exists",
+      "anchor": {
+        "section": "Decentralized algorithms",
+        "snippet": "efficient decentralized algorithms exist that will color a graph if a proper coloring exists"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "proposition",
+      "label": "Learning automata coloring almost surely",
+      "anchor": {
+        "section": "Decentralized algorithms",
+        "snippet": "to find a proper graph coloring with probability one"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "theorem",
+      "label": "NP-completeness of k-coloring",
+      "anchor": {
+        "section": "Computational complexity",
+        "snippet": "except for the cases k ∈ {0,1,2}"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "theorem",
+      "label": "NP-hardness of chromatic number",
+      "anchor": {
+        "section": "Computational complexity",
+        "snippet": "it is NP-hard to compute the chromatic number"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "theorem",
+      "label": "3-coloring NP-complete on 4-regular planar graphs",
+      "anchor": {
+        "section": "Computational complexity",
+        "snippet": "The 3-coloring problem remains NP-complete even on 4-regular planar graphs"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "proposition",
+      "label": "3-coloring linear time for max degree 3",
+      "anchor": {
+        "section": "Computational complexity",
+        "snippet": "the 3-coloring problem can be solved in linear time"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "theorem",
+      "label": "Lexicographically smallest 4-coloring NP-complete",
+      "anchor": {
+        "section": "Computational complexity",
+        "snippet": "finding the lexicographically smallest 4-coloring of a planar graph is NP-complete"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "proposition",
+      "label": "Best known approximation factor",
+      "anchor": {
+        "section": "Computational complexity",
+        "snippet": "The best known approximation algorithm computes a coloring of size at most within a factor"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "theorem",
+      "label": "Hardness of approximating chromatic number",
+      "anchor": {
+        "section": "Computational complexity",
+        "snippet": "approximating the chromatic number within n 1− ε is NP-hard"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "theorem",
+      "label": "Hardness of coloring k-colorable graphs",
+      "anchor": {
+        "section": "Computational complexity",
+        "snippet": "It is also NP-hard to color a 3-colorable graph with 5 colors"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "theorem",
+      "label": "Chromatic polynomial coefficients #P-hard",
+      "anchor": {
+        "section": "Computational complexity",
+        "snippet": "Computing the coefficients of the chromatic polynomial is #P-hard"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "theorem",
+      "label": "Evaluating chromatic polynomial #P-hard",
+      "anchor": {
+        "section": "Computational complexity",
+        "snippet": "is #P-hard at any rational point k except for k = 1 and k = 2"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "theorem",
+      "label": "No FPRAS for chromatic polynomial",
+      "anchor": {
+        "section": "Computational complexity",
+        "snippet": "There is no FPRAS for evaluating the chromatic polynomial at any rational point k ≥ 1.5"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "proposition",
+      "label": "Vizing's proof gives Δ+1 edge coloring",
+      "anchor": {
+        "section": "Computational complexity",
+        "snippet": "the proof of Vizing's result gives an algorithm that uses at most Δ+1 colors"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "theorem",
+      "label": "Edge chromatic number NP-complete",
+      "anchor": {
+        "section": "Computational complexity",
+        "snippet": "deciding between the two candidate values for the edge chromatic number is NP-complete"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "proposition",
+      "label": "Edge chromatic number 4/3-approximation",
+      "anchor": {
+        "section": "Computational complexity",
+        "snippet": "the edge chromatic number can be approximated to within 4/3"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "proposition",
+      "label": "Chromatic number equals minimum makespan",
+      "anchor": {
+        "section": "Scheduling",
+        "snippet": "The chromatic number of the graph is exactly the minimum makespan"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "example",
+      "label": "Aircraft scheduling interval graph",
+      "anchor": {
+        "section": "Scheduling",
+        "snippet": "the resulting conflict graph is an interval graph"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "example",
+      "label": "Bandwidth allocation unit disk graph",
+      "anchor": {
+        "section": "Scheduling",
+        "snippet": "the resulting conflict graph is a unit disk graph"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "definition",
+      "label": "Interference graph",
+      "anchor": {
+        "section": "Register allocation",
+        "snippet": "The compiler constructs an interference graph"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "proposition",
+      "label": "k-coloring gives register assignment",
+      "anchor": {
+        "section": "Register allocation",
+        "snippet": "any set of variables needed at the same time can be stored in at most k registers"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "theorem",
+      "label": "Theorem on friends and strangers",
+      "anchor": {
+        "section": "Ramsey theory",
+        "snippet": "there will be a monochromatic triangle"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "definition",
+      "label": "Modular coloring",
+      "anchor": {
+        "section": "Modular Coloring",
+        "snippet": "Modular coloring is a type of graph coloring in which the color of each vertex is the sum of the colors of its adjacent vertices"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "definition",
+      "label": "Color sum",
+      "anchor": {
+        "section": "Modular Coloring",
+        "snippet": "is the sum of all of the adjacent vertices to"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "definition",
+      "label": "Modular k-coloring",
+      "anchor": {
+        "section": "Modular Coloring",
+        "snippet": "for every pair of adjacent vertices"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "definition",
+      "label": "Modular chromatic number",
+      "anchor": {
+        "section": "Modular Coloring",
+        "snippet": "is the minimum value of"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "example",
+      "label": "Modular coloring worked example",
+      "anchor": {
+        "section": "Modular Coloring",
+        "snippet": "If none of the adjacent vertices have equal color sums"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "definition",
+      "label": "Adjacent-vertex-distinguishing total coloring",
+      "anchor": {
+        "section": "Other colorings",
+        "snippet": "A total coloring with the additional restriction that any two adjacent vertices have different color sets"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "definition",
+      "label": "Acyclic coloring",
+      "anchor": {
+        "section": "Other colorings",
+        "snippet": "Every 2-chromatic subgraph is acyclic"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "definition",
+      "label": "b-coloring",
+      "anchor": {
+        "section": "Other colorings",
+        "snippet": "Each color class contains a vertex that has a neighbor in all other color classes."
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "definition",
+      "label": "Bounded coloring",
+      "anchor": {
+        "section": "Other colorings",
+        "snippet": "A coloring in which the number of vertices per color is bounded"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "definition",
+      "label": "Centered coloring",
+      "anchor": {
+        "section": "Other colorings",
+        "snippet": "Every connected induced subgraph has a color that is used exactly once"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "definition",
+      "label": "Circular coloring",
+      "anchor": {
+        "section": "Other colorings",
+        "snippet": "Motivated by task systems in which production proceeds in a cyclic way"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "definition",
+      "label": "Cocoloring",
+      "anchor": {
+        "section": "Other colorings",
+        "snippet": "An improper vertex coloring where every color class induces an independent set or a clique"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "definition",
+      "label": "Complete coloring",
+      "anchor": {
+        "section": "Other colorings",
+        "snippet": "Every pair of colors appears on at least one edge"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "definition",
+      "label": "Defective coloring",
+      "anchor": {
+        "section": "Other colorings",
+        "snippet": "An improper vertex coloring where every color class induces a bounded degree subgraph."
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "definition",
+      "label": "Distinguishing coloring",
+      "anchor": {
+        "section": "Other colorings",
+        "snippet": "An improper vertex coloring that destroys all the symmetries of the graph"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "definition",
+      "label": "Equitable coloring",
+      "anchor": {
+        "section": "Other colorings",
+        "snippet": "The sizes of color classes differ by at most one"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "definition",
+      "label": "Exact coloring",
+      "anchor": {
+        "section": "Other colorings",
+        "snippet": "Every pair of colors appears on exactly one edge"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "definition",
+      "label": "Fractional coloring",
+      "anchor": {
+        "section": "Other colorings",
+        "snippet": "Vertices may have multiple colors, and on each edge the sum of the color parts of each vertex is not greater than one"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "definition",
+      "label": "Detour-distance coloring",
+      "anchor": {
+        "section": "Other colorings",
+        "snippet": "Uses the length of the longest path between two vertices, also known as the detour distance"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "definition",
+      "label": "Harmonious coloring",
+      "anchor": {
+        "section": "Other colorings",
+        "snippet": "Every pair of colors appears on at most one edge"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "definition",
+      "label": "Incidence coloring",
+      "anchor": {
+        "section": "Other colorings",
+        "snippet": "Each adjacent incidence of vertex and edge is colored with distinct colors"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "definition",
+      "label": "Kaleidoscopic coloring",
+      "anchor": {
+        "section": "Other colorings",
+        "snippet": "A set of vertex colorings induced by perfect matchings of edge-colored Graphs ."
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "definition",
+      "label": "Interval (ordered) coloring",
+      "anchor": {
+        "section": "Other colorings",
+        "snippet": "A partition of vertices of an ordered graph into intervals such that two adjacent vertices in the same interval"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "definition",
+      "label": "Interval edge coloring",
+      "anchor": {
+        "section": "Other colorings",
+        "snippet": "A color of edges meeting in a common vertex must be contiguous (unrelated to the above entry)"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "definition",
+      "label": "List coloring",
+      "anchor": {
+        "section": "Other colorings",
+        "snippet": "Each vertex chooses from a list of colors"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "definition",
+      "label": "List edge coloring",
+      "anchor": {
+        "section": "Other colorings",
+        "snippet": "Each edge chooses from a list of colors"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "definition",
+      "label": "L(h,k)-coloring",
+      "anchor": {
+        "section": "Other colorings",
+        "snippet": "Difference of colors at adjacent vertices is at least h and difference of colors of vertices at a distance two is at least k ."
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "definition",
+      "label": "Oriented coloring",
+      "anchor": {
+        "section": "Other colorings",
+        "snippet": "Takes into account orientation of edges of the graph"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "definition",
+      "label": "Packing coloring",
+      "anchor": {
+        "section": "Other colorings",
+        "snippet": "The distance between any two vertices with the same color must be greater than the assigned color's value"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "definition",
+      "label": "Path coloring",
+      "anchor": {
+        "section": "Other colorings",
+        "snippet": "Models a routing problem in graphs"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "definition",
+      "label": "Radio coloring",
+      "anchor": {
+        "section": "Other colorings",
+        "snippet": "Sum of the distance between the vertices and the difference of their colors is greater than k + 1, where k is a positive integer."
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "definition",
+      "label": "Ranking (ordered) coloring",
+      "anchor": {
+        "section": "Other colorings",
+        "snippet": "If two vertices have the same color i , then every path between them contain a vertex with color greater than i"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "definition",
+      "label": "Subcoloring",
+      "anchor": {
+        "section": "Other colorings",
+        "snippet": "An improper vertex coloring where every color class induces a union of cliques"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "definition",
+      "label": "Sum coloring",
+      "anchor": {
+        "section": "Other colorings",
+        "snippet": "The criterion of minimalization is the sum of colors"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "definition",
+      "label": "Star coloring",
+      "anchor": {
+        "section": "Other colorings",
+        "snippet": "Every 2-chromatic subgraph is a disjoint collection of stars"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "definition",
+      "label": "Strong coloring",
+      "anchor": {
+        "section": "Other colorings",
+        "snippet": "Every color appears in every partition of equal size exactly once"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "definition",
+      "label": "Strong edge coloring",
+      "anchor": {
+        "section": "Other colorings",
+        "snippet": "Edges are colored such that each color class induces a matching (equivalent to coloring the square of the line graph)"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "definition",
+      "label": "T-coloring",
+      "anchor": {
+        "section": "Other colorings",
+        "snippet": "Absolute value of the difference between two colors of adjacent vertices must not belong to fixed set T"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "definition",
+      "label": "Total coloring (list entry)",
+      "anchor": {
+        "section": "Other colorings",
+        "snippet": "Vertices and edges are colored"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "definition",
+      "label": "Triangle-free edge coloring",
+      "anchor": {
+        "section": "Other colorings",
+        "snippet": "The edges are colored so that each color class forms a triangle-free subgraph"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "definition",
+      "label": "Weak coloring",
+      "anchor": {
+        "section": "Other colorings",
+        "snippet": "An improper vertex coloring where every non-isolated node has at least one neighbor with a different color"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "definition",
+      "label": "Coloring of signed and gain graphs",
+      "anchor": {
+        "section": "Other colorings",
+        "snippet": "Coloring can also be considered for signed graphs and gain graphs ."
+      },
+      "provenance": "ai-agent1"
+    }
+  ]
+}

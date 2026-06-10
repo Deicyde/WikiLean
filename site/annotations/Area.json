@@ -1,0 +1,1107 @@
+{
+  "slug": "Area",
+  "wikipedia_title": "Area",
+  "display_title": "Area",
+  "schema_version": 3,
+  "annotation_style": "theorem_article",
+  "annotations": [
+    {
+      "kind": "definition",
+      "label": "Area",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "Area is the measure of a region"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "MeasureTheory.MeasureSpace",
+        "module": "Mathlib.MeasureTheory.Measure.MeasureSpaceDef",
+        "match_kind": "generalization"
+      },
+      "note": "Area as the \"measure of a region\" is captured by the general measure-theoretic framework (e.g. 2D Lebesgue volume), but there is no dedicated \"area\" definition.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Surface area",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "surface area refers to the area of an open surface"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "MeasureTheory.Measure.hausdorffMeasure",
+        "module": "Mathlib.MeasureTheory.Measure.Hausdorff",
+        "match_kind": "generalization"
+      },
+      "note": "2D Hausdorff measure generalizes the notion of surface area, but surface area of embedded surfaces is not defined as such.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Unit square has area one",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "the unit square is defined to have area one"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Real.volume_Icc_pi",
+        "module": "Mathlib.MeasureTheory.Measure.Lebesgue.Basic",
+        "match_kind": "special_case"
+      },
+      "note": "Lebesgue volume is normalized so that the unit box [0,1]^n has measure 1, a special case of the box-volume formula.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Axiomatic area function",
+      "anchor": {
+        "section": "Formal definition",
+        "snippet": "can be defined as a function from a collection"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "MeasureTheory.Measure",
+        "module": "Mathlib.MeasureTheory.Measure.MeasureSpaceDef",
+        "match_kind": "generalization"
+      },
+      "note": "Mathlib's `Measure` is the general axiomatic (countably-additive, nonneg) set function; the specific Jordan-style area axioms are not separately bundled.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Non-negativity of area",
+      "anchor": {
+        "section": "Formal definition",
+        "snippet": "For all S in M"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "MeasureTheory.measureReal_nonneg",
+        "module": "Mathlib.MeasureTheory.Measure.Real",
+        "match_kind": "exact"
+      },
+      "note": "Measures are ℝ≥0∞-valued, and `measureReal_nonneg` gives 0 ≤ μ.real s exactly.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Inclusion-exclusion additivity",
+      "anchor": {
+        "section": "Formal definition",
+        "snippet": "If S and T are in M then so are"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "MeasureTheory.measure_union_add_inter",
+        "module": "Mathlib.MeasureTheory.Measure.MeasureSpace",
+        "match_kind": "exact"
+      },
+      "note": "`measure_union_add_inter` states μ(S∪T)+μ(S∩T)=μ S+μ T, equivalent to two-set inclusion-exclusion.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Area of set difference",
+      "anchor": {
+        "section": "Formal definition",
+        "snippet": "with S ⊆ T then"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "MeasureTheory.measure_diff",
+        "module": "Mathlib.MeasureTheory.Measure.MeasureSpace",
+        "match_kind": "exact"
+      },
+      "note": "`measure_diff` gives μ(S₁\\S₂)=μ S₁−μ S₂ for measurable S₂⊆S₁ of finite measure.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Congruence invariance of area",
+      "anchor": {
+        "section": "Formal definition",
+        "snippet": "S is congruent to T then"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "LinearIsometryEquiv.measurePreserving",
+        "module": "Mathlib.MeasureTheory.Measure.Haar.InnerProductSpace",
+        "match_kind": "generalization"
+      },
+      "note": "Volume is preserved by linear isometries (rotations/reflections) and by translations (Haar invariance), but full affine-congruence invariance is not a single declaration.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Area of a rectangle axiom",
+      "anchor": {
+        "section": "Formal definition",
+        "snippet": "Every rectangle R is in M"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Real.volume_Icc_pi",
+        "module": "Mathlib.MeasureTheory.Measure.Lebesgue.Basic",
+        "match_kind": "special_case"
+      },
+      "note": "The box-volume lemma gives volume of a product of intervals as the product of side lengths, i.e. the rectangle-area axiom in 2D.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Step region squeeze",
+      "anchor": {
+        "section": "Formal definition",
+        "snippet": "A step region is formed from a finite union of adjacent rectangles"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No formalization of step-region (finite rectangle union) inner/outer squeezing of area exists, though box-integration infrastructure is present.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Existence of area function",
+      "anchor": {
+        "section": "Formal definition",
+        "snippet": "It can be proved that such an area function actually exists"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Real.measureSpace",
+        "module": "Mathlib.MeasureTheory.Measure.Haar.OfBasis",
+        "match_kind": "generalization"
+      },
+      "note": "Lebesgue/Haar measure is constructed (so an area function exists), but existence/uniqueness specifically under the Jordan-area axioms is not proved.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Unit of area from unit of length",
+      "anchor": {
+        "section": "Units",
+        "snippet": "Every unit of length has a corresponding unit of area"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Physical units of measurement are not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Area of a 1-metre square",
+      "anchor": {
+        "section": "Conversions",
+        "snippet": "Calculation of the area of a square whose length and width are 1 metre"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Unit-based area conversions are not formalized (the bare 1×1=1 is a trivial instance of the box-volume formula).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Disk area proportional to diameter squared",
+      "anchor": {
+        "section": "Circle area",
+        "snippet": "the area of a disk (the region enclosed by a circle) is proportional to the square of its diameter"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "EuclideanSpace.volume_ball_fin_two",
+        "module": "Mathlib.MeasureTheory.Measure.Lebesgue.VolumeOfBalls",
+        "match_kind": "special_case"
+      },
+      "note": "Volume of a 2D ball equals π·r², hence is proportional to the square of the diameter.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Archimedes' circle-triangle area",
+      "anchor": {
+        "section": "Circle area",
+        "snippet": "the area inside a circle is equal to that of a right triangle whose base has the length of the circle's circumference"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The identity area = ½·circumference·radius is not formalized (circle circumference/perimeter is not available as a length).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Triangle is half a parallelogram (Euclid)",
+      "anchor": {
+        "section": "Triangle area",
+        "snippet": "the area of a triangle is half that of a parallelogram with the same base and height"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No triangle-vs-parallelogram area relation is formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Heron's formula",
+      "anchor": {
+        "section": "Triangle area",
+        "snippet": "Heron's formula for the area of a triangle in terms of its sides"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Heron's formula is not in Mathlib (Geometry.Euclidean.Triangle has only the laws of cosines/sines).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Triangle area one-half base times height",
+      "anchor": {
+        "section": "Triangle area",
+        "snippet": "the area of a triangle as one-half the base times the height"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The ½·base·height triangle-area formula is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Brahmagupta's formula",
+      "anchor": {
+        "section": "Quadrilateral area",
+        "snippet": "for the area of a cyclic quadrilateral"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Only the algebraic Brahmagupta(-Fibonacci) identity exists (Algebra.Ring.Identities); the cyclic-quadrilateral area formula is absent.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Bretschneider's formula",
+      "anchor": {
+        "section": "Quadrilateral area",
+        "snippet": "Bretschneider's formula , for the area of any quadrilateral"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Bretschneider's quadrilateral area formula is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Surveyor's formula (general polygon)",
+      "anchor": {
+        "section": "General polygon area",
+        "snippet": "the surveyor's formula for the area of any polygon with known vertex locations"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The surveyor's/shoelace polygon-area formula is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Surveyor's formula for a simple polygon",
+      "anchor": {
+        "section": "Polygon formulas",
+        "snippet": "the area is given by the surveyor's formula"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No shoelace/surveyor formula for simple polygons exists in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Area of a rectangle",
+      "anchor": {
+        "section": "Rectangles",
+        "snippet": "Given a rectangle with length l and width w , the formula for the area is"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Real.volume_Icc_pi",
+        "module": "Mathlib.MeasureTheory.Measure.Lebesgue.Basic",
+        "match_kind": "special_case"
+      },
+      "note": "Box volume = product of side lengths gives A = l·w for a 2D rectangle.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Area of a square",
+      "anchor": {
+        "section": "Rectangles",
+        "snippet": "the area of a square with side length s is given by the formula"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Real.volume_Icc_pi",
+        "module": "Mathlib.MeasureTheory.Measure.Lebesgue.Basic",
+        "match_kind": "special_case"
+      },
+      "note": "A = s² is the equal-sides special case of the box-volume formula.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Area of a parallelogram",
+      "anchor": {
+        "section": "Dissection, parallelograms, and triangles",
+        "snippet": "the area of the parallelogram is the same as the area of the rectangle"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "MeasureTheory.Measure.addHaar_parallelepiped",
+        "module": "Mathlib.MeasureTheory.Measure.Lebesgue.EqHaar",
+        "match_kind": "generalization"
+      },
+      "note": "`addHaar_parallelepiped` gives the measure of a parallelepiped (incl. 2D parallelogram) as |det| of the spanning vectors; the base×height form is not separately stated.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Triangle is half its parallelogram",
+      "anchor": {
+        "section": "Dissection, parallelograms, and triangles",
+        "snippet": "the area of each triangle is half the area of the parallelogram"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The triangle-is-half-its-parallelogram dissection result is not formalized.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Dissection, parallelograms, and triangles",
+          "snippet": "the area of each triangle is half the area of the parallelogram"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle A={\\frac {1}{2}}bh{\\text{ (triangle).}}}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Area of a circle",
+      "anchor": {
+        "section": "Circles",
+        "snippet": "the total area of the circle is"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "EuclideanSpace.volume_ball_fin_two",
+        "module": "Mathlib.MeasureTheory.Measure.Lebesgue.VolumeOfBalls",
+        "match_kind": "special_case"
+      },
+      "note": "Volume of a 2D ball of radius r is exactly π·r² (also `Complex.volume_ball`).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Area of an ellipse",
+      "anchor": {
+        "section": "Ellipses",
+        "snippet": "for an ellipse with semi-major and semi-minor axes x and y the formula is"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The ellipse area formula π·a·b is not formalized (no ellipse region defined).",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Ellipses",
+          "snippet": "for an ellipse with semi-major and semi-minor axes x and y the formula is"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle A=\\pi xy.}"
+        }
+      ]
+    },
+    {
+      "kind": "theorem",
+      "label": "Surface area of a sphere",
+      "anchor": {
+        "section": "Non-planar surface area",
+        "snippet": "The formula for the surface area of a sphere was first obtained by Archimedes"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The 4π·r² sphere surface area is not formalized (only the volume of the 3-ball via `volume_ball_fin_three`).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Triangle area from base and height",
+      "anchor": {
+        "section": "Areas of 2-dimensional figures",
+        "snippet": "where B is any side, and h is the distance from the line on which B lies"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The base-times-height triangle-area formula is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Heron's formula",
+      "anchor": {
+        "section": "Areas of 2-dimensional figures",
+        "snippet": "If the lengths of the three sides are known then Heron's formula can be used"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Heron's formula is not present in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Triangle area from two sides and angle",
+      "anchor": {
+        "section": "Areas of 2-dimensional figures",
+        "snippet": "If an angle and its two included sides are given, the area is"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The ½·a·b·sin C triangle-area formula is not formalized (areaForm gives the signed parallelogram area of two vectors but no triangle-area statement).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Shoelace formula",
+      "anchor": {
+        "section": "Areas of 2-dimensional figures",
+        "snippet": "This formula is also known as the shoelace formula"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The shoelace formula is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Pick's theorem",
+      "anchor": {
+        "section": "Areas of 2-dimensional figures",
+        "snippet": "This result is known as Pick's theorem"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Pick's theorem is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Area under a curve",
+      "anchor": {
+        "section": "Area in calculus",
+        "snippet": "The area between a positive-valued curve and the horizontal axis"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "MeasureTheory.volume_regionBetween_eq_integral",
+        "module": "Mathlib.MeasureTheory.Measure.Lebesgue.Integral",
+        "match_kind": "special_case"
+      },
+      "note": "Area between a positive curve and the axis is the f=0 case of the region-between-graphs integral.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Area in calculus",
+          "snippet": "The area between a positive-valued curve and the horizontal axis"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle A=\\int _{a}^{b}f(x)\\,dx.}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Area between two graphs",
+      "anchor": {
+        "section": "Area in calculus",
+        "snippet": "The area between the graphs of two functions is equal to the integral of one function"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "MeasureTheory.volume_regionBetween_eq_integral",
+        "module": "Mathlib.MeasureTheory.Measure.Lebesgue.Integral",
+        "match_kind": "exact"
+      },
+      "note": "`volume_regionBetween_eq_integral` gives the measure of the region between f and g as ∫(g−f).",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Area in calculus",
+          "snippet": "The area between the graphs of two functions is equal to the integral of one function"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle A=\\int _{a}^{b}(f(x)-g(x))\\,dx,}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Area in polar coordinates",
+      "anchor": {
+        "section": "Area in calculus",
+        "snippet": "expressed in polar coordinates is"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The polar-area formula ½∫r²dθ is not formalized (`polarCoord` provides only a change-of-variables Jacobian).",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Area in calculus",
+          "snippet": "expressed in polar coordinates is"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle A={1 \\over 2}\\int r^{2}\\,d\\theta .}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Area enclosed by a parametric curve",
+      "anchor": {
+        "section": "Area in calculus",
+        "snippet": "The area enclosed by a parametric curve"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Green's-theorem area formula for a parametric curve is not formalized.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Area in calculus",
+          "snippet": "The area enclosed by a parametric curve"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\oint _{t_{0}}^{t_{1}}x{\\dot {y}}\\,dt=-\\oint _{t_{0}}^{t_{1}}y{\\dot {x}}\\,dt={1 \\over 2}\\oint _{t_{0}}^{t_{1}}(x{\\dot {y}}-y{\\dot {x}})\\,dt}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle {1 \\over 2}\\oint _{t_{0}}^{t_{1}}{\\vec {u}}\\times {\\dot {\\vec {u}}}\\,dt.}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Bounded area between two quadratics",
+      "anchor": {
+        "section": "Bounded area between two quadratic functions",
+        "snippet": "To find the bounded area between two quadratic functions"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The specific closed-form area between two quadratics is not formalized (general region-between integral exists).",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Bounded area between two quadratic functions",
+          "snippet": "To find the bounded area between two quadratic functions"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle f(x)-g(x)=ax^{2}+bx+c=a(x-\\alpha )(x-\\beta )}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle A={\\frac {(b^{2}-4ac)^{3/2}}{6a^{2}}}={\\frac {a}{6}}(\\beta -\\alpha )^{3},\\qquad a\\neq 0.}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Surface area of a cone",
+      "anchor": {
+        "section": "Surface area of 3-dimensional figures",
+        "snippet": "where r is the radius of the circular base, and h is the height"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The cone surface-area formula is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Surface area of a cube",
+      "anchor": {
+        "section": "Surface area of 3-dimensional figures",
+        "snippet": "where s is the length of an edge"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The cube surface-area formula 6s² is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Surface area of a cylinder",
+      "anchor": {
+        "section": "Surface area of 3-dimensional figures",
+        "snippet": "where r is the radius of a base and h is the height"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The cylinder surface-area formula is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Surface area of a prism",
+      "anchor": {
+        "section": "Surface area of 3-dimensional figures",
+        "snippet": "where B is the area of a base, P is the perimeter of a base, and h is the height of the prism"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The prism surface-area formula is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Surface area of a pyramid",
+      "anchor": {
+        "section": "Surface area of 3-dimensional figures",
+        "snippet": "where B is the area of the base, P is the perimeter of the base, and L is the length of the slant"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The pyramid surface-area formula is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Surface area of a rectangular prism",
+      "anchor": {
+        "section": "Surface area of 3-dimensional figures",
+        "snippet": "is the length, w is the width, and h is the height"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The rectangular-prism surface-area formula is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Surface area of a graph",
+      "anchor": {
+        "section": "General formula for surface area",
+        "snippet": "The general formula for the surface area of the graph of a continuously differentiable function"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The ∫√(1+|∇f|²) graph surface-area formula is not formalized.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "General formula for surface area",
+          "snippet": "The general formula for the surface area of the graph of a continuously differentiable function"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle A=\\iint _{D}{\\sqrt {\\left({\\frac {\\partial f}{\\partial x}}\\right)^{2}+\\left({\\frac {\\partial f}{\\partial y}}\\right)^{2}+1}}\\,dx\\,dy.}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle A=\\iint _{D}\\left|{\\frac {\\partial \\mathbf {r} }{\\partial u}}\\times {\\frac {\\partial \\mathbf {r} }{\\partial v}}\\right|\\,du\\,dv.}"
+        }
+      ]
+    },
+    {
+      "kind": "theorem",
+      "label": "Area of a parametric surface",
+      "anchor": {
+        "section": "General formula for surface area",
+        "snippet": "An even more general formula for the area of the graph of a parametric surface"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The parametric-surface area formula is not formalized.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "General formula for surface area",
+          "snippet": "An even more general formula for the area of the graph of a parametric surface"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle A=\\iint _{D}{\\sqrt {\\left({\\frac {\\partial f}{\\partial x}}\\right)^{2}+\\left({\\frac {\\partial f}{\\partial y}}\\right)^{2}+1}}\\,dx\\,dy.}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle A=\\iint _{D}\\left|{\\frac {\\partial \\mathbf {r} }{\\partial u}}\\times {\\frac {\\partial \\mathbf {r} }{\\partial v}}\\right|\\,du\\,dv.}"
+        }
+      ]
+    },
+    {
+      "kind": "theorem",
+      "label": "Isoperimetric inequality",
+      "anchor": {
+        "section": "Relation of area to perimeter",
+        "snippet": "The isoperimetric inequality states that, for a closed curve of length L"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The isoperimetric inequality is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Circle area-to-circumference ratio",
+      "anchor": {
+        "section": "Relation of area to perimeter",
+        "snippet": "the ratio of the area to the circumference"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The area/circumference = r/2 ratio is not formalized (no circle circumference).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Area of a regular polygon",
+      "anchor": {
+        "section": "Relation of area to perimeter",
+        "snippet": "The area of a regular polygon is half its perimeter times the apothem"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The regular-polygon area formula (½·perimeter·apothem) is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Fractal dimension scaling",
+      "anchor": {
+        "section": "Fractals",
+        "snippet": "Doubling the edge lengths of a polygon multiplies its area by four"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "MeasureTheory.Measure.addHaar_smul",
+        "module": "Mathlib.MeasureTheory.Measure.Lebesgue.EqHaar",
+        "match_kind": "generalization"
+      },
+      "note": "`addHaar_smul` gives μ(r•s)=|r|^dim·μ s, so in 2D doubling lengths scales area by 4; the fractal (non-integer) dimension aspect is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Infinitude of triangle area bisectors",
+      "anchor": {
+        "section": "Area bisectors",
+        "snippet": "There are an infinitude of lines that bisect the area of a triangle"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Results on area-bisecting lines of a triangle are not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Area-and-perimeter bisector through incenter",
+      "anchor": {
+        "section": "Area bisectors",
+        "snippet": "splits both the triangle's area and its perimeter in half goes through the triangle's incenter"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This area-and-perimeter bisector/incenter result is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Parallelogram midpoint bisector",
+      "anchor": {
+        "section": "Area bisectors",
+        "snippet": "Any line through the midpoint of a parallelogram bisects the area"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The parallelogram-midpoint area-bisector result is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Ellipse area bisectors through center",
+      "anchor": {
+        "section": "Area bisectors",
+        "snippet": "All area bisectors of a circle or other ellipse go through the center"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The circle/ellipse area-bisector-through-center result is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Minimal surface",
+      "anchor": {
+        "section": "Optimization",
+        "snippet": "the surface of least area spanning"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Minimal surfaces / the Plateau problem are not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Circle maximizes area for given perimeter",
+      "anchor": {
+        "section": "Optimization",
+        "snippet": "The circle has the largest area of any two-dimensional object having the same perimeter"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This isoperimetric optimality of the circle is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Cyclic polygon maximizes area",
+      "anchor": {
+        "section": "Optimization",
+        "snippet": "A cyclic polygon (one inscribed in a circle) has the largest area of any polygon"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The cyclic-polygon area-maximization result is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Isoperimetric inequality for triangles",
+      "anchor": {
+        "section": "Optimization",
+        "snippet": "the triangle of greatest area among all those with a given perimeter is equilateral"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The equilateral-maximizes-area-for-given-perimeter result is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Equilateral triangle extremal in a circle",
+      "anchor": {
+        "section": "Optimization",
+        "snippet": "The triangle of largest area of all those inscribed in a given circle is equilateral"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The inscribed-triangle area-maximization result is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Incircle-to-triangle area ratio maximized",
+      "anchor": {
+        "section": "Optimization",
+        "snippet": "The ratio of the area of the incircle to the area of an equilateral triangle"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The incircle-to-triangle area-ratio extremality is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Area-to-perimeter-squared ratio maximized",
+      "anchor": {
+        "section": "Optimization",
+        "snippet": "The ratio of the area to the square of the perimeter of an equilateral triangle"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The area-to-perimeter² extremality among triangles is not formalized.",
+      "provenance": "ai"
+    }
+  ]
+}

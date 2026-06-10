@@ -1,0 +1,761 @@
+{
+  "slug": "Hopf_algebra",
+  "wikipedia_title": "Hopf algebra",
+  "display_title": "Hopf algebra",
+  "schema_version": 3,
+  "annotation_style": "theorem_article",
+  "annotations": [
+    {
+      "kind": "definition",
+      "label": "Hopf algebra (informal)",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "is a structure that is simultaneously a"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "HopfAlgebra",
+        "module": "Mathlib.RingTheory.HopfAlgebra.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`HopfAlgebra R A` is defined as a bialgebra equipped with an antipode satisfying the antipode axioms.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Convolution algebra of a bialgebra",
+      "anchor": {
+        "section": "Formal definition",
+        "snippet": "One can consider the convolution algebra"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "LinearMap.convSemiring",
+        "module": "Mathlib.RingTheory.Coalgebra.Convolution",
+        "match_kind": "generalization"
+      },
+      "note": "Mathlib provides the convolution (semi)ring structure on `WithConv (C →ₗ[R] A)` for any coalgebra `C` and algebra `A`, specializing to the convolution algebra of a bialgebra.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Hopf algebra (antipode condition)",
+      "anchor": {
+        "section": "Formal definition",
+        "snippet": "is said to be a Hopf algebra if the identity of"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "HopfAlgebra",
+        "module": "Mathlib.RingTheory.HopfAlgebra.Basic",
+        "match_kind": "exact"
+      },
+      "note": "The `mul_antipode_rTensor_comul` and `mul_antipode_lTensor_comul` fields of `HopfAlgebra` encode exactly the antipode axioms `μ ∘ (S ⊗ id) ∘ Δ = η ∘ ε = μ ∘ (id ⊗ S) ∘ Δ`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Hopf algebra over a commutative ring",
+      "anchor": {
+        "section": "Formal definition",
+        "snippet": "one can replace the underlying field K with a commutative ring R"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "HopfAlgebra",
+        "module": "Mathlib.RingTheory.HopfAlgebra.Basic",
+        "match_kind": "generalization"
+      },
+      "note": "Mathlib's `HopfAlgebra R A` is already defined over an arbitrary `CommSemiring R`, which covers (and generalizes) the commutative ring case.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Self-duality of Hopf algebra definition",
+      "anchor": {
+        "section": "Formal definition",
+        "snippet": "The definition of Hopf algebra is self-dual"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib does not state the self-duality of the Hopf-algebra axioms as a formal proposition.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Structure constants for multiplication, comultiplication, and antipode",
+      "anchor": {
+        "section": "Structure constants",
+        "snippet": "one may define the algebra in terms of structure constants for multiplication"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No development of Hopf-algebra structure constants relative to a fixed basis is present in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Associativity constraint on structure constants",
+      "anchor": {
+        "section": "Structure constants",
+        "snippet": "Associativity then requires that"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No structure-constant formulation of associativity is in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Co-associativity constraint on structure constants",
+      "anchor": {
+        "section": "Structure constants",
+        "snippet": "while co-associativity requires that"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No structure-constant formulation of coassociativity is in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Connecting axiom on structure constants",
+      "anchor": {
+        "section": "Structure constants",
+        "snippet": "The connecting axiom requires that"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No structure-constant formulation of the bialgebra compatibility axiom is in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Invertibility of the antipode in special cases",
+      "anchor": {
+        "section": "Properties of the antipode",
+        "snippet": "The antipode S is sometimes required to have a K -linear inverse"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "IsGroupLikeElem.antipode_antipode",
+        "module": "Mathlib.RingTheory.HopfAlgebra.GroupLike",
+        "match_kind": "special_case"
+      },
+      "note": "Only the special case `S(S(a)) = a` for group-like elements is proved; bijectivity of `S` on commutative or finite-dimensional Hopf algebras is listed as TODO in `HopfAlgebra/Basic.lean`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Antipode is an antihomomorphism",
+      "anchor": {
+        "section": "Properties of the antipode",
+        "snippet": "In general, S is an antihomomorphism"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "HopfAlgebra.antipode_mul",
+        "module": "Mathlib.RingTheory.HopfAlgebra.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`HopfAlgebra.antipode_mul` proves `antipode R (a * b) = antipode R b * antipode R a`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Involutive Hopf algebra",
+      "anchor": {
+        "section": "Properties of the antipode",
+        "snippet": "then the Hopf algebra is said to be involutive"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "There is no Mathlib class for Hopf algebras with `S² = id`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Uniqueness of antipode",
+      "anchor": {
+        "section": "Properties of the antipode",
+        "snippet": "If a bialgebra B admits an antipode S , then S is unique"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The `HopfAlgebra/Basic.lean` TODO explicitly lists uniqueness of the Hopf algebra structure on a bialgebra as not yet done.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Antipode as group-inverse analog",
+      "anchor": {
+        "section": "Properties of the antipode",
+        "snippet": "The antipode is an analog to the inversion map on a group"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "GroupLike.toUnits",
+        "module": "Mathlib.RingTheory.HopfAlgebra.GroupLike",
+        "match_kind": "special_case"
+      },
+      "note": "Mathlib realizes the analogy on group-like elements: `GroupLike.toUnits` turns group-likes into units with inverse given by the antipode, and `IsGroupLikeElem.antipode_mul_cancel` / `mul_antipode_cancel` are the unit and inverse laws.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Hopf subalgebra",
+      "anchor": {
+        "section": "Hopf subalgebras",
+        "snippet": "A subalgebra A of a Hopf algebra H is a Hopf subalgebra if it is a subcoalgebra"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No `HopfSubalgebra` / sub-Hopf-algebra structure is defined in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Nichols–Zoeller freeness theorem",
+      "anchor": {
+        "section": "Hopf subalgebras",
+        "snippet": "The Nichols–Zoeller freeness theorem of Warren Nichols and Bettina Zoeller"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Nichols–Zoeller freeness theorem is not in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Hopf subalgebra of semisimple is semisimple",
+      "anchor": {
+        "section": "Hopf subalgebras",
+        "snippet": "a Hopf subalgebra of a semisimple finite-dimensional Hopf algebra is automatically semisimple"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This consequence of Nichols–Zoeller is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Right normal Hopf subalgebra",
+      "anchor": {
+        "section": "Hopf subalgebras",
+        "snippet": "is said to be right normal in a Hopf algebra H if it satisfies the condition of stability"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Right adjoint actions and normality of Hopf subalgebras are not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Left normal Hopf subalgebra",
+      "anchor": {
+        "section": "Hopf subalgebras",
+        "snippet": "a Hopf subalgebra A is left normal in H if it is stable under the left adjoint mapping"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Left adjoint actions and normality of Hopf subalgebras are not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Normal Hopf subalgebra",
+      "anchor": {
+        "section": "Hopf subalgebras",
+        "snippet": "The two conditions of normality are equivalent if the antipode S is bijective"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Normality of Hopf subalgebras is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Normal Hopf subalgebra condition and quotient",
+      "anchor": {
+        "section": "Hopf subalgebras",
+        "snippet": "A normal Hopf subalgebra A in H satisfies the condition"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Hopf quotient `H/HA⁺` and the corresponding condition on normal subalgebras are not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Hopf order",
+      "anchor": {
+        "section": "Hopf orders",
+        "snippet": "A Hopf order O over an integral domain R with field of fractions K is an order"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Hopf orders are not defined in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Group-like element",
+      "anchor": {
+        "section": "Group-like elements",
+        "snippet": "A group-like element is a nonzero element x"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "IsGroupLikeElem",
+        "module": "Mathlib.RingTheory.Coalgebra.GroupLike",
+        "match_kind": "exact"
+      },
+      "note": "`IsGroupLikeElem R a` is defined by `ε a = 1` and `Δ a = a ⊗ₜ a`; nonzero-ness follows automatically over a nontrivial ring via `IsGroupLikeElem.ne_zero`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Group-like elements form a group",
+      "anchor": {
+        "section": "Group-like elements",
+        "snippet": "The group-like elements form a group with inverse given by the antipode"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "GroupLike.instGroup",
+        "module": "Mathlib.RingTheory.HopfAlgebra.GroupLike",
+        "match_kind": "exact"
+      },
+      "note": "Mathlib equips `GroupLike R A` with a `Group` instance whose inverse is the antipode (`GroupLike.val_inv`).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Primitive element",
+      "anchor": {
+        "section": "Group-like elements",
+        "snippet": "A primitive element x satisfies"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No predicate for primitive elements (`Δ x = x ⊗ 1 + 1 ⊗ x`) exists in Mathlib's coalgebra/bialgebra files.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Comultiplication formula on h_k",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "Note that functions on a finite group can be identified with the group ring"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The dual Hopf algebra `(R[G])*` of functions on a finite group, together with the indicator-basis comultiplication, is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Cohomology algebra of a Lie group as Hopf algebra",
+      "anchor": {
+        "section": "Cohomology of Lie groups",
+        "snippet": "The cohomology algebra (over a field"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Hopf algebra structure on the cohomology ring of a Lie group is not in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Hopf's structure theorem for cohomology of Lie groups",
+      "anchor": {
+        "section": "Cohomology of Lie groups",
+        "snippet": "Theorem (Hopf)"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Hopf's structure theorem for the cohomology of compact connected Lie groups is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Quantum groups as deformed Hopf algebras",
+      "anchor": {
+        "section": "Quantum groups and non-commutative geometry",
+        "snippet": "Other interesting Hopf algebras are certain"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Quantum groups such as `U_q(g)` are not constructed in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Tensor product of A-modules",
+      "anchor": {
+        "section": "Representation theory",
+        "snippet": "Then, M ⊗ N is also an A -module"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has a `HopfAlgebra` instance on tensor products of Hopf algebras but not the module-level tensor product of representations using the comultiplication.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Trivial representation",
+      "anchor": {
+        "section": "Representation theory",
+        "snippet": "we can define the trivial representation as the base field K"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The base ring as the trivial Hopf-algebra representation via the counit is not packaged in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Dual representation",
+      "anchor": {
+        "section": "Representation theory",
+        "snippet": "the dual representation of A can be defined"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The dual representation of a Hopf algebra (via the antipode and transpose) is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Natural isomorphisms are A-module homomorphisms",
+      "anchor": {
+        "section": "Representation theory",
+        "snippet": "the natural isomorphisms of vector spaces M → M ⊗ K and M → K ⊗ M are also isomorphisms of A -modules"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The unitor isomorphisms in the monoidal category of Hopf-algebra modules are not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Graded Hopf algebra",
+      "anchor": {
+        "section": "Related concepts",
+        "snippet": "Graded Hopf algebras are often used in algebraic topology"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib does not define graded Hopf algebras.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Locally compact quantum group",
+      "anchor": {
+        "section": "Related concepts",
+        "snippet": "Locally compact quantum groups generalize Hopf algebras and carry a topology"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Locally compact quantum groups are not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Quasi-Hopf algebra",
+      "anchor": {
+        "section": "Related concepts",
+        "snippet": "Quasi-Hopf algebras are generalizations of Hopf algebras"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Quasi-Hopf algebras are not defined in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Multiplier Hopf algebra",
+      "anchor": {
+        "section": "Related concepts",
+        "snippet": "Multiplier Hopf algebras introduced by Alfons Van Daele in 1994"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Multiplier Hopf algebras are not defined in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Hopf group-(co)algebra",
+      "anchor": {
+        "section": "Related concepts",
+        "snippet": "Hopf group-(co)algebras introduced by V. G. Turaev in 2000"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Turaev's Hopf group-(co)algebras are not defined in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Weak Hopf algebra",
+      "anchor": {
+        "section": "Weak Hopf algebras",
+        "snippet": "Weak Hopf algebras , or quantum groupoids, are generalizations of Hopf algebras"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Weak Hopf algebras / quantum groupoids are not defined in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Finite groupoid algebra as weak Hopf algebra",
+      "anchor": {
+        "section": "Weak Hopf algebras",
+        "snippet": "a finite groupoid algebra is a weak Hopf algebra"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The weak Hopf algebra structure on a finite groupoid algebra is not in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Group axiomatization via Hopf algebra diagrams",
+      "anchor": {
+        "section": "Analogy with groups",
+        "snippet": "Groups can be axiomatized by the same diagrams"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The equivalence between groups and Hopf monoids in cartesian monoidal categories is listed as a TODO in `Mathlib/CategoryTheory/Monoidal/Hopf_.lean`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Hopf algebra in a braided monoidal category",
+      "anchor": {
+        "section": "Hopf algebras in braided monoidal categories",
+        "snippet": "The definition of Hopf algebra is naturally extended to arbitrary braided monoidal categories"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "CategoryTheory.HopfObj",
+        "module": "Mathlib.CategoryTheory.Monoidal.Hopf_",
+        "match_kind": "exact"
+      },
+      "note": "`HopfObj X` is defined for an object `X` in a braided monoidal category as a `BimonObj` with an antipode satisfying `antipode_left` and `antipode_right`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Bialgebra in a category",
+      "anchor": {
+        "section": "Hopf algebras in braided monoidal categories",
+        "snippet": "with the properties 1),2),3) is called a bialgebra in the category"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "CategoryTheory.BimonObj",
+        "module": "Mathlib.CategoryTheory.Monoidal.Bimon_",
+        "match_kind": "exact"
+      },
+      "note": "`BimonObj M` in a braided monoidal category combines `MonObj M` and `ComonObj M` together with the compatibility axioms, formalizing a bialgebra object.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Groups as Hopf algebras in Set",
+      "anchor": {
+        "section": "Hopf algebras in braided monoidal categories",
+        "snippet": "In the monoidal category"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The identification of `HopfObj` in `Set` (or any cartesian monoidal category) with groups is explicitly listed as TODO in `Mathlib/CategoryTheory/Monoidal/Hopf_.lean`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Classical Hopf algebras as Hopf algebras in Vect",
+      "anchor": {
+        "section": "Hopf algebras in braided monoidal categories",
+        "snippet": "Classical Hopf algebras"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The equivalence `Hopf (ModuleCat R) ≌ HopfAlgCat R` is listed as TODO in `Mathlib/CategoryTheory/Monoidal/Hopf_.lean`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Functional algebras on groups",
+      "anchor": {
+        "section": "Hopf algebras in braided monoidal categories",
+        "snippet": "Functional algebras on groups"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Hopf algebras of functions on (topological) groups in the stereotype or smooth setting are not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Stereotype group algebras",
+      "anchor": {
+        "section": "Hopf algebras in braided monoidal categories",
+        "snippet": "The stereotype group algebras"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Stereotype group algebras and the stereotype monoidal category are not formalized in Mathlib.",
+      "provenance": "ai"
+    }
+  ]
+}

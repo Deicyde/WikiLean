@@ -1,0 +1,265 @@
+{
+  "slug": "Unitary_matrix",
+  "wikipedia_title": "Unitary matrix",
+  "display_title": "Unitary matrix",
+  "schema_version": 3,
+  "annotation_style": "theorem_article",
+  "annotations": [
+    {
+      "kind": "definition",
+      "label": "Unitary matrix",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "an invertible complex square matrix U is unitary if its matrix inverse"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Matrix.mem_unitaryGroup_iff",
+        "module": "Mathlib.LinearAlgebra.UnitaryGroup",
+        "match_kind": "exact"
+      },
+      "note": "`Matrix.unitaryGroup` plus `mem_unitaryGroup_iff` (A ∈ unitaryGroup ↔ A * star A = 1) directly encode the definition of a unitary matrix.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Special unitary matrix",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "A complex matrix U is special unitary if it is unitary and its matrix determinant equals"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Matrix.mem_specialUnitaryGroup_iff",
+        "module": "Mathlib.LinearAlgebra.UnitaryGroup",
+        "match_kind": "exact"
+      },
+      "note": "`Matrix.specialUnitaryGroup` is defined as the unitary group intersected with the kernel of det, and `mem_specialUnitaryGroup_iff` states A ∈ specialUnitaryGroup ↔ A ∈ unitaryGroup ∧ det A = 1.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Preservation of inner product",
+      "anchor": {
+        "section": "Properties",
+        "snippet": "multiplication by U preserves their inner product"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "ContinuousLinearMap.inner_map_map_of_mem_unitary",
+        "module": "Mathlib.Analysis.InnerProductSpace.Adjoint",
+        "match_kind": "generalization"
+      },
+      "note": "`inner_map_map_of_mem_unitary` (and `Unitary.inner_map_map`) states that unitary continuous linear maps on a Hilbert space preserve the inner product, subsuming the matrix case via Euclidean space.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Unitary is normal",
+      "anchor": {
+        "section": "Properties",
+        "snippet": "U is normal"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "isStarNormal_of_mem_unitary",
+        "module": "Mathlib.Algebra.Star.Unitary",
+        "match_kind": "generalization"
+      },
+      "note": "`isStarNormal_of_mem_unitary` (and the `instIsStarNormal` instance) shows every unitary element of a star ring is star-normal, directly giving normality of unitary matrices.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Unitary is diagonalizable",
+      "anchor": {
+        "section": "Properties",
+        "snippet": "U is diagonalizable"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No statement of unitary diagonalizability for unitary matrices was found; only the Hermitian spectral theorem (`Matrix.IsHermitian.eigenvectorUnitary`) is formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Eigenvalues on unit circle",
+      "anchor": {
+        "section": "Properties",
+        "snippet": "lie on the unit circle"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Unitary.spectrum_subset_circle",
+        "module": "Mathlib.Analysis.CStarAlgebra.Spectrum",
+        "match_kind": "generalization"
+      },
+      "note": "`Unitary.spectrum_subset_circle` and `spectrum.norm_eq_one_of_unitary` show the spectrum of any unitary element in a unital C*-algebra (covering matrices) lies on the unit circle.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Eigenspaces orthogonal",
+      "anchor": {
+        "section": "Properties",
+        "snippet": "The eigenspaces of"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "LinearMap.IsSymmetric.orthogonalFamily_eigenspaces",
+        "module": "Mathlib.Analysis.InnerProductSpace.Spectrum",
+        "match_kind": null
+      },
+      "note": "Mathlib has `orthogonalFamily_eigenspaces` for self-adjoint/symmetric operators but no direct statement that the eigenspaces of a unitary (or general normal) operator are mutually orthogonal.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Exponential of Hermitian form",
+      "anchor": {
+        "section": "Properties",
+        "snippet": "can be written as U = e iH"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "selfAdjoint.expUnitary",
+        "module": "Mathlib.Analysis.CStarAlgebra.Exponential",
+        "match_kind": null
+      },
+      "note": "`selfAdjoint.expUnitary` defines the map `a ↦ exp(i·a)` from self-adjoint to unitary in a C*-algebra, but the surjectivity (every unitary is `exp(iH)` for some Hermitian H) is not proven.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Unitary group U(n)",
+      "anchor": {
+        "section": "Properties",
+        "snippet": "the set of all n × n unitary matrices with matrix multiplication forms a group"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Matrix.unitaryGroup",
+        "module": "Mathlib.LinearAlgebra.UnitaryGroup",
+        "match_kind": "exact"
+      },
+      "note": "`Matrix.unitaryGroup n α` is defined as a submonoid with inherited `Group` and `StarMul` instances, matching the unitary group U(n).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Average of two unitaries",
+      "anchor": {
+        "section": "Properties",
+        "snippet": "Every square matrix with unit Euclidean norm is the average of two unitary matrices"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No grep hits for any statement that a unit-norm matrix is an average of two unitaries.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Equivalent conditions for unitarity",
+      "anchor": {
+        "section": "Equivalent conditions",
+        "snippet": "the following conditions are equivalent"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Matrix.mem_unitaryGroup_iff",
+        "module": "Mathlib.LinearAlgebra.UnitaryGroup",
+        "match_kind": null
+      },
+      "note": "`mem_unitaryGroup_iff` (A * star A = 1) and `mem_unitaryGroup_iff'` (star A * A = 1) cover two equivalences, but no consolidated TFAE listing isometry/columns-orthonormal/etc. is present.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "General 2 × 2 unitary matrix",
+      "anchor": {
+        "section": "2 × 2 unitary matrix",
+        "snippet": "One general expression of a 2 × 2 unitary matrix is"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No explicit parametric form for 2×2 unitary matrices was found (analogous `of_mem_specialOrthogonalGroup_fin_two_iff` exists for SO(2), but not for U(2)).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Special unitary group SU(2)",
+      "anchor": {
+        "section": "2 × 2 unitary matrix",
+        "snippet": "is called the special unitary group SU(2)"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Matrix.specialUnitaryGroup",
+        "module": "Mathlib.LinearAlgebra.UnitaryGroup",
+        "match_kind": "special_case"
+      },
+      "note": "SU(2) is obtained as `Matrix.specialUnitaryGroup (Fin 2) ℂ`; no dedicated SU(2) declaration exists but the general specialUnitaryGroup specializes to it.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Alternative form of 2 × 2 unitary",
+      "anchor": {
+        "section": "2 × 2 unitary matrix",
+        "snippet": "the matrix U can be written in this form"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No alternate 2×2 unitary parametrization was found in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Factorization via orthogonal matrices",
+      "anchor": {
+        "section": "2 × 2 unitary matrix",
+        "snippet": "has the following factorization"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No 2×2 unitary factorization through orthogonal matrices was located in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Another factorization",
+      "anchor": {
+        "section": "2 × 2 unitary matrix",
+        "snippet": "Another factorization is"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No such alternate 2×2 unitary factorization is formalized in Mathlib.",
+      "provenance": "ai"
+    }
+  ]
+}

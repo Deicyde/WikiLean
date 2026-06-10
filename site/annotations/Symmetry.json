@@ -1,0 +1,377 @@
+{
+  "slug": "Symmetry",
+  "wikipedia_title": "Symmetry",
+  "display_title": "Symmetry",
+  "schema_version": 3,
+  "annotation_style": "theorem_article",
+  "annotations": [
+    {
+      "kind": "definition",
+      "label": "Symmetry (mathematical)",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "the term has a more precise definition and is usually used to refer to an object that is invariant under some transformations"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "An informal umbrella notion; Mathlib instead formalizes specific symmetries (e.g. `Function.Involutive`, `Symmetric` relations, group actions) rather than the general concept.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Symmetric geometric object",
+      "anchor": {
+        "section": "In geometry",
+        "snippet": "A geometric shape or object is symmetric if it can be divided into two or more identical pieces that are arranged in an organized fashion"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Informal geometric notion; no direct Mathlib formalization of `symmetric geometric object` as a primitive.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Reflectional symmetry",
+      "anchor": {
+        "section": "In geometry",
+        "snippet": "An object has reflectional symmetry (line or mirror symmetry) if there is a line"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "EuclideanGeometry.reflection",
+        "module": "Mathlib.Geometry.Euclidean.Projection",
+        "match_kind": "invocation"
+      },
+      "note": "Mathlib defines `EuclideanGeometry.reflection` and `Module.reflection`, but the predicate `has reflectional symmetry` of an object/set is not directly defined.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Rotational symmetry",
+      "anchor": {
+        "section": "In geometry",
+        "snippet": "An object has rotational symmetry if the object can be rotated about a fixed point"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Rotation",
+        "module": "Mathlib.Geometry.Euclidean.Angle.Oriented.Rotation",
+        "match_kind": "invocation"
+      },
+      "note": "Mathlib has `Rotation` in oriented Euclidean geometry but no predicate stating an object has rotational symmetry.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Translational symmetry",
+      "anchor": {
+        "section": "In geometry",
+        "snippet": "An object has translational symmetry if it can be translated"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "AddAction",
+        "module": "Mathlib.GroupTheory.GroupAction.Defs",
+        "match_kind": "invocation"
+      },
+      "note": "Translations are encoded via `AddAction`/`vadd`, but `translational symmetry` of an object is not a defined predicate.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Helical symmetry",
+      "anchor": {
+        "section": "In geometry",
+        "snippet": "An object has helical symmetry if it can be simultaneously translated and rotated"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No formalization of helical/screw symmetry was found in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Scale symmetry",
+      "anchor": {
+        "section": "In geometry",
+        "snippet": "An object has scale symmetry if it does not change shape when it is expanded or contracted"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No definition of scale/dilation symmetry of an object found in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Glide reflection and rotoreflection symmetry",
+      "anchor": {
+        "section": "In geometry",
+        "snippet": "Other symmetries include glide reflection symmetry (a reflection followed by a translation) and rotoreflection symmetry"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Glide reflections and rotoreflections are not specifically defined in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Symmetric dyadic relation",
+      "anchor": {
+        "section": "In logic",
+        "snippet": "A dyadic relation R = S × S is symmetric if for all elements a , b in S , whenever it is true that Rab , it is also true that Rba"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Symmetric",
+        "module": "Mathlib.Order.Defs.Unbundled",
+        "match_kind": "exact"
+      },
+      "note": "`Symmetric r := ∀ ⦃x y⦄, r x y → r y x` and the bundled `IsSymm` class match the standard definition exactly.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Symmetric logical connectives",
+      "anchor": {
+        "section": "In logic",
+        "snippet": "symmetric binary logical connectives include and (∧, or &), or (∨, or |) and if and only if (↔), while the connective if (→) is not symmetric"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "And.symm",
+        "module": "Init.Core",
+        "match_kind": "exact"
+      },
+      "note": "Symmetry of `∧`, `∨`, `↔` is captured by core lemmas `And.symm`, `Or.symm`, `Iff.symm` available through Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Symmetric mathematical object",
+      "anchor": {
+        "section": "Other areas of mathematics",
+        "snippet": "a mathematical object is symmetric with respect to a given mathematical operation , if, when applied to the object, this operation preserves some property of the object"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "MulAction.stabilizer",
+        "module": "Mathlib.GroupTheory.GroupAction.Defs",
+        "match_kind": "invocation"
+      },
+      "note": "Mathlib formalizes invariance under group actions via `MulAction.stabilizer` and `FixedPoints`, but no single decl named `symmetric mathematical object`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Property-preserving operations form a group",
+      "anchor": {
+        "section": "Other areas of mathematics",
+        "snippet": "The set of operations that preserve a given property of the object form a group"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "MulAction.stabilizer",
+        "module": "Mathlib.GroupTheory.GroupAction.Defs",
+        "match_kind": "special_case"
+      },
+      "note": "Mathlib has stabilizers (`MulAction.stabilizer` is a subgroup) and automorphism groups, capturing this statement in standard contexts.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Symmetry in physics as invariance",
+      "anchor": {
+        "section": "In physics",
+        "snippet": "Symmetry in physics has been generalized to mean invariance —that is, lack of change—under any kind of transformation"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "A physics meta-definition not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Noether's theorem",
+      "anchor": {
+        "section": "In physics",
+        "snippet": "for every continuous mathematical symmetry, there is a corresponding conserved quantity such as energy or momentum"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Noether's theorem (the physics version about conserved quantities) is not in Mathlib; the `Noether` names found refer to Noetherian rings/spaces.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Wigner's classification",
+      "anchor": {
+        "section": "In physics",
+        "snippet": "Wigner's classification , which says that the symmetries of the laws of physics determine the properties of the particles found in nature"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Grep for `Wigner` in Mathlib returned no files; not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Symmetry operation (chemistry)",
+      "anchor": {
+        "section": "In chemistry",
+        "snippet": "A symmetry operation is an action that moves a molecule in such a way that its overall appearance remains unchanged"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Chemistry-specific notion of symmetry operation has no formalization in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "n-fold axis of symmetry",
+      "anchor": {
+        "section": "In chemistry",
+        "snippet": "This axis is commonly denoted as C n , where n indicates the number of times the molecule matches its original appearance during a full 360° rotation"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Schoenflies `Cₙ` rotation axes are not defined in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Identity operation E",
+      "anchor": {
+        "section": "In chemistry",
+        "snippet": "the act of making no change at all is called the identity operation, and it is represented by the symbol E"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "id",
+        "module": "Init.Prelude",
+        "match_kind": "generalization"
+      },
+      "note": "The identity map exists generally as `id`/`1` in groups, but the chemistry-specific identity operation `E` is not a named decl.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "n-fold rotation relation",
+      "anchor": {
+        "section": "In chemistry",
+        "snippet": "performing the rotation n times brings the molecule back to its original orientation"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No Mathlib lemma states the order-`n` property of a chemistry `Cₙ` axis.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Plane of symmetry",
+      "anchor": {
+        "section": "In chemistry",
+        "snippet": "There are different types of mirror planes, depending on their orientation relative to the molecule"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Chemistry mirror planes (`σ_h`, `σ_v`, `σ_d`) are not defined in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Reflection squared equals identity",
+      "anchor": {
+        "section": "In chemistry",
+        "snippet": "If a reflection operation is applied twice, the molecule returns to its original position"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Module.involutive_reflection",
+        "module": "Mathlib.LinearAlgebra.Reflection",
+        "match_kind": "generalization"
+      },
+      "note": "`Module.reflection` (and `EuclideanGeometry.reflection`) are proved involutive, capturing that reflection squared is the identity.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Inversion through a center",
+      "anchor": {
+        "section": "In chemistry",
+        "snippet": "Inversion can be thought of as a combination of a 180° rotation followed by a reflection through a plane perpendicular to the rotation axis"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "EuclideanGeometry.inversion",
+        "module": "Mathlib.Geometry.Euclidean.Inversion.Basic",
+        "match_kind": "invocation"
+      },
+      "note": "Mathlib has `EuclideanGeometry.inversion` (the conformal/Möbius inversion) and point reflection via `Equiv.pointReflection`; the latter formalizes the chemistry concept.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Inversion squared equals identity",
+      "anchor": {
+        "section": "In chemistry",
+        "snippet": "Applying the inversion operation twice returns the molecule to its original configuration"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Equiv.pointReflection_involutive",
+        "module": "Mathlib.Logic.Equiv.Basic",
+        "match_kind": "generalization"
+      },
+      "note": "`Equiv.pointReflection` is involutive, so point inversion squared is the identity.",
+      "provenance": "ai"
+    }
+  ]
+}

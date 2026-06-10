@@ -1,0 +1,1317 @@
+{
+  "slug": "Group_action",
+  "wikipedia_title": "Group action",
+  "display_title": "Group action",
+  "schema_version": 3,
+  "annotation_style": "theorem_article",
+  "annotations": [
+    {
+      "kind": "definition",
+      "label": "Group action",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "is, loosely speaking, an operation that takes an element of"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "MulAction",
+        "module": "Mathlib.Algebra.Group.Action.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`MulAction α β` is exactly a monoid/group action with `one_smul` and `mul_smul`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Representation of a group",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "is called a representation of the group"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Representation",
+        "module": "Mathlib.RepresentationTheory.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`Representation k G V` is the homomorphism `G →* (V →ₗ[k] V)`, i.e. a linear group representation.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Symmetric group acts by permutation",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "by permuting the elements of the set"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Equiv.Perm.applyMulAction",
+        "module": "Mathlib.Algebra.Group.Action.End",
+        "match_kind": "exact"
+      },
+      "note": "`Equiv.Perm.applyMulAction` is the action of the permutation group `Equiv.Perm α` on `α`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Left group action",
+      "anchor": {
+        "section": "Left group action",
+        "snippet": "is a group with identity element"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "MulAction",
+        "module": "Mathlib.Algebra.Group.Action.Defs",
+        "match_kind": "exact"
+      },
+      "note": "Mathlib's `MulAction` is the standard left action satisfying `one_smul` and `mul_smul`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Action as homomorphism into symmetric group",
+      "anchor": {
+        "section": "Left group action",
+        "snippet": "one may equivalently define a group action of"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "MulAction.toPermHom",
+        "module": "Mathlib.Algebra.Group.Action.End",
+        "match_kind": null
+      },
+      "note": "`MulAction.toPermHom : G →* Equiv.Perm α` realizes the action as a homomorphism, but the equivalence with actions is not bundled as a single iff.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Right group action",
+      "anchor": {
+        "section": "Right group action",
+        "snippet": "Likewise, a right group action of"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": null,
+        "module": "Mathlib.Algebra.Group.Action.Opposite",
+        "match_kind": null
+      },
+      "note": "Mathlib has no dedicated right-action class; right actions are modeled as left `MulAction`s of the opposite monoid `Gᵐᵒᵖ`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Relation between left and right actions",
+      "anchor": {
+        "section": "Right group action",
+        "snippet": "The difference between left and right actions is in the order in which a product gh acts on x"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": null,
+        "module": "Mathlib.Algebra.Group.Action.Opposite",
+        "match_kind": null
+      },
+      "note": "The left/right correspondence is captured only implicitly through the opposite-monoid action `MulOpposite.instMulAction`, not as a stated equivalence.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Faithful (effective) action",
+      "anchor": {
+        "section": "Notable properties of actions",
+        "snippet": "The action is called faithful or effective if"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "FaithfulSMul",
+        "module": "Mathlib.Algebra.Group.Action.Faithful",
+        "match_kind": "exact"
+      },
+      "note": "`FaithfulSMul M α` says distinct scalars act differently, i.e. the action is faithful.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Free action",
+      "anchor": {
+        "section": "Notable properties of actions",
+        "snippet": "The action is called free (or semiregular or fixed-point free )"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Freeness has no dedicated predicate; it is expressed pointwise as `stabilizer α b = ⊥` (as used in `selfEquivOrbitsQuotientProd`).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Group acting on itself is free (Cayley)",
+      "anchor": {
+        "section": "Notable properties of actions",
+        "snippet": "the action of any group on itself by left multiplication is free"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Monoid.toMulAction",
+        "module": "Mathlib.Algebra.Group.Action.Defs",
+        "match_kind": null
+      },
+      "note": "The left-regular action `Monoid.toMulAction` is provably faithful on cancellative monoids, but its freeness for groups is not stated as a named lemma (nor is Cayley's theorem).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Transitive action",
+      "anchor": {
+        "section": "Transitivity properties",
+        "snippet": "is called transitive if for any two points"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "MulAction.IsPretransitive",
+        "module": "Mathlib.Algebra.Group.Action.Pretransitive",
+        "match_kind": "exact"
+      },
+      "note": "`MulAction.IsPretransitive` asserts that for any `x y` there is `g` with `g • x = y`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Simply transitive (regular) action",
+      "anchor": {
+        "section": "Transitivity properties",
+        "snippet": "The action is simply transitive (or sharply transitive , or regular )"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "AddTorsor",
+        "module": "Mathlib.Algebra.AddTorsor.Defs",
+        "match_kind": "special_case"
+      },
+      "note": "`AddTorsor` is exactly a simply transitive additive group action; no general multiplicative `IsSimplyTransitive` predicate exists.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "n-transitive action",
+      "anchor": {
+        "section": "Transitivity properties",
+        "snippet": "with pairwise distinct entries"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "MulAction.IsMultiplyPretransitive",
+        "module": "Mathlib.GroupTheory.GroupAction.MultipleTransitivity",
+        "match_kind": "exact"
+      },
+      "note": "`IsMultiplyPretransitive G α n` is pretransitivity on `Fin n ↪ α`, i.e. transitivity on n-tuples of distinct points.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Sharply n-transitive action",
+      "anchor": {
+        "section": "Transitivity properties",
+        "snippet": "the action on tuples without repeated entries in"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has no notion of sharp/regular n-transitivity (simple transitivity on injective n-tuples).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Symmetric/alternating group transitivity",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "The action of the symmetric group of X is transitive"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Equiv.Perm.isMultiplyPretransitive",
+        "module": "Mathlib.GroupTheory.GroupAction.MultipleTransitivity",
+        "match_kind": "exact"
+      },
+      "note": "`Equiv.Perm.isMultiplyPretransitive` proves `Sym(α)` is n-transitive for all n, with `alternatingGroup.isMultiplyPretransitive` for the alternating group.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "General linear group action on nonzero vectors",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "The action of the general linear group of a vector space V"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "LinearEquiv.applyDistribMulAction",
+        "module": "Mathlib.Algebra.Module.Equiv.Basic",
+        "match_kind": null
+      },
+      "note": "The GL action on `V` exists via `LinearEquiv.applyDistribMulAction`, but transitivity on nonzero vectors is not a stated result.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Primitive action",
+      "anchor": {
+        "section": "Primitive actions",
+        "snippet": "is called primitive if there is no partition of X"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "MulAction.IsPreprimitive",
+        "module": "Mathlib.GroupTheory.GroupAction.Primitive",
+        "match_kind": "exact"
+      },
+      "note": "`IsPreprimitive` is transitivity together with every block being trivial, the standard definition of primitivity.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Wandering action",
+      "anchor": {
+        "section": "Topological properties",
+        "snippet": "The action is wandering if every"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No notion of a wandering point/action is formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Point of discontinuity",
+      "anchor": {
+        "section": "Topological properties",
+        "snippet": "is called a point of discontinuity for the action of"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib does not define points of discontinuity for a group action.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Properly discontinuous action",
+      "anchor": {
+        "section": "Topological properties",
+        "snippet": "The action is properly discontinuous if for every compact subset"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "ProperlyDiscontinuousSMul",
+        "module": "Mathlib.Topology.Algebra.ConstMulAction",
+        "match_kind": "exact"
+      },
+      "note": "`ProperlyDiscontinuousSMul` requires finitely many group elements moving any compact set to meet another, the standard definition.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Freely discontinuous action",
+      "anchor": {
+        "section": "Topological properties",
+        "snippet": "Actions with this property are sometimes called freely discontinuous"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The 'freely discontinuous' strengthening is not formalized as a named concept.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Cocompact action",
+      "anchor": {
+        "section": "Topological properties",
+        "snippet": "is called cocompact if there exists a compact subset"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "There is no notion of a cocompact group action (the `Filter.cocompact` is unrelated).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Continuous action",
+      "anchor": {
+        "section": "Actions of topological groups",
+        "snippet": "The action is said to be continuous if the map"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "ContinuousSMul",
+        "module": "Mathlib.Topology.Algebra.MulAction",
+        "match_kind": "exact"
+      },
+      "note": "`ContinuousSMul M X` requires joint continuity of `(g,x) ↦ g • x`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Proper action",
+      "anchor": {
+        "section": "Actions of topological groups",
+        "snippet": "The action is said to be proper if the map"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "ProperSMul",
+        "module": "Mathlib.Topology.Algebra.ProperAction.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`ProperSMul` requires `(g,x) ↦ (g • x, x)` to be a proper map, the standard definition of a proper action.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Locally free action",
+      "anchor": {
+        "section": "Actions of topological groups",
+        "snippet": "It is said to be locally free if there exists a neighbourhood"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Local freeness of an action is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Strongly continuous action",
+      "anchor": {
+        "section": "Actions of topological groups",
+        "snippet": "The action is said to be strongly continuous if the orbital map"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Strong continuity (continuity of each orbital map) is not formalized as a named concept for actions.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Smooth points / Lie group action",
+      "anchor": {
+        "section": "Actions of topological groups",
+        "snippet": "then the subspace of smooth points for the action"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib does not define the subspace of smooth points of a Lie group action.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Irreducible action",
+      "anchor": {
+        "section": "Linear actions",
+        "snippet": "the action is said to be irreducible if there are no proper nonzero"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "IsSimpleModule",
+        "module": "Mathlib.RingTheory.SimpleModule.Basic",
+        "match_kind": "special_case"
+      },
+      "note": "Irreducibility of a linear action is the simplicity (`IsSimpleModule`) of the corresponding module, but there is no dedicated `Representation`-level irreducibility predicate.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Semisimple action",
+      "anchor": {
+        "section": "Linear actions",
+        "snippet": "It is said to be semisimple if it decomposes as a direct sum"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "IsSemisimpleRepresentation",
+        "module": "Mathlib.RepresentationTheory.Semisimple",
+        "match_kind": "exact"
+      },
+      "note": "`IsSemisimpleRepresentation` (equiv. `IsSemisimpleModule` over `k[G]`) is the semisimplicity of a linear action.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Orbit",
+      "anchor": {
+        "section": "Orbits and stabilizers",
+        "snippet": "The orbit of an element x in X is the set of elements"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "MulAction.orbit",
+        "module": "Mathlib.GroupTheory.GroupAction.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`MulAction.orbit M a = Set.range (· • a)` is exactly the orbit.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Orbits and stabilizers",
+          "snippet": "The orbit of an element x in X is the set of elements"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle G{\\cdot }x=\\{g{\\cdot }x:g\\in G\\}.}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Orbits partition the set",
+      "anchor": {
+        "section": "Orbits and stabilizers",
+        "snippet": "form a partition of X"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "MulAction.orbitRel",
+        "module": "Mathlib.GroupTheory.GroupAction.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`orbitRel` is the `Setoid` 'same orbit', so its equivalence classes (the orbits) partition the set.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Transitive iff one orbit",
+      "anchor": {
+        "section": "Orbits and stabilizers",
+        "snippet": "The group action is transitive if and only if it has exactly one orbit"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "MulAction.pretransitive_iff_subsingleton_quotient",
+        "module": "Mathlib.GroupTheory.GroupAction.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`pretransitive_iff_subsingleton_quotient` says transitivity is equivalent to the orbit quotient being a subsingleton (one orbit).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Quotient of the action",
+      "anchor": {
+        "section": "Orbits and stabilizers",
+        "snippet": "is called the quotient of the action"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "MulAction.orbitRel.Quotient",
+        "module": "Mathlib.GroupTheory.GroupAction.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`orbitRel.Quotient G α` is the quotient of `α` by the orbit equivalence relation.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Invariant subset",
+      "anchor": {
+        "section": "Invariant subsets",
+        "snippet": "The subset Y is said to be invariant under G if"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "MulAction.IsInvariantBlock",
+        "module": "Mathlib.GroupTheory.GroupAction.Blocks",
+        "match_kind": "exact"
+      },
+      "note": "`IsInvariantBlock G B := ∀ g, g • B ⊆ B` is exactly G-invariance of a subset.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Fixed subset",
+      "anchor": {
+        "section": "Invariant subsets",
+        "snippet": "The subset Y is called fixed under G if"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "MulAction.fixedPoints",
+        "module": "Mathlib.GroupTheory.GroupAction.Defs",
+        "match_kind": null
+      },
+      "note": "A pointwise-fixed subset is `Y ⊆ fixedPoints G X`; there is no dedicated subset predicate (Mathlib's `IsFixedBlock` is setwise, hence different).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Orbits are invariant subsets",
+      "anchor": {
+        "section": "Invariant subsets",
+        "snippet": "Every orbit is an invariant subset of X on which G acts transitively"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "MulAction.IsFixedBlock.orbit",
+        "module": "Mathlib.GroupTheory.GroupAction.Blocks",
+        "match_kind": "exact"
+      },
+      "note": "`IsFixedBlock.orbit` shows each orbit is invariant, and the orbit carries a pretransitive sub-action instance.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "G-invariant element",
+      "anchor": {
+        "section": "Invariant subsets",
+        "snippet": "A G -invariant element of X is"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "MulAction.fixedPoints",
+        "module": "Mathlib.GroupTheory.GroupAction.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`fixedPoints M α = {a | ∀ m, m • a = a}` is exactly the set of G-invariant elements.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Fixed point of an element",
+      "anchor": {
+        "section": "Fixed points and stabilizer subgroups",
+        "snippet": "x is a fixed point of g"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "MulAction.fixedBy",
+        "module": "Mathlib.GroupTheory.GroupAction.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`fixedBy α m = {x | m • x = x}` is the set of fixed points of a single element `m`.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Fixed points and stabilizer subgroups",
+          "snippet": "x is a fixed point of g"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle G_{x}=\\{g\\in G:g{\\cdot }x=x\\}.}"
+        }
+      ]
+    },
+    {
+      "kind": "definition",
+      "label": "Stabilizer subgroup",
+      "anchor": {
+        "section": "Fixed points and stabilizer subgroups",
+        "snippet": "the stabilizer subgroup of G with respect to x"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "MulAction.stabilizer",
+        "module": "Mathlib.GroupTheory.GroupAction.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`MulAction.stabilizer G a` is the subgroup `{g | g • a = a}`.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Fixed points and stabilizer subgroups",
+          "snippet": "the stabilizer subgroup of G with respect to x"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle G_{x}=\\{g\\in G:g{\\cdot }x=x\\}.}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Stabilizers along an orbit are conjugate",
+      "anchor": {
+        "section": "Fixed points and stabilizer subgroups",
+        "snippet": "the two stabilizer groups G x and G y are related by"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "MulAction.stabilizer_smul_eq_stabilizer_map_conj",
+        "module": "Mathlib.GroupTheory.GroupAction.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`stabilizer_smul_eq_stabilizer_map_conj` gives `stabilizer G (g • a) = (stabilizer G a).map (conj g)`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Orbit type / principal orbit type",
+      "anchor": {
+        "section": "Fixed points and stabilizer subgroups",
+        "snippet": "the stabilizers of elements in the same orbit are conjugate to each other"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "MulAction.stabilizerEquivStabilizerOfOrbitRel",
+        "module": "Mathlib.GroupTheory.GroupAction.Basic",
+        "match_kind": null
+      },
+      "note": "Conjugacy of stabilizers within an orbit is `stabilizerEquivStabilizerOfOrbitRel`, but the (principal) orbit-type terminology itself is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Orbit–stabilizer theorem",
+      "anchor": {
+        "section": "Orbit–stabilizer theorem",
+        "snippet": "This result is known as the orbit–stabilizer theorem"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "MulAction.orbitEquivQuotientStabilizer",
+        "module": "Mathlib.GroupTheory.GroupAction.Quotient",
+        "match_kind": "exact"
+      },
+      "note": "`orbitEquivQuotientStabilizer` gives `orbit α b ≃ α ⧸ stabilizer α b`, with the cardinality version `card_orbit_mul_card_stabilizer_eq_card_group`.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Orbit–stabilizer theorem",
+          "snippet": "This result is known as the orbit–stabilizer theorem"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle f(g)=f(h)\\iff g{\\cdot }x=h{\\cdot }x\\iff g^{-1}h{\\cdot }x=x\\iff g^{-1}h\\in G_{x}\\iff h\\in gG_{x}.}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Orbit length divides group order",
+      "anchor": {
+        "section": "Orbit–stabilizer theorem",
+        "snippet": "If G is finite then the orbit–stabilizer theorem, together with Lagrange's theorem"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "MulAction.card_orbit_mul_card_stabilizer_eq_card_group",
+        "module": "Mathlib.GroupTheory.GroupAction.Quotient",
+        "match_kind": "invocation"
+      },
+      "note": "Divisibility follows immediately from the orbit-stabilizer product `card_orbit_mul_card_stabilizer_eq_card_group`, but is not stated as a standalone dvd lemma.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Orbit–stabilizer theorem",
+          "snippet": "If G is finite then the orbit–stabilizer theorem, together with Lagrange's theorem"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle |G\\cdot x|=[G\\,:\\,G_{x}]=|G|/|G_{x}|.}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Prime-order action fixed-point count",
+      "anchor": {
+        "section": "Orbit–stabilizer theorem",
+        "snippet": "Let G be a group of prime order p acting on a set X with k elements"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "IsPGroup.card_modEq_card_fixedPoints",
+        "module": "Mathlib.GroupTheory.PGroup",
+        "match_kind": "generalization"
+      },
+      "note": "`IsPGroup.card_modEq_card_fixedPoints` gives `card α ≡ card (fixedPoints) [MOD p]` for any p-group, which includes the prime-order case.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Counting cube graph automorphisms",
+      "anchor": {
+        "section": "Orbit–stabilizer theorem",
+        "snippet": "We can use the orbit–stabilizer theorem to count the automorphisms of a graph"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This specific worked example of counting cube-graph automorphisms is not in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Burnside's lemma",
+      "anchor": {
+        "section": "Burnside's lemma",
+        "snippet": "A result closely related to the orbit–stabilizer theorem is Burnside's lemma"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "MulAction.sum_card_fixedBy_eq_card_orbits_mul_card_group",
+        "module": "Mathlib.GroupTheory.GroupAction.Quotient",
+        "match_kind": "exact"
+      },
+      "note": "`sum_card_fixedBy_eq_card_orbits_mul_card_group` is exactly Burnside's lemma (sum of fixed points = #orbits × |G|).",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Burnside's lemma",
+          "snippet": "A result closely related to the orbit–stabilizer theorem is Burnside's lemma"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle |X/G|={\\frac {1}{|G|}}\\sum _{g\\in G}|X^{g}|,}"
+        }
+      ]
+    },
+    {
+      "kind": "definition",
+      "label": "Burnside ring",
+      "anchor": {
+        "section": "Burnside's lemma",
+        "snippet": "forms a ring called the Burnside ring of G"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Burnside ring of a group is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Trivial action",
+      "anchor": {
+        "section": "Examples (2)",
+        "snippet": "The trivial action of any group G on any set X is defined by"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "There is no named trivial-action instance (it would create instance diamonds), though it is trivially expressible.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Left multiplication on itself",
+      "anchor": {
+        "section": "Examples (2)",
+        "snippet": "left multiplication is an action of G on G"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Monoid.toMulAction",
+        "module": "Mathlib.Algebra.Group.Action.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`Monoid.toMulAction : MulAction M M` is the left-multiplication (regular) action.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Left multiplication on cosets",
+      "anchor": {
+        "section": "Examples (2)",
+        "snippet": "left multiplication is an action of G on the set of cosets"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "MulAction.quotient",
+        "module": "Mathlib.GroupTheory.GroupAction.Quotient",
+        "match_kind": "exact"
+      },
+      "note": "`MulAction.quotient` gives the left action `MulAction β (α ⧸ H)` on cosets.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Conjugation action",
+      "anchor": {
+        "section": "Examples (2)",
+        "snippet": "conjugation is an action of G on G"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "ConjAct",
+        "module": "Mathlib.GroupTheory.GroupAction.ConjAct",
+        "match_kind": "exact"
+      },
+      "note": "`ConjAct G` is the type alias whose `MulAction` on `G` is conjugation.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Conjugation on conjugates of a subgroup",
+      "anchor": {
+        "section": "Examples (2)",
+        "snippet": "conjugation is an action of G on conjugates of H"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "ConjAct",
+        "module": "Mathlib.GroupTheory.GroupAction.ConjAct",
+        "match_kind": "special_case"
+      },
+      "note": "`ConjAct G` acts by conjugation on subgroups (via the pointwise action), whose orbit of `H` is its set of conjugates, though this orbit description is not packaged separately.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Action of Z as an automorphism",
+      "anchor": {
+        "section": "Examples (2)",
+        "snippet": "An action of Z on a set X uniquely determines and is determined by an automorphism"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The bijection between ℤ-actions and a single automorphism is not formalized as an equivalence.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Symmetric group on {1,...,n}",
+      "anchor": {
+        "section": "Examples (2)",
+        "snippet": "The symmetric group S n and its subgroups act on the set"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Equiv.Perm.applyMulAction",
+        "module": "Mathlib.Algebra.Group.Action.End",
+        "match_kind": "special_case"
+      },
+      "note": "`Equiv.Perm.applyMulAction` with `α = Fin n` gives `S_n` acting on `{1,…,n}`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Symmetry group of a polyhedron",
+      "anchor": {
+        "section": "Examples (2)",
+        "snippet": "The symmetry group of a polyhedron acts on the set of vertices"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This specific geometric example (polyhedron symmetry group on vertices) is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Symmetry group of a geometric object",
+      "anchor": {
+        "section": "Examples (2)",
+        "snippet": "The symmetry group of any geometrical object acts on the set of points"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No generic 'symmetry group acts on its geometric object' construction is formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Scalar multiplication",
+      "anchor": {
+        "section": "Examples (2)",
+        "snippet": "For a coordinate space V over a field F with group of units"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Units.instMulAction",
+        "module": "Mathlib.Algebra.Group.Action.Units",
+        "match_kind": "special_case"
+      },
+      "note": "`Units.instMulAction` makes the group of units `Fˣ` act on a module by scalar multiplication.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Automorphism group action",
+      "anchor": {
+        "section": "Examples (2)",
+        "snippet": "The automorphism group of a vector space"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "LinearEquiv.applyDistribMulAction",
+        "module": "Mathlib.Algebra.Module.Equiv.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`LinearEquiv.applyDistribMulAction` is the faithful action of `M ≃ₗ[R] M` (the automorphism group) on the module `M`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "General linear group on K^n",
+      "anchor": {
+        "section": "Examples (2)",
+        "snippet": "The general linear group GL( n , K ) and its subgroups, particularly its Lie subgroups"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "LinearEquiv.applyDistribMulAction",
+        "module": "Mathlib.Algebra.Module.Equiv.Basic",
+        "match_kind": "special_case"
+      },
+      "note": "GL acting on `Kⁿ` is the special case `M = Fin n → K` of `LinearEquiv.applyDistribMulAction`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "GL(n,Z) acting on Z^n",
+      "anchor": {
+        "section": "Examples (2)",
+        "snippet": "acts on Z n by natural matrix action"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "LinearEquiv.applyDistribMulAction",
+        "module": "Mathlib.Algebra.Module.Equiv.Basic",
+        "match_kind": "special_case"
+      },
+      "note": "GL(n,ℤ) on ℤⁿ is the special case `M = Fin n → ℤ` of `LinearEquiv.applyDistribMulAction`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Affine group on affine space",
+      "anchor": {
+        "section": "Examples (2)",
+        "snippet": "The affine group acts transitively on the points of an affine space"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "AddTorsor",
+        "module": "Mathlib.Algebra.AddTorsor.Defs",
+        "match_kind": null
+      },
+      "note": "Affine spaces are formalized as `AddTorsor`s with `AffineEquiv` automorphisms, but transitivity of the affine group is not stated as such.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Projective linear group on projective space",
+      "anchor": {
+        "section": "Examples (2)",
+        "snippet": "The projective linear group PGL( n + 1, K ) and its subgroups"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": null,
+        "module": "Mathlib.LinearAlgebra.Projectivization.Action",
+        "match_kind": "exact"
+      },
+      "note": "An anonymous `instance : MulAction G (ℙ K V)` provides the linear-group action on projectivization (projective space).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Isometries on images and patterns",
+      "anchor": {
+        "section": "Examples (2)",
+        "snippet": "The isometries of the plane act on the set of 2D images and patterns"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The action of plane isometries on images/patterns is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Category of G-sets",
+      "anchor": {
+        "section": "Examples (2)",
+        "snippet": "comprise the category of G -sets in which the objects are G -sets"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "CategoryTheory.Action",
+        "module": "Mathlib.CategoryTheory.Action.Basic",
+        "match_kind": "special_case"
+      },
+      "note": "`Action (Type u) G` is the category of G-sets (the docstring notes `V = Type` gives G-actions).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Galois group on a field",
+      "anchor": {
+        "section": "Examples (2)",
+        "snippet": "The Galois group of a field extension L / K acts on the field L"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "AlgEquiv.applyMulSemiringAction",
+        "module": "Mathlib.Algebra.Algebra.Equiv",
+        "match_kind": "exact"
+      },
+      "note": "`AlgEquiv.applyMulSemiringAction` is the action of `L ≃ₐ[K] L` (the Galois group) on `L` by ring automorphisms.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Reals acting by time translation",
+      "anchor": {
+        "section": "Examples (2)",
+        "snippet": "acts on the phase space of"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Flow",
+        "module": "Mathlib.Dynamics.Flow",
+        "match_kind": "special_case"
+      },
+      "note": "`Flow τ α` is a continuous additive-monoid action; time translation by ℝ on a phase space is the case `τ = ℝ`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Reals acting on real functions",
+      "anchor": {
+        "section": "Examples (2)",
+        "snippet": "acts on the set of real functions of a real variable"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The translation action of ℝ on real functions is not formalized as a specific instance.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Induced action on the power set",
+      "anchor": {
+        "section": "Examples (2)",
+        "snippet": "we can define an induced action of G on the power set"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Set.mulAction",
+        "module": "Mathlib.Algebra.Group.Action.Pointwise.Set.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`Set.mulAction` is the pointwise action of `G` on `Set α`, i.e. the induced action on the power set.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Unit quaternions acting on R^3",
+      "anchor": {
+        "section": "Examples (2)",
+        "snippet": "The quaternions with norm 1 (the versors )"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The action of unit quaternions on ℝ³ by rotation is not formalized as a group action.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Exponential object of G-sets",
+      "anchor": {
+        "section": "Examples (2)",
+        "snippet": "whose elements are G -equivariant maps"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "MulActionHom",
+        "module": "Mathlib.GroupTheory.GroupAction.Hom",
+        "match_kind": null
+      },
+      "note": "G-equivariant maps are `MulActionHom`, but the internal-hom/exponential object structure of the G-set category is not formalized as such.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Action groupoid",
+      "anchor": {
+        "section": "Group actions and groupoids",
+        "snippet": "can be encoded by the action groupoid"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "CategoryTheory.ActionCategory",
+        "module": "Mathlib.CategoryTheory.Action",
+        "match_kind": "exact"
+      },
+      "note": "`CategoryTheory.ActionCategory M X` is the action groupoid (groupoid when `M` is a group).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Morphism of G-sets (equivariant map)",
+      "anchor": {
+        "section": "Morphisms and isomorphisms between G -sets",
+        "snippet": "a morphism from X to Y is a function"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "MulActionHom",
+        "module": "Mathlib.GroupTheory.GroupAction.Hom",
+        "match_kind": "exact"
+      },
+      "note": "`MulActionHom` is the structure of an equivariant map between actions.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Isomorphism of G-sets",
+      "anchor": {
+        "section": "Morphisms and isomorphisms between G -sets",
+        "snippet": "In this case f is called an isomorphism"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "MulActionHom",
+        "module": "Mathlib.GroupTheory.GroupAction.Hom",
+        "match_kind": null
+      },
+      "note": "Isomorphisms of G-sets are bijective `MulActionHom`s (or isos in the action category); there is no dedicated `MulActionEquiv` bundling.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Classification of regular/free/transitive actions",
+      "anchor": {
+        "section": "Morphisms and isomorphisms between G -sets",
+        "snippet": "Every regular G action is isomorphic to the action of G on G"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "MulAction.orbitEquivQuotientStabilizer",
+        "module": "Mathlib.GroupTheory.GroupAction.Quotient",
+        "match_kind": null
+      },
+      "note": "`orbitEquivQuotientStabilizer` realizes a transitive action as `G ⧸ stabilizer`, but the full classification up to G-set isomorphism is not stated as a single theorem.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "G-sets form a Grothendieck topos",
+      "anchor": {
+        "section": "Morphisms and isomorphisms between G -sets",
+        "snippet": "the collection of all G -sets forms a category"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "CategoryTheory.Action",
+        "module": "Mathlib.CategoryTheory.Action.Basic",
+        "match_kind": null
+      },
+      "note": "`Action (Type u) G` gives the category of G-sets, but it is not proven to be a Grothendieck topos.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Monoid actions",
+      "anchor": {
+        "section": "Variants and generalizations",
+        "snippet": "We can also consider actions of monoids on sets"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "MulAction",
+        "module": "Mathlib.Algebra.Group.Action.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`MulAction` is defined for any `Monoid`, so monoid actions are directly covered.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Actions on objects of a category",
+      "anchor": {
+        "section": "Variants and generalizations",
+        "snippet": "we can define actions of groups and monoids on objects of an arbitrary category"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "CategoryTheory.Action",
+        "module": "Mathlib.CategoryTheory.Action.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`Action V G` bundles a monoid action of `G` on an object of an arbitrary category `V` via `G →* End V`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Group action as a functor",
+      "anchor": {
+        "section": "Variants and generalizations",
+        "snippet": "A (left) group action is then nothing but a (covariant) functor"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "CategoryTheory.actionAsFunctor",
+        "module": "Mathlib.CategoryTheory.Action",
+        "match_kind": "exact"
+      },
+      "note": "`actionAsFunctor : SingleObj M ⥤ Type u` realizes an action as a functor from the one-object category.",
+      "provenance": "ai"
+    }
+  ]
+}

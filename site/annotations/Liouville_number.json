@@ -1,0 +1,377 @@
+{
+  "slug": "Liouville_number",
+  "wikipedia_title": "Liouville number",
+  "display_title": "Liouville number",
+  "schema_version": 3,
+  "annotation_style": "theorem_article",
+  "annotations": [
+    {
+      "kind": "definition",
+      "label": "Liouville number",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "a Liouville number is a real number"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Liouville",
+        "module": "Mathlib.NumberTheory.Transcendental.Liouville.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`Liouville x` is defined exactly as: for every `n`, there exist integers `a, b` with `1 < b` and `0 < |x - a/b| < 1/b^n`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Liouville's constant",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "One of these examples is Liouville's constant"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "liouvilleNumber",
+        "module": "Mathlib.NumberTheory.Transcendental.Liouville.LiouvilleNumber",
+        "match_kind": "generalization"
+      },
+      "note": "`liouvilleNumber m = ∑' i, 1/m^i!` generalizes the classical Liouville's constant (m = 2 is the named case discussed in the file docstring).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "π and e are not Liouville numbers",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "It is known that π and e , although transcendental, are not Liouville numbers"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No grep hit shows that `Real.pi` or `Real.exp 1` is `¬ Liouville`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Existence of Liouville numbers",
+      "anchor": {
+        "section": "The existence of Liouville numbers (Liouville's constant)",
+        "snippet": "Liouville numbers can be shown to exist by an explicit construction"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "liouville_liouvilleNumber",
+        "module": "Mathlib.NumberTheory.Transcendental.Liouville.LiouvilleNumber",
+        "match_kind": "exact"
+      },
+      "note": "Existence follows from `liouville_liouvilleNumber : 2 ≤ m → Liouville (liouvilleNumber m)`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Construction of Liouville-type number",
+      "anchor": {
+        "section": "The existence of Liouville numbers (Liouville's constant)",
+        "snippet": "For any integer"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "liouvilleNumber",
+        "module": "Mathlib.NumberTheory.Transcendental.Liouville.LiouvilleNumber",
+        "match_kind": "exact"
+      },
+      "note": "The parametric construction `liouvilleNumber m = ∑' i, 1/m^i!` matches the Wikipedia construction.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Liouville's constant (special case)",
+      "anchor": {
+        "section": "The existence of Liouville numbers (Liouville's constant)",
+        "snippet": "the resulting number"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "liouvilleNumber",
+        "module": "Mathlib.NumberTheory.Transcendental.Liouville.LiouvilleNumber",
+        "match_kind": "generalization"
+      },
+      "note": "The classical Liouville constant is `liouvilleNumber 2`; the docstring explicitly identifies this case.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Irrationality of the constructed number",
+      "anchor": {
+        "section": "The existence of Liouville numbers (Liouville's constant)",
+        "snippet": "Since this base- "
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Liouville.irrational",
+        "module": "Mathlib.NumberTheory.Transcendental.Liouville.Basic",
+        "match_kind": "invocation"
+      },
+      "note": "Irrationality of `liouvilleNumber m` is obtained by composing `liouville_liouvilleNumber` with `Liouville.irrational`, but there is no direct named lemma `Irrational (liouvilleNumber m)`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Any such number is Liouville",
+      "anchor": {
+        "section": "The existence of Liouville numbers (Liouville's constant)",
+        "snippet": "Therefore, any such"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "liouville_liouvilleNumber",
+        "module": "Mathlib.NumberTheory.Transcendental.Liouville.LiouvilleNumber",
+        "match_kind": "exact"
+      },
+      "note": "`liouville_liouvilleNumber` proves the constructed series is Liouville for every `m ≥ 2`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Liouville numbers are irrational",
+      "anchor": {
+        "section": "Irrationality",
+        "snippet": "Hence a Liouville number cannot be rational"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Liouville.irrational",
+        "module": "Mathlib.NumberTheory.Transcendental.Liouville.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`Liouville.irrational : Liouville x → Irrational x` is proved in Basic.lean.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "No Liouville number is algebraic",
+      "anchor": {
+        "section": "Liouville numbers and transcendence",
+        "snippet": "No Liouville number is algebraic"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Liouville.transcendental",
+        "module": "Mathlib.NumberTheory.Transcendental.Liouville.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`Liouville.transcendental : Liouville x → Transcendental ℤ x` directly states no Liouville number is algebraic.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Liouville's theorem on diophantine approximation",
+      "anchor": {
+        "section": "Liouville numbers and transcendence",
+        "snippet": "If"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Liouville.exists_pos_real_of_irrational_root",
+        "module": "Mathlib.NumberTheory.Transcendental.Liouville.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`exists_pos_real_of_irrational_root` gives the constant `A > 0` with `(b+1)^(deg f) · |α - a/(b+1)| · A ≥ 1` for every irrational algebraic `α`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Liouville numbers are transcendental",
+      "anchor": {
+        "section": "Liouville numbers and transcendence",
+        "snippet": "Hence a Liouville number cannot be algebraic, and therefore must be transcendental"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Liouville.transcendental",
+        "module": "Mathlib.NumberTheory.Transcendental.Liouville.Basic",
+        "match_kind": "exact"
+      },
+      "note": "Same statement: `Liouville.transcendental` records exactly that every Liouville number is transcendental over ℤ.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Not every transcendental is Liouville",
+      "anchor": {
+        "section": "Liouville numbers and transcendence",
+        "snippet": "not every transcendental number is a Liouville number"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No counterexample of a transcendental non-Liouville real is recorded in Mathlib (no `Transcendental ∧ ¬ Liouville` example found).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "e is transcendental but not Liouville",
+      "anchor": {
+        "section": "Liouville numbers and transcendence",
+        "snippet": "Using the explicit continued fraction expansion of e"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No theorem `Transcendental ℤ (Real.exp 1)` or `¬ Liouville (Real.exp 1)` is in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "π is not Liouville (Mahler 1953)",
+      "anchor": {
+        "section": "Liouville numbers and transcendence",
+        "snippet": "Mahler proved in 1953 that π is another such example"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mahler's bound `¬ Liouville Real.pi` is not present in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Liouville number from digits of π",
+      "anchor": {
+        "section": "Uncountability",
+        "snippet": "where the digits are zero except in positions"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No construction tied to digits of π producing a Liouville number is formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Uncountability of Liouville numbers",
+      "anchor": {
+        "section": "Uncountability",
+        "snippet": "Since the set of all sequences of non-null digits has the cardinality of the continuum"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No cardinality statement about `{x | Liouville x}` was found (it can be deduced from density+`Gδ` but is not a named lemma).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Liouville numbers are dense",
+      "anchor": {
+        "section": "Uncountability",
+        "snippet": "the Liouville numbers form a dense subset of the set of real numbers"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "dense_liouville",
+        "module": "Mathlib.NumberTheory.Transcendental.Liouville.Residual",
+        "match_kind": "exact"
+      },
+      "note": "`dense_liouville : Dense {x | Liouville x}` is proved in Residual.lean.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Lebesgue measure of Liouville numbers is zero",
+      "anchor": {
+        "section": "Liouville numbers and measure",
+        "snippet": "its Lebesgue measure"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "volume_setOf_liouville",
+        "module": "Mathlib.NumberTheory.Transcendental.Liouville.Measure",
+        "match_kind": "exact"
+      },
+      "note": "`volume_setOf_liouville : volume {x : ℝ | Liouville x} = 0` is proved in Measure.lean.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Measure of transcendentals is infinite",
+      "anchor": {
+        "section": "Liouville numbers and measure",
+        "snippet": "the Lebesgue measure of the set of all real transcendental numbers is infinite"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No direct statement that `volume {x : ℝ | Transcendental ℤ x} = ∞` was found (only that the algebraic reals are countable, in `AlgebraicCard`).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Hausdorff dimension zero",
+      "anchor": {
+        "section": "Liouville numbers and measure",
+        "snippet": "the set of Liouville numbers has Hausdorff dimension 0"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Grep for `Hausdorff` together with `Liouville` returns no Mathlib hits.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "L is a dense G-delta set",
+      "anchor": {
+        "section": "Structure of the set of Liouville numbers",
+        "snippet": "L is comeagre"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "eventually_residual_liouville",
+        "module": "Mathlib.NumberTheory.Transcendental.Liouville.Residual",
+        "match_kind": "exact"
+      },
+      "note": "`eventually_residual_liouville` + `IsGδ.setOf_liouville` + `dense_liouville` together state that the Liouville set is a dense `Gδ` (residual) subset of ℝ.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Liouville–Roth irrationality measure",
+      "anchor": {
+        "section": "Irrationality measure",
+        "snippet": "The Liouville–Roth irrationality measure"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "LiouvilleWith",
+        "module": "Mathlib.NumberTheory.Transcendental.Liouville.LiouvilleWith",
+        "match_kind": "generalization"
+      },
+      "note": "`LiouvilleWith p x` captures the per-exponent Liouville condition underlying the irrationality measure, but the sup/μ(x) = inf{p : ¬ LiouvilleWith p x} itself is not defined.",
+      "provenance": "ai"
+    }
+  ]
+}

@@ -1,0 +1,332 @@
+{
+  "slug": "Simplex_algorithm",
+  "wikipedia_title": "Simplex algorithm",
+  "display_title": "Simplex algorithm",
+  "schema_version": 3,
+  "annotations": [
+    {
+      "kind": "definition",
+      "label": "Simplex algorithm",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "is an algorithm for linear programming"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "definition",
+      "label": "Canonical form of a linear program",
+      "anchor": {
+        "section": "Overview",
+        "snippet": "The simplex algorithm operates on linear programs in the canonical form"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "definition",
+      "label": "Basic feasible solution (vertex of feasible polytope)",
+      "anchor": {
+        "section": "Overview",
+        "snippet": "An extreme point or vertex of this polytope is known as basic feasible solution"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "proposition",
+      "label": "Maximum attained at an extreme point",
+      "anchor": {
+        "section": "Overview",
+        "snippet": "if the objective function has a maximum value on the feasible region, then it has this value on (at least) one of the extreme points"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "proposition",
+      "label": "Improving edge from a non-optimal extreme point",
+      "anchor": {
+        "section": "Overview",
+        "snippet": "if an extreme point is not a maximum point of the objective function, then there is an edge containing the point so that the value of the objective function is strictly increasing on the edge moving away from the point"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "proposition",
+      "label": "Termination of the simplex algorithm",
+      "anchor": {
+        "section": "Overview",
+        "snippet": "The algorithm always terminates because the number of vertices in the polytope is finite"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "definition",
+      "label": "Infeasible linear program",
+      "anchor": {
+        "section": "Overview",
+        "snippet": "In the latter case the linear program is called infeasible"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "definition",
+      "label": "Phase I and Phase II of the simplex method",
+      "anchor": {
+        "section": "Overview",
+        "snippet": "The solution of a linear program is accomplished in two steps"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "definition",
+      "label": "Slack variable",
+      "anchor": {
+        "section": "Standard form",
+        "snippet": "a new variable, called a slack variable , is introduced to change the constraint to an equality constraint"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "definition",
+      "label": "Surplus variable",
+      "anchor": {
+        "section": "Standard form",
+        "snippet": "some authors refer to the variable introduced as a surplus variable"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "definition",
+      "label": "Standard-form transformation procedure",
+      "anchor": {
+        "section": "Standard form",
+        "snippet": "The transformation of a linear program to one in standard form may be accomplished as follows"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "definition",
+      "label": "Canonical form of a simplex tableau",
+      "anchor": {
+        "section": "Simplex tableau",
+        "snippet": "then the tableau is said to be in canonical form"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "definition",
+      "label": "Basic and nonbasic (free) variables",
+      "anchor": {
+        "section": "Simplex tableau",
+        "snippet": "The variables corresponding to the columns of the identity matrix are called basic variables while the remaining variables are called nonbasic or free variables"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "proposition",
+      "label": "Reduction of any BFS to canonical-form tableau",
+      "anchor": {
+        "section": "Simplex tableau",
+        "snippet": "given a basic feasible solution, the columns corresponding to the nonzero variables can be expanded to a nonsingular matrix"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "definition",
+      "label": "Pricing out and relative cost coefficients",
+      "anchor": {
+        "section": "Simplex tableau",
+        "snippet": "This process is called pricing out and results in a canonical tableau"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "definition",
+      "label": "Pivot operation",
+      "anchor": {
+        "section": "Pivot operations",
+        "snippet": "The geometrical operation of moving from a basic feasible solution to an adjacent basic feasible solution is implemented as a pivot operation"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "definition",
+      "label": "Entering and leaving variables",
+      "anchor": {
+        "section": "Pivot operations",
+        "snippet": "the variable corresponding to the pivot column enters the set of basic variables and is called the entering variable"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "definition",
+      "label": "Entering variable selection rule",
+      "anchor": {
+        "section": "Entering variable selection",
+        "snippet": "one should select a pivot column whose the corresponding entry in the objective row"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "proposition",
+      "label": "Optimality when no negative entry in objective row",
+      "anchor": {
+        "section": "Entering variable selection",
+        "snippet": "If none of the entries in the objective row is negative then no choice of entering variable can be made and the solution is in fact at the maximum"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "proposition",
+      "label": "Unboundedness criterion in leaving variable selection",
+      "anchor": {
+        "section": "Leaving variable selection",
+        "snippet": "If there are no positive entries in the pivot column then the entering variable can take any non-negative value with the solution remaining feasible"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "definition",
+      "label": "Minimum ratio test",
+      "anchor": {
+        "section": "Leaving variable selection",
+        "snippet": "This is called the minimum ratio test"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "example",
+      "label": "Simplex example (Phase II run)",
+      "anchor": {
+        "section": "Example",
+        "snippet": "Consider the linear program"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "definition",
+      "label": "Artificial variables and Phase I problem",
+      "anchor": {
+        "section": "Finding an initial canonical tableau",
+        "snippet": "This can be accomplished by the introduction of artificial variables"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "proposition",
+      "label": "Phase I termination and feasibility characterization",
+      "anchor": {
+        "section": "Finding an initial canonical tableau",
+        "snippet": "The simplex algorithm applied to the Phase I problem must terminate with a minimum value for the new objective function"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "example",
+      "label": "Phase I/II simplex example with equality constraints",
+      "anchor": {
+        "section": "Example (2)",
+        "snippet": "It differs from the previous example by having equality instead of inequality constraints"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "definition",
+      "label": "Standard simplex algorithm (tableau implementation)",
+      "anchor": {
+        "section": "Implementation",
+        "snippet": "This implementation is referred to as the \" standard simplex algorithm\""
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "definition",
+      "label": "Revised simplex algorithm",
+      "anchor": {
+        "section": "Implementation",
+        "snippet": "These observations motivate the \" revised simplex algorithm \""
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "definition",
+      "label": "Degenerate basic feasible solution",
+      "anchor": {
+        "section": "Degeneracy: stalling and cycling",
+        "snippet": "Basic feasible solutions where at least one of the basic variables is zero are called degenerate"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "definition",
+      "label": "Stalling and cycling",
+      "anchor": {
+        "section": "Degeneracy: stalling and cycling",
+        "snippet": "Worse than stalling is the possibility the same set of basic variables occurs twice"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "proposition",
+      "label": "Bland's rule prevents cycling",
+      "anchor": {
+        "section": "Degeneracy: stalling and cycling",
+        "snippet": "Bland's rule prevents cycling and thus guarantees that the simplex algorithm always terminates"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "theorem",
+      "label": "Klee–Minty exponential worst case",
+      "anchor": {
+        "section": "Efficiency in the worst case",
+        "snippet": "showing that the worst-case complexity of simplex method as formulated by Dantzig is exponential time"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "theorem",
+      "label": "NP-mightiness of a simplex variant",
+      "anchor": {
+        "section": "Efficiency in the worst case",
+        "snippet": "it was proved"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "theorem",
+      "label": "PSPACE-completeness of Dantzig's pivot rule output",
+      "anchor": {
+        "section": "Efficiency in the worst case",
+        "snippet": "computing the output of Dantzig's pivot rule is PSPACE-complete"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "theorem",
+      "label": "Polynomial average-case complexity",
+      "anchor": {
+        "section": "Efficiency in practice",
+        "snippet": "The simplex algorithm has polynomial-time average-case complexity under various probability distributions"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "theorem",
+      "label": "Smoothed analysis of the simplex method",
+      "anchor": {
+        "section": "Efficiency in practice",
+        "snippet": "the running time of the simplex method on input with noise is polynomial in the number of variables and the magnitude of the perturbations"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "definition",
+      "label": "Linear-fractional programming",
+      "anchor": {
+        "section": "Linear-fractional programming",
+        "snippet": "the objective function of a linear–fractional program is a ratio of two linear functions"
+      },
+      "provenance": "ai-agent1"
+    }
+  ]
+}

@@ -1,0 +1,861 @@
+{
+  "slug": "Perfect_number",
+  "wikipedia_title": "Perfect number",
+  "display_title": "Perfect number",
+  "schema_version": 3,
+  "annotation_style": "theorem_article",
+  "annotations": [
+    {
+      "kind": "definition",
+      "label": "Perfect number",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "a perfect number is a positive integer that is equal to the sum of its positive proper divisors"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Nat.Perfect",
+        "module": "Mathlib.NumberTheory.Divisors",
+        "match_kind": "exact"
+      },
+      "note": "`Nat.Perfect n` is defined as `∑ i ∈ properDivisors n, i = n ∧ 0 < n`, exactly the article's definition.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "6 is perfect",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "For instance, 6 has proper divisors 1, 2, and 3"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No explicit lemma proving `Nat.Perfect 6` exists in Mathlib, though it is `decide`-able from the definition.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "28 is perfect",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "The next perfect number is 28, because 28 has proper divisors"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No explicit lemma proving `Nat.Perfect 28` exists in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "First seven perfect numbers",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "The first seven perfect numbers are"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has no enumeration or list of specific perfect numbers.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Aliquot sum",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "The sum of proper divisors of a number is called its aliquot sum"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Nat.properDivisors",
+        "module": "Mathlib.NumberTheory.Divisors",
+        "match_kind": null
+      },
+      "note": "The aliquot sum `∑ i ∈ Nat.properDivisors n, i` is expressible via `properDivisors`, but Mathlib has no dedicated named `aliquotSum` function.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Half-sum-of-divisors characterization",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "a perfect number is a number that is half the sum of all of its positive divisors"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Nat.perfect_iff_sum_divisors_eq_two_mul",
+        "module": "Mathlib.NumberTheory.Divisors",
+        "match_kind": "exact"
+      },
+      "note": "`Nat.perfect_iff_sum_divisors_eq_two_mul` states `Perfect n ↔ ∑ i ∈ divisors n, i = 2 * n`, i.e. n is half the sum of its divisors.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Nicomachus's claim on perfect number form",
+      "anchor": {
+        "section": "History",
+        "snippet": "Nicomachus states without proof that every perfect number is of the form"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Theorems100.Nat.even_and_perfect_iff",
+        "module": "Archive.Wiedijk100Theorems.PerfectNumbers",
+        "match_kind": null
+      },
+      "note": "Only the even case (Euclid–Euler, `even_and_perfect_iff`) is proven; the full claim covering all perfect numbers remains open and is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Cataldi: perfect numbers from Euclid's rule end in 6 or 8",
+      "anchor": {
+        "section": "History",
+        "snippet": "every perfect number obtained from Euclid's rule ends with a 6 or an 8"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No result about the last digit of Euclid-rule perfect numbers exists in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Euclid's even perfect number theorem",
+      "anchor": {
+        "section": "Even perfect numbers",
+        "snippet": "Euclid proved that"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Theorems100.Nat.perfect_two_pow_mul_mersenne_of_prime",
+        "module": "Archive.Wiedijk100Theorems.PerfectNumbers",
+        "match_kind": "exact"
+      },
+      "note": "`perfect_two_pow_mul_mersenne_of_prime` proves that `(mersenne (k+1)).Prime → Perfect (2^k * mersenne (k+1))`, Euclid's theorem (in the Archive).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "First four perfect numbers from formula",
+      "anchor": {
+        "section": "Even perfect numbers",
+        "snippet": "the first four perfect numbers are generated by the formula"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib does not compute specific perfect numbers from the Euclid formula.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Even perfect numbers",
+          "snippet": "the first four perfect numbers are generated by the formula"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle {\\begin{aligned}p=2&amp;:\\quad 2^{1}(2^{2}-1)=2\\times 3=6\\\\p=3&amp;:\\quad 2^{2}(2^{3}-1)=4\\times 7=28\\\\p=5&amp;:\\quad 2^{4}(2^{5}-1)=16\\times 31=496\\\\p=7&amp;:\\quad 2^{6}(2^{7}-1)=64\\times 127=8128.\\end{aligned}}}"
+        }
+      ]
+    },
+    {
+      "kind": "definition",
+      "label": "Mersenne prime",
+      "anchor": {
+        "section": "Even perfect numbers",
+        "snippet": "are known as Mersenne primes"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "mersenne",
+        "module": "Mathlib.NumberTheory.LucasLehmer",
+        "match_kind": null
+      },
+      "note": "Mathlib defines the Mersenne number `mersenne p = 2^p - 1` and uses `(mersenne p).Prime`, but has no dedicated `MersennePrime` predicate.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Necessary condition: exponent must be prime",
+      "anchor": {
+        "section": "Even perfect numbers",
+        "snippet": "it is necessary that p itself be prime"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Nat.Prime.of_mersenne",
+        "module": "Mathlib.NumberTheory.LucasLehmer",
+        "match_kind": "exact"
+      },
+      "note": "`Nat.Prime.of_mersenne` proves `(mersenne p).Prime → Nat.Prime p`; generalized by `Nat.prime_of_pow_sub_one_prime`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "2047 is not prime",
+      "anchor": {
+        "section": "Even perfect numbers",
+        "snippet": "2047 = 23 × 89 is not a prime number"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No explicit lemma about 2047 = 23 × 89 exists, though it is `norm_num`-decidable.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Euclid–Euler theorem",
+      "anchor": {
+        "section": "Even perfect numbers",
+        "snippet": "indeed yields all the even perfect numbers"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Theorems100.Nat.even_and_perfect_iff",
+        "module": "Archive.Wiedijk100Theorems.PerfectNumbers",
+        "match_kind": "exact"
+      },
+      "note": "`even_and_perfect_iff` is exactly the Euclid–Euler characterization of even perfect numbers (in the Archive).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "First 50 even perfect numbers",
+      "anchor": {
+        "section": "Even perfect numbers",
+        "snippet": "the first 50 even perfect numbers are"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib does not enumerate the first 50 even perfect numbers.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Even perfect numbers are triangular and hexagonal",
+      "anchor": {
+        "section": "Even perfect numbers",
+        "snippet": "and hence equal to the sum of the integers from 1 to"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No result that even perfect numbers are triangular or hexagonal exists in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Centered nonagonal and sum of odd cubes",
+      "anchor": {
+        "section": "Even perfect numbers",
+        "snippet": "each even perfect number except for 6 is the"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No result connecting even perfect numbers to centered nonagonal numbers or sums of odd cubes exists in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Triangular form of even perfect numbers (except 6)",
+      "anchor": {
+        "section": "Even perfect numbers",
+        "snippet": "Even perfect numbers (except 6) are of the form"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No such triangular-form result for even perfect numbers exists in Mathlib.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Even perfect numbers",
+          "snippet": "Even perfect numbers (except 6) are of the form"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle T_{2^{p}-1}=1+{\\frac {(2^{p}-2)\\times (2^{p}+1)}{2}}=1+9\\times T_{(2^{p}-2)/3}}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Digital root of even perfect numbers is 1",
+      "anchor": {
+        "section": "Even perfect numbers",
+        "snippet": "always produces the number 1"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No result about the digital root of even perfect numbers exists in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Binary representation of even perfect numbers",
+      "anchor": {
+        "section": "Even perfect numbers",
+        "snippet": "represented in binary form as p ones followed by p − 1 zeros"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No result about the binary digit pattern of even perfect numbers exists in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Even perfect numbers are pernicious",
+      "anchor": {
+        "section": "Even perfect numbers",
+        "snippet": "every even perfect number is a pernicious number"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Pernicious numbers are not defined in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Even perfect numbers are practical",
+      "anchor": {
+        "section": "Even perfect numbers",
+        "snippet": "Every even perfect number is also a practical number"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Practical numbers are not defined in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Pomerance heuristic against odd perfect numbers",
+      "anchor": {
+        "section": "Odd perfect numbers",
+        "snippet": "has presented a heuristic argument suggesting that indeed no odd perfect number should exist"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Heuristic arguments about odd perfect numbers are not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Perfect numbers are harmonic divisor numbers",
+      "anchor": {
+        "section": "Odd perfect numbers",
+        "snippet": "All perfect numbers are also harmonic divisor numbers"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Harmonic divisor (Ore) numbers are not defined in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Necessary conditions on odd perfect numbers",
+      "anchor": {
+        "section": "Odd perfect numbers",
+        "snippet": "Any odd perfect number N must satisfy the following conditions"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No constraints on hypothetical odd perfect numbers are formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Euler's form of an odd perfect number",
+      "anchor": {
+        "section": "Odd perfect numbers",
+        "snippet": "q , p 1 , ..., p k are distinct odd primes (Euler)"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Euler's structural form for odd perfect numbers is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Not all exponents ≡ 1 (mod 3)",
+      "anchor": {
+        "section": "Odd perfect numbers",
+        "snippet": "Not all e i ≡ 1 ( mod 3)"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No exponent-congruence constraints on odd perfect numbers exist in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Not all exponents ≡ 2 (mod 5)",
+      "anchor": {
+        "section": "Odd perfect numbers",
+        "snippet": "Not all e i ≡ 2 ( mod 5)"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No exponent-congruence constraints on odd perfect numbers exist in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Smallest prime factor bound under exponent congruences",
+      "anchor": {
+        "section": "Odd perfect numbers",
+        "snippet": "the smallest prime factor of N must lie between 10 8 and 10 1000"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No bounds on the smallest prime factor of odd perfect numbers are formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Generalized smallest-prime-factor bound",
+      "anchor": {
+        "section": "Odd perfect numbers",
+        "snippet": "must be smaller than an effectively computable constant depending only on S"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This generalized bound on odd perfect numbers is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Bound for exponent pattern of ones and twos",
+      "anchor": {
+        "section": "Odd perfect numbers",
+        "snippet": "with t ones and u twos"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No bounds on odd-perfect-number exponent patterns are formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Excluded exponent tuples",
+      "anchor": {
+        "section": "Odd perfect numbers",
+        "snippet": "( e 1 , ..., e k ) ≠ (1, ..., 1, 3)"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No excluded exponent-tuple results for odd perfect numbers exist in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Excluded equal exponents",
+      "anchor": {
+        "section": "Odd perfect numbers",
+        "snippet": "then e cannot be 3"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No such excluded-exponent results for odd perfect numbers exist in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Descartes's near-perfect number",
+      "anchor": {
+        "section": "Odd perfect numbers",
+        "snippet": "would be an odd perfect number if only 22021"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Descartes's near-perfect number example is not in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Descartes numbers",
+      "anchor": {
+        "section": "Odd perfect numbers",
+        "snippet": "are the Descartes numbers"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Descartes numbers are not defined in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Makowski: only n³+1 perfect number is 28",
+      "anchor": {
+        "section": "Minor results",
+        "snippet": "The only even perfect number of the form n 3 + 1 is 28"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Makowski's result is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Gallardo: 28 is unique sum of two cubes",
+      "anchor": {
+        "section": "Minor results",
+        "snippet": "the only even perfect number that is a sum of two positive cubes of integers"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Gallardo's result is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Reciprocals of divisors sum to 2",
+      "anchor": {
+        "section": "Minor results",
+        "snippet": "The reciprocals of the divisors of a perfect number N must add up to 2"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No lemma about the sum of reciprocals of divisors of a perfect number exists in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Number of divisors is even",
+      "anchor": {
+        "section": "Minor results",
+        "snippet": "The number of divisors of a perfect number (whether even or odd) must be even"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No result that a perfect number's divisor count is even exists in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Perfect numbers are Ore harmonic numbers",
+      "anchor": {
+        "section": "Minor results",
+        "snippet": "every perfect number is an Ore's harmonic number"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Ore harmonic numbers are not defined in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Even perfect numbers are not trapezoidal",
+      "anchor": {
+        "section": "Minor results",
+        "snippet": "The even perfect numbers are not trapezoidal numbers"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Trapezoidal numbers are not defined in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Three types of non-trapezoidal numbers",
+      "anchor": {
+        "section": "Minor results",
+        "snippet": "There are only three types of non-trapezoidal numbers"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Trapezoidal numbers and their classification are not in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Density of perfect numbers",
+      "anchor": {
+        "section": "Minor results",
+        "snippet": "The number of perfect numbers less than n is less than"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No density/counting bound for perfect numbers is formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Even perfect numbers end in 6 or 28",
+      "anchor": {
+        "section": "Minor results",
+        "snippet": "Every even perfect number ends in 6 or 28 in base ten"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No result about the base-ten ending digits of even perfect numbers exists in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Only square-free perfect number is 6",
+      "anchor": {
+        "section": "Minor results",
+        "snippet": "The only square-free perfect number is 6"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No result that 6 is the unique squarefree perfect number exists in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Deficient and abundant numbers",
+      "anchor": {
+        "section": "Related concepts",
+        "snippet": "are called deficient , and where it is greater than the number, abundant"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Nat.Abundant",
+        "module": "Mathlib.NumberTheory.FactorisationProperties",
+        "match_kind": "exact"
+      },
+      "note": "`Nat.Deficient` and `Nat.Abundant` are defined via the sum of proper divisors being less than / greater than n.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Amicable and sociable numbers",
+      "anchor": {
+        "section": "Related concepts",
+        "snippet": "are called amicable , and larger cycles of numbers are called sociable"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Amicable and sociable numbers are not defined in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Practical number",
+      "anchor": {
+        "section": "Related concepts",
+        "snippet": "every smaller positive integer is a sum of distinct divisors of it"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Practical numbers are not defined in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Perfect number as fixed point of restricted divisor function",
+      "anchor": {
+        "section": "Related concepts",
+        "snippet": "a perfect number is a fixed point of the restricted divisor function"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Nat.perfect_iff_sum_properDivisors",
+        "module": "Mathlib.NumberTheory.Divisors",
+        "match_kind": "exact"
+      },
+      "note": "`Nat.perfect_iff_sum_properDivisors` states `Perfect n ↔ ∑ i ∈ properDivisors n, i = n`, the fixed-point condition s(n) = n, though the function s is unnamed.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Granville numbers",
+      "anchor": {
+        "section": "Related concepts",
+        "snippet": "or Granville numbers"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Granville numbers are not defined in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Semiperfect number",
+      "anchor": {
+        "section": "Related concepts",
+        "snippet": "A semiperfect number is a natural number that is equal to the sum of all or some of its proper divisors"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Nat.Pseudoperfect",
+        "module": "Mathlib.NumberTheory.FactorisationProperties",
+        "match_kind": "exact"
+      },
+      "note": "`Nat.Pseudoperfect` (synonym for semiperfect) is `0 < n ∧ ∃ s ⊆ properDivisors n, ∑ i ∈ s, i = n`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Weird numbers",
+      "anchor": {
+        "section": "Related concepts",
+        "snippet": "abundant numbers which are not semiperfect are called weird numbers"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Nat.Weird",
+        "module": "Mathlib.NumberTheory.FactorisationProperties",
+        "match_kind": "exact"
+      },
+      "note": "`Nat.Weird n` is defined as `Abundant n ∧ ¬ Pseudoperfect n`, exactly abundant but not semiperfect.",
+      "provenance": "ai"
+    }
+  ]
+}

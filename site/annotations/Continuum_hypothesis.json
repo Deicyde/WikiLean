@@ -1,0 +1,393 @@
+{
+  "slug": "Continuum_hypothesis",
+  "wikipedia_title": "Continuum hypothesis",
+  "display_title": "Continuum hypothesis",
+  "schema_version": 3,
+  "annotation_style": "theorem_article",
+  "annotations": [
+    {
+      "kind": "definition",
+      "label": "Continuum hypothesis",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "There is no set whose cardinality is strictly between that of the integers and the real numbers"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Cardinal.aleph_one_le_continuum",
+        "module": "Mathlib.SetTheory.Cardinal.Continuum",
+        "match_kind": null
+      },
+      "note": "Mathlib has the provable direction ℵ₁ ≤ 𝔠 but never defines or asserts CH itself (which is independent of ZFC).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "CH equivalent in aleph/beth numbers",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "this is equivalent to the following equation in aleph numbers"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Cardinal.aleph_one_le_continuum",
+        "module": "Mathlib.SetTheory.Cardinal.Continuum",
+        "match_kind": null
+      },
+      "note": "Mathlib has 𝔠 = 2^ℵ₀ (Cardinal.two_power_aleph0) and ℵ₁ ≤ 𝔠 but not the equation 2^ℵ₀ = ℵ₁.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Generalized continuum hypothesis",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "The generalized continuum hypothesis states that"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No GCH definition exists anywhere in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Kőnig's theorem",
+      "anchor": {
+        "section": "History",
+        "snippet": "established Kőnig's theorem , which by using the concept of cofinality"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Cardinal.sum_lt_prod",
+        "module": "Mathlib.SetTheory.Cardinal.Order",
+        "match_kind": "exact"
+      },
+      "note": "Cardinal.sum_lt_prod is explicitly labelled König's theorem (∀i, f i < g i → sum f < prod g).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Same cardinality",
+      "anchor": {
+        "section": "Cardinality of infinite sets",
+        "snippet": "Two sets are said to have the same cardinality or cardinal number if there exists a bijection"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Cardinal.eq",
+        "module": "Mathlib.SetTheory.Cardinal.Defs",
+        "match_kind": "exact"
+      },
+      "note": "Cardinal.eq states #α = #β ↔ Nonempty (α ≃ β), i.e. equal cardinality iff a bijection exists.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Rationals are countable",
+      "anchor": {
+        "section": "Cardinality of infinite sets",
+        "snippet": "the rational numbers can actually be placed in one-to-one correspondence with the integers"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Cardinal.mkRat",
+        "module": "Mathlib.Data.Rat.Cardinal",
+        "match_kind": "exact"
+      },
+      "note": "Cardinal.mkRat proves #ℚ = ℵ₀ = #ℤ (Cardinal.mk_int), giving the bijection with the integers.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Integers strictly smaller than reals",
+      "anchor": {
+        "section": "Cardinality of infinite sets",
+        "snippet": "Cantor gave two proofs that the cardinality of the set of integers is strictly smaller than that of the set of real numbers"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Cardinal.aleph0_lt_continuum",
+        "module": "Mathlib.SetTheory.Cardinal.Continuum",
+        "match_kind": "invocation"
+      },
+      "note": "Cardinal.aleph0_lt_continuum (ℵ₀ < 𝔠) with Cardinal.mk_int (#ℤ=ℵ₀) and Cardinal.mk_real (#ℝ=𝔠) gives #ℤ < #ℝ.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Unique smallest cardinal greater than aleph-null",
+      "anchor": {
+        "section": "Cardinality of infinite sets",
+        "snippet": "there is a unique smallest cardinal number"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Cardinal.aleph_one_le_iff",
+        "module": "Mathlib.SetTheory.Cardinal.Aleph",
+        "match_kind": "exact"
+      },
+      "note": "ℵ₁ = succ ℵ₀ (Cardinal.succ_aleph0) and Cardinal.aleph_one_le_iff (ℵ₁ ≤ c ↔ ℵ₀ < c) express that ℵ₁ is the least cardinal exceeding ℵ₀.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Continuum Hypothesis (formal)",
+      "anchor": {
+        "type": "theorem_box",
+        "value": "Continuum Hypothesis — [MATH] ."
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Cardinal.aleph_one_le_continuum",
+        "module": "Mathlib.SetTheory.Cardinal.Continuum",
+        "match_kind": null
+      },
+      "note": "Only the provable inequality ℵ₁ ≤ 𝔠 is present; the CH equality 2^ℵ₀ = ℵ₁ is independent of ZFC and not stated.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Gödel: CH not disprovable in ZF",
+      "anchor": {
+        "section": "Independence from ZFC",
+        "snippet": "showed that CH cannot be disproved from ZF"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has no metatheory of ZF(C) consistency or constructible-universe relative consistency results.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Cohen: CH not provable in ZFC",
+      "anchor": {
+        "section": "Independence from ZFC",
+        "snippet": "showed that CH cannot be proven from the ZFC axioms"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has no forcing machinery or independence results for ZFC.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Solovay's forcing result on the continuum",
+      "anchor": {
+        "section": "Independence from ZFC",
+        "snippet": "then there is a forcing extension in which"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No forcing or model-of-ZFC infrastructure exists in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Freiling's axiom of symmetry equivalent to ¬CH",
+      "anchor": {
+        "section": "Arguments for and against the continuum hypothesis",
+        "snippet": "the negation of CH is equivalent to Freiling's axiom of symmetry"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Freiling's axiom of symmetry and its equivalence with ¬CH are absent from Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Star axiom falsifies CH",
+      "anchor": {
+        "section": "Arguments for and against the continuum hypothesis",
+        "snippet": "The Star axiom would imply that"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Star axiom (Woodin) and its consequences are not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Generalized continuum hypothesis (full statement)",
+      "anchor": {
+        "section": "Generalized continuum hypothesis",
+        "snippet": "if an infinite set's cardinality lies between that of an infinite set S and that of the power set"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No GCH definition (no cardinal strictly between #S and #𝒫S) exists in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "GCH in beth numbers",
+      "anchor": {
+        "section": "Generalized continuum hypothesis",
+        "snippet": "The beth numbers provide an alternative notation for this condition"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Cardinal.beth",
+        "module": "Mathlib.SetTheory.Cardinal.Aleph",
+        "match_kind": null
+      },
+      "note": "Beth numbers (Cardinal.beth) and aleph numbers are defined, but the GCH equivalence ℵ_α = ℶ_α is not stated.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Sierpiński: ZF + GCH implies AC",
+      "anchor": {
+        "section": "Generalized continuum hypothesis",
+        "snippet": "Sierpiński proved that ZF + GCH implies the axiom of choice"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Neither GCH nor the ZF-relative derivation of choice from it is formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Gödel: GCH consistent via V=L",
+      "anchor": {
+        "section": "Generalized continuum hypothesis",
+        "snippet": "Kurt Gödel showed that GCH is a consequence of ZF + V=L"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has no constructible universe (V=L) or GCH consistency development.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Easton's theorem",
+      "anchor": {
+        "section": "Generalized continuum hypothesis",
+        "snippet": "to prove Easton's theorem , which shows it is consistent with ZFC"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Easton forcing and its consistency conclusions are not present in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Foreman–Woodin consistency result",
+      "anchor": {
+        "section": "Generalized continuum hypothesis",
+        "snippet": "Foreman and Woodin proved that"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This forcing-based consistency result is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Merimovich consistency result",
+      "anchor": {
+        "section": "Generalized continuum hypothesis",
+        "snippet": "Carmi Merimovich [ 33 ] showed that, for each n ≥ 1 , it is consistent with ZFC"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This forcing-based consistency result is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Patai's theorem on successor exponentiation",
+      "anchor": {
+        "section": "Generalized continuum hypothesis",
+        "snippet": "László Patai [ 34 ] proved that if γ is an ordinal"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Patai's result on cardinal successor exponentiation is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Injection lifts to subsets",
+      "anchor": {
+        "section": "Generalized continuum hypothesis",
+        "snippet": "if there is an injection from A to B then there is an injection from subsets of A to subsets of B"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Cardinal.power_le_power_left",
+        "module": "Mathlib.SetTheory.Cardinal.Order",
+        "match_kind": "generalization"
+      },
+      "note": "With Cardinal.mk_powerset (#𝒫s = 2^#s), Cardinal.power_le_power_left gives #A ≤ #B → 2^#A ≤ 2^#B, the powerset monotonicity claimed.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "GCH determines cardinal exponentiation",
+      "anchor": {
+        "section": "Implications of GCH for cardinal exponentiation",
+        "snippet": "GCH implies that for ordinals α and β"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "GCH is undefined in Mathlib, so its computation of cardinal exponentiation is absent.",
+      "provenance": "ai"
+    }
+  ]
+}

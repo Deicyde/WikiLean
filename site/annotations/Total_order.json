@@ -1,0 +1,809 @@
+{
+  "slug": "Total_order",
+  "wikipedia_title": "Total order",
+  "display_title": "Total order",
+  "schema_version": 3,
+  "annotation_style": "theorem_article",
+  "annotations": [
+    {
+      "kind": "definition",
+      "label": "Total order",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "a total order or linear order is a partial order in which any two elements are comparable"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "LinearOrder",
+        "module": "Mathlib.Order.Defs.LinearOrder",
+        "match_kind": "exact"
+      },
+      "note": "`LinearOrder` extends `PartialOrder` with the `le_total` field, exactly a partial order in which any two elements are comparable.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Reflexivity from strong connectedness",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "Reflexivity (1.) already follows from strong connectedness"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib takes reflexivity as a `Preorder` axiom (`le_refl`) rather than deriving it from totality, so this derivation is not stated as a lemma.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Totally ordered set",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "A set equipped with a total order is a totally ordered set"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "LinearOrder",
+        "module": "Mathlib.Order.Defs.LinearOrder",
+        "match_kind": "exact"
+      },
+      "note": "A type carrying a `LinearOrder` instance is precisely a totally ordered set.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Linear extension",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "is called a linear extension of that partial order"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "extend_partialOrder",
+        "module": "Mathlib.Order.Extension.Linear",
+        "match_kind": "exact"
+      },
+      "note": "The Szpilrajn theorem `extend_partialOrder` (and `LinearExtension`) gives a linear order extending any given partial order.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Strict total order associated",
+      "anchor": {
+        "section": "Strict and non-strict total orders",
+        "snippet": "called the strict total order associated with"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "IsStrictTotalOrder",
+        "module": "Mathlib.Order.RelClasses",
+        "match_kind": "exact"
+      },
+      "note": "For any `LinearOrder α`, the `<` relation has an `IsStrictTotalOrder α (· < ·)` instance, the strict order associated with `≤`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Reflexive closure of strict total order",
+      "anchor": {
+        "section": "Strict and non-strict total orders",
+        "snippet": "the reflexive closure of a strict total order"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "le_iff_lt_or_eq",
+        "module": "Mathlib.Order.Defs.PartialOrder",
+        "match_kind": "exact"
+      },
+      "note": "`le_iff_lt_or_eq` states `a ≤ b ↔ a < b ∨ a = b`, i.e. `≤` is the reflexive closure of `<` (and `linearOrderOfSTO` builds the order from a strict total order).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Strict total order",
+      "anchor": {
+        "section": "Strict and non-strict total orders",
+        "snippet": "in which any two distinct elements are comparable"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "IsStrictTotalOrder",
+        "module": "Mathlib.Order.Defs.Unbundled",
+        "match_kind": "exact"
+      },
+      "note": "`IsStrictTotalOrder` is a trichotomous strict order, matching a relation in which any two distinct elements are comparable.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Asymmetry from transitivity and irreflexivity",
+      "anchor": {
+        "section": "Strict and non-strict total orders",
+        "snippet": "Asymmetry follows from transitivity and irreflexivity"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "asymm_of_isTrans_of_irrefl",
+        "module": "Mathlib.Order.Defs.Unbundled",
+        "match_kind": "exact"
+      },
+      "note": "The instance `asymm_of_isTrans_of_irrefl [IsTrans α r] [Std.Irrefl r] : Std.Asymm r` derives asymmetry from transitivity and irreflexivity.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Subset of totally ordered set",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "Any subset of a totally ordered set X is totally ordered for the restriction of the order on X"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Subtype.instLinearOrder",
+        "module": "Mathlib.Order.Basic",
+        "match_kind": "special_case"
+      },
+      "note": "`Subtype.instLinearOrder` gives a `LinearOrder` on any subtype `{x // p x}` of a linear order.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Order on empty set",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "The unique order on the empty set"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Empty.instLinearOrder",
+        "module": "Mathlib.Order.Basic",
+        "match_kind": "special_case"
+      },
+      "note": "`instance : LinearOrder Empty := .ofSubsingleton` provides the (necessarily unique) linear order on the empty type.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Ordinal numbers",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "Any set of ordinal numbers"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Ordinal.instLinearOrder",
+        "module": "Mathlib.SetTheory.Ordinal.Basic",
+        "match_kind": "special_case"
+      },
+      "note": "`Ordinal` carries a `LinearOrder` instance (indeed a well order), so any set of ordinals is totally ordered.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Induced order via injective function",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "f induces a total ordering on X by setting"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "LinearOrder.lift",
+        "module": "Mathlib.Order.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`LinearOrder.lift` (and `Function.Injective.linearOrder`) transfers a linear order along an injective map `f : α → β`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Lexicographical order on a product",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "The lexicographical order on the Cartesian product of a family of totally ordered sets"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Pi.Lex.linearOrder",
+        "module": "Mathlib.Order.PiLex",
+        "match_kind": "exact"
+      },
+      "note": "`Pi.Lex.linearOrder` is the lexicographic linear order on a family `∀ i, β i` of linear orders indexed by a well-founded order.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Real numbers totally ordered",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "The set of real numbers ordered by the usual"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Real.linearOrder",
+        "module": "Mathlib.Data.Real.Basic",
+        "match_kind": "special_case"
+      },
+      "note": "`Real.linearOrder` equips ℝ with its usual linear order.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Natural numbers as initial total order",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "The natural numbers form an initial non-empty totally ordered set with no upper bound"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "ℕ has a `LinearOrder` and `NoMaxOrder` instance, but its characterization as the initial unbounded total order is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Integers as initial total order",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "The integers form an initial non-empty totally ordered set with neither an upper nor a lower bound"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "ℤ has a `LinearOrder` (with no max/min order), but the categorical 'initial' characterization is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Rational numbers as initial total order",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "The rational numbers form an initial totally ordered set which is dense in the real numbers"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "ℚ has a `LinearOrder` and is densely ordered/dense in ℝ, but the 'initial dense total order' characterization itself is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Real numbers as initial unbounded total order",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "The real numbers form an initial unbounded totally ordered set that is connected in the order topology"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Real.linearOrder",
+        "module": "Mathlib.Data.Real.Basic",
+        "match_kind": null
+      },
+      "note": "ℝ's linear order and order-topology connectedness are formalized, but the initiality characterization is not.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Ordered fields",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "Ordered fields are totally ordered by definition"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "IsStrictOrderedRing",
+        "module": "Mathlib.Algebra.Order.Ring.Defs",
+        "match_kind": "exact"
+      },
+      "note": "Ordered fields are spelled `[Field K] [LinearOrder K] [IsStrictOrderedRing K]`, so the total order is part of the structure by definition.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Dedekind-complete ordered field",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "Any Dedekind-complete ordered field is isomorphic to the real numbers"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "ConditionallyCompleteLinearOrderedField.inducedOrderRingIso",
+        "module": "Mathlib.Algebra.Order.CompleteField",
+        "match_kind": "generalization"
+      },
+      "note": "`inducedOrderRingIso` gives a unique order-ring isomorphism between any two conditionally complete (Dedekind-complete) linear ordered fields, in particular to ℝ.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Alphabet dictionary order",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "The letters of the alphabet ordered by the standard dictionary order"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Fintype.to_wellFoundedLT",
+        "module": "Mathlib.Data.Fintype.Card",
+        "match_kind": null
+      },
+      "note": "Finite linear orders (and `List.Lex` dictionary orders) are formalized, but there is no specific 'alphabet' linear order.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Chain",
+      "anchor": {
+        "section": "Chains",
+        "snippet": "it is generally used for referring to a subset of a partially ordered set that is totally ordered"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "IsChain",
+        "module": "Mathlib.Order.Preorder.Chain",
+        "match_kind": "exact"
+      },
+      "note": "`IsChain` is a set on which the relation is total, i.e. a totally ordered subset.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Zorn's lemma",
+      "anchor": {
+        "section": "Chains",
+        "snippet": "if every chain in a partially ordered set X has an upper bound in X"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "zorn_le",
+        "module": "Mathlib.Order.Zorn",
+        "match_kind": "exact"
+      },
+      "note": "`zorn_le` states that if every chain is bounded above then there is a maximal element.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Ascending and descending chain",
+      "anchor": {
+        "section": "Chains",
+        "snippet": "is called an ascending chain or a descending chain"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib models ascending/descending chains as monotone sequences `ℕ →o α` rather than via a bundled 'chain' definition.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Descending chain condition",
+      "anchor": {
+        "section": "Chains",
+        "snippet": "has the descending chain condition if every descending chain eventually stabilizes"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "WellFoundedGT.monotone_chain_condition",
+        "module": "Mathlib.Order.OrderIsoNat",
+        "match_kind": "generalization"
+      },
+      "note": "The DCC is `WellFoundedLT` (order-dual of `WellFoundedGT`), and `monotone_chain_condition` proves chains eventually stabilize.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Noetherian ring",
+      "anchor": {
+        "section": "Chains",
+        "snippet": "a Noetherian ring is a ring whose ideals satisfy the ascending chain condition"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "IsNoetherianRing",
+        "module": "Mathlib.RingTheory.Noetherian.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`IsNoetherianRing` is defined via `IsNoetherian R R` (well-founded `>` / ACC on ideals), with `isNoetherianRing_iff_ideal_fg` an equivalent form.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Length of a chain",
+      "anchor": {
+        "section": "Chains",
+        "snippet": "the length of a chain is the number of inequalities"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "RelSeries.length",
+        "module": "Mathlib.Order.RelSeries",
+        "match_kind": "exact"
+      },
+      "note": "`RelSeries.length` is the number of relations (inequalities) in a chain/series.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Total order as a lattice",
+      "anchor": {
+        "section": "Lattice theory",
+        "snippet": "One may define a totally ordered set as a particular kind of lattice"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "LinearOrder.toLattice",
+        "module": "Mathlib.Order.Lattice",
+        "match_kind": "exact"
+      },
+      "note": "`LinearOrder.toLattice` realizes any linear order as a lattice with `min`/`max` as meet/join.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Totally ordered set is distributive lattice",
+      "anchor": {
+        "section": "Lattice theory",
+        "snippet": "Hence a totally ordered set is a distributive lattice"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "DistribLattice",
+        "module": "Mathlib.Order.Lattice",
+        "match_kind": "exact"
+      },
+      "note": "An instance `[LinearOrder α] : DistribLattice α` in Order/Lattice.lean makes every linear order a distributive lattice.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Finite total order is a well order",
+      "anchor": {
+        "section": "Finite total orders",
+        "snippet": "every finite total order is in fact a well order"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Fintype.to_wellFoundedLT",
+        "module": "Mathlib.Data.Fintype.Card",
+        "match_kind": "special_case"
+      },
+      "note": "`Fintype.to_wellFoundedLT` gives `WellFoundedLT` for any finite preorder, hence finite linear orders are well orders.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Finite total order isomorphic to initial segment",
+      "anchor": {
+        "section": "Finite total orders",
+        "snippet": "every finite total order is order isomorphic to an initial segment of the natural numbers"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "monoEquivOfFin",
+        "module": "Mathlib.Data.Fintype.Sort",
+        "match_kind": "exact"
+      },
+      "note": "`monoEquivOfFin` is an order isomorphism between a finite linear order and `Fin (card α)`, the initial segment of ℕ.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Total order induces bijection",
+      "anchor": {
+        "section": "Finite total orders",
+        "snippet": "a total order on a set with k elements induces a bijection with the first k natural numbers"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "monoEquivOfFin",
+        "module": "Mathlib.Data.Fintype.Sort",
+        "match_kind": "exact"
+      },
+      "note": "`monoEquivOfFin α h : α ≃o Fin k` is exactly the order-preserving bijection with the first `k` naturals.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Tosets as full subcategory",
+      "anchor": {
+        "section": "Category theory",
+        "snippet": "Totally ordered sets form a full subcategory of the category of partially ordered sets"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "LinOrd",
+        "module": "Mathlib.Order.Category.LinOrd",
+        "match_kind": null
+      },
+      "note": "The category `LinOrd` exists alongside `PartOrd`, but its identification as a full subcategory of `PartOrd` is not established.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Order-respecting bijection is isomorphism",
+      "anchor": {
+        "section": "Category theory",
+        "snippet": "A bijective map between two totally ordered sets that respects the two orders is an isomorphism in this category"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "StrictMono.orderIsoOfSurjective",
+        "module": "Mathlib.Order.Hom.Set",
+        "match_kind": "generalization"
+      },
+      "note": "`StrictMono.orderIsoOfSurjective` upgrades a surjective order-respecting (strictly monotone) map to an `OrderIso`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Open intervals",
+      "anchor": {
+        "section": "Order topology",
+        "snippet": "For any totally ordered set X we can define the open intervals"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Set.Ioo",
+        "module": "Mathlib.Order.Interval.Set.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`Set.Ioo a b = {x | a < x ∧ x < b}` defines the open intervals (with `Ioi`/`Iio` for unbounded ones).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Order topology",
+      "anchor": {
+        "section": "Order topology",
+        "snippet": "to define a topology on any ordered set, the order topology"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "OrderTopology",
+        "module": "Mathlib.Topology.Order.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`OrderTopology` (via `Preorder.topology`) is the topology generated by the open intervals/rays.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Order topology is hereditarily normal",
+      "anchor": {
+        "section": "Order topology",
+        "snippet": "The order topology induced by a total order may be shown to be hereditarily normal"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "OrderTopology.t5Space",
+        "module": "Mathlib.Topology.Order.T5",
+        "match_kind": "exact"
+      },
+      "note": "`OrderTopology.t5Space`/`OrderTopology.completelyNormalSpace` show the order topology is T5 (completely/hereditarily normal).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Complete totally ordered set",
+      "anchor": {
+        "section": "Completeness",
+        "snippet": "A totally ordered set is said to be complete if every nonempty subset that has an upper bound"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "ConditionallyCompleteLinearOrder",
+        "module": "Mathlib.Order.ConditionallyCompleteLattice.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`ConditionallyCompleteLinearOrder` is exactly a linear order where every nonempty bounded-above set has a least upper bound.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Connected order topology implies complete",
+      "anchor": {
+        "section": "Completeness",
+        "snippet": "If the order topology on X is connected, X is complete"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "denselyOrdered_of_preconnectedSpace",
+        "module": "Mathlib.Topology.Order.IntermediateValue",
+        "match_kind": null
+      },
+      "note": "Related results (preconnected order topology implies densely ordered; conditional completeness gives connectedness) exist, but the exact 'connected ⇒ complete' implication is not stated.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Connectedness iff complete with no gap",
+      "anchor": {
+        "section": "Completeness",
+        "snippet": "X is connected under the order topology if and only if it is complete and there is no gap in X"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "denselyOrdered_of_preconnectedSpace",
+        "module": "Mathlib.Topology.Order.IntermediateValue",
+        "match_kind": null
+      },
+      "note": "Mathlib relates order-connectedness to conditional completeness and density (no gaps) but does not state this exact biconditional.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Completeness iff closed bounded sets compact",
+      "anchor": {
+        "section": "Completeness",
+        "snippet": "X is complete if and only if every bounded set that is closed in the order topology is compact"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "isCompact_Icc",
+        "module": "Mathlib.Topology.Order.Compact",
+        "match_kind": null
+      },
+      "note": "One direction (closed intervals in a conditionally complete order are compact) is `isCompact_Icc`, but the full biconditional characterization is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Complete lattice total order is compact",
+      "anchor": {
+        "section": "Completeness",
+        "snippet": "which is a complete lattice is compact"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "compactSpace_of_completeLinearOrder",
+        "module": "Mathlib.Topology.Order.Compact",
+        "match_kind": "exact"
+      },
+      "note": "`compactSpace_of_completeLinearOrder` shows a complete linear order is a compact space in the order topology.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Sum of two orders",
+      "anchor": {
+        "section": "Sums of orders",
+        "snippet": "which is called the sum of the two orders"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Sum.Lex.linearOrder",
+        "module": "Mathlib.Data.Sum.Order",
+        "match_kind": "exact"
+      },
+      "note": "`Sum.Lex.linearOrder` is the linear order on `α ⊕ₗ β` placing all of `α` before `β`, the ordinal sum of two orders.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Sum over an index set",
+      "anchor": {
+        "section": "Sums of orders",
+        "snippet": "then the natural total order on"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Sigma.Lex",
+        "module": "Mathlib.Data.Sigma.Lex",
+        "match_kind": "generalization"
+      },
+      "note": "`Sigma.Lex` is the lexicographic order on the indexed sum `Σ i, α i`, the natural total order summing a family of orders over an index set.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Lexicographical order on product",
+      "anchor": {
+        "section": "Orders on the Cartesian product of totally ordered sets",
+        "snippet": "This is a total order"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Prod.Lex.instLinearOrder",
+        "module": "Mathlib.Data.Prod.Lex",
+        "match_kind": "exact"
+      },
+      "note": "`Prod.Lex.instLinearOrder` gives the lexicographic linear (total) order on `α ×ₗ β`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Product order",
+      "anchor": {
+        "section": "Orders on the Cartesian product of totally ordered sets",
+        "snippet": "This is a partial order"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Prod.instPartialOrder",
+        "module": "Mathlib.Order.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`Prod.instPartialOrder` is the componentwise (product) partial order on `α × β`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Reflexive closure of direct product",
+      "anchor": {
+        "section": "Orders on the Cartesian product of totally ordered sets",
+        "snippet": "This is also a partial order"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The reflexive closure of the componentwise strict product order (`a<c ∧ b<d`, plus equality) is not provided as a standard order instance in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Real function defines strict weak order",
+      "anchor": {
+        "section": "Orders on the Cartesian product of totally ordered sets",
+        "snippet": "defines a strict weak order and a corresponding total preorder"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "instIsStrictWeakOrder",
+        "module": "Mathlib.Order.RelClasses",
+        "match_kind": "generalization"
+      },
+      "note": "Pulling back a strict weak order along a function `f` (`f ⁻¹'o r`) is a strict weak order via the `instIsStrictWeakOrder` instance, e.g. `f x < f y` for `f` into ℝ.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Partial order",
+      "anchor": {
+        "section": "Related structures",
+        "snippet": "A binary relation that is antisymmetric, transitive, and reflexive (but not necessarily total) is a partial order"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "PartialOrder",
+        "module": "Mathlib.Order.Defs.PartialOrder",
+        "match_kind": "exact"
+      },
+      "note": "`PartialOrder` extends `Preorder` (reflexive, transitive) with antisymmetry, exactly a reflexive antisymmetric transitive relation.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Totally ordered group",
+      "anchor": {
+        "section": "Related structures",
+        "snippet": "A group with a compatible total order is a totally ordered group"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "IsOrderedMonoid",
+        "module": "Mathlib.Algebra.Order.Monoid.Defs",
+        "match_kind": "exact"
+      },
+      "note": "A totally ordered group is spelled `[Group α] [LinearOrder α] [IsOrderedMonoid α]`, i.e. a group with an order-compatible total order.",
+      "provenance": "ai"
+    }
+  ]
+}

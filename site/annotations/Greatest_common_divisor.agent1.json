@@ -1,0 +1,530 @@
+{
+  "slug": "Greatest_common_divisor",
+  "wikipedia_title": "Greatest common divisor",
+  "display_title": "Greatest common divisor",
+  "schema_version": 3,
+  "annotations": [
+    {
+      "kind": "definition",
+      "label": "Greatest common divisor (informal)",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "is the largest positive integer that divides each of the integers"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "example",
+      "label": "gcd(8, 12) = 4",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "the GCD of 8 and 12 is 4"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "definition",
+      "label": "GCD of integers a and b",
+      "anchor": {
+        "section": "Definition",
+        "snippet": "is the greatest positive integer d such that d is a divisor of both a and b"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "definition",
+      "label": "GCD when one argument is zero",
+      "anchor": {
+        "section": "Definition",
+        "snippet": "When one of a and b is zero, the GCD is the absolute value of the nonzero integer"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "definition",
+      "label": "Convention gcd(0, 0) = 0",
+      "anchor": {
+        "section": "Definition",
+        "snippet": "gcd(0, 0) is commonly defined as 0"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "proposition",
+      "label": "Common divisors are divisors of the GCD",
+      "anchor": {
+        "section": "Definition",
+        "snippet": "the common divisors of a and b are exactly the divisors of their GCD"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "example",
+      "label": "GCD of 54 and 24",
+      "anchor": {
+        "section": "Example",
+        "snippet": "The number 54 can be expressed as a product of two integers in several different ways"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "definition",
+      "label": "Coprime numbers",
+      "anchor": {
+        "section": "Coprime numbers",
+        "snippet": "Two numbers are called relatively prime, or coprime"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "example",
+      "label": "Geometric view of gcd(24, 60)",
+      "anchor": {
+        "section": "A geometric view",
+        "snippet": "a 24-by-60 rectangular area can be divided into a grid of"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "example",
+      "label": "Reducing fractions with the GCD",
+      "anchor": {
+        "section": "Reducing fractions",
+        "snippet": "The greatest common divisor is useful for reducing fractions to the lowest terms"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "proposition",
+      "label": "LCM from GCD relation",
+      "anchor": {
+        "section": "Least common multiple",
+        "snippet": "The least common multiple of two integers that are not both zero can be computed from their greatest common divisor"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "proposition",
+      "label": "GCD via prime factorizations",
+      "anchor": {
+        "section": "Using prime factorizations",
+        "snippet": "Greatest common divisors can be computed by determining the prime factorizations of the two numbers and comparing factors"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "proposition",
+      "label": "Euclid's subtraction principle",
+      "anchor": {
+        "section": "Euclid's algorithm",
+        "snippet": "the common divisors of a and b are the same as the common divisors of a – b and b"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "proposition",
+      "label": "Euclidean algorithm with remainder",
+      "anchor": {
+        "section": "Euclidean algorithm",
+        "snippet": "a variant in which the difference of the two numbers a and b is replaced by the remainder"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "definition",
+      "label": "Binary GCD algorithm",
+      "anchor": {
+        "section": "Binary GCD algorithm",
+        "snippet": "The binary GCD algorithm is a variant of Euclid's algorithm that is specially adapted to the binary representation of the numbers"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "proposition",
+      "label": "Binary GCD computational complexity",
+      "anchor": {
+        "section": "Binary GCD algorithm",
+        "snippet": "Its computational complexity is"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "proposition",
+      "label": "Lehmer's GCD algorithm",
+      "anchor": {
+        "section": "Lehmer's GCD algorithm",
+        "snippet": "Lehmer's algorithm is based on the observation that the initial quotients"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "proposition",
+      "label": "GCD via LCM",
+      "anchor": {
+        "section": "Other methods",
+        "snippet": "the greatest common divisor of a and b can be computed by using least common multiple"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "proposition",
+      "label": "GCD via Thomae's function",
+      "anchor": {
+        "section": "Other methods",
+        "snippet": "Using Thomae's function f"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "theorem",
+      "label": "Slavin's formula for odd a",
+      "anchor": {
+        "section": "Other methods",
+        "snippet": "Keith Slavin has shown that for odd a ≥ 1"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "theorem",
+      "label": "Schramm's entire-function formula",
+      "anchor": {
+        "section": "Other methods",
+        "snippet": "Wolfgang Schramm has shown that"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "proposition",
+      "label": "Euclidean GCD complexity O(n^2)",
+      "anchor": {
+        "section": "Complexity",
+        "snippet": "the computation of the greatest common divisor of two integers of at most n bits is"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "proposition",
+      "label": "Fast-multiplication GCD complexity",
+      "anchor": {
+        "section": "Complexity",
+        "snippet": "the fastest known algorithm for greatest common divisor has a complexity"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "proposition",
+      "label": "GCD solvable in quasilinear time",
+      "anchor": {
+        "section": "Complexity",
+        "snippet": "belongs thus to the class of problems solvable in quasilinear time"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "proposition",
+      "label": "Chor–Goldreich parallel algorithm",
+      "anchor": {
+        "section": "Complexity",
+        "snippet": "the fastest known deterministic algorithm is by Chor and Goldreich"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "proposition",
+      "label": "gcd(a, a) = a",
+      "anchor": {
+        "section": "Properties",
+        "snippet": "For every positive integer"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "proposition",
+      "label": "Common divisor divides the GCD",
+      "anchor": {
+        "section": "Properties",
+        "snippet": "Every common divisor of a and b is a divisor of"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "proposition",
+      "label": "Bézout's identity",
+      "anchor": {
+        "section": "Properties",
+        "snippet": "may be defined alternatively and equivalently as the smallest positive integer"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "proposition",
+      "label": "gcd(a, 0) = |a|",
+      "anchor": {
+        "section": "Properties",
+        "snippet": "since any number is a divisor of 0"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "proposition",
+      "label": "Euclid's lemma consequence",
+      "anchor": {
+        "section": "Properties",
+        "snippet": "If a divides the product"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "proposition",
+      "label": "GCD scaling by m",
+      "anchor": {
+        "section": "Properties",
+        "snippet": "If m is a positive integer, then"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "proposition",
+      "label": "GCD invariance under translation",
+      "anchor": {
+        "section": "Properties",
+        "snippet": "If m is any integer, then"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "proposition",
+      "label": "GCD of quotients by common divisor",
+      "anchor": {
+        "section": "Properties",
+        "snippet": "If m is a positive common divisor of"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "proposition",
+      "label": "Quotients by GCD are coprime",
+      "anchor": {
+        "section": "Properties",
+        "snippet": "If gcd( a , b ) = d , then gcd( a / d , b / d ) = 1"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "proposition",
+      "label": "GCD is commutative",
+      "anchor": {
+        "section": "Properties",
+        "snippet": "The GCD is a commutative function"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "proposition",
+      "label": "GCD is associative",
+      "anchor": {
+        "section": "Properties",
+        "snippet": "The GCD is an associative function"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "proposition",
+      "label": "GCD is multiplicative",
+      "anchor": {
+        "section": "Properties",
+        "snippet": "The GCD is a multiplicative function in the following sense"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "proposition",
+      "label": "GCD–LCM product relation",
+      "anchor": {
+        "section": "Properties",
+        "snippet": "is closely related to the least common multiple"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "proposition",
+      "label": "GCD–LCM distributivity",
+      "anchor": {
+        "section": "Properties",
+        "snippet": "The following versions of distributivity hold true"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "proposition",
+      "label": "GCD from prime factorizations",
+      "anchor": {
+        "section": "Properties",
+        "snippet": "If we have the unique prime factorizations of"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "proposition",
+      "label": "Naturals form a distributive lattice",
+      "anchor": {
+        "section": "Properties",
+        "snippet": "the natural numbers become a complete distributive lattice"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "proposition",
+      "label": "GCD as lattice points on a segment",
+      "anchor": {
+        "section": "Properties",
+        "snippet": "In a Cartesian coordinate system"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "proposition",
+      "label": "GCD of n^a − 1 and n^b − 1",
+      "anchor": {
+        "section": "Properties",
+        "snippet": "provable by considering the Euclidean algorithm in base"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "proposition",
+      "label": "Identity with Euler's totient",
+      "anchor": {
+        "section": "Properties",
+        "snippet": "An identity involving Euler's totient function"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "proposition",
+      "label": "Pillai's GCD summatory function",
+      "anchor": {
+        "section": "Properties",
+        "snippet": "GCD Summatory function (Pillai's arithmetical function)"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "theorem",
+      "label": "Nymann's coprimality probability",
+      "anchor": {
+        "section": "Probabilities and expected value",
+        "snippet": "In 1972, James E. Nymann showed that k integers, chosen independently and uniformly"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "theorem",
+      "label": "Probability GCD equals d",
+      "anchor": {
+        "section": "Probabilities and expected value",
+        "snippet": "This result was extended in 1987 to show that the probability that k random integers"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "proposition",
+      "label": "Expected GCD undefined for k = 2",
+      "anchor": {
+        "section": "Probabilities and expected value",
+        "snippet": "the expected value of the greatest common divisor function can be seen (informally) to not exist"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "proposition",
+      "label": "Expected GCD well-defined for k ≥ 3",
+      "anchor": {
+        "section": "Probabilities and expected value",
+        "snippet": "the expected value is well-defined"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "definition",
+      "label": "GCD in a commutative ring",
+      "anchor": {
+        "section": "In commutative rings",
+        "snippet": "The notion of greatest common divisor can more generally be defined for elements of an arbitrary commutative ring"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "definition",
+      "label": "Common divisor in a ring",
+      "anchor": {
+        "section": "In commutative rings",
+        "snippet": "is called a common divisor of a and b if it divides both"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "definition",
+      "label": "Greatest common divisor in a ring",
+      "anchor": {
+        "section": "In commutative rings",
+        "snippet": "then d is called a greatest common divisor of a and b"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "proposition",
+      "label": "GCDs are associate in integral domains",
+      "anchor": {
+        "section": "In commutative rings",
+        "snippet": "then any two GCDs of a and b must be associate elements"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "proposition",
+      "label": "GCD existence not assured",
+      "anchor": {
+        "section": "In commutative rings",
+        "snippet": "Existence of a GCD is not assured in arbitrary integral domains"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "proposition",
+      "label": "GCD exists in UFD / GCD domain",
+      "anchor": {
+        "section": "In commutative rings",
+        "snippet": "if R is a unique factorization domain or any other GCD domain , then any two elements have a GCD"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "proposition",
+      "label": "GCD via Euclidean algorithm in Euclidean domains",
+      "anchor": {
+        "section": "In commutative rings",
+        "snippet": "If R is a Euclidean domain in which euclidean division is given algorithmically"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "example",
+      "label": "Integral domain with no GCD",
+      "anchor": {
+        "section": "In commutative rings",
+        "snippet": "The following is an example of an integral domain with two elements that do not have a GCD"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "proposition",
+      "label": "GCD as principal ideal generator in a PID",
+      "anchor": {
+        "section": "In commutative rings",
+        "snippet": "In a ring all of whose ideals are principal"
+      },
+      "provenance": "ai-agent1"
+    }
+  ]
+}

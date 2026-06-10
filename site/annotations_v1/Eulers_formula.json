@@ -1,0 +1,329 @@
+{
+  "slug": "Eulers_formula",
+  "wikipedia_title": "Euler's formula",
+  "display_title": "Euler's formula",
+  "schema_version": 1,
+  "source": "claude-agent-sdk/annotate_articles.py",
+  "annotations": [
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle e^{ix}=\\cos x+i\\sin x,}"
+      },
+      "status": "formalized",
+      "decl": "Complex.exp_mul_I",
+      "module": "Mathlib.Analysis.Complex.Trigonometric",
+      "note": "This is exactly Euler's formula, captured by Complex.exp_mul_I."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle ix=\\ln(\\cos x+i\\sin x).}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Historical logarithmic form; no dedicated complex-log identity provided in the list."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle {\\frac {1}{1+x^{2}}}={\\frac {1}{2}}\\left({\\frac {1}{1-ix}}+{\\frac {1}{1+ix}}\\right).}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Bernoulli's partial-fraction identity, ad-hoc and not in provided decls."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\int {\\frac {dx}{1+ax}}={\\frac {1}{a}}\\ln(1+ax)+C,}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Elementary integration formula, not in provided decls."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle {\\frac {df}{dz}}=f}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Differential equation characterization of exp; no such decl in the provided list."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle f(0)=1.}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Initial condition for the ODE definition; not represented in the given list."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle e^{z}=1+{\\frac {z}{1!}}+{\\frac {z^{2}}{2!}}+{\\frac {z^{3}}{3!}}+\\cdots =\\sum _{n=0}^{\\infty }{\\frac {z^{n}}{n!}}.}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Power-series definition of exp; not present in the supplied decl list."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle e^{z}=\\lim _{n\\to \\infty }\\left(1+{\\frac {z}{n}}\\right)^{n}.}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Limit definition of exp; no such decl in the provided list."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle f(\\theta )={\\frac {\\cos \\theta +i\\sin \\theta }{e^{i\\theta }}}=e^{-i\\theta }\\left(\\cos \\theta +i\\sin \\theta \\right)}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Intermediate function definition in the differentiation-based proof."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle f'(\\theta )=e^{-i\\theta }\\left(i\\cos \\theta -\\sin \\theta \\right)-ie^{-i\\theta }\\left(\\cos \\theta +i\\sin \\theta \\right)=0}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Proof intermediate computing the derivative; not a standalone result."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle e^{i\\theta }=\\cos \\theta +i\\sin \\theta .}"
+      },
+      "status": "formalized",
+      "decl": "Complex.exp_mul_I",
+      "module": "Mathlib.Analysis.Complex.Trigonometric",
+      "note": "Euler's formula stated in θ; this is Complex.exp_mul_I."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle {\\begin{aligned}i^{0}&=1,&i^{1}&=i,&i^{2}&=-1,&i^{3}&=-i,\\\\i^{4}&=1,&i^{5}&=i,&i^{6}&=-1,&i^{7}&=-i\\\\&\\vdots &&\\vdots &&\\vdots &&\\vdots \\end{aligned}}}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Tabulation of powers of i used in the proof; not a standalone decl."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle {\\begin{aligned}e^{ix}&=1+ix+{\\frac {(ix)^{2}}{2!}}+{\\frac {(ix)^{3}}{3!}}+{\\frac {(ix)^{4}}{4!}}+{\\frac {(ix)^{5}}{5!}}+{\\frac {(ix)^{6}}{6!}}+{\\frac {(ix)^{7}}{7!}}+{\\frac {(ix)^{8}}{8!}}+\\cdots \\\\[8pt]&=1+ix-{\\frac {x^{2}}{2!}}-{\\frac {ix^{3}}{3!}}+{\\frac {x^{4}}{4!}}+{\\frac {ix^{5}}{5!}}-{\\frac {x^{6}}{6!}}-{\\frac {ix^{7}}{7!}}+{\\frac {x^{8}}{8!}}+\\cdots \\\\[8pt]&=\\left(1-{\\frac {x^{2}}{2!}}+{\\frac {x^{4}}{4!}}-{\\frac {x^{6}}{6!}}+{\\frac {x^{8}}{8!}}-\\cdots \\right)+i\\left(x-{\\frac {x^{3}}{3!}}+{\\frac {x^{5}}{5!}}-{\\frac {x^{6}}{6!}}-\\cdots \\right)\\\\[8pt]&=\\cos x+i\\sin x,\\end{aligned}}}"
+      },
+      "status": "partial",
+      "decl": "Complex.exp_mul_I",
+      "module": "Mathlib.Analysis.Complex.Trigonometric",
+      "note": "Power-series derivation whose conclusion is captured by Complex.exp_mul_I; intermediate sums not separate decls."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle e^{ix}=r\\left(\\cos \\theta +i\\sin \\theta \\right).}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Ansatz step in the polar-coordinates proof, not a standalone result."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle ie^{ix}=\\left(\\cos \\theta +i\\sin \\theta \\right){\\frac {dr}{dx}}+r\\left(-\\sin \\theta +i\\cos \\theta \\right){\\frac {d\\theta }{dx}}.}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Intermediate derivative calculation in the polar proof."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle e^{i\\theta }=re^{iC}(\\cos \\theta +i\\sin \\theta );}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Proof intermediate with undetermined constants."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle 1=re^{iC}(\\cos(0)+i\\sin(0))=re^{iC},}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Boundary-condition step pinning the constant; not a separate decl."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle e^{i\\theta }=\\cos \\theta +i\\sin \\theta .}"
+      },
+      "status": "formalized",
+      "decl": "Complex.exp_mul_I",
+      "module": "Mathlib.Analysis.Complex.Trigonometric",
+      "note": "Concluding statement of Euler's formula; identical to Complex.exp_mul_I."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle {\\begin{aligned}z&=x+iy=|z|(\\cos \\varphi +i\\sin \\varphi )=re^{i\\varphi },\\\\{\\bar {z}}&=x-iy=|z|(\\cos \\varphi -i\\sin \\varphi )=re^{-i\\varphi },\\end{aligned}}}"
+      },
+      "status": "partial",
+      "decl": "Complex.exp_mul_I",
+      "module": "Mathlib.Analysis.Complex.Trigonometric",
+      "note": "Polar form follows from Euler's formula; no dedicated polar-form decl supplied."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle a=e^{\\ln a},}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Inverse-of-log identity; not in the supplied decl list."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle e^{a}e^{b}=e^{a+b},}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Exponential addition law; no matching decl in the provided list."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle z=\\left|z\\right|e^{i\\varphi }=e^{\\ln \\left|z\\right|}e^{i\\varphi }=e^{\\ln \\left|z\\right|+i\\varphi }}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Algebraic derivation of complex logarithm form; not in supplied decls."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\ln z=\\ln \\left|z\\right|+i\\varphi ,}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Complex logarithm formula; no corresponding decl in the provided list."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\left(e^{a}\\right)^{k}=e^{ak},}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Exponential power law; not present in the supplied decl list."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle {\\begin{aligned}\\cos x&=\\operatorname {Re} \\left(e^{ix}\\right)={\\frac {e^{ix}+e^{-ix}}{2}},\\\\\\sin x&=\\operatorname {Im} \\left(e^{ix}\\right)={\\frac {e^{ix}-e^{-ix}}{2i}}.\\end{aligned}}}"
+      },
+      "status": "partial",
+      "decl": "Complex.exp_mul_I",
+      "module": "Mathlib.Analysis.Complex.Trigonometric",
+      "note": "Cos/sin as exponentials follow directly from exp_mul_I; no dedicated decl supplied."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle {\\begin{aligned}e^{ix}&=\\cos x+i\\sin x,\\\\e^{-ix}&=\\cos(-x)+i\\sin(-x)=\\cos x-i\\sin x\\end{aligned}}}"
+      },
+      "status": "partial",
+      "decl": "Complex.exp_mul_I",
+      "module": "Mathlib.Analysis.Complex.Trigonometric",
+      "note": "First line is exp_mul_I; the −x case is the same decl instantiated, no combined decl provided."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle {\\begin{aligned}\\cos iy&={\\frac {e^{-y}+e^{y}}{2}}=\\cosh y,\\\\\\sin iy&={\\frac {e^{-y}-e^{y}}{2i}}={\\frac {e^{y}-e^{-y}}{2}}i=i\\sinh y.\\end{aligned}}}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Hyperbolic/trig substitution identities not in the supplied decl list."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle {\\begin{aligned}\\cosh ix&={\\frac {e^{ix}+e^{-ix}}{2}}=\\cos x,\\\\\\sinh ix&={\\frac {e^{ix}-e^{-ix}}{2}}=i\\sin x.\\end{aligned}}}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Cosh/sinh of imaginary argument identities; no matching decl supplied."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle {\\begin{aligned}\\cos x\\cos y&={\\frac {e^{ix}+e^{-ix}}{2}}\\cdot {\\frac {e^{iy}+e^{-iy}}{2}}\\\\&={\\frac {1}{2}}\\cdot {\\frac {e^{i(x+y)}+e^{i(x-y)}+e^{i(-x+y)}+e^{i(-x-y)}}{2}}\\\\&={\\frac {1}{2}}{\\bigg (}{\\frac {e^{i(x+y)}+e^{-i(x+y)}}{2}}+{\\frac {e^{i(x-y)}+e^{-i(x-y)}}{2}}{\\bigg )}\\\\&={\\frac {1}{2}}\\left(\\cos(x+y)+\\cos(x-y)\\right).\\end{aligned}}}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Example product-to-sum derivation; not a single decl in the supplied list."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle {\\begin{aligned}\\cos nx&=\\operatorname {Re} \\left(e^{inx}\\right)\\\\&=\\operatorname {Re} \\left(e^{i(n-1)x}\\cdot e^{ix}\\right)\\\\&=\\operatorname {Re} {\\Big (}e^{i(n-1)x}\\cdot {\\big (}\\underbrace {e^{ix}+e^{-ix}} _{2\\cos x}-e^{-ix}{\\big )}{\\Big )}\\\\&=\\operatorname {Re} \\left(e^{i(n-1)x}\\cdot 2\\cos x-e^{i(n-2)x}\\right)\\\\&=\\cos[(n-1)x]\\cdot [2\\cos x]-\\cos[(n-2)x].\\end{aligned}}}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Worked example deriving a cos nx recurrence; not in supplied decls."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\exp xr=\\cos x+r\\sin x,}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Quaternionic generalization of Euler's formula; not in supplied decls."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle {\\begin{aligned}e^{i\\tau }&=\\cos \\tau +i\\sin \\tau \\\\&=1+0\\end{aligned}}}"
+      },
+      "status": "partial",
+      "decl": "Complex.exp_mul_I",
+      "module": "Mathlib.Analysis.Complex.Trigonometric",
+      "note": "First line is exp_mul_I instance; the τ=2π evaluation has no dedicated decl in the list."
+    }
+  ]
+}

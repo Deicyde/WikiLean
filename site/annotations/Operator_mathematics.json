@@ -1,0 +1,513 @@
+{
+  "slug": "Operator_mathematics",
+  "wikipedia_title": "Operator (mathematics)",
+  "display_title": "Operator (mathematics)",
+  "schema_version": 3,
+  "annotation_style": "theorem_article",
+  "annotations": [
+    {
+      "kind": "definition",
+      "label": "Operator (general)",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "an operator is generally a mapping or function that acts on elements of a space to produce elements of another space"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The generic notion of an \"operator\" as just a mapping between spaces has no dedicated formalization; it is simply a function in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Linear operator",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "Linear operators refer to linear maps whose domain and range are the same space"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Module.End",
+        "module": "Mathlib.Algebra.Module.LinearMap.End",
+        "match_kind": "exact"
+      },
+      "note": "A linear map whose domain and range coincide is exactly `Module.End R M`, the type of linear endomorphisms.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Differential and integral operators",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "differentiation and indefinite integration are linear operators"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "SchwartzMap.derivCLM",
+        "module": "Mathlib.Analysis.Distribution.SchwartzSpace.Deriv",
+        "match_kind": null
+      },
+      "note": "Differentiation is bundled as a continuous linear operator on Schwartz space (`derivCLM`) and integration linearity holds (`intervalIntegral.integral_add`), but there is no general bundled differentiation/indefinite-integration operator.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Linear mapping",
+      "anchor": {
+        "section": "Linear operators",
+        "snippet": "for all x and y in U , and for all α , β in K"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "LinearMap",
+        "module": "Mathlib.Algebra.Module.LinearMap.Defs",
+        "match_kind": "exact"
+      },
+      "note": "The additivity-plus-homogeneity defining property is exactly `LinearMap` (bundled) and `IsLinearMap` (unbundled predicate) in the same file.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Linear operators",
+          "snippet": "for all x and y in U , and for all α , β in K"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\operatorname {A} \\left(\\alpha \\mathbf {x} +\\beta \\mathbf {y} \\right)=\\alpha \\operatorname {A} \\mathbf {x} +\\beta \\operatorname {A} \\mathbf {y} \\ }"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Matrix representation of linear operators",
+      "anchor": {
+        "section": "Linear operators",
+        "snippet": "matrices are in bijective correspondence to linear operators"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "LinearMap.toMatrix",
+        "module": "Mathlib.LinearAlgebra.Matrix.ToLin",
+        "match_kind": "exact"
+      },
+      "note": "`LinearMap.toMatrix` is a linear equivalence between linear maps and matrices given chosen bases, formalizing the bijective correspondence.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Linear operators",
+          "snippet": "matrices are in bijective correspondence to linear operators"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\ \\operatorname {A} \\mathbf {x} =x^{i}\\operatorname {A} \\mathbf {u} _{i}=x^{i}\\left(\\operatorname {A} \\mathbf {u} _{i}\\right)^{j}\\mathbf {v} _{j}~.}"
+        }
+      ]
+    },
+    {
+      "kind": "definition",
+      "label": "Sequence spaces",
+      "anchor": {
+        "section": "Linear operators",
+        "snippet": "these spaces, together with linear subspaces, are known as sequence spaces"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "lp",
+        "module": "Mathlib.Analysis.Normed.Lp.lpSpace",
+        "match_kind": "special_case"
+      },
+      "note": "Mathlib formalizes the ℓᵖ sequence spaces as `lp E p` (with predicate `Memℓp`), a special case of the general notion of sequence spaces.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Sequence transformations",
+      "anchor": {
+        "section": "Linear operators",
+        "snippet": "Operators on these spaces are known as sequence transformations"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "There is no dedicated \"sequence transformation\" notion; such maps are just (continuous) linear maps on `lp`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Bounded operators form a Banach algebra",
+      "anchor": {
+        "section": "Linear operators",
+        "snippet": "Bounded linear operators over a Banach space form a Banach algebra in respect to the standard operator norm"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "ContinuousLinearMap.toNormedRing",
+        "module": "Mathlib.Analysis.Normed.Operator.NormedSpace",
+        "match_kind": null
+      },
+      "note": "The operator norm makes `E →L[𝕜] E` a `NormedRing` (and `NormedAlgebra`), and it is complete when `E` is, giving the Banach-algebra structure (no single `BanachAlgebra` class is used).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Bounded operator",
+      "anchor": {
+        "section": "Bounded operators",
+        "snippet": "a linear operator from U to V is called bounded if there exists c > 0 such that"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "ContinuousLinearMap",
+        "module": "Mathlib.Topology.Algebra.Module.LinearMap",
+        "match_kind": "exact"
+      },
+      "note": "Bounded linear operators are formalized as `ContinuousLinearMap`, with `LinearMap.continuous_of_bound` giving the bound characterization in normed spaces.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Bounded operators",
+          "snippet": "a linear operator from U to V is called bounded if there exists c > 0 such that"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\|\\operatorname {A} \\mathbf {x} \\|_{V}\\leq c\\ \\|\\mathbf {x} \\|_{U}}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\|\\operatorname {A} \\|=\\inf\\{\\ c:\\|\\operatorname {A} \\mathbf {x} \\|_{V}\\leq c\\ \\|\\mathbf {x} \\|_{U}\\}.}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Bounded operators form a vector space",
+      "anchor": {
+        "section": "Bounded operators",
+        "snippet": "Bounded operators form a vector space"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "ContinuousLinearMap.addCommGroup",
+        "module": "Mathlib.Topology.Algebra.Module.LinearMap",
+        "match_kind": "exact"
+      },
+      "note": "Continuous (bounded) linear maps carry `AddCommGroup` and `Module` instances, so they form a vector space.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Bounded operators",
+          "snippet": "Bounded operators form a vector space"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\|\\operatorname {A} \\mathbf {x} \\|_{V}\\leq c\\ \\|\\mathbf {x} \\|_{U}}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\|\\operatorname {A} \\|=\\inf\\{\\ c:\\|\\operatorname {A} \\mathbf {x} \\|_{V}\\leq c\\ \\|\\mathbf {x} \\|_{U}\\}.}"
+        }
+      ]
+    },
+    {
+      "kind": "definition",
+      "label": "Banach algebra",
+      "anchor": {
+        "section": "Bounded operators",
+        "snippet": "Any unital normed algebra with this property is called a Banach algebra"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "NormedAlgebra",
+        "module": "Mathlib.Analysis.Normed.Module.Basic",
+        "match_kind": null
+      },
+      "note": "Mathlib has `NormedAlgebra`/`NormedRing` but no dedicated `BanachAlgebra` class; the Banach condition is expressed by adding `CompleteSpace`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Differential and Volterra operators",
+      "anchor": {
+        "section": "Analysis (calculus)",
+        "snippet": "calculus is the study of two linear operators"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "SchwartzMap.derivCLM",
+        "module": "Mathlib.Analysis.Distribution.SchwartzSpace.Deriv",
+        "match_kind": null
+      },
+      "note": "The differential operator is formalized as a CLM on Schwartz space and integration is linear, but the Volterra (indefinite integration) operator is not formalized as such.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Gradient operator",
+      "anchor": {
+        "section": "Fundamental analysis operators on scalar and vector fields",
+        "snippet": "assigns a vector at every point in a scalar field that points in the direction of greatest rate of change"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "gradient",
+        "module": "Mathlib.Analysis.Calculus.Gradient.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`gradient f x` is defined as the Riesz dual of `fderiv`, formalizing the gradient of a scalar field (with `HasGradientAt`).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Divergence operator",
+      "anchor": {
+        "section": "Fundamental analysis operators on scalar and vector fields",
+        "snippet": "is a vector operator that measures a vector field's divergence from or convergence towards a given point"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No divergence operator on vector fields is defined in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Curl operator",
+      "anchor": {
+        "section": "Fundamental analysis operators on scalar and vector fields",
+        "snippet": "measures a vector field's curling"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No curl operator on vector fields is defined in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Invertible operators form the general linear group",
+      "anchor": {
+        "section": "Geometry",
+        "snippet": "bijective operators preserving the structure of a vector space are precisely the invertible linear operators"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "LinearMap.GeneralLinearGroup",
+        "module": "Mathlib.LinearAlgebra.GeneralLinearGroup.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`LinearMap.GeneralLinearGroup R M` is defined as the units `(M →ₗ[R] M)ˣ`, i.e. the group of invertible linear operators.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Invertible operators not closed under addition",
+      "anchor": {
+        "section": "Geometry",
+        "snippet": "they do not form a vector space under operator addition"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The specific fact that the general linear group is not closed under operator addition is not stated in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Isometry and orthogonal groups",
+      "anchor": {
+        "section": "Geometry",
+        "snippet": "Operators preserving the Euclidean metric on such a space form the isometry group"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Matrix.orthogonalGroup",
+        "module": "Mathlib.LinearAlgebra.UnitaryGroup",
+        "match_kind": "special_case"
+      },
+      "note": "The linear operators preserving the Euclidean metric form `Matrix.orthogonalGroup`; the full affine isometry group (including translations) is not packaged as a single named group.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Special orthogonal group",
+      "anchor": {
+        "section": "Geometry",
+        "snippet": "Operators in the orthogonal group that also preserve the orientation of vector tuples form the special orthogonal group"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Matrix.specialOrthogonalGroup",
+        "module": "Mathlib.LinearAlgebra.UnitaryGroup",
+        "match_kind": "exact"
+      },
+      "note": "`Matrix.specialOrthogonalGroup` is defined as the orthogonal matrices with determinant one, matching the orientation-preserving subgroup.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Covariance as a dot product",
+      "anchor": {
+        "section": "Probability theory",
+        "snippet": "every covariance is basically a dot product"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "covarianceBilin",
+        "module": "Mathlib.Probability.Moments.CovarianceBilin",
+        "match_kind": null
+      },
+      "note": "`covarianceBilin` formalizes covariance as a continuous (inner-product-like) bilinear form on a Banach space, capturing the dot-product viewpoint.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Fourier series representation of periodic functions",
+      "anchor": {
+        "section": "Fourier series and Fourier transform",
+        "snippet": "any continuous periodic function can be represented as the sum of a series of sine waves and cosine waves"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "hasSum_fourier_series_L2",
+        "module": "Mathlib.Analysis.Fourier.AddCircle",
+        "match_kind": null
+      },
+      "note": "Mathlib proves L² convergence of the Fourier series (`hasSum_fourier_series_L2`, via `fourierBasis`) and pointwise convergence under summability, but not the general continuous-pointwise representation statement.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Fourier series and Fourier transform",
+          "snippet": "any continuous periodic function can be represented as the sum of a series of sine waves and cosine waves"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle f(t)={\\frac {\\ a_{0}\\ }{2}}+\\sum _{n=1}^{\\infty }\\ a_{n}\\cos(\\omega \\ n\\ t)+b_{n}\\sin(\\omega \\ n\\ t)}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Fourier series is a linear operator",
+      "anchor": {
+        "section": "Fourier series and Fourier transform",
+        "snippet": "Fourier series is a linear operator"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "fourierCoeff",
+        "module": "Mathlib.Analysis.Fourier.AddCircle",
+        "match_kind": null
+      },
+      "note": "Linearity of the Fourier-coefficient map is established (`fourierCoeff.add`, `fourierCoeff.const_smul`), but it is not bundled as a single `LinearMap`.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Fourier series and Fourier transform",
+          "snippet": "Fourier series is a linear operator"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle f(t)={\\frac {\\ a_{0}\\ }{2}}+\\sum _{n=1}^{\\infty }\\ a_{n}\\cos(\\omega \\ n\\ t)+b_{n}\\sin(\\omega \\ n\\ t)}"
+        }
+      ]
+    },
+    {
+      "kind": "definition",
+      "label": "Fourier transform (integral form)",
+      "anchor": {
+        "section": "Fourier series and Fourier transform",
+        "snippet": "the transform takes on an integral form"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "VectorFourier.fourierIntegral",
+        "module": "Mathlib.Analysis.Fourier.FourierTransform",
+        "match_kind": "generalization"
+      },
+      "note": "`VectorFourier.fourierIntegral` defines the Fourier transform in integral form (with `Real.fourierIntegral` the one-dimensional case).",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Fourier series and Fourier transform",
+          "snippet": "the transform takes on an integral form"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle f(t)={1 \\over {\\sqrt {2\\pi }}}\\int _{-\\infty }^{+\\infty }{g(\\omega )\\ e^{i\\ \\omega \\ t}\\ \\mathrm {d} \\ \\omega }}"
+        }
+      ]
+    },
+    {
+      "kind": "definition",
+      "label": "Laplace transform",
+      "anchor": {
+        "section": "Laplace transform",
+        "snippet": "Given f = f ( s ) , it is defined by"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No Laplace transform is defined in Mathlib (only the related Mellin transform exists).",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Laplace transform",
+          "snippet": "Given f = f ( s ) , it is defined by"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle F(s)=\\operatorname {\\mathcal {L}} \\{f\\}(s)=\\int _{0}^{\\infty }e^{-s\\ t}\\ f(t)\\ \\mathrm {d} \\ t}"
+        }
+      ]
+    },
+    {
+      "kind": "definition",
+      "label": "Linear operator on V",
+      "anchor": {
+        "section": "Footnotes",
+        "snippet": "A linear transformation from V to V is called a linear operator on V"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Module.End",
+        "module": "Mathlib.Algebra.Module.LinearMap.End",
+        "match_kind": "exact"
+      },
+      "note": "A linear transformation from V to V is exactly `Module.End`, the linear endomorphisms of V.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Real and complex operators",
+      "anchor": {
+        "section": "Footnotes",
+        "snippet": "A linear operator on a real vector space is called a real operator"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This is terminology distinguishing linear operators by scalar field (ℝ vs ℂ); Mathlib has `LinearMap` over each field but no \"real operator\"/\"complex operator\" notion.",
+      "provenance": "ai"
+    }
+  ]
+}

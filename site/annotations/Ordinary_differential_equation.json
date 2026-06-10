@@ -1,0 +1,475 @@
+{
+  "slug": "Ordinary_differential_equation",
+  "wikipedia_title": "Ordinary differential equation",
+  "display_title": "Ordinary differential equation",
+  "schema_version": 3,
+  "annotation_style": "theorem_article",
+  "annotations": [
+    {
+      "kind": "definition",
+      "label": "Ordinary differential equation",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "an ordinary differential equation ( ODE ) is a differential equation (DE) dependent on only a single independent variable"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "IsIntegralCurve",
+        "module": "Mathlib.Analysis.ODE.Basic",
+        "match_kind": "generalization"
+      },
+      "note": "Mathlib lacks an ODE type per se; the closest formalization is `IsIntegralCurve γ v` expressing that γ solves the first-order autonomous-looking ODE γ' t = v t (γ t).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Linear differential equation",
+      "anchor": {
+        "section": "Differential equations",
+        "snippet": "A linear differential equation is a differential equation that is defined by a linear polynomial in the unknown function and its derivatives"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No definition of linear differential equation as a predicate or structure is present in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Newton's second law as ODE",
+      "anchor": {
+        "section": "Background",
+        "snippet": "A simple example is Newton's second law of motion"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Newton's second law is not formalized as a worked ODE example in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Explicit ODE of order n",
+      "anchor": {
+        "section": "General definition",
+        "snippet": "is called an explicit ordinary differential equation of order"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "IsIntegralCurve",
+        "module": "Mathlib.Analysis.ODE.Basic",
+        "match_kind": "special_case"
+      },
+      "note": "Only the first-order case is formalized via `IsIntegralCurve`; there is no general explicit order-n ODE definition.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Implicit ODE of order n",
+      "anchor": {
+        "section": "General definition",
+        "snippet": "an implicit ordinary differential equation of order"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has no definition of an implicit ODE of order n.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Autonomous differential equation",
+      "anchor": {
+        "section": "General definition",
+        "snippet": "A differential equation is autonomous if it does not depend on the variable x ."
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No predicate isolating the autonomous case (vector field independent of t) exists in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Linear differential equation (classification)",
+      "anchor": {
+        "section": "General definition",
+        "snippet": "A differential equation is linear if"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib does not formalize the classification of an ODE as linear.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Homogeneous linear differential equation",
+      "anchor": {
+        "section": "General definition",
+        "snippet": "A linear differential equation is homogeneous if"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No definition for a homogeneous linear ODE is present in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Nonhomogeneous linear differential equation",
+      "anchor": {
+        "section": "General definition",
+        "snippet": "A linear differential equation is nonhomogeneous if"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No definition for a nonhomogeneous linear ODE is present in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Nonlinear differential equation",
+      "anchor": {
+        "section": "General definition",
+        "snippet": "A differential equation that is not linear."
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No definition for nonlinear ODEs is present in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Explicit system of ODEs",
+      "anchor": {
+        "section": "System of ODEs",
+        "snippet": "is an explicit system of ordinary differential equations of order"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "IsIntegralCurve",
+        "module": "Mathlib.Analysis.ODE.Basic",
+        "match_kind": "special_case"
+      },
+      "note": "An integral curve in a normed vector space E covers first-order systems of ODEs, but order-n systems are not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Differential algebraic equations",
+      "anchor": {
+        "section": "System of ODEs",
+        "snippet": "implicit ODE systems with a singular Jacobian are termed differential algebraic equations"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Differential algebraic equations are not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Solution / integral curve",
+      "anchor": {
+        "section": "Solutions",
+        "snippet": "is called a solution or integral curve"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "IsIntegralCurveOn",
+        "module": "Mathlib.Analysis.ODE.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`IsIntegralCurveOn γ v s` directly defines an integral curve of the time-dependent vector field v on s.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Extension of a solution",
+      "anchor": {
+        "section": "Solutions",
+        "snippet": "is called an extension of"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "There is no predicate for extending an integral curve to a larger interval in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Maximal solution",
+      "anchor": {
+        "section": "Solutions",
+        "snippet": "A solution that has no extension is called a maximal solution"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Maximal solutions of ODEs are not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Global solution",
+      "anchor": {
+        "section": "Solutions",
+        "snippet": "A solution defined on all of"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "IsIntegralCurve",
+        "module": "Mathlib.Analysis.ODE.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`IsIntegralCurve γ v` is precisely an integral curve defined on all of ℝ, matching the notion of a global solution.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "General solution",
+      "anchor": {
+        "section": "Solutions",
+        "snippet": "A general solution of an"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The notion of a general solution parameterised by n arbitrary constants is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Particular solution",
+      "anchor": {
+        "section": "Solutions",
+        "snippet": "A particular solution is derived from the general solution by setting the constants to particular values"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No formal definition of particular solution exists in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Singular solution",
+      "anchor": {
+        "section": "Solutions",
+        "snippet": "A singular solution is a solution that cannot be obtained by assigning definite values to the arbitrary constants"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Singular solutions are not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Solutions of finite duration",
+      "anchor": {
+        "section": "Solutions of finite duration",
+        "snippet": "it is possible under some conditions to develop solutions of finite duration"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Finite-duration solutions are not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Finite duration solution example",
+      "anchor": {
+        "section": "Solutions of finite duration",
+        "snippet": "Admits the finite duration solution"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This explicit finite-duration example is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Sturm–Liouville theory",
+      "anchor": {
+        "section": "Sturm–Liouville theory",
+        "snippet": "Sturm–Liouville theory is a theory of a special type of second-order linear ordinary differential equation"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "There is no Sturm–Liouville theory file or definition in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Peano existence theorem",
+      "anchor": {
+        "section": "Existence and uniqueness of solutions",
+        "snippet": "Peano existence theorem"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib formalizes Picard–Lindelöf existence under a Lipschitz hypothesis but not Peano's continuity-only existence theorem.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Picard–Lindelöf theorem",
+      "anchor": {
+        "section": "Existence and uniqueness of solutions",
+        "snippet": "Picard–Lindelöf theorem"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "IsPicardLindelof.exists_eq_forall_mem_Icc_hasDerivWithinAt",
+        "module": "Mathlib.Analysis.ODE.PicardLindelof",
+        "match_kind": "exact"
+      },
+      "note": "The Picard–Lindelöf (Cauchy–Lipschitz) theorem is proved in `IsPicardLindelof.exists_eq_forall_mem_Icc_hasDerivWithinAt`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Local existence and uniqueness theorem",
+      "anchor": {
+        "section": "Local existence and uniqueness theorem simplified",
+        "snippet": "are continuous in a closed rectangle"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "IsPicardLindelof.exists_eq_forall_mem_Icc_hasDerivWithinAt",
+        "module": "Mathlib.Analysis.ODE.PicardLindelof",
+        "match_kind": "exact"
+      },
+      "note": "Local existence is given by `IsPicardLindelof.exists_eq_forall_mem_Icc_hasDerivWithinAt` and uniqueness by `ODE_solution_unique` in `Mathlib.Analysis.ODE.Gronwall`.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Local existence and uniqueness theorem simplified",
+          "snippet": "are continuous in a closed rectangle"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle y'=F(x,y)\\,,\\quad y_{0}=y(x_{0})}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle R=[x_{0}-a,x_{0}+a]\\times [y_{0}-b,y_{0}+b]}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle I=[x_{0}-h,x_{0}+h]\\subset [x_{0}-a,x_{0}+a]}"
+        }
+      ]
+    },
+    {
+      "kind": "theorem",
+      "label": "Global uniqueness and maximum domain",
+      "anchor": {
+        "section": "Global uniqueness and maximum domain of solution",
+        "snippet": "there exists a unique maximum (possibly infinite) open interval"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "ODE_solution_unique_univ",
+        "module": "Mathlib.Analysis.ODE.Gronwall",
+        "match_kind": "special_case"
+      },
+      "note": "Global uniqueness for Lipschitz vector fields is given by `ODE_solution_unique_univ`, but the existence of a maximal interval of definition is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Reduction to a first-order system",
+      "anchor": {
+        "section": "Reduction to a first-order system",
+        "snippet": "can be written as a system of"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib does not formalize the order-reduction transformation from an order-n ODE to a first-order system.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Guessing solutions method",
+      "anchor": {
+        "section": "Guessing solutions",
+        "snippet": "it is sometimes possible to solve a DE simply by guessing the solution and validating it is correct"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The informal 'guess and verify' technique is not formalized as a theorem in Mathlib.",
+      "provenance": "ai"
+    }
+  ]
+}

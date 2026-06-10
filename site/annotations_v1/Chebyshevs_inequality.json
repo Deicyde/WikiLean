@@ -1,0 +1,109 @@
+{
+  "slug": "Chebyshevs_inequality",
+  "wikipedia_title": "Chebyshev's inequality",
+  "display_title": "Chebyshev's inequality",
+  "schema_version": 1,
+  "source": "claude-agent-sdk/annotate_articles.py",
+  "annotations": [
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle (f(x)-f(y))(g(x)-g(y))\\geq 0.}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Elementary monotonicity lemma used in the proof; not a standalone Mathlib declaration in the provided list."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\int _{a}^{b}\\int _{a}^{b}(f(x)-f(y))(g(x)-g(y))\\,dx\\,dy\\geq 0.}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Intermediate proof step (double integral of the monotonicity expression); not a standalone Mathlib decl."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\int _{a}^{b}\\int _{a}^{b}\\left[f(x)g(x)-f(x)g(y)-f(y)g(x)+f(y)g(y)\\right]\\,dx\\,dy\\geq 0.}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Algebraic expansion within the proof; not a standalone Mathlib decl."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\int _{a}^{b}\\int _{a}^{b}f(x)g(x)\\,dx\\,dy-\\int _{a}^{b}\\int _{a}^{b}f(x)g(y)\\,dx\\,dy-\\int _{a}^{b}\\int _{a}^{b}f(y)g(x)\\,dx\\,dy+\\int _{a}^{b}\\int _{a}^{b}f(y)g(y)\\,dx\\,dy\\geq 0.}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Intermediate proof step splitting the integral; not a standalone Mathlib decl."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle I=\\int _{a}^{b}f(x)g(x)\\,dx,\\quad F=\\int _{a}^{b}f(x)\\,dx,\\quad G=\\int _{a}^{b}g(x)\\,dx.}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Ad-hoc notation for the proof; not a standalone Mathlib decl."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle (b-a)I-FG-FG+(b-a)I\\geq 0.}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Intermediate substitution step; not a standalone Mathlib decl."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle 2(b-a)I-2FG\\geq 0.}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Intermediate simplification step; not a standalone Mathlib decl."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle I\\geq {\\frac {FG}{(b-a)}}.}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Rearranged form of the integral Chebyshev inequality; not present as a standalone Mathlib decl in the list."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle {\\frac {1}{b-a}}\\int _{a}^{b}f(x)g(x)\\,dx\\geq \\left({\\frac {1}{b-a}}\\int _{a}^{b}f(x)\\,dx\\right)\\left({\\frac {1}{b-a}}\\int _{a}^{b}g(x)\\,dx\\right).}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Final form of the integral Chebyshev sum/integral inequality; no matching standalone decl in the provided list."
+    },
+    {
+      "anchor": {
+        "type": "theorem_box",
+        "value": "Lemma — Let f {\\displaystyle f} and g {\\displaystyle g} be m"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Monotonicity lemma used in proof of integral Chebyshev inequality; not a standalone Mathlib decl in the provided list."
+    }
+  ]
+}

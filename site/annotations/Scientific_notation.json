@@ -1,0 +1,565 @@
+{
+  "slug": "Scientific_notation",
+  "wikipedia_title": "Scientific notation",
+  "display_title": "Scientific notation",
+  "schema_version": 3,
+  "annotation_style": "theorem_article",
+  "annotations": [
+    {
+      "kind": "definition",
+      "label": "Scientific notation",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "Scientific notation is a way of expressing numbers"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Rat.ofScientific_eq_ofScientific",
+        "module": "Mathlib.Algebra.Field.Defs",
+        "match_kind": null
+      },
+      "note": "Lean/Mathlib's `OfScientific.ofScientific` literal machinery (m × 10^±e) implements scientific notation, but there is no general mathematical definition of the concept.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Significand and exponent",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "The integer n is called the exponent and the real number m is called the significand"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Rat.ofScientific_eq_ofScientific",
+        "module": "Mathlib.Algebra.Field.Defs",
+        "match_kind": null
+      },
+      "note": "`OfScientific.ofScientific` takes a mantissa `m`, sign `s`, and exponent `e`, but the significand/exponent terminology is not separately formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Decimal floating point",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "Decimal floating point is a computer arithmetic system"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib does not model decimal floating-point computer arithmetic systems.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Multiple representations of a real number",
+      "anchor": {
+        "section": "Normalized notation",
+        "snippet": "Any real number can be written in the form"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Int.zpow_log_le_self",
+        "module": "Mathlib.Data.Int.Log",
+        "match_kind": null
+      },
+      "note": "`Int.log` plus its bounds `Int.zpow_log_le_self`/`Int.lt_zpow_succ_log_self` provide the exponent placing any positive real in [b^n, b^(n+1)), but no explicit `r = m·10^n` decomposition lemma is stated.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Normalized scientific notation",
+      "anchor": {
+        "section": "Normalized notation",
+        "snippet": "the exponent n is chosen so that the absolute value of m remains at least one and less than ten"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Int.lt_zpow_succ_log_self",
+        "module": "Mathlib.Data.Int.Log",
+        "match_kind": null
+      },
+      "note": "`Int.log b r` is exactly the normalizing exponent, with `Int.zpow_log_le_self`/`Int.lt_zpow_succ_log_self` giving b^log ≤ r < b^(log+1) (i.e. 1 ≤ r/b^log < b), but the normalized-form definition itself is not packaged.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Negative exponent for numbers between 0 and 1",
+      "anchor": {
+        "section": "Normalized notation",
+        "snippet": "the exponent n is negative for a number with absolute value between 0 and 1"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Int.log_of_right_le_one",
+        "module": "Mathlib.Data.Int.Log",
+        "match_kind": null
+      },
+      "note": "`Int.log_of_right_le_one` shows `log b r = -Nat.clog b ⌈r⁻¹⌉₊ ≤ 0` for r ≤ 1, matching the negative-exponent claim, though stated about `Int.log` rather than scientific notation.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Exponential notation",
+      "anchor": {
+        "section": "Normalized notation",
+        "snippet": "Normalized scientific notation is often called exponential notation"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This is merely an alternative name and carries no formalizable mathematical content.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Engineering notation",
+      "anchor": {
+        "section": "Engineering notation",
+        "snippet": "differs from normalized scientific notation in that the exponent n is restricted to multiples of 3"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The engineering-notation convention (exponent a multiple of 3) is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Engineering notation (nanometres)",
+      "anchor": {
+        "section": "Engineering notation",
+        "snippet": "twelve-point-five nanometres"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "A units example with no Mathlib counterpart.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "E notation",
+      "anchor": {
+        "section": "E notation",
+        "snippet": "for a decimal significand m and integer exponent n means the same as"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Rat.ofScientific_eq_ofScientific",
+        "module": "Mathlib.Algebra.Field.Defs",
+        "match_kind": null
+      },
+      "note": "Lean's `OfScientific.ofScientific m s e` literal syntax realizes E-notation (`mEn = m·10^n`), but the notation convention is not stated as a definition.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "E notation example",
+      "anchor": {
+        "section": "E notation",
+        "snippet": "is written as 6.022E23 or 6.022e23"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "A specific numeric notation example with no formalized statement.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Significant figure",
+      "anchor": {
+        "section": "Significant figures",
+        "snippet": "A significant figure is a digit in a number that adds to its precision"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The notion of significant figures (measurement precision) is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Conversion scales to between 1 and 10",
+      "anchor": {
+        "section": "Significant figures",
+        "snippet": "When a number is converted into normalized scientific notation, it is scaled down to a number between 1 and 10"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Int.zpow_log_le_self",
+        "module": "Mathlib.Data.Int.Log",
+        "match_kind": null
+      },
+      "note": "The scaling into [1,10) is the same normalization captured by `Int.zpow_log_le_self`/`Int.lt_zpow_succ_log_self`, but no conversion procedure is formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Recording an estimated final digit",
+      "anchor": {
+        "section": "Estimated final digits",
+        "snippet": "It is customary in scientific measurement to record all the definitely known digits"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "A measurement-recording convention, not a mathematical statement.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Mass of the proton with uncertainty",
+      "anchor": {
+        "section": "Estimated final digits",
+        "snippet": "the accepted value of the mass of the proton can be expressed as"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "A physical-constant example with no Mathlib counterpart.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Electron mass",
+      "anchor": {
+        "section": "Further examples of scientific notation",
+        "snippet": "An electron 's mass is about"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "A physical-constant example, not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Earth's mass",
+      "anchor": {
+        "section": "Further examples of scientific notation",
+        "snippet": "The Earth 's mass is about"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "A physical-constant example, not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Earth's circumference",
+      "anchor": {
+        "section": "Further examples of scientific notation",
+        "snippet": "The Earth's circumference is approximately"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "A physical-measurement example, not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Inch in scientific notation",
+      "anchor": {
+        "section": "Further examples of scientific notation",
+        "snippet": "An inch is defined as exactly"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "A units-definition example, not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Zimbabwean hyperinflation",
+      "anchor": {
+        "section": "Further examples of scientific notation",
+        "snippet": "the monthly inflation rate of the Zimbabwean dollar reached"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "An economics example with no Mathlib counterpart.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Converting a number",
+      "anchor": {
+        "section": "Converting numbers",
+        "snippet": "Converting a number in these cases means to either convert the number into scientific notation form"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "An informal description of conversion, not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Decimal to scientific procedure",
+      "anchor": {
+        "section": "Decimal to scientific",
+        "snippet": "First, move the decimal separator point sufficient places"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "A digit-shifting procedure, not formalized as such.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Scientific to decimal procedure",
+      "anchor": {
+        "section": "Scientific to decimal",
+        "snippet": "Converting a number from scientific notation to decimal notation"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "An informal conversion procedure, not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Exponential conversion procedure",
+      "anchor": {
+        "section": "Exponential",
+        "snippet": "Conversion between different scientific notation representations of the same number with different exponential values"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Re-expressing m·10^n with a different exponent is an informal procedure, not a formalized statement.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Setup of two numbers in scientific notation",
+      "anchor": {
+        "section": "Basic operations",
+        "snippet": "Given two numbers in scientific notation"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "A setup for arithmetic operations, not a formalizable statement.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Basic operations",
+          "snippet": "Given two numbers in scientific notation"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle x_{0}=m_{0}\\times 10^{n_{0}}}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle x_{1}=m_{1}\\times 10^{n_{1}}}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Multiplication and division rule",
+      "anchor": {
+        "section": "Basic operations",
+        "snippet": "Multiplication and division are performed using the rules for operation with exponentiation"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "zpow_add₀",
+        "module": "Mathlib.Algebra.GroupWithZero.Basic",
+        "match_kind": null
+      },
+      "note": "The exponent law `zpow_add₀` (a^(m+n)=a^m·a^n) underlies multiplying (10^n₁)(10^n₂)=10^(n₁+n₂), but the scientific-notation product rule is not stated directly.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Basic operations",
+          "snippet": "Multiplication and division are performed using the rules for operation with exponentiation"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle x_{0}x_{1}=m_{0}m_{1}\\times 10^{n_{0}+n_{1}}}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle {\\frac {x_{0}}{x_{1}}}={\\frac {m_{0}}{m_{1}}}\\times 10^{n_{0}-n_{1}}}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Addition and subtraction rule",
+      "anchor": {
+        "section": "Basic operations",
+        "snippet": "Addition and subtraction require the numbers to be represented using the same exponential part"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Aligning exponents then factoring via distributivity is an informal procedure, not formalized as a scientific-notation rule.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Other bases for scientific notation",
+      "anchor": {
+        "section": "Other bases",
+        "snippet": "While base ten is normally used for scientific notation, powers of other bases can be used too"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "A meta-remark that any base may be used; `Int.log` is base-parameterized but no scientific-notation statement is formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Base-2 scientific notation",
+      "anchor": {
+        "section": "Other bases",
+        "snippet": "in base-2 scientific notation, the number 1001 b in binary"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "A binary notation example, not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "B notation for base-2 exponent",
+      "anchor": {
+        "section": "Other bases",
+        "snippet": "a base-2 exponent is sometimes also indicated by using the letter \"B\" instead of \"E\""
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "A typographic notation convention, not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "H and O notation for base-16 and base-8 exponents",
+      "anchor": {
+        "section": "Other bases",
+        "snippet": "are sometimes also used to indicate times 16 or 8 to the power"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Typographic notation conventions, not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "P notation",
+      "anchor": {
+        "section": "Other bases",
+        "snippet": "Another similar convention to denote base-2 exponents is using a letter \"P\""
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "A typographic notation convention (hex-float 'p'), not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Engineering notation as base-1000",
+      "anchor": {
+        "section": "Other bases",
+        "snippet": "Engineering notation can be viewed as a base-1000 scientific notation"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Reinterpreting engineering notation as base-1000 is not formalized.",
+      "provenance": "ai"
+    }
+  ]
+}

@@ -1,0 +1,489 @@
+{
+  "slug": "Differential_operator",
+  "wikipedia_title": "Differential operator",
+  "display_title": "Differential operator",
+  "schema_version": 3,
+  "annotation_style": "theorem_article",
+  "annotations": [
+    {
+      "kind": "definition",
+      "label": "Linear differential operator",
+      "anchor": {
+        "section": "Definition",
+        "snippet": "an order-"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "iteratedFDeriv",
+        "module": "Mathlib.Analysis.Calculus.IteratedDeriv.Defs",
+        "match_kind": null
+      },
+      "note": "Mathlib has iterated derivatives and `Derivation` but does not define an abstract \"order-k linear differential operator with smooth coefficient functions\" as a single concept.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Total symbol",
+      "anchor": {
+        "section": "Definition",
+        "snippet": "is called the total symbol of P"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No total/full symbol of a differential operator is defined in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Principal symbol",
+      "anchor": {
+        "section": "Definition",
+        "snippet": "is called the principal symbol of P"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Grep for `principalSymbol`/`principal symbol` returns no Mathlib hits.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Differential operator between vector bundles",
+      "anchor": {
+        "section": "Definition",
+        "snippet": "is a differential operator of order"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has vector bundles but no notion of differential operator between sections of vector bundles.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Principal symbol as symmetric tensor",
+      "anchor": {
+        "section": "Definition",
+        "snippet": "This symmetric tensor is known as the principal symbol"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No principal-symbol-as-symmetric-tensor construction exists in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Fourier multiplier representation",
+      "anchor": {
+        "section": "Fourier interpretation",
+        "snippet": "This exhibits P as a Fourier multiplier"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has Fourier transforms but no Fourier-multiplier characterization of differential operators.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Elliptic operator",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "is elliptic if its symbol is invertible"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No `EllipticOperator`/elliptic-operator definition appears in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Elliptic operators are Fredholm",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "P is a Fredholm operator"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has Fredholm-alternative material (`FredholmAlternative.lean`) but no statement that elliptic operators are Fredholm.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Wirtinger derivatives",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "Use is made of the Wirtinger derivatives"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Grep for `Wirtinger` finds no Mathlib file; only Cauchy–Riemann section in `Analysis/Complex/Conformal.lean`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Del operator",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "The differential operator del , also called nabla"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "gradient",
+        "module": "Mathlib.Analysis.Calculus.Gradient.Basic",
+        "match_kind": "exact"
+      },
+      "note": "The nabla/∇ operator (gradient of a scalar function) is `gradient` in `Mathlib.Analysis.Calculus.Gradient.Basic`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Adjoint of an operator",
+      "anchor": {
+        "section": "Adjoint of an operator",
+        "snippet": "the adjoint of this operator is defined as the operator"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "ContinuousLinearMap.adjoint",
+        "module": "Mathlib.Analysis.InnerProductSpace.Adjoint",
+        "match_kind": "exact"
+      },
+      "note": "The Hilbert-space adjoint of a (continuous) linear operator is `ContinuousLinearMap.adjoint`; unbounded version is `LinearPMap.adjoint`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Scalar product on square-integrable functions",
+      "anchor": {
+        "section": "Formal adjoint in one variable",
+        "snippet": "the scalar product is defined by"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "MeasureTheory.L2.inner_def",
+        "module": "Mathlib.MeasureTheory.Function.L2Space",
+        "match_kind": "exact"
+      },
+      "note": "The L² inner product `⟪f,g⟫ = ∫ ⟪f a, g a⟫ ∂μ` is defined in `Mathlib.MeasureTheory.Function.L2Space`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Formal adjoint",
+      "anchor": {
+        "section": "Formal adjoint in one variable",
+        "snippet": "it is called the formal adjoint of T"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "LinearPMap.IsFormalAdjoint",
+        "module": "Mathlib.Analysis.InnerProductSpace.LinearPMap",
+        "match_kind": "exact"
+      },
+      "note": "`LinearPMap.IsFormalAdjoint` defines T as a formal adjoint of S via the bilinear identity ⟪T x, y⟫ = ⟪x, S y⟫.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Self-adjoint operator",
+      "anchor": {
+        "section": "Formal adjoint in one variable",
+        "snippet": "A (formally) self-adjoint operator is an operator equal to its own (formal) adjoint"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "LinearMap.IsSymmetric",
+        "module": "Mathlib.Analysis.InnerProductSpace.Symmetric",
+        "match_kind": "exact"
+      },
+      "note": "Formal self-adjointness for possibly unbounded operators is `LinearMap.IsSymmetric`; bounded case is `IsSelfAdjoint`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Adjoint in several variables",
+      "anchor": {
+        "section": "Several variables",
+        "snippet": "the adjoint of P is defined in"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "ContinuousLinearMap.adjoint",
+        "module": "Mathlib.Analysis.InnerProductSpace.Adjoint",
+        "match_kind": null
+      },
+      "note": "Generic adjoint of an operator on a Hilbert space exists, but no multi-index formula P* = Σ (−1)^|α| D^α (ȳ_α ·) for differential operators.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Sturm–Liouville operator",
+      "anchor": {
+        "section": "Example",
+        "snippet": "The Sturm–Liouville operator is a well-known example of a formal self-adjoint operator"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Grep returns no Sturm–Liouville file in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Linearity of differentiation",
+      "anchor": {
+        "section": "Properties",
+        "snippet": "Differentiation is linear"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "deriv_add",
+        "module": "Mathlib.Analysis.Calculus.Deriv.Add",
+        "match_kind": "exact"
+      },
+      "note": "Linearity is captured by `deriv_add`/`fderiv_add` and the corresponding scalar-multiplication lemmas in `Analysis.Calculus.Deriv`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Composition of differential operators",
+      "anchor": {
+        "section": "Properties",
+        "snippet": "We may also compose differential operators by the rule"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "deriv.comp",
+        "module": "Mathlib.Analysis.Calculus.Deriv.Comp",
+        "match_kind": null
+      },
+      "note": "Mathlib has chain-rule composition (`deriv.comp`, `fderiv.comp`) but does not formalize composition as an algebra operation on differential operators.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Constant-coefficient subring is commutative",
+      "anchor": {
+        "section": "Properties",
+        "snippet": "The subring of operators that are polynomials in D with constant coefficients is, by contrast, commutative"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib does not formalize the subring of constant-coefficient differential operators or its commutativity.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Ring of univariate polynomial differential operators",
+      "anchor": {
+        "section": "Ring of univariate polynomial differential operators",
+        "snippet": "the ring of univariate polynomial differential operators over R is the quotient ring"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No Weyl algebra A₁(R) / ring of univariate polynomial differential operators is defined in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Univariate ring is non-commutative simple",
+      "anchor": {
+        "section": "Ring of univariate polynomial differential operators",
+        "snippet": "This is a non-commutative simple ring"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib lacks the underlying object, so simplicity of A₁ is unstated.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Ring of multivariate polynomial differential operators",
+      "anchor": {
+        "section": "Ring of multivariate polynomial differential operators",
+        "snippet": "the ring of multivariate polynomial differential operators over R is the quotient ring"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No multivariate Weyl algebra Aₙ(R) exists in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Multivariate ring is non-commutative simple",
+      "anchor": {
+        "section": "Ring of multivariate polynomial differential operators",
+        "snippet": "This is a non-commutative simple ring"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Without the multivariate Weyl algebra defined, the simplicity claim is not in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "k-th order linear differential operator via jet bundle",
+      "anchor": {
+        "section": "Coordinate-independent description",
+        "snippet": "is said to be a k th-order linear differential operator if it factors through the jet bundle"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib only mentions jet bundles informally in a doc-string and does not define `J^k E` or factorization through it.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Peetre theorem",
+      "anchor": {
+        "section": "Coordinate-independent description",
+        "snippet": "A foundational result is the Peetre theorem"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Grep for `Peetre` returns no Mathlib hits.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Algebraic characterization of differential operator",
+      "anchor": {
+        "section": "Relation to commutative algebra",
+        "snippet": "an R -linear map P is a k th-order linear differential operator"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The inductive Grothendieck-style characterization via iterated commutators is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Differential operator of infinite order",
+      "anchor": {
+        "section": "A differential operator of infinite order",
+        "snippet": "A differential operator of infinite order is (roughly) a differential operator whose total symbol is a power series"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No infinite-order differential operator object is defined in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Invariant differential operator",
+      "anchor": {
+        "section": "Invariant differential operator",
+        "snippet": "An invariant differential operator is a differential operator that is also an invariant operator"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Grep for `invariant differential` produces no hits in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Bidifferential operator",
+      "anchor": {
+        "section": "Bidifferential operator",
+        "snippet": "is called a bidifferential operator"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No notion of bidifferential operator is defined in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Microdifferential operator",
+      "anchor": {
+        "section": "Microdifferential operator",
+        "snippet": "A microdifferential operator is a type of operator on an open subset of a cotangent bundle"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Grep for `microdifferential` returns no Mathlib hits.",
+      "provenance": "ai"
+    }
+  ]
+}

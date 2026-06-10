@@ -1,0 +1,295 @@
+{
+  "slug": "Eulers_identity",
+  "wikipedia_title": "Euler's identity",
+  "display_title": "Euler's identity",
+  "schema_version": 3,
+  "annotation_style": "theorem_article",
+  "annotations": [
+    {
+      "kind": "definition",
+      "label": "Euler's identity",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "(also known as Euler's equation ) is the equality"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Complex.exp_pi_mul_I",
+        "module": "Mathlib.Analysis.SpecialFunctions.Trigonometric.Basic",
+        "match_kind": "exact"
+      },
+      "note": "Complex.exp_pi_mul_I states exp (π * I) = -1, which is Euler's identity in the form e^{iπ} = -1.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "(Lead)",
+          "snippet": "(also known as Euler's equation ) is the equality"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle e^{i\\pi }+1=0}"
+        }
+      ]
+    },
+    {
+      "kind": "definition",
+      "label": "Euler's number e",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "is Euler's number , the base of natural logarithms"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Real.exp",
+        "module": "Mathlib.Analysis.Complex.Exponential",
+        "match_kind": null
+      },
+      "note": "Mathlib defines the exponential function Real.exp (and Real.log), so e is Real.exp 1, but there is no dedicated named constant for e itself.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Imaginary unit i",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "is the imaginary unit , which by definition satisfies"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Complex.I",
+        "module": "Mathlib.Data.Complex.Basic",
+        "match_kind": "exact"
+      },
+      "note": "Complex.I is defined as ⟨0,1⟩ with its defining property given by Complex.I_mul_I : I * I = -1.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Pi",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "is pi , the ratio of the circumference of a circle to its diameter"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Real.pi",
+        "module": "Mathlib.Analysis.SpecialFunctions.Trigonometric.Basic",
+        "match_kind": "exact"
+      },
+      "note": "Real.pi defines the constant π (via twice a zero of cos rather than the circumference/diameter ratio, but it is the same number).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Special case of Euler's formula",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "It is a special case of Euler's formula"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Complex.exp_pi_mul_I",
+        "module": "Mathlib.Analysis.SpecialFunctions.Trigonometric.Basic",
+        "match_kind": "special_case"
+      },
+      "note": "Complex.exp_pi_mul_I is the x = π special case of Euler's formula Complex.exp_mul_I, yielding exp (π * I) = -1.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Identity equals minus one",
+      "anchor": {
+        "section": "Imaginary exponents",
+        "snippet": "Euler's identity asserts that"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Complex.exp_pi_mul_I",
+        "module": "Mathlib.Analysis.SpecialFunctions.Trigonometric.Basic",
+        "match_kind": "exact"
+      },
+      "note": "Complex.exp_pi_mul_I directly states exp (π * I) = -1.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Complex exponential definition",
+      "anchor": {
+        "section": "Imaginary exponents",
+        "snippet": "is defined for complex z by extending one of the definitions of the exponential function"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Complex.exp",
+        "module": "Mathlib.Analysis.Complex.Exponential",
+        "match_kind": "exact"
+      },
+      "note": "Complex.exp is defined as the limit of the Taylor-series partial sums ∑ z^m/m!, extending the exponential to ℂ.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Limit interpretation",
+      "anchor": {
+        "section": "Imaginary exponents",
+        "snippet": "therefore states that the limit, as n approaches infinity"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Complex.tendsto_one_add_div_pow_exp",
+        "module": "Mathlib.Analysis.SpecialFunctions.Complex.LogBounds",
+        "match_kind": "generalization"
+      },
+      "note": "Complex.tendsto_one_add_div_pow_exp proves (1 + t/n)^n → exp t for all complex t, of which t = iπ gives the stated limit equal to -1.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Euler's formula",
+      "anchor": {
+        "section": "Imaginary exponents",
+        "snippet": "which states that for any real number x"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Complex.exp_mul_I",
+        "module": "Mathlib.Analysis.Complex.Trigonometric",
+        "match_kind": "exact"
+      },
+      "note": "Complex.exp_mul_I states exp (x * I) = cos x + sin x * I, which is Euler's formula.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Polar representation of complex numbers",
+      "anchor": {
+        "section": "Geometric interpretation",
+        "snippet": "can be represented by the point"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Complex.norm_mul_exp_arg_mul_I",
+        "module": "Mathlib.Analysis.SpecialFunctions.Complex.Arg",
+        "match_kind": "exact"
+      },
+      "note": "Complex.norm_mul_exp_arg_mul_I states ‖x‖ * exp (arg x * I) = x, the polar (r·e^{iθ}) representation.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Geometric meaning of minus one",
+      "anchor": {
+        "section": "Geometric interpretation",
+        "snippet": "this can be interpreted as a fact about the number −1 on the complex plane"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Complex.arg_neg_one",
+        "module": "Mathlib.Analysis.SpecialFunctions.Complex.Arg",
+        "match_kind": null
+      },
+      "note": "Complex.arg_neg_one (arg (-1) = π) plus the unit norm of -1 capture the underlying facts, but the geometric interpretation itself is not stated as a theorem.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Multiplication as rotation",
+      "anchor": {
+        "section": "Geometric interpretation",
+        "snippet": "it has the effect of rotating"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Complex.rotation",
+        "module": "Mathlib.Analysis.Complex.Isometry",
+        "match_kind": "generalization"
+      },
+      "note": "Complex.rotation packages multiplication by a unit-modulus complex number (Circle element) as an ℝ-linear isometry, with rotation_apply a z = a * z, formalizing multiplication-as-rotation.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Sum of nth roots of unity",
+      "anchor": {
+        "section": "Generalizations",
+        "snippet": "the n th roots of unity , for n > 1 , add up to 0"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "IsPrimitiveRoot.geom_sum_eq_zero",
+        "module": "Mathlib.RingTheory.RootsOfUnity.PrimitiveRoots",
+        "match_kind": "generalization"
+      },
+      "note": "IsPrimitiveRoot.geom_sum_eq_zero proves ∑ i ∈ range k, ζ^i = 0 for a primitive root ζ with 1 < k, i.e. the nth roots of unity sum to 0, generalized to any integral domain.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Quaternion exponential identity",
+      "anchor": {
+        "section": "Generalizations",
+        "snippet": "A similar identity also applies to quaternion exponential"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Quaternion.exp_of_re_eq_zero",
+        "module": "Mathlib.Analysis.Normed.Algebra.QuaternionExponential",
+        "match_kind": null
+      },
+      "note": "Quaternion.exp_of_re_eq_zero gives the closed form exp q = cos‖q‖ + (sin‖q‖/‖q‖)•q for imaginary quaternions, but the analog e^{qπ} = -1 is not stated directly.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Generalizations",
+          "snippet": "A similar identity also applies to quaternion exponential"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle e^{{\\frac {1}{\\sqrt {3}}}(i\\pm j\\pm k)\\pi }+1=0.}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "General quaternion identity",
+      "anchor": {
+        "section": "Generalizations",
+        "snippet": "let q be a quaternion with a zero real part and a norm equal to 1"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Quaternion.exp_of_re_eq_zero",
+        "module": "Mathlib.Analysis.Normed.Algebra.QuaternionExponential",
+        "match_kind": null
+      },
+      "note": "Quaternion.exp_of_re_eq_zero covers the zero-real-part case, but the specific identity for a unit-norm imaginary quaternion (e^{qπ} = -1) is not formalized as such.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Generalizations",
+          "snippet": "let q be a quaternion with a zero real part and a norm equal to 1"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle e^{q\\pi }+1=0.}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Octonion identity",
+      "anchor": {
+        "section": "Generalizations",
+        "snippet": "The same formula applies to octonions"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has no octonion type with an exponential function, so the octonion analog of Euler's identity is not formalized.",
+      "provenance": "ai"
+    }
+  ]
+}

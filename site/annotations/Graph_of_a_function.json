@@ -1,0 +1,137 @@
+{
+  "slug": "Graph_of_a_function",
+  "wikipedia_title": "Graph of a function",
+  "display_title": "Graph of a function",
+  "schema_version": 3,
+  "annotation_style": "theorem_article",
+  "annotations": [
+    {
+      "kind": "definition",
+      "label": "Graph of a function",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "the graph of a function"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Set.graphOn",
+        "module": "Mathlib.Data.Set.Operations",
+        "match_kind": "exact"
+      },
+      "note": "`Set.graphOn f s` is defined as `(fun x ↦ (x, f x)) '' s`, the graph of `f` on `s`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Graph of a function of two variables",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "the graph usually refers to the set of ordered triples"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Set.graphOn",
+        "module": "Mathlib.Data.Set.Operations",
+        "match_kind": "generalization"
+      },
+      "note": "Specializes `Set.graphOn` to a function `f : α × β → γ`, yielding pairs `((x,y), f (x,y))` equivalent to ordered triples.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Formal definition of graph",
+      "anchor": {
+        "section": "Definition",
+        "snippet": "the graph of the function is the set"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Set.mem_graphOn",
+        "module": "Mathlib.Data.Set.Prod",
+        "match_kind": "exact"
+      },
+      "note": "`Set.mem_graphOn` characterizes membership in `s.graphOn f` as `x.1 ∈ s ∧ f x.1 = x.2`, matching the formal definition `{(x, f x) | x ∈ X}`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Graph of a one-variable function",
+      "anchor": {
+        "section": "Functions of one variable",
+        "snippet": "is the subset of the set"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Set.graphOn",
+        "module": "Mathlib.Data.Set.Operations",
+        "match_kind": "exact"
+      },
+      "note": "`Set.graphOn f s : Set (α × β)` is exactly the subset of `α × β` corresponding to the graph of a one-variable function.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Recovering domain and range from the graph",
+      "anchor": {
+        "section": "Functions of one variable",
+        "snippet": "the domain"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Set.image_fst_graphOn",
+        "module": "Mathlib.Data.Set.Prod",
+        "match_kind": "exact"
+      },
+      "note": "`image_fst_graphOn` shows `Prod.fst '' graphOn f s = s` (domain) and `image_snd_graphOn` gives `Prod.snd '' s.graphOn f = f '' s` (range).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Graph of the cubic polynomial",
+      "anchor": {
+        "section": "Functions of one variable",
+        "snippet": "The graph of the cubic polynomial on the real line"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No specific declaration formalizes the graph of the particular cubic `x^3 - 9x` as a worked example in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Graph of a trigonometric function of two variables",
+      "anchor": {
+        "section": "Functions of two variables",
+        "snippet": "The graph of the trigonometric function"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No specific Mathlib declaration captures this particular trigonometric example.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Graph with gradient and level curves",
+      "anchor": {
+        "section": "Functions of two variables",
+        "snippet": "such a drawing of the graph of the function"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has gradients and level sets independently but not this specific worked example pairing them with a graph drawing.",
+      "provenance": "ai"
+    }
+  ]
+}

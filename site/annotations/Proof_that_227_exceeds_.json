@@ -1,0 +1,265 @@
+{
+  "slug": "Proof_that_227_exceeds_",
+  "wikipedia_title": "Proof that 22/7 exceeds π",
+  "display_title": "Proof that 22/7 exceeds π",
+  "schema_version": 3,
+  "annotation_style": "theorem_article",
+  "annotations": [
+    {
+      "kind": "proposition",
+      "label": "22/7 exceeds π",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "Proofs of the mathematical result that the rational number"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Real.pi_lt_d4",
+        "module": "Mathlib.Analysis.Real.Pi.Bounds",
+        "match_kind": "generalization"
+      },
+      "note": "Mathlib has numerical bounds like `Real.pi_lt_d4 : π < 3.1416` which imply 22/7 > π, but no statement of `π < 22/7` by name.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "22/7 as Diophantine approximation of π",
+      "anchor": {
+        "section": "Background",
+        "snippet": "is a widely used Diophantine approximation of"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has no notion identifying 22/7 as a named Diophantine approximation of π.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Archimedes' proof via 96-gon",
+      "anchor": {
+        "section": "Background",
+        "snippet": "Archimedes wrote the first known proof"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No formalization of Archimedes' polygonal bounds on π is present in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proof",
+      "label": "Dalzell's integral proof",
+      "anchor": {
+        "section": "Proof",
+        "snippet": "The proof first devised by British electrical engineer Donald Percy Dalzell"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Dalzell's specific integral identity ∫₀¹ x⁴(1-x)⁴/(1+x²) dx = 22/7 - π is not in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Integral is positive",
+      "anchor": {
+        "section": "Details of evaluation of the integral",
+        "snippet": "That the integral is positive follows from the fact that the integrand is non-negative"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "intervalIntegral.integral_nonneg",
+        "module": "Mathlib.MeasureTheory.Integral.IntervalIntegral.Basic",
+        "match_kind": "generalization"
+      },
+      "note": "The general principle is `intervalIntegral.integral_nonneg`, but no specific instance for the Dalzell integrand is in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Evaluation of the integral",
+      "anchor": {
+        "section": "Details of evaluation of the integral",
+        "snippet": "It remains to show that the integral in fact evaluates to the desired quantity"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The closed-form evaluation ∫₀¹ x⁴(1-x)⁴/(1+x²) dx = 22/7 - π is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Dalzell quick upper and lower bounds",
+      "anchor": {
+        "section": "Quick upper and lower bounds",
+        "snippet": "if 1 is substituted for x in the denominator, one gets a lower bound on the integral"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The specific upper/lower bounds 1/1260 ≤ 22/7 − π ≤ 1/630 are not in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "355/113 exceeds π",
+      "anchor": {
+        "section": "Proof that 355/113 exceeds π",
+        "snippet": "the well-known Diophantine approximation and far better upper estimate"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Real.pi_lt_d20",
+        "module": "Mathlib.Analysis.Real.Pi.Bounds",
+        "match_kind": "generalization"
+      },
+      "note": "`Real.pi_lt_d20 : π < 3.14159265358979323847` is sharp enough to imply 355/113 > π, but the statement is not stated explicitly.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Bounds for 355/113 approximation",
+      "anchor": {
+        "section": "Proof that 355/113 exceeds π",
+        "snippet": "Substituting 1 for x in the denominator, we get the lower bound"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The specific quantitative bounds on 355/113 − π via the corresponding integral are not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "General integral family approximating π",
+      "anchor": {
+        "section": "Extensions",
+        "snippet": "The above ideas can be generalized to get better approximations of"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The generalized integral family yielding successive rational approximations of π is not in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Correction term and error bound",
+      "anchor": {
+        "section": "Extensions",
+        "snippet": "The correction term and error bound is given by"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The specific correction term/error bound formula for the integral family is not in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Recursive integral formula",
+      "anchor": {
+        "section": "Extensions",
+        "snippet": "Calculation of these integrals"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The recursion for these specific π-approximation integrals is not in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Integration by parts identity",
+      "anchor": {
+        "section": "Extensions",
+        "snippet": "using integration by parts"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "intervalIntegral.integral_mul_deriv_eq_deriv_mul",
+        "module": "Mathlib.MeasureTheory.Integral.IntervalIntegral.IntegrationByParts",
+        "match_kind": "generalization"
+      },
+      "note": "General integration by parts is formalized as `intervalIntegral.integral_mul_deriv_eq_deriv_mul`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "n = 2 bounds",
+      "anchor": {
+        "section": "Extensions",
+        "snippet": "For n = 2 we get"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The n=2 specific bounds from the integral family are not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "n = 3 bounds",
+      "anchor": {
+        "section": "Extensions",
+        "snippet": "Similarly for n = 3"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The n=3 specific bounds from the integral family are not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "n = 4 bounds",
+      "anchor": {
+        "section": "Extensions",
+        "snippet": "The next step for n = 4 is"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The n=4 specific bounds from the integral family are not formalized.",
+      "provenance": "ai"
+    }
+  ]
+}

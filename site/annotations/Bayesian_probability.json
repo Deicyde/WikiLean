@@ -1,0 +1,169 @@
+{
+  "slug": "Bayesian_probability",
+  "wikipedia_title": "Bayesian probability",
+  "display_title": "Bayesian probability",
+  "schema_version": 3,
+  "annotation_style": "theorem_article",
+  "annotations": [
+    {
+      "kind": "definition",
+      "label": "Bayesian probability",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "is an interpretation of the concept of probability"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The philosophical interpretation of probability as degree of belief is not a formal mathematical object and has no Mathlib counterpart.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Prior and posterior probability",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "the Bayesian probabilist specifies a prior probability"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "ProbabilityTheory.posterior",
+        "module": "Mathlib.Probability.Kernel.Posterior",
+        "match_kind": "generalization"
+      },
+      "note": "`ProbabilityTheory.posterior κ μ` is the posterior Markov kernel obtained from a prior measure `μ` and likelihood kernel `κ`, the measure-theoretic form of the prior/posterior concept.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Sequential use of Bayes' theorem",
+      "anchor": {
+        "section": "Bayesian methodology",
+        "snippet": "calculate the posterior distribution using Bayes' theorem"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "ProbabilityTheory.cond_cond_eq_cond_inter",
+        "module": "Mathlib.Probability.ConditionalProbability",
+        "match_kind": null
+      },
+      "note": "Bayes' theorem (`cond_eq_inv_mul_cond_mul`) and iterated conditioning (`cond_cond_eq_cond_inter`, conditioning on `s` then `t` equals conditioning on `s∩t`) are formalized, but the sequential-updating methodology to obtain posterior distributions is not stated as such.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Objective Bayesian probability",
+      "anchor": {
+        "section": "Objective and subjective Bayesian probabilities",
+        "snippet": "who interpret probability as an extension of logic"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The objective/logical interpretation of probability is an informal philosophical stance with no formal counterpart in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Subjective Bayesian probability",
+      "anchor": {
+        "section": "Objective and subjective Bayesian probabilities",
+        "snippet": "probability corresponds to a personal belief"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The subjective (personal-belief) interpretation of probability is informal philosophy and is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Bayes' original special case",
+      "anchor": {
+        "section": "History",
+        "snippet": "the prior and posterior distributions were beta distributions"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "ProbabilityTheory.betaMeasure",
+        "module": "Mathlib.Probability.Distributions.Beta",
+        "match_kind": null
+      },
+      "note": "The beta distribution is defined (`betaPDF`/`betaMeasure`), but the Beta–Binomial conjugacy showing prior and posterior are both beta distributions is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Cox's axioms for Bayesian updating",
+      "anchor": {
+        "section": "Axiomatic approach",
+        "snippet": "Bayesian updating follows from several axioms"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Cox's theorem deriving probability/Bayesian updating from plausibility axioms has no formalization in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Dutch book",
+      "anchor": {
+        "section": "Dutch book approach",
+        "snippet": "makes a Dutch book by setting the odds and bets"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Dutch book / coherence betting argument is not defined anywhere in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Wald's complete class theorem",
+      "anchor": {
+        "section": "Decision theory approach",
+        "snippet": "every admissible statistical procedure is either a Bayesian procedure or a limit of Bayesian procedures"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "ProbabilityTheory.bayesRisk",
+        "module": "Mathlib.Probability.Decision.Risk.Defs",
+        "match_kind": null
+      },
+      "note": "A statistical-decision-theory framework with Bayes risk and minimax risk exists, but admissibility is not defined and Wald's complete class theorem is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Bayesian procedures are admissible",
+      "anchor": {
+        "section": "Decision theory approach",
+        "snippet": "every Bayesian procedure is admissible"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "ProbabilityTheory.bayesRisk",
+        "module": "Mathlib.Probability.Decision.Risk.Defs",
+        "match_kind": null
+      },
+      "note": "Bayes risk is defined in the decision-theory framework, but admissibility of decision procedures is not defined and the admissibility-of-Bayes-procedures result is not formalized.",
+      "provenance": "ai"
+    }
+  ]
+}

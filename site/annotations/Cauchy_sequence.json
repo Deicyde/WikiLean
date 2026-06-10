@@ -1,0 +1,637 @@
+{
+  "slug": "Cauchy_sequence",
+  "wikipedia_title": "Cauchy sequence",
+  "display_title": "Cauchy sequence",
+  "schema_version": 3,
+  "annotation_style": "theorem_article",
+  "annotations": [
+    {
+      "kind": "definition",
+      "label": "Cauchy sequence (informal)",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "a Cauchy sequence is a sequence whose elements become arbitrarily close to each other as the sequence progresses"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "CauchySeq",
+        "module": "Mathlib.Topology.UniformSpace.Cauchy",
+        "match_kind": "generalization"
+      },
+      "note": "`CauchySeq u := Cauchy (atTop.map u)` is Mathlib's general uniform-space formalization of the Cauchy property.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Square roots not Cauchy",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "It is not sufficient for each term to become arbitrarily close to the preceding term."
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This is an informal cautionary remark with no specific formal statement in Mathlib.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "(Lead)",
+          "snippet": "It is not sufficient for each term to become arbitrarily close to the preceding term."
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle a_{n}={\\sqrt {n}},}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle a_{n+1}-a_{n}={\\sqrt {n+1}}-{\\sqrt {n}}={\\frac {1}{{\\sqrt {n+1}}+{\\sqrt {n}}}}&lt;{\\frac {1}{2{\\sqrt {n}}}}}"
+        }
+      ]
+    },
+    {
+      "kind": "definition",
+      "label": "Cauchy sequence of real numbers",
+      "anchor": {
+        "section": "In real numbers",
+        "snippet": "of real numbers is called a Cauchy sequence if for every positive real number"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "IsCauSeq",
+        "module": "Mathlib.Algebra.Order.CauSeq.Basic",
+        "match_kind": "generalization"
+      },
+      "note": "`IsCauSeq abv f := ∀ ε>0, ∃i, ∀j≥i, abv (f j - f i) < ε` gives the real (absolute-value) ε–N Cauchy definition as a special case.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "In real numbers",
+          "snippet": "of real numbers is called a Cauchy sequence if for every positive real number"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle x_{1},x_{2},x_{3},\\ldots }"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle |x_{m}-x_{n}|&lt;\\varepsilon ,}"
+        }
+      ]
+    },
+    {
+      "kind": "example",
+      "label": "Truncated decimal expansions",
+      "anchor": {
+        "section": "In real numbers",
+        "snippet": "the sequence of truncated decimal expansions of r forms a Cauchy sequence"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No named Mathlib result asserts that the truncated-decimal sequence of a real is Cauchy.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Modulus of Cauchy convergence",
+      "anchor": {
+        "section": "Modulus of Cauchy convergence",
+        "snippet": "then a modulus of Cauchy convergence for the sequence is a function"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has no dedicated `modulus of Cauchy convergence` definition packaging the function N(ε).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Modulus implies Cauchy",
+      "anchor": {
+        "section": "Modulus of Cauchy convergence",
+        "snippet": "Any sequence with a modulus of Cauchy convergence is a Cauchy sequence."
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Since the modulus notion is absent, this implication is not stated as such in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Regular Cauchy sequence",
+      "anchor": {
+        "section": "Modulus of Cauchy convergence",
+        "snippet": "Regular Cauchy sequences are sequences with a given modulus of Cauchy convergence"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No `regular Cauchy sequence` (fixed modulus 1/n) definition exists in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Equivalent to regular Cauchy sequence",
+      "anchor": {
+        "section": "Modulus of Cauchy convergence",
+        "snippet": "Any Cauchy sequence with a modulus of Cauchy convergence is equivalent to a regular Cauchy sequence"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This depends on the unformalized regular/modulus notions, so it has no Mathlib counterpart.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Cauchy sequence in a metric space",
+      "anchor": {
+        "section": "In a metric space",
+        "snippet": "is Cauchy, if for every positive real number"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Metric.cauchySeq_iff",
+        "module": "Mathlib.Topology.MetricSpace.Cauchy",
+        "match_kind": "generalization"
+      },
+      "note": "`Metric.cauchySeq_iff` characterizes `CauchySeq u` by `∀ ε>0, ∃N, ∀ m,n≥N, dist (u m) (u n) < ε` in any (pseudo)metric space.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "In a metric space",
+          "snippet": "is Cauchy, if for every positive real number"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle x_{1},x_{2},x_{3},\\ldots }"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle d\\left(x_{m},x_{n}\\right)&lt;\\varepsilon .}"
+        }
+      ]
+    },
+    {
+      "kind": "definition",
+      "label": "Complete metric space",
+      "anchor": {
+        "section": "Completeness",
+        "snippet": "in which every Cauchy sequence converges to an element of X is called complete"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "CompleteSpace",
+        "module": "Mathlib.Topology.UniformSpace.Cauchy",
+        "match_kind": "generalization"
+      },
+      "note": "`CompleteSpace` (every Cauchy filter converges) is the uniform-space completeness predicate, with `Metric.complete_of_cauchySeq_tendsto` giving the sequential metric form.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Completion exists",
+      "anchor": {
+        "section": "Completeness",
+        "snippet": "it is possible to construct a complete metric space"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "UniformSpace.Completion",
+        "module": "Mathlib.Topology.UniformSpace.Completion",
+        "match_kind": "generalization"
+      },
+      "note": "`UniformSpace.Completion` constructs a complete space containing a dense copy of the original (with a `MetricSpace` instance for metric spaces).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Real numbers are complete",
+      "anchor": {
+        "section": "Examples of complete metric spaces",
+        "snippet": "are complete under the metric induced by the usual absolute value"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Real.instCompleteSpace",
+        "module": "Mathlib.Topology.UniformSpace.Real",
+        "match_kind": "exact"
+      },
+      "note": "`Real.instCompleteSpace` is the instance proving ℝ is complete under its standard metric.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Discrete metric space",
+      "anchor": {
+        "section": "Examples of complete metric spaces",
+        "snippet": "Any Cauchy sequence of elements of X must be constant beyond some fixed point"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No named lemma states that a Cauchy sequence in a discrete space is eventually constant.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Rationals not complete",
+      "anchor": {
+        "section": "Non-example: rational numbers",
+        "snippet": "are not complete (for the usual distance)"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has no `¬ CompleteSpace ℚ` statement for the usual metric.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Babylonian square root of 2",
+      "anchor": {
+        "section": "Non-example: rational numbers",
+        "snippet": "however it converges to the irrational square root of 2"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Babylonian/Heron recursive sequence converging to √2 is not formalized as a named result.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Fibonacci ratios to golden ratio",
+      "anchor": {
+        "section": "Non-example: rational numbers",
+        "snippet": "of ratios of consecutive Fibonacci numbers which, if it converges at all"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has Binet's formula and `goldenRatio` but no theorem that the ratio fib(n+1)/fib(n) tends to φ.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Irrational exp, sin, cos values",
+      "anchor": {
+        "section": "Non-example: rational numbers",
+        "snippet": "The values of the exponential, sine and cosine functions"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Irrationality of exp/sin/cos at nonzero rational arguments is not formalized (Niven's `irrational_cos_rat_mul_pi` is a different statement).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Open interval not complete",
+      "anchor": {
+        "section": "Non-example: open interval",
+        "snippet": "is not a complete space: there is a sequence"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No named Mathlib result asserts that an open interval fails to be complete.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Convergent implies Cauchy",
+      "anchor": {
+        "section": "Other properties",
+        "snippet": "Every convergent sequence (with limit s , say) is a Cauchy sequence"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Filter.Tendsto.cauchySeq",
+        "module": "Mathlib.Topology.UniformSpace.Cauchy",
+        "match_kind": "generalization"
+      },
+      "note": "`Filter.Tendsto.cauchySeq` shows any sequence tending to a limit is a `CauchySeq`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Cauchy sequences are bounded",
+      "anchor": {
+        "section": "Other properties",
+        "snippet": "is bounded (since for some N , all terms of the sequence"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "CauchySeq.isBounded_range",
+        "module": "Mathlib.Topology.MetricSpace.Bounded",
+        "match_kind": "generalization"
+      },
+      "note": "`CauchySeq.isBounded_range` proves the range of a Cauchy sequence is bounded (also `cauchySeq_bdd`).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Convergent subsequence implies convergence",
+      "anchor": {
+        "section": "Other properties",
+        "snippet": "a Cauchy sequence which has a convergent subsequence with limit s is itself convergent"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "tendsto_nhds_of_cauchySeq_of_subseq",
+        "module": "Mathlib.Topology.UniformSpace.Cauchy",
+        "match_kind": "generalization"
+      },
+      "note": "`tendsto_nhds_of_cauchySeq_of_subseq` shows a Cauchy sequence with a convergent subsequence converges to the same limit.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Completeness of the real numbers",
+      "anchor": {
+        "section": "Other properties",
+        "snippet": "Every Cauchy sequence of real numbers is bounded, hence by Bolzano–Weierstrass has a convergent subsequence"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Real.instCompleteSpace",
+        "module": "Mathlib.Topology.UniformSpace.Real",
+        "match_kind": "exact"
+      },
+      "note": "`Real.instCompleteSpace` is exactly the completeness of ℝ (every Cauchy sequence converges).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Series convergence via partial sums",
+      "anchor": {
+        "section": "Other properties",
+        "snippet": "is considered to be convergent if and only if the sequence of partial sums"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Summable.hasSum_iff_tendsto_nat",
+        "module": "Mathlib.Topology.Algebra.InfiniteSum.NatInt",
+        "match_kind": null
+      },
+      "note": "`Summable.hasSum_iff_tendsto_nat` equates `HasSum f m` with convergence of partial sums `∑_{i<n} f i`, but only under a summability hypothesis.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Other properties",
+          "snippet": "is considered to be convergent if and only if the sequence of partial sums"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle s_{p}-s_{q}=\\sum _{n=q+1}^{p}x_{n}.}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Uniformly continuous maps preserve Cauchy",
+      "anchor": {
+        "section": "Other properties",
+        "snippet": "is a uniformly continuous map between the metric spaces M and N"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "UniformContinuous.comp_cauchySeq",
+        "module": "Mathlib.Topology.UniformSpace.Cauchy",
+        "match_kind": "generalization"
+      },
+      "note": "`UniformContinuous.comp_cauchySeq` shows a uniformly continuous map sends Cauchy sequences to Cauchy sequences.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Sum and product of Cauchy sequences",
+      "anchor": {
+        "section": "Other properties",
+        "snippet": "are two Cauchy sequences in the rational, real or complex numbers"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "CauchySeq.mul",
+        "module": "Mathlib.Topology.Algebra.IsUniformGroup.Basic",
+        "match_kind": "generalization"
+      },
+      "note": "`CauchySeq.mul` (with `CauchySeq.add`, and the `Add`/`Mul` instances on `CauSeq`) gives closure of Cauchy sequences under sum and product in ℚ/ℝ/ℂ.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Cauchy sequence in a topological vector space",
+      "anchor": {
+        "section": "In topological vector spaces",
+        "snippet": "There is also a concept of Cauchy sequence for a topological vector space"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "CauchySeq",
+        "module": "Mathlib.Topology.UniformSpace.Cauchy",
+        "match_kind": "generalization"
+      },
+      "note": "A TVS carries a canonical uniformity (`IsUniformAddGroup`), so `CauchySeq` directly specializes to the TVS Cauchy notion.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Cauchy sequence in a topological group",
+      "anchor": {
+        "section": "In topological groups",
+        "snippet": "is a Cauchy sequence if for every open neighbourhood"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "CauchySeq",
+        "module": "Mathlib.Topology.UniformSpace.Cauchy",
+        "match_kind": "generalization"
+      },
+      "note": "A (uniform) topological group is a uniform space, so `CauchySeq` captures the neighborhood-of-identity Cauchy condition.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Equivalence relation on Cauchy sequences",
+      "anchor": {
+        "section": "In topological groups",
+        "snippet": "This relation is an equivalence relation"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "CauSeq.equiv",
+        "module": "Mathlib.Algebra.Order.CauSeq.Basic",
+        "match_kind": "special_case"
+      },
+      "note": "`CauSeq.equiv` provides a `Setoid` (equivalence relation) on Cauchy sequences, but only for absolute-value Cauchy sequences in a ring rather than general topological groups.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Cauchy sequence in a group",
+      "anchor": {
+        "section": "In groups",
+        "snippet": "There is also a concept of Cauchy sequence in a group"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The combinatorial group Cauchy notion via a decreasing chain of finite-index subgroups is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Equivalence to topological group Cauchy",
+      "anchor": {
+        "section": "In groups",
+        "snippet": "Technically, this is the same thing as a topological group Cauchy sequence for a particular choice of topology"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The identification of group-filtration Cauchy sequences with topological-group ones is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Completion as factor group",
+      "anchor": {
+        "section": "In groups",
+        "snippet": "of such Cauchy sequences forms a group (for the componentwise product)"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "CauSeq.Completion.Cauchy",
+        "module": "Mathlib.Algebra.Order.CauSeq.Completion",
+        "match_kind": "special_case"
+      },
+      "note": "`CauSeq.Completion.Cauchy` builds the completion as the quotient of Cauchy sequences by null sequences, but in the ring/absolute-value setting rather than the general group-filtration one.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Completion is inverse limit",
+      "anchor": {
+        "section": "In groups",
+        "snippet": "One can then show that this completion is isomorphic to the inverse limit"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The general isomorphism between the group-filtration completion and the inverse limit G/H_r is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "p-adic completion of integers",
+      "anchor": {
+        "section": "In groups",
+        "snippet": "An example of this construction familiar in number theory and algebraic geometry is the construction of the"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "PadicInt.lift",
+        "module": "Mathlib.NumberTheory.Padics.RingHoms",
+        "match_kind": "special_case"
+      },
+      "note": "`PadicInt.lift` realizes ℤ_p via the inverse-limit universal property over the compatible quotients `ZMod (p^n)`, capturing the p-adic completion of the integers.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Cofinal sequence gives canonical completion",
+      "anchor": {
+        "section": "In groups",
+        "snippet": "is a cofinal sequence (that is, any normal subgroup of finite index contains some"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The cofinality-yields-canonical-completion statement for finite-index subgroups is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Cauchy sequence in a hyperreal continuum",
+      "anchor": {
+        "section": "In a hyperreal continuum",
+        "snippet": "The sequence is Cauchy if and only if for every infinite H and K"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib defines `Hyperreal` and infinitesimal proximity but not this hyperreal characterization of Cauchy sequences.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Cauchy completion of a category",
+      "anchor": {
+        "section": "Cauchy completion of categories",
+        "snippet": "Krause (2020) introduced a notion of Cauchy completion of a category ."
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "CategoryTheory.Idempotents.Karoubi",
+        "module": "Mathlib.CategoryTheory.Idempotents.Karoubi",
+        "match_kind": "special_case"
+      },
+      "note": "Mathlib formalizes the Karoubi (idempotent) completion, which coincides with the Cauchy completion for ordinary (Set-enriched) categories, but not Krause's exact framing.",
+      "provenance": "ai"
+    }
+  ]
+}

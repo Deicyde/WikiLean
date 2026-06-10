@@ -1,0 +1,109 @@
+{
+  "slug": "Integral",
+  "wikipedia_title": "Integral",
+  "display_title": "Integral",
+  "schema_version": 1,
+  "source": "claude-agent-sdk/annotate_articles.py",
+  "annotations": [
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle m(b-a)\\leq \\int _{a}^{b}f(x)\\,dx\\leq M(b-a).}"
+      },
+      "status": "partial",
+      "decl": "intervalIntegral.norm_integral_le_of_norm_le_const",
+      "module": "Mathlib.MeasureTheory.Integral.IntervalIntegral.Basic",
+      "note": "Mathlib has the norm-bound version `|∫f| ≤ C(b-a)`; the two-sided m,M bound follows via `integral_mono` with constants but is not a single named lemma."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\int _{a}^{b}f(x)\\,dx\\leq \\int _{a}^{b}g(x)\\,dx.}"
+      },
+      "status": "formalized",
+      "decl": "intervalIntegral.integral_mono",
+      "module": "Mathlib.MeasureTheory.Integral.IntervalIntegral.Basic",
+      "note": "Direct monotonicity of the interval integral under pointwise inequality."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\int _{a}^{b}f(x)\\,dx<\\int _{a}^{b}g(x)\\,dx.}"
+      },
+      "status": "formalized",
+      "decl": "intervalIntegral.integral_lt_integral_of_continuousOn_of_le_of_exists_lt",
+      "module": "Mathlib.MeasureTheory.Integral.IntervalIntegral.Basic",
+      "note": "Strict monotonicity for continuous functions with a point of strict inequality."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\int _{c}^{d}f(x)\\,dx\\leq \\int _{a}^{b}f(x)\\,dx.}"
+      },
+      "status": "formalized",
+      "decl": "intervalIntegral.integral_mono_interval",
+      "module": "Mathlib.MeasureTheory.Integral.IntervalIntegral.Basic",
+      "note": "Monotonicity of the integral with respect to enlarging the interval (with non-negativity assumption)."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle (fg)(x)=f(x)g(x),\\;f^{2}(x)=(f(x))^{2},\\;|f|(x)=|f(x)|.}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Pointwise operations on functions are definitional in Lean (`Pi.mul_apply` etc.); not a substantive theorem."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\left|\\int _{a}^{b}f(x)\\,dx\\right|\\leq \\int _{a}^{b}|f(x)|\\,dx.}"
+      },
+      "status": "formalized",
+      "decl": "MeasureTheory.abs_integral_le_integral_abs",
+      "module": "Mathlib.MeasureTheory.Integral.Bochner.Basic",
+      "note": "Triangle inequality for the Bochner integral; specialised to real-valued absolute value."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\left(\\int _{a}^{b}(fg)(x)\\,dx\\right)^{2}\\leq \\left(\\int _{a}^{b}f(x)^{2}\\,dx\\right)\\left(\\int _{a}^{b}g(x)^{2}\\,dx\\right).}"
+      },
+      "status": "partial",
+      "decl": "MeasureTheory.integral_mul_le_Lp_mul_Lq_of_nonneg",
+      "module": "Mathlib.MeasureTheory.Integral.Bochner.Basic",
+      "note": "Cauchy–Schwarz is the p=q=2 case of Mathlib's Hölder for integrals; no dedicated Cauchy–Schwarz-for-integrals lemma in this form."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\left|\\int f(x)g(x)\\,dx\\right|\\leq \\left(\\int \\left|f(x)\\right|^{p}\\,dx\\right)^{1/p}\\left(\\int \\left|g(x)\\right|^{q}\\,dx\\right)^{1/q}.}"
+      },
+      "status": "formalized",
+      "decl": "ENNReal.lintegral_mul_le_Lp_mul_Lq",
+      "module": "Mathlib.MeasureTheory.Integral.MeanInequalities",
+      "note": "Hölder's inequality for the Lebesgue integral; Bochner version is `integral_mul_le_Lp_mul_Lq_of_nonneg`."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\left(\\int \\left|f(x)+g(x)\\right|^{p}\\,dx\\right)^{1/p}\\leq \\left(\\int \\left|f(x)\\right|^{p}\\,dx\\right)^{1/p}+\\left(\\int \\left|g(x)\\right|^{p}\\,dx\\right)^{1/p}.}"
+      },
+      "status": "formalized",
+      "decl": "ENNReal.lintegral_Lp_add_le",
+      "module": "Mathlib.MeasureTheory.Integral.MeanInequalities",
+      "note": "Minkowski inequality for ℒp norms of measurable ℝ≥0∞ functions."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\pi \\int _{a}^{b}f^{2}(x)\\,dx.}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Volume of a solid of revolution via the disc method is not formalised as a standalone Mathlib decl."
+    }
+  ]
+}

@@ -1,0 +1,841 @@
+{
+  "slug": "Directed_acyclic_graph",
+  "wikipedia_title": "Directed acyclic graph",
+  "display_title": "Directed acyclic graph",
+  "schema_version": 3,
+  "annotation_style": "theorem_article",
+  "annotations": [
+    {
+      "kind": "definition",
+      "label": "Directed acyclic graph (DAG)",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "a directed acyclic graph ( DAG ) is a directed graph with no directed cycles"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Digraph",
+        "module": "Mathlib.Combinatorics.Digraph.Basic",
+        "match_kind": null
+      },
+      "note": "Directed graphs are formalized as `Digraph` (and `Quiver`), but Mathlib has no acyclicity/no-directed-cycles predicate for them, so the DAG notion itself is absent.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "DAG iff topologically orderable",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "A directed graph is a DAG if and only if it can be topologically ordered"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Neither DAGs nor topological orderings exist in Mathlib, so this equivalence is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Walk in a directed graph",
+      "anchor": {
+        "section": "Definitions",
+        "snippet": "A walk in a directed graph is a (finite or infinite) sequence"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Quiver.Path",
+        "module": "Mathlib.Combinatorics.Quiver.Path",
+        "match_kind": "special_case"
+      },
+      "note": "`Quiver.Path` is an inductive type of finite composable-arrow sequences (a finite directed walk, vertices may repeat), but only finite walks are covered.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Path",
+      "anchor": {
+        "section": "Definitions",
+        "snippet": "A path is a walk where all vertices are distinct"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "SimpleGraph.Walk.IsPath",
+        "module": "Mathlib.Combinatorics.SimpleGraph.Paths",
+        "match_kind": "special_case"
+      },
+      "note": "`SimpleGraph.Walk.IsPath` is the distinct-vertices predicate but only for undirected graphs; no directed-path-with-distinct-vertices predicate exists.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Cycle",
+      "anchor": {
+        "section": "Definitions",
+        "snippet": "A cycle is a walk"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "SimpleGraph.Walk.IsCycle",
+        "module": "Mathlib.Combinatorics.SimpleGraph.Paths",
+        "match_kind": "special_case"
+      },
+      "note": "`SimpleGraph.Walk.IsCycle` formalizes cycles for undirected graphs only; there is no directed-cycle notion.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Directed acyclic graph (no cycles)",
+      "anchor": {
+        "section": "Definitions",
+        "snippet": "A directed acyclic graph is a directed graph that has no cycles"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "SimpleGraph.IsAcyclic",
+        "module": "Mathlib.Combinatorics.SimpleGraph.Acyclic",
+        "match_kind": "special_case"
+      },
+      "note": "`SimpleGraph.IsAcyclic` (no cyclic walks) is the acyclicity predicate but only for undirected graphs, not directed ones.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Reachability relation as partial order",
+      "anchor": {
+        "section": "Reachability relation, transitive closure, and transitive reduction",
+        "snippet": "The reachability relation of a DAG can be formalized as a partial order"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Relation.ReflTransGen",
+        "module": "Mathlib.Logic.Relation",
+        "match_kind": "generalization"
+      },
+      "note": "`Relation.ReflTransGen` is the reflexive-transitive closure (reachability) of any relation giving a preorder, but the DAG-specific antisymmetry making it a partial order is not proven.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Distinct DAGs, same reachability",
+      "anchor": {
+        "section": "Reachability relation, transitive closure, and transitive reduction",
+        "snippet": "different DAGs may give rise to the same reachability relation"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No formalization of DAGs or this non-injectivity-of-reachability observation exists.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Transitive closure of a DAG",
+      "anchor": {
+        "section": "Reachability relation, transitive closure, and transitive reduction",
+        "snippet": "The transitive closure of a DAG is the graph with the most edges that has the same reachability relation as the DAG"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Relation.TransGen",
+        "module": "Mathlib.Logic.Relation",
+        "match_kind": "generalization"
+      },
+      "note": "`Relation.TransGen` is the transitive closure of an arbitrary relation, capturing the construction, but not the graph-theoretic 'maximum edges' characterization.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Finite poset representable as DAG",
+      "anchor": {
+        "section": "Reachability relation, transitive closure, and transitive reduction",
+        "snippet": "every finite partially ordered set can be represented as a DAG"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "There is no DAG type nor a theorem representing finite posets as DAGs.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Transitive reduction of a DAG",
+      "anchor": {
+        "section": "Reachability relation, transitive closure, and transitive reduction",
+        "snippet": "The transitive reduction of a DAG is the graph with the fewest edges that has the same reachability relation as the DAG"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "CovBy",
+        "module": "Mathlib.Order.Cover",
+        "match_kind": "special_case"
+      },
+      "note": "The covering relation `CovBy` (⋖) is the transitive reduction for a (finite) partial order, but a general transitive-reduction operation on directed graphs is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Hasse diagram",
+      "anchor": {
+        "section": "Reachability relation, transitive closure, and transitive reduction",
+        "snippet": "A Hasse diagram of a partial order is a drawing of the transitive reduction"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "SimpleGraph.hasse",
+        "module": "Mathlib.Combinatorics.SimpleGraph.Hasse",
+        "match_kind": "exact"
+      },
+      "note": "`SimpleGraph.hasse` is the Hasse diagram of an order as the graph of its covering relation (the combinatorial object, not the geometric drawing).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Topological ordering",
+      "anchor": {
+        "section": "Topological ordering",
+        "snippet": "A topological ordering of a directed graph is an ordering of its vertices into a sequence"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No notion of topological ordering of a directed graph is present in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Graph with topological ordering is acyclic",
+      "anchor": {
+        "section": "Topological ordering",
+        "snippet": "every graph with a topological ordering is acyclic"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Topological orderings of directed graphs are not formalized, so this implication is absent.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Every DAG has a topological ordering",
+      "anchor": {
+        "section": "Topological ordering",
+        "snippet": "every directed acyclic graph has at least one topological ordering"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "extend_partialOrder",
+        "module": "Mathlib.Order.Extension.Linear",
+        "match_kind": null
+      },
+      "note": "The order-theoretic analogue (Szpilrajn) `extend_partialOrder`, that every partial order extends to a linear order, exists, but the graph statement about DAGs is not stated.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Unique topological ordering condition",
+      "anchor": {
+        "section": "Topological ordering",
+        "snippet": "a DAG has a unique topological ordering if and only if it has a directed path containing all the vertices"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Neither topological orderings nor this Hamiltonian-path uniqueness criterion are formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Topological orderings are linear extensions",
+      "anchor": {
+        "section": "Topological ordering",
+        "snippet": "The family of topological orderings of a DAG is the same as the family of linear extensions"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "LinearExtension",
+        "module": "Mathlib.Order.Extension.Linear",
+        "match_kind": null
+      },
+      "note": "`LinearExtension` formalizes linear extensions of a partial order, but the equivalence with topological orderings of a DAG is not stated (topological orderings being absent).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Number of labeled DAGs and recurrence",
+      "anchor": {
+        "section": "Combinatorial enumeration",
+        "snippet": "The number of DAGs on n labeled vertices"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No enumeration of labeled DAGs or its recurrence is formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "DAGs and positive-eigenvalue (0,1) matrices",
+      "anchor": {
+        "section": "Combinatorial enumeration",
+        "snippet": "a matrix A is an adjacency matrix of a DAG if and only if A + I is a (0,1) matrix with all eigenvalues positive"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This adjacency-matrix eigenvalue characterization of DAGs is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Multitree",
+      "anchor": {
+        "section": "Related families of graphs",
+        "snippet": "is a DAG in which there is at most one directed path between any two vertices"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The multitree (diamond-free poset / strongly unambiguous DAG) notion is not in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Polytree",
+      "anchor": {
+        "section": "Related families of graphs",
+        "snippet": "is a multitree formed by orienting the edges of an undirected tree"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Polytrees (orientations of undirected trees) are not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Arborescence",
+      "anchor": {
+        "section": "Related families of graphs",
+        "snippet": "An arborescence is a polytree formed by orienting the edges of an undirected tree away from a particular vertex"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Quiver.Arborescence",
+        "module": "Mathlib.Combinatorics.Quiver.Arborescence",
+        "match_kind": "exact"
+      },
+      "note": "`Quiver.Arborescence` is exactly a directed rooted tree: a root with a unique directed path to every vertex.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Topological sorting in linear time",
+      "anchor": {
+        "section": "Topological sorting and recognition",
+        "snippet": "Topological sorting is the algorithmic problem of finding a topological ordering of a given DAG"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No topological sorting algorithm or its complexity is formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "DAG recognition in linear time",
+      "anchor": {
+        "section": "Topological sorting and recognition",
+        "snippet": "It is also possible to check whether a given directed graph is a DAG in linear time"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "DAG recognition and its linear-time complexity are not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Acyclic orientation",
+      "anchor": {
+        "section": "Construction from cyclic graphs",
+        "snippet": "Any undirected graph may be made into a DAG by choosing a total order for its vertices"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib's `Digraph.Orientation` only forgets orientation (digraph→simple graph); constructing an acyclic orientation from a total order is not formalized (and is listed as a TODO).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Acyclic orientations and chromatic polynomial",
+      "anchor": {
+        "section": "Construction from cyclic graphs",
+        "snippet": "The number of acyclic orientations is equal to"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Neither acyclic orientations nor the chromatic polynomial exist in Mathlib, so Stanley's theorem is absent.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Feedback vertex/arc set removal",
+      "anchor": {
+        "section": "Construction from cyclic graphs",
+        "snippet": "Any directed graph may be made into a DAG by removing a feedback vertex set or a feedback arc set"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Feedback vertex/arc sets are not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Condensation",
+      "anchor": {
+        "section": "Construction from cyclic graphs",
+        "snippet": "An arbitrary directed graph may also be transformed into a DAG, called its condensation"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Strongly connected components and the condensation construction are not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Transitive closure construction time",
+      "anchor": {
+        "section": "Transitive closure and transitive reduction",
+        "snippet": "may be constructed in time O ( mn )"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Algorithmic time bounds for transitive closure are not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Transitive reduction construction time",
+      "anchor": {
+        "section": "Transitive closure and transitive reduction",
+        "snippet": "the transitive reduction can be constructed in the same asymptotic time bounds as the transitive closure"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Algorithmic time bounds for transitive reduction are not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Closure problem",
+      "anchor": {
+        "section": "Closure problem",
+        "snippet": "The closure problem takes as input a vertex-weighted directed acyclic graph"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The closure problem (max-weight closed set) is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Shortest and longest paths in DAGs",
+      "anchor": {
+        "section": "Path algorithms",
+        "snippet": "it is possible to find shortest paths and longest paths from a given starting vertex in DAGs in linear time"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Linear-time shortest/longest path algorithms on DAGs are not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Dependency graph",
+      "anchor": {
+        "section": "Scheduling",
+        "snippet": "a dependency graph is a graph that has a vertex for each object to be updated"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Dependency graphs (an application notion) are not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Circular dependency",
+      "anchor": {
+        "section": "Scheduling",
+        "snippet": "A cycle in this graph is called a circular dependency"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Circular dependencies are not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Critical path (PERT)",
+      "anchor": {
+        "section": "Scheduling",
+        "snippet": "The longest path in this DAG represents the critical path of the project"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "PERT critical-path analysis is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "DAG as processing network",
+      "anchor": {
+        "section": "Data processing networks",
+        "snippet": "A directed acyclic graph may be used to represent a network of processing elements"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Processing-network applications of DAGs are not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Acyclic dependencies principle",
+      "anchor": {
+        "section": "Data processing networks",
+        "snippet": "the acyclic dependencies principle states that the dependencies between modules or components of a large software system should form a directed acyclic graph"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This software-engineering principle is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Feedforward neural networks",
+      "anchor": {
+        "section": "Data processing networks",
+        "snippet": "Feedforward neural networks are another example"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Feedforward neural networks are not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Bayesian network",
+      "anchor": {
+        "section": "Causal structures",
+        "snippet": "a Bayesian network represents a system of probabilistic events as vertices in a directed acyclic graph"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Bayesian networks are not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Moral graph of a DAG",
+      "anchor": {
+        "section": "Causal structures",
+        "snippet": "the moral graph of a DAG is the undirected graph created by adding an (undirected) edge between all parents of the same vertex"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The moralization/moral graph construction is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Influence diagram",
+      "anchor": {
+        "section": "Causal structures",
+        "snippet": "the vertices of which represent either decisions to be made or unknown information"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Influence diagrams are not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "DAGs encode causal structure",
+      "anchor": {
+        "section": "Causal structures",
+        "snippet": "in any application represented by a directed acyclic graph there is a causal structure"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Causal-structure semantics of DAGs are not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Family trees as DAGs",
+      "anchor": {
+        "section": "Genealogy and version history",
+        "snippet": "Family trees may be seen as directed acyclic graphs"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Genealogical DAGs are not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Version history (Git)",
+      "anchor": {
+        "section": "Genealogy and version history",
+        "snippet": "The version history of a distributed revision control system, such as Git"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Version-control history DAGs are not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "History DAG (Delaunay triangulation)",
+      "anchor": {
+        "section": "Genealogy and version history",
+        "snippet": "the algorithm maintains a history DAG representing the version history of a geometric structure"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "History DAGs for incremental geometric algorithms are not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Citation graph",
+      "anchor": {
+        "section": "Citation graphs",
+        "snippet": "In a citation graph the vertices are documents with a single publication date"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Citation graphs are not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Longest path scaling in Price model",
+      "anchor": {
+        "section": "Citation graphs",
+        "snippet": "the length of the longest path, from the n-th node added to the network to the first node in the network, scales as"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Price-model longest-path scaling result is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "DAG as compact sequence representation",
+      "anchor": {
+        "section": "Data compression",
+        "snippet": "Directed acyclic graphs may also be used as a compact representation of a collection of sequences"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Using DAGs to compactly represent sequence collections is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Directed acyclic word graph",
+      "anchor": {
+        "section": "Data compression",
+        "snippet": "the directed acyclic word graph is a data structure in computer science formed by a directed acyclic graph with a single source"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The DAWG data structure is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Trie",
+      "anchor": {
+        "section": "Data compression",
+        "snippet": "the tree formed in this way for a set of strings is called a trie"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The trie data structure is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Binary search tree as rooted DAG",
+      "anchor": {
+        "section": "Data compression",
+        "snippet": "a binary search tree can be viewed as a rooted DAG where paths represent sorted orderings of keys"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This DAG view of binary search trees is not formalized (Mathlib has ordered-set trees in `Data.Ordmap` but not this framing).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Binary decision diagram",
+      "anchor": {
+        "section": "Data compression",
+        "snippet": "a DAG-based data structure for representing binary functions"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Binary decision diagrams are not formalized.",
+      "provenance": "ai"
+    }
+  ]
+}

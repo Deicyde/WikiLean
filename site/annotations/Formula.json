@@ -1,0 +1,169 @@
+{
+  "slug": "Formula",
+  "wikipedia_title": "Formula",
+  "display_title": "Formula",
+  "schema_version": 3,
+  "annotation_style": "theorem_article",
+  "annotations": [
+    {
+      "kind": "definition",
+      "label": "Formula (general)",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "a formula is a concise way of expressing information symbolically"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "An informal encyclopedic notion of symbolic expression with no mathematical content to formalize in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Formula in mathematics",
+      "anchor": {
+        "section": "In mathematics",
+        "snippet": "a formula generally refers to an equation or inequality relating one expression to another"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "An informal description of formulas as equations/inequalities; Mathlib uses Lean's built-in Eq and order relations rather than a named formalization of this concept.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Volume of a sphere formula",
+      "anchor": {
+        "section": "In mathematics",
+        "snippet": "the volume of a sphere in terms of its radius"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "EuclideanSpace.volume_ball",
+        "module": "Mathlib.MeasureTheory.Measure.Lebesgue.VolumeOfBalls",
+        "match_kind": "generalization"
+      },
+      "note": "Mathlib gives the n-dimensional ball volume in terms of radius (via Gamma), of which V = 4/3·π·r³ is the 3-dimensional special case (also InnerProductSpace.volume_ball_of_dim_odd).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Newton's second law formula",
+      "anchor": {
+        "section": "In mathematics",
+        "snippet": "is an expression of Newton's second law"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Newton's second law F = ma is a physics relation not present in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Expressions vs. formulas",
+      "anchor": {
+        "section": "In mathematics",
+        "snippet": "Expressions are distinct from formulas in the sense that they don't usually contain relations like equality"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "A terminological distinction between expressions and formulas with no corresponding declaration in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Formula as Boolean expression",
+      "anchor": {
+        "section": "In mathematics",
+        "snippet": "formulas are viewed as expressions that can be evaluated to true or false"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "FirstOrder.Language.BoundedFormula.Realize",
+        "module": "Mathlib.ModelTheory.Semantics",
+        "match_kind": null
+      },
+      "note": "Mathlib has formula realization that evaluates a first-order formula to a Prop (truth value), but no general Boolean-valued formula evaluation type matching this informal description.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Well-formed formula",
+      "anchor": {
+        "section": "In mathematical logic",
+        "snippet": "is an entity constructed using the symbols and formation rules of a given logical language"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "FirstOrder.Language.BoundedFormula",
+        "module": "Mathlib.ModelTheory.Syntax",
+        "match_kind": "special_case"
+      },
+      "note": "BoundedFormula (and the abbrev Formula) is the inductively-defined well-formed formula of a first-order language L, a special case of WFFs over an arbitrary logical language.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "First-order logic formula",
+      "anchor": {
+        "section": "In mathematical logic",
+        "snippet": "is a formula, provided that"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "FirstOrder.Language.BoundedFormula",
+        "module": "Mathlib.ModelTheory.Syntax",
+        "match_kind": "exact"
+      },
+      "note": "First-order formulas (with the formation rules falsum/equal/rel/imp/all) are exactly Mathlib's BoundedFormula inductive type and the Formula abbreviation.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Formula in computing",
+      "anchor": {
+        "section": "In computing",
+        "snippet": "a formula typically describes a calculation"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The computing/spreadsheet notion of a formula as a calculation is not a mathematical object formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Boltzmann's entropy formula",
+      "anchor": {
+        "section": "Units",
+        "snippet": "An example of a formula used in science is Boltzmann's entropy formula"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Boltzmann's entropy formula S = k·ln W is a physics relation not present in Mathlib.",
+      "provenance": "ai"
+    }
+  ]
+}

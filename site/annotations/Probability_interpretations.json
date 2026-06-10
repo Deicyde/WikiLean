@@ -1,0 +1,281 @@
+{
+  "slug": "Probability_interpretations",
+  "wikipedia_title": "Probability interpretations",
+  "display_title": "Probability interpretations",
+  "schema_version": 3,
+  "annotation_style": "theorem_article",
+  "annotations": [
+    {
+      "kind": "definition",
+      "label": "Physical (objective) probability",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "are associated with random physical systems such as roulette wheels"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "A philosophical interpretation of probability with no specific mathematical statement to formalize in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Evidential (Bayesian) probability",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "can be assigned to any statement whatsoever, even when no random process is involved"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "An epistemological interpretation of probability, not a formalizable mathematical statement.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Classical definition of probability",
+      "anchor": {
+        "section": "Classical definition",
+        "snippet": "probability is shared equally between all the possible outcomes"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "MeasureTheory.uniformOn",
+        "module": "Mathlib.Probability.UniformOn",
+        "match_kind": "special_case"
+      },
+      "note": "The equiprobable assignment is realized by the uniform measure `uniformOn`, though the philosophical 'classical definition' itself is not stated.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Classical probability formula",
+      "anchor": {
+        "section": "Classical definition",
+        "snippet": "If a random experiment can result in N mutually exclusive and equally likely outcomes"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "MeasureTheory.uniformOn_univ",
+        "module": "Mathlib.Probability.UniformOn",
+        "match_kind": "special_case"
+      },
+      "note": "`uniformOn_univ` gives `uniformOn univ s = Measure.count s / Fintype.card`, i.e. favorable-over-total for equally likely outcomes.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Frequentist probability",
+      "anchor": {
+        "section": "Frequentism",
+        "snippet": "the probability of an event is its relative frequency over time"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "A philosophical interpretation defining probability as relative frequency, with no corresponding Mathlib definition.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Frequency limit definition",
+      "anchor": {
+        "section": "Frequentism",
+        "snippet": "the number of occurrences of an event"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "ProbabilityTheory.strong_law_ae",
+        "module": "Mathlib.Probability.StrongLaw",
+        "match_kind": null
+      },
+      "note": "Mathlib does not define probability as a frequency limit, but the strong law of large numbers proves relative frequencies converge to the expectation.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Subjective (epistemic) probability",
+      "anchor": {
+        "section": "Subjectivism",
+        "snippet": "regarding it as a measure of the 'rational degree of belief' of the individual"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "A philosophical interpretation of probability as degree of belief, not formalizable as a mathematical statement.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Examples of epistemic probability",
+      "anchor": {
+        "section": "Subjectivism",
+        "snippet": "to assign a probability to the proposition that a proposed law of physics is true"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Illustrative examples of epistemic probability with no mathematical content to formalize.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Coherence requires probability laws",
+      "anchor": {
+        "section": "Subjectivism",
+        "snippet": "subjective beliefs must follow the laws of probability if they are to be coherent"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Dutch book / coherence argument (de Finetti) is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Propensity probability",
+      "anchor": {
+        "section": "Propensity",
+        "snippet": "think of probability as a physical propensity, or disposition, or tendency"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "A philosophical interpretation of probability with no formal mathematical counterpart.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Law of large numbers",
+      "anchor": {
+        "section": "Propensity",
+        "snippet": "which is a consequence of the axioms of probability"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "ProbabilityTheory.strong_law_ae",
+        "module": "Mathlib.Probability.StrongLaw",
+        "match_kind": "generalization"
+      },
+      "note": "The strong law of large numbers is formalized as `strong_law_ae` (and `strong_law_ae_real`) for iid integrable random variables.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Popper's propensity definition",
+      "anchor": {
+        "section": "Propensity",
+        "snippet": "To say that a set of generating conditions has propensity p of producing the outcome E"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Popper's propensity definition is a philosophical formulation, not represented in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Principal Principle",
+      "anchor": {
+        "section": "Propensity",
+        "snippet": "it constrains rational belief to take the same numerical value"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Lewis's Principal Principle linking chance and credence is philosophical and not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Biased coin fair price",
+      "anchor": {
+        "section": "Propensity",
+        "snippet": "suppose you are certain that a particular biased coin has propensity 0.32 to land heads"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "A decision-theoretic illustrative example (fair betting price) with no specific Mathlib theorem.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Logical/epistemic/inductive probability",
+      "anchor": {
+        "section": "Logical, epistemic, and inductive probability",
+        "snippet": "has been called the logical , epistemic , or inductive probability"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "An interpretive notion of probability as inductive logic, not a formalizable statement.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Logical probabilities as objective relations",
+      "anchor": {
+        "section": "Logical, epistemic, and inductive probability",
+        "snippet": "Logical probabilities are conceived"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The conception of logical probability as objective relations is philosophical and not in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Exchangeability",
+      "anchor": {
+        "section": "Prediction",
+        "snippet": "the central idea of exchangeability – that future observations should behave like past observations"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "A grep for 'exchangeab' found no exchangeability definition or de Finetti theorem in Mathlib.",
+      "provenance": "ai"
+    }
+  ]
+}

@@ -1,0 +1,1043 @@
+{
+  "slug": "Differentiable_manifold",
+  "wikipedia_title": "Differentiable manifold",
+  "display_title": "Differentiable manifold",
+  "schema_version": 3,
+  "annotation_style": "theorem_article",
+  "annotations": [
+    {
+      "kind": "definition",
+      "label": "Chart on a topological space",
+      "anchor": {
+        "section": "Atlases",
+        "snippet": "A chart ( U , φ ) on M consists of an open subset U of M , and a homeomorphism φ from U to an open subset of some Euclidean space"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "ChartedSpace",
+        "module": "Mathlib.Geometry.Manifold.ChartedSpace",
+        "match_kind": "generalization"
+      },
+      "note": "Charts are formalized as members of `atlas H M` of `OpenPartialHomeomorph M H` in `ChartedSpace`, generalized to any model space H rather than just Euclidean.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Differentiable atlas",
+      "anchor": {
+        "section": "Atlases",
+        "snippet": "This is resolved by the introduction of a \"differentiable atlas\" of charts, which specifies a collection of charts on M for which the transition maps"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "HasGroupoid",
+        "module": "Mathlib.Geometry.Manifold.HasGroupoid",
+        "match_kind": "generalization"
+      },
+      "note": "The notion of a differentiable atlas is captured by `HasGroupoid M (contDiffGroupoid n I)`, where transition maps lie in the C^n groupoid.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Differentiably compatible chart",
+      "anchor": {
+        "section": "Atlases",
+        "snippet": "one says that a chart is differentiably compatible with the atlas, or differentiable relative to the given atlas, if the inclusion of the chart into the collection of charts comprising the given differentiable atlas results in a differentiable atlas"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "StructureGroupoid.maximalAtlas",
+        "module": "Mathlib.Geometry.Manifold.HasGroupoid",
+        "match_kind": "generalization"
+      },
+      "note": "Compatibility is membership in `G.maximalAtlas M`, defined as charts whose transitions with every atlas member lie in the structure groupoid G.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Maximal differentiable atlas",
+      "anchor": {
+        "section": "Atlases",
+        "snippet": "A differentiable atlas determines a maximal differentiable atlas , consisting of all charts which are differentiably compatible with the given atlas"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "StructureGroupoid.maximalAtlas",
+        "module": "Mathlib.Geometry.Manifold.HasGroupoid",
+        "match_kind": "generalization"
+      },
+      "note": "`StructureGroupoid.maximalAtlas G M` collects all charts compatible with the atlas under groupoid G; for `G = contDiffGroupoid n I` this is the maximal C^n atlas.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Smooth structure / complex structure",
+      "anchor": {
+        "section": "Atlases",
+        "snippet": "A maximal smooth atlas is also known as a smooth structure ; a maximal holomorphic atlas is also known as a complex structure"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "IsManifold",
+        "module": "Mathlib.Geometry.Manifold.IsManifold.Basic",
+        "match_kind": null
+      },
+      "note": "Mathlib's `IsManifold I ∞ M` is the smooth-structure typeclass and `Mathlib.Geometry.Manifold.Complex` exists, but there is no named `SmoothStructure`/`ComplexStructure` term separate from the existing atlas.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Equivalent differentiable atlases",
+      "anchor": {
+        "section": "Atlases",
+        "snippet": "is to consider equivalence classes of differentiable atlases, in which two differentiable atlases are considered equivalent if every chart of one atlas is differentiably compatible with the other atlas"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "StructureGroupoid.maximalAtlas",
+        "module": "Mathlib.Geometry.Manifold.HasGroupoid",
+        "match_kind": null
+      },
+      "note": "Mathlib bypasses equivalence classes by always working with `maximalAtlas`; the equivalence relation between two atlases is not separately named.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Dimension well-defined on connected components",
+      "anchor": {
+        "section": "Atlases",
+        "snippet": "each connected component of a topological space which has a differentiable atlas has a well-defined dimension"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No theorem establishing that the dimension of the model space is locally constant or well-defined on connected components of a charted space was found.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Differentiable manifold",
+      "anchor": {
+        "section": "Manifolds",
+        "snippet": "A differentiable manifold is a Hausdorff and second countable topological space M , together with a maximal differentiable atlas on M"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "IsManifold",
+        "module": "Mathlib.Geometry.Manifold.IsManifold.Basic",
+        "match_kind": "generalization"
+      },
+      "note": "`IsManifold I n M` formalizes a C^n manifold via `HasGroupoid M (contDiffGroupoid n I)`; Hausdorff/second-countable are not built in but added as separate typeclasses when needed.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "C^0 manifold equals topological manifold",
+      "anchor": {
+        "section": "Manifolds",
+        "snippet": "The notion of a C 0 manifold is identical to that of a topological manifold"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "contDiffGroupoid_zero_eq",
+        "module": "Mathlib.Geometry.Manifold.IsManifold.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`contDiffGroupoid_zero_eq` proves `contDiffGroupoid 0 I = continuousGroupoid H`, identifying the C^0 manifold structure with a topological-manifold structure (a `ChartedSpace`).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Patching Euclidean pieces",
+      "anchor": {
+        "section": "Patching together Euclidean pieces to form a manifold",
+        "snippet": "One can reverse-engineer the above definitions to obtain one perspective on the construction of manifolds"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "ChartedSpaceCore",
+        "module": "Mathlib.Geometry.Manifold.ChartedSpace",
+        "match_kind": null
+      },
+      "note": "`ChartedSpaceCore` provides a construction of a charted space from local data (open pieces and transition maps), which is the formal version of this patching construction.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Differentiable function on a manifold",
+      "anchor": {
+        "section": "Differentiable functions",
+        "snippet": "A real valued function f on an n -dimensional differentiable manifold M is called differentiable at a point p ∈ M if it is differentiable in any coordinate chart defined around p"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "MDifferentiableAt",
+        "module": "Mathlib.Geometry.Manifold.MFDeriv.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`MDifferentiableAt I I' f x` defines differentiability of `f` at `x` via expression in charts; `ContMDiffAt` provides the C^k variant.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Differentiable functions",
+          "snippet": "A real valued function f on an n -dimensional differentiable manifold M is called differentiable at a point p ∈ M if it is differentiable in any coordinate chart defined around p"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle f\\circ \\phi ^{-1}\\colon \\phi (U)\\subset {\\mathbf {R} }^{n}\\to {\\mathbf {R} }}"
+        }
+      ]
+    },
+    {
+      "kind": "definition",
+      "label": "Directional derivative along a curve",
+      "anchor": {
+        "section": "Directional differentiation",
+        "snippet": "the directional derivative of f at a point p in M is defined as follows. Suppose that γ( t ) is a curve in M with γ (0) = p , which is differentiable in the sense that its composition with any chart is a differentiable curve"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "mfderiv",
+        "module": "Mathlib.Geometry.Manifold.MFDeriv.Defs",
+        "match_kind": null
+      },
+      "note": "Mathlib defines `mfderiv` (the differential) directly and uses it to differentiate along curves via composition, rather than defining the directional derivative through curves as primary.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Directional derivative depends only on tangent vector",
+      "anchor": {
+        "section": "Directional differentiation",
+        "snippet": "by the chain rule, f has the same directional derivative at p along γ 1 as along γ 2 . This means that the directional derivative depends only on the tangent vector of the curve at p"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "mfderiv_comp",
+        "module": "Mathlib.Geometry.Manifold.MFDeriv.Basic",
+        "match_kind": null
+      },
+      "note": "The chain rule for `mfderiv` implicitly gives this, but the specific statement that `(f∘γ)'(0)` depends only on `mfderiv γ 0 1` is not stated as a named lemma.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Tangent vector and tangent space",
+      "anchor": {
+        "section": "Tangent vector and the differential",
+        "snippet": "A tangent vector at p ∈ M is an equivalence class of differentiable curves γ with γ (0) = p , modulo the equivalence relation of first-order contact between the curves"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "TangentSpace",
+        "module": "Mathlib.Geometry.Manifold.IsManifold.Basic",
+        "match_kind": "generalization"
+      },
+      "note": "`TangentSpace I x` is defined as a type synonym for the model space E rather than as equivalence classes of curves, but it serves as the tangent space at x.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Differential of a function at a point",
+      "anchor": {
+        "section": "Tangent vector and the differential",
+        "snippet": "This linear functional is often denoted by df ( p ) and is called the differential of f at p"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "mfderiv",
+        "module": "Mathlib.Geometry.Manifold.MFDeriv.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`mfderiv I I' f x : TangentSpace I x →L[𝕜] TangentSpace I' (f x)` is the differential `df(p)` of f at p between manifolds.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Tangent vector and the differential",
+          "snippet": "This linear functional is often denoted by df ( p ) and is called the differential of f at p"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle X\\mapsto Xf(p)}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle df(p)\\colon T_{p}M\\to {\\mathbf {R} }.}"
+        }
+      ]
+    },
+    {
+      "kind": "definition",
+      "label": "Tangent vector via local coordinates",
+      "anchor": {
+        "section": "Definition of tangent space and differentiation in local coordinates",
+        "snippet": "A \"tangent vector at"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "TangentSpace",
+        "module": "Mathlib.Geometry.Manifold.IsManifold.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`TangentSpace I x := E` (the model space) is precisely the local-coordinates implementation, with chart change-of-coordinates handled by the tangent bundle's transition functions.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Definition of tangent space and differentiation in local coordinates",
+          "snippet": "A \"tangent vector at"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle v_{\\alpha }=D{\\Big |}_{\\phi _{\\beta }(p)}(\\phi _{\\alpha }\\circ \\phi _{\\beta }^{-1})(v_{\\beta })}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle D{\\Big |}_{\\phi _{\\alpha }(p)}(f\\circ \\phi _{\\alpha }^{-1})(v_{\\alpha }),}"
+        }
+      ]
+    },
+    {
+      "kind": "definition",
+      "label": "Partition of unity subordinate to a cover",
+      "anchor": {
+        "section": "Partitions of unity",
+        "snippet": "a partition of unity subordinate to the cover { U α } is a collection of real-valued C k functions φ i on M satisfying the following conditions"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "SmoothPartitionOfUnity.IsSubordinate",
+        "module": "Mathlib.Geometry.Manifold.PartitionOfUnity",
+        "match_kind": "exact"
+      },
+      "note": "`SmoothPartitionOfUnity ι I M s` together with `IsSubordinate` formalizes smooth partitions of unity subordinate to a family of sets.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Existence of C^k partitions of unity",
+      "anchor": {
+        "section": "Partitions of unity",
+        "snippet": "Every open covering of a C k manifold M has a C k partition of unity"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "SmoothPartitionOfUnity.exists_isSubordinate",
+        "module": "Mathlib.Geometry.Manifold.PartitionOfUnity",
+        "match_kind": "exact"
+      },
+      "note": "`SmoothPartitionOfUnity.exists_isSubordinate` produces a smooth partition of unity subordinate to any open cover (for sigma-compact T2 manifolds).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "C^k map between manifolds",
+      "anchor": {
+        "section": "Differentiability of mappings between manifolds",
+        "snippet": "We define \" f is C k ( M , N ) \" to mean that all such compositions of f with charts are"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "ContMDiff",
+        "module": "Mathlib.Geometry.Manifold.ContMDiff.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`ContMDiff I I' n f` defines C^n maps between manifolds via composition with charts.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Tangent bundle",
+      "anchor": {
+        "section": "Tangent bundle",
+        "snippet": "The collection of tangent spaces at all points can in turn be made into a manifold, the tangent bundle , whose dimension is"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "TangentBundle",
+        "module": "Mathlib.Geometry.Manifold.VectorBundle.Tangent",
+        "match_kind": "exact"
+      },
+      "note": "`TangentBundle I M` is defined as a `Bundle.TotalSpace` and given a vector-bundle (and manifold) structure via `VectorBundleCore` indexed by the charts of M.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Cotangent space and cotangent bundle",
+      "anchor": {
+        "section": "Cotangent bundle",
+        "snippet": "The cotangent space at a point is the dual of the tangent space at that point and the elements are referred to as cotangent vectors; the cotangent bundle is the collection of all cotangent vectors"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No `CotangentSpace`/`CotangentBundle` declaration was found in `Mathlib/Geometry/Manifold`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Exact differential",
+      "anchor": {
+        "section": "Cotangent bundle",
+        "snippet": "However, not every covector field can be expressed this way. Those that can are referred to as exact differentials"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Exact differentials/1-forms are not formalized on manifolds in Mathlib (no cotangent bundle or differential-form machinery present).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Tensor bundle",
+      "anchor": {
+        "section": "Tensor bundle",
+        "snippet": "The tensor bundle is the direct sum of all tensor products of the tangent bundle and the cotangent bundle"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "There is no `TensorBundle` over a manifold in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Frame and frame bundle",
+      "anchor": {
+        "section": "Frame bundle",
+        "snippet": "A frame (or, in more precise terms, a tangent frame), is an ordered basis of particular tangent space"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No frame bundle of a tangent bundle / principal GL_n-bundle is defined for manifolds in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "k-th order tangent bundle and jet bundles",
+      "anchor": {
+        "section": "Jet bundles",
+        "snippet": "the k -th order tangent bundle is the collection of curves modulo the relation of k -th order contact"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Higher-order tangent bundles and jet bundles are not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "k-th order frame bundle",
+      "anchor": {
+        "section": "Jet bundles",
+        "snippet": "Define a k -th order frame to be the k -jet of a diffeomorphism from"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "k-th order frame bundles are not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Differential / tangent map between manifolds",
+      "anchor": {
+        "section": "Differential calculus of functions",
+        "snippet": "then the differential of f is a mapping df : T M → T N . It is also denoted by Tf and called the tangent map"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "tangentMap",
+        "module": "Mathlib.Geometry.Manifold.MFDeriv.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`tangentMap I I' f : TangentBundle I M → TangentBundle I' M'` is exactly the tangent map (denoted `df` or `Tf`).",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Differential calculus of functions",
+          "snippet": "then the differential of f is a mapping df : T M → T N . It is also denoted by Tf and called the tangent map"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle df(p)\\colon T_{p}M\\to T_{f(p)}N.}"
+        }
+      ]
+    },
+    {
+      "kind": "definition",
+      "label": "Immersion, embedding and submersion",
+      "anchor": {
+        "section": "Differential calculus of functions",
+        "snippet": "If m ≤ n , and f : M → N has rank m at p ∈ M , then f is called an immersion at p"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "IsImmersion",
+        "module": "Mathlib.Geometry.Manifold.Immersion",
+        "match_kind": null
+      },
+      "note": "`IsImmersion`/`IsImmersionAt` are formalized in `Manifold.Immersion`; submersions and smooth embeddings (beyond `Mathlib.Geometry.Manifold.SmoothEmbedding`) are not fully present as named definitions.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Implicit function theorem for submersions",
+      "anchor": {
+        "section": "Differential calculus of functions",
+        "snippet": "The implicit function theorem states that if f is a submersion at p , then M is locally a product of N and"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The implicit function theorem exists for Banach spaces in `Mathlib.Analysis.Calculus.Implicit`, but is not stated for submersions between manifolds.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Differential calculus of functions",
+          "snippet": "The implicit function theorem states that if f is a submersion at p , then M is locally a product of N and"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle (y_{1}\\circ f,\\dotsc ,y_{n}\\circ f,x_{1},\\dotsc ,x_{m-n})}"
+        }
+      ]
+    },
+    {
+      "kind": "definition",
+      "label": "Lie derivative",
+      "anchor": {
+        "section": "Lie derivative",
+        "snippet": "A Lie derivative , named after Sophus Lie , is a derivation on the algebra of tensor fields over a manifold"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "mlieBracket",
+        "module": "Mathlib.Geometry.Manifold.VectorField.LieBracket",
+        "match_kind": null
+      },
+      "note": "The Lie bracket of vector fields (`mlieBracket`) is formalized; the general Lie derivative on tensor fields is not, since tensor fields themselves are not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Differential forms and degree",
+      "anchor": {
+        "section": "Exterior calculus",
+        "snippet": "The bundle of differential forms , at each point, consists of all totally antisymmetric multilinear maps on the tangent space at that point"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Differential forms on manifolds are not formalized in Mathlib (only the algebraic exterior/alternating algebra exists in linear algebra).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Exterior derivative",
+      "anchor": {
+        "section": "Exterior derivative",
+        "snippet": "The exterior derivative is a linear operator on the graded vector space of all smooth differential forms on a smooth manifold"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No exterior derivative `d` on manifold-valued differential forms is formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Exterior derivative squared is zero",
+      "anchor": {
+        "section": "Exterior derivative",
+        "snippet": "The exterior derivative also satisfies the identity"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Without an exterior derivative on differential forms, `d ∘ d = 0` is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Closed and exact forms; de Rham cohomology",
+      "anchor": {
+        "section": "Exterior derivative",
+        "snippet": "A form"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "De Rham cohomology and closed/exact differential forms are not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Equivalence of smooth atlases via diffeomorphism",
+      "anchor": {
+        "section": "Relationship with topological manifolds",
+        "snippet": "one can define an equivalence relation on the space of smooth atlases on"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Diffeomorph",
+        "module": "Mathlib.Geometry.Manifold.Diffeomorph",
+        "match_kind": null
+      },
+      "note": "`Diffeomorph` is defined and would underlie this equivalence relation, but the equivalence relation on smooth structures themselves is not given a name in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Smooth structures in low dimensions",
+      "anchor": {
+        "section": "Relationship with topological manifolds",
+        "snippet": "If the dimension of"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The theorem that every topological manifold of dimension ≤ 3 admits a unique smooth structure is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Existence of topological manifolds with no smooth structure",
+      "anchor": {
+        "section": "Relationship with topological manifolds",
+        "snippet": "Some topological manifolds admit no smooth structures, as was originally shown with a ten-dimensional example by Kervaire"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Kervaire's example and the general existence of topological manifolds without smooth structure are not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Exotic 7-spheres (Milnor)",
+      "anchor": {
+        "section": "Relationship with topological manifolds",
+        "snippet": "Some topological manifolds admit many smooth structures which are not equivalent in the sense given above. This was originally discovered by John Milnor in the form of the exotic 7-spheres"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "exists_homeomorph_isEmpty_diffeomorph_sphere_seven",
+        "module": "Mathlib.Geometry.Manifold.PoincareConjecture",
+        "match_kind": "exact"
+      },
+      "note": "The existence of an exotic 7-sphere is stated as a `proof_wanted` in `Mathlib.Geometry.Manifold.PoincareConjecture`; the proof is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Classification of 1-manifolds",
+      "anchor": {
+        "section": "Classification",
+        "snippet": "Every one-dimensional connected smooth manifold is diffeomorphic to either"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The classification of connected smooth 1-manifolds (diffeomorphic to ℝ or S^1) is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Classification of compact 2-manifolds",
+      "anchor": {
+        "section": "Classification",
+        "snippet": "every two-dimensional connected compact smooth manifold is diffeomorphic to one of the following"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The classification of closed surfaces is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Geometrization conjecture",
+      "anchor": {
+        "section": "Classification",
+        "snippet": "the geometrization conjecture , stating loosely that any compact smooth 3-manifold can be split up into different parts, each of which admits Riemannian metrics which possess many symmetries"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Thurston's geometrization conjecture is not stated or formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Undecidability of homeomorphism for 4-manifolds",
+      "anchor": {
+        "section": "Classification",
+        "snippet": "the homeomorphism problem for 4-manifolds is undecidable"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Undecidability of the homeomorphism problem for 4-manifolds is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Freedman classification of simply connected 4-manifolds",
+      "anchor": {
+        "section": "Classification",
+        "snippet": "Simply connected 4-manifolds have been classified up to homeomorphism by Freedman using the intersection form and Kirby–Siebenmann invariant"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Freedman's classification of simply connected topological 4-manifolds is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Barden classification of simply connected 5-manifolds",
+      "anchor": {
+        "section": "Classification",
+        "snippet": "This has been carried out to provide an explicit classification of simply connected 5-manifolds by Dennis Barden"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Barden's classification of simply connected 5-manifolds is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Riemannian manifold",
+      "anchor": {
+        "section": "(Pseudo-)Riemannian manifolds",
+        "snippet": "A Riemannian manifold consists of a smooth manifold together with a positive-definite inner product on each of the individual tangent spaces"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "IsRiemannianManifold",
+        "module": "Mathlib.Geometry.Manifold.Riemannian.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`IsRiemannianManifold I M` is the Prop-valued typeclass for a Riemannian metric on a smooth manifold, alongside `ContMDiffRiemannianMetric` for the metric data.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Pseudo-Riemannian manifold",
+      "anchor": {
+        "section": "(Pseudo-)Riemannian manifolds",
+        "snippet": "A pseudo-Riemannian manifold (also called a semi-Riemannian manifold) is a generalization of the notion of Riemannian manifold where the inner products are allowed to have an indefinite signature"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Only positive-definite Riemannian metrics are formalized; pseudo-Riemannian/Lorentzian metrics with indefinite signature are not.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Finsler manifold",
+      "anchor": {
+        "section": "(Pseudo-)Riemannian manifolds",
+        "snippet": "A Finsler manifold is a different generalization of a Riemannian manifold, in which the inner product is replaced with a vector norm"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Finsler manifolds are not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Symplectic manifold",
+      "anchor": {
+        "section": "Symplectic manifolds",
+        "snippet": "A symplectic manifold is a manifold equipped with a closed , nondegenerate 2-form"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Symplectic manifolds are not formalized in Mathlib (requires differential forms, which are absent on manifolds).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Symplectic manifolds are even-dimensional",
+      "anchor": {
+        "section": "Symplectic manifolds",
+        "snippet": "This condition forces symplectic manifolds to be even-dimensional, due to the fact that skew-symmetric"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Without symplectic manifolds, this proposition is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Lie group",
+      "anchor": {
+        "section": "Lie groups",
+        "snippet": "A Lie group consists of a"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "LieGroup",
+        "module": "Mathlib.Geometry.Manifold.Algebra.LieGroup",
+        "match_kind": "exact"
+      },
+      "note": "`LieGroup I n G` is defined as a group with a manifold structure such that multiplication and inversion are C^n.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Lie groups are parallelizable",
+      "anchor": {
+        "section": "Lie groups",
+        "snippet": "The same argument shows, more generally, that every Lie group must be parallelizable"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Parallelizability is not defined in Mathlib, and no theorem stating Lie groups are parallelizable was found.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Pseudogroup",
+      "anchor": {
+        "section": "Pseudogroups",
+        "snippet": "A pseudogroup consists of a topological space S and a collection Γ consisting of homeomorphisms from open subsets of S to other open subsets of S such that"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "StructureGroupoid",
+        "module": "Mathlib.Geometry.Manifold.StructureGroupoid",
+        "match_kind": "exact"
+      },
+      "note": "`StructureGroupoid H` formalizes the notion of pseudogroup (called a structure groupoid in Mathlib) on a topological space H.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Atlas compatible with a pseudogroup",
+      "anchor": {
+        "section": "Pseudogroups",
+        "snippet": "is said to be compatible with a pseudogroup Γ provided that the transition functions"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "HasGroupoid",
+        "module": "Mathlib.Geometry.Manifold.HasGroupoid",
+        "match_kind": "exact"
+      },
+      "note": "`HasGroupoid M G` says the charts of M have transition maps in the structure groupoid G, exactly the notion of pseudogroup-compatible atlas.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Manifolds as pseudogroup atlases",
+      "anchor": {
+        "section": "Pseudogroups",
+        "snippet": "A differentiable manifold is then an atlas compatible with the pseudogroup of"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "IsManifold",
+        "module": "Mathlib.Geometry.Manifold.IsManifold.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`IsManifold I n M` extends `HasGroupoid M (contDiffGroupoid n I)`, presenting a C^n manifold as a charted space compatible with the C^n pseudogroup.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Structure sheaf giving a C^k manifold",
+      "anchor": {
+        "section": "Structure sheaf",
+        "snippet": "A structure sheaf C k is said to give M the structure of a C k manifold of dimension n provided that, for any p ∈ M , there exists a neighborhood U of p"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "ChartedSpace.locallyRingedSpace",
+        "module": "Mathlib.Geometry.Manifold.Sheaf.LocallyRingedSpace",
+        "match_kind": null
+      },
+      "note": "The smooth structure sheaf is built in `Sheaf.Smooth` and `ChartedSpace.locallyRingedSpace`, but Mathlib does not define a manifold by abstractly specifying a structure sheaf with local-model condition.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Differentiable manifold via locally ringed space",
+      "anchor": {
+        "section": "Sheaves of local rings",
+        "snippet": "A differentiable manifold (of class C k ) consists of a pair ( M , O M ) where M is a second countable Hausdorff space , and O M is a sheaf of local"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "ChartedSpace.locallyRingedSpace",
+        "module": "Mathlib.Geometry.Manifold.Sheaf.LocallyRingedSpace",
+        "match_kind": null
+      },
+      "note": "Mathlib produces the locally ringed space from a smooth manifold (`ChartedSpace.locallyRingedSpace`) but does not adopt the locally-ringed-space definition as the primary definition of a manifold.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Cotangent space via maximal ideal",
+      "anchor": {
+        "section": "Sheaves of local rings",
+        "snippet": "The cotangent space at a point is I p / I p 2 , where I p is the maximal ideal of the stalk"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The cotangent space `m_p/m_p^2` of a smooth manifold's structure sheaf is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Algebra of scalars on a manifold",
+      "anchor": {
+        "section": "Non-commutative geometry",
+        "snippet": "the set of real-valued C k functions on the manifold forms an algebra under pointwise addition and multiplication, called the algebra of scalar fields or simply the algebra of scalars"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "ContMDiffMap",
+        "module": "Mathlib.Geometry.Manifold.ContMDiffMap",
+        "match_kind": "exact"
+      },
+      "note": "`C^n⟮I, M; 𝓘(ℝ), ℝ⟯` (i.e. `ContMDiffMap` to ℝ) carries a commutative ring/algebra structure (see `Mathlib.Geometry.Manifold.Algebra.SmoothFunctions`).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Reconstruction of M from algebra of scalars (Banach–Stone)",
+      "anchor": {
+        "section": "Non-commutative geometry",
+        "snippet": "It is possible to reconstruct a manifold from its algebra of scalars, first as a set, but also as a topological space – this is an application of the Banach–Stone theorem"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Neither the Banach–Stone theorem nor reconstruction of a manifold from its algebra of smooth functions is formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Points of M correspond to algebra homomorphisms",
+      "anchor": {
+        "section": "Non-commutative geometry",
+        "snippet": "there is a one-to-one correspondence between the points of M and the algebra homomorphisms"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The correspondence between points of M and ℝ-algebra homomorphisms `C^∞(M) → ℝ` is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Tangent bundle via derivations",
+      "anchor": {
+        "section": "Non-commutative geometry",
+        "snippet": "the tangent bundle to M can be defined as the derivations of the algebra of smooth functions on M"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "PointedSmoothMap.eval",
+        "module": "Mathlib.Geometry.Manifold.DerivationBundle",
+        "match_kind": null
+      },
+      "note": "`Mathlib.Geometry.Manifold.DerivationBundle` constructs pointwise derivations of the smooth function algebra and relates them to the tangent space, but the identification of the tangent bundle with global derivations is not stated as a theorem.",
+      "provenance": "ai"
+    }
+  ]
+}

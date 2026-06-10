@@ -1,0 +1,1209 @@
+{
+  "slug": "Self-adjoint_operator",
+  "wikipedia_title": "Self-adjoint operator",
+  "display_title": "Self-adjoint operator",
+  "schema_version": 3,
+  "annotation_style": "theorem_article",
+  "annotations": [
+    {
+      "kind": "definition",
+      "label": "Self-adjoint operator",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "that is its own adjoint"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "IsSelfAdjoint",
+        "module": "Mathlib.Algebra.Star.SelfAdjoint",
+        "match_kind": "generalization"
+      },
+      "note": "Mathlib's `IsSelfAdjoint x ↔ star x = x` captures \"its own adjoint\" in any star algebra, specializing to operators via the adjoint.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Finite-dimensional spectral theorem",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "By the finite-dimensional spectral theorem"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "LinearMap.IsSymmetric.eigenvectorBasis_apply_self_apply",
+        "module": "Mathlib.Analysis.InnerProductSpace.Spectrum",
+        "match_kind": "exact"
+      },
+      "note": "A self-adjoint operator on a finite-dimensional inner product space is diagonalized by an orthonormal eigenbasis.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Hamiltonian operator",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "Of particular significance is the Hamiltonian operator"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The quantum-mechanical Hamiltonian operator is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Self-adjoint iff unitarily equivalent to multiplication",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "they are unitarily equivalent to real-valued multiplication operators"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The multiplication-operator form of the spectral theorem is not in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Graph and extension of an operator",
+      "anchor": {
+        "section": "Definitions",
+        "snippet": "The graph of an (arbitrary) operator"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "LinearPMap.graph",
+        "module": "Mathlib.Topology.Algebra.Module.LinearPMap",
+        "match_kind": "exact"
+      },
+      "note": "Mathlib defines the graph of a (partial) linear operator and an extension order `≤` on `LinearPMap`s.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Adjoint operator",
+      "anchor": {
+        "section": "Definitions",
+        "snippet": "acts on the subspace"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "LinearPMap.adjoint",
+        "module": "Mathlib.Analysis.InnerProductSpace.LinearPMap",
+        "match_kind": "exact"
+      },
+      "note": "Mathlib defines the adjoint of a densely-defined unbounded operator acting on its adjoint domain.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Symmetric (Hermitian) operator",
+      "anchor": {
+        "section": "Definitions",
+        "snippet": "is called symmetric (or Hermitian ) if"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "LinearMap.IsSymmetric",
+        "module": "Mathlib.Analysis.InnerProductSpace.Symmetric",
+        "match_kind": "exact"
+      },
+      "note": "`LinearMap.IsSymmetric T` is defined as `⟪T x, y⟫ = ⟪x, T y⟫`, the symmetric/Hermitian condition.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Symmetric operators are closable",
+      "anchor": {
+        "section": "Definitions",
+        "snippet": "symmetric operators are always closable"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "LinearPMap.IsClosable",
+        "module": "Mathlib.Topology.Algebra.Module.LinearPMap",
+        "match_kind": null
+      },
+      "note": "Closability of unbounded operators is defined, but the theorem that symmetric operators are closable was not found.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Self-adjoint operator",
+      "anchor": {
+        "section": "Definitions",
+        "snippet": "is called self-adjoint if"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "LinearPMap.IsSelfAdjoint",
+        "module": "Mathlib.Analysis.InnerProductSpace.LinearPMap",
+        "match_kind": "exact"
+      },
+      "note": "`LinearPMap.IsSelfAdjoint A ↔ A† = A` is the self-adjointness of a densely-defined unbounded operator.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Essentially self-adjoint operator",
+      "anchor": {
+        "section": "Definitions",
+        "snippet": "is said to be essentially self-adjoint if the closure of"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "LinearPMap.closure",
+        "module": "Mathlib.Topology.Algebra.Module.LinearPMap",
+        "match_kind": null
+      },
+      "note": "The operator closure and self-adjointness exist, but \"essentially self-adjoint\" is not defined as a named notion.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Hellinger–Toeplitz theorem",
+      "anchor": {
+        "section": "Bounded self-adjoint operators",
+        "snippet": "According to Hellinger–Toeplitz theorem"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "LinearMap.IsSymmetric.continuous",
+        "module": "Mathlib.Analysis.InnerProductSpace.Symmetric",
+        "match_kind": "exact"
+      },
+      "note": "A symmetric operator on a complete space is automatically continuous, the Hellinger–Toeplitz theorem.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Bounded self-adjoint operator",
+      "anchor": {
+        "section": "Bounded self-adjoint operators",
+        "snippet": "is self-adjoint if"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "ContinuousLinearMap.isSelfAdjoint_iff_isSymmetric",
+        "module": "Mathlib.Analysis.InnerProductSpace.Adjoint",
+        "match_kind": "exact"
+      },
+      "note": "For a bounded operator, `IsSelfAdjoint` is equivalent to the symmetric inner-product condition.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Complex form of a bounded operator",
+      "anchor": {
+        "section": "Bounded self-adjoint operators",
+        "snippet": "can be written in the complex form"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "realPart_add_I_smul_imaginaryPart",
+        "module": "Mathlib.LinearAlgebra.Complex.Module",
+        "match_kind": "exact"
+      },
+      "note": "`a = ℜa + I • ℑa` with `ℜa, ℑa` self-adjoint is exactly the Cartesian/complex decomposition T = A + iB.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Positive bounded operators are self-adjoint",
+      "anchor": {
+        "section": "Bounded self-adjoint operators",
+        "snippet": "every positive bounded linear operator"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "ContinuousLinearMap.IsPositive.isSelfAdjoint",
+        "module": "Mathlib.Analysis.InnerProductSpace.Positive",
+        "match_kind": "exact"
+      },
+      "note": "A positive bounded operator is self-adjoint; over ℂ, `isPositive_iff_complex` shows nonneg inner products suffice.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Invertibility criterion",
+      "anchor": {
+        "section": "Properties",
+        "snippet": "is invertible if the image of"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The criterion that a self-adjoint operator with dense, bounded-below range is invertible was not found in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Operator norm formula",
+      "anchor": {
+        "section": "Properties",
+        "snippet": "The operator norm is given by"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "LinearMap.IsSymmetric.norm_eq_iSup_rayleighQuotient",
+        "module": "Mathlib.Analysis.InnerProductSpace.Rayleigh",
+        "match_kind": "exact"
+      },
+      "note": "The operator norm of a symmetric operator equals the supremum of the absolute Rayleigh quotient.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Eigenvalues real, eigenvectors orthogonal",
+      "anchor": {
+        "section": "Properties",
+        "snippet": "the eigenvalues are real and the corresponding eigenvectors are orthogonal"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "LinearMap.IsSymmetric.conj_eigenvalue_eq_self",
+        "module": "Mathlib.Analysis.InnerProductSpace.Spectrum",
+        "match_kind": "exact"
+      },
+      "note": "Eigenvalues are real (`conj_eigenvalue_eq_self`) and eigenspaces orthogonal (`orthogonalFamily_eigenspaces`).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Compact self-adjoint operators have an eigenvalue",
+      "anchor": {
+        "section": "Properties",
+        "snippet": "Bounded self-adjoint operators do not necessarily have an eigenvalue"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "ContinuousLinearMap.eq_zero_of_forall_hasEigenvalue_eq_zero",
+        "module": "Mathlib.Analysis.InnerProductSpace.Spectrum",
+        "match_kind": "exact"
+      },
+      "note": "A nonzero compact symmetric operator must have a nonzero eigenvalue, with eigenspaces spanning the space.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Resolvent set",
+      "anchor": {
+        "section": "Spectrum of self-adjoint operators",
+        "snippet": "The resolvent set (or regular set ) of"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "resolventSet",
+        "module": "Mathlib.Algebra.Algebra.Spectrum.Basic",
+        "match_kind": "generalization"
+      },
+      "note": "The resolvent set is defined for any algebra element; bounded operators are a special case.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Spectrum",
+      "anchor": {
+        "section": "Spectrum of self-adjoint operators",
+        "snippet": "is defined as the complement"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "spectrum",
+        "module": "Mathlib.Algebra.Algebra.Spectrum.Basic",
+        "match_kind": "generalization"
+      },
+      "note": "`spectrum R a` is defined as the complement of the resolvent set, for general algebra elements.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Spectrum of self-adjoint operator is real",
+      "anchor": {
+        "section": "Spectrum of self-adjoint operators",
+        "snippet": "The spectrum of a self-adjoint operator is always real"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "IsSelfAdjoint.val_re_map_spectrum",
+        "module": "Mathlib.Analysis.CStarAlgebra.Spectrum",
+        "match_kind": "generalization"
+      },
+      "note": "The spectrum of a self-adjoint C*-algebra element is real; this covers bounded operators but not the unbounded case.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Bounded normal: real spectrum iff self-adjoint",
+      "anchor": {
+        "section": "Spectrum of self-adjoint operators",
+        "snippet": "the spectrum is real if and only if the operator is self-adjoint"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "QuasispectrumRestricts.isSelfAdjoint",
+        "module": "Mathlib.Analysis.CStarAlgebra.ContinuousFunctionalCalculus.Instances",
+        "match_kind": "exact"
+      },
+      "note": "A normal element with real spectrum is self-adjoint, and conversely (`IsSelfAdjoint.val_re_map_spectrum`).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Bounded below",
+      "anchor": {
+        "section": "Spectrum of self-adjoint operators",
+        "snippet": "is called bounded below"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "A named \"bounded below\" predicate for operators in this sense was not found.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Self-adjoint operator has real spectrum",
+      "anchor": {
+        "type": "theorem_box",
+        "value": "Self-adjoint operator has real spectrum"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "IsSelfAdjoint.val_re_map_spectrum",
+        "module": "Mathlib.Analysis.CStarAlgebra.Spectrum",
+        "match_kind": null
+      },
+      "note": "Mathlib proves real spectrum for bounded self-adjoint (C*-algebra) elements, not for the unbounded operators of this theorem box.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Symmetric operator with real spectrum is self-adjoint",
+      "anchor": {
+        "type": "theorem_box",
+        "value": "Symmetric operator with real spectrum is self-adjoint"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "QuasispectrumRestricts.isSelfAdjoint",
+        "module": "Mathlib.Analysis.CStarAlgebra.ContinuousFunctionalCalculus.Instances",
+        "match_kind": null
+      },
+      "note": "Mathlib has the bounded normal-element version; the unbounded symmetric-operator statement is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Spectral theorem (informal)",
+      "anchor": {
+        "section": "Spectral theorem",
+        "snippet": "a self-adjoint operator has an orthonormal basis of eigenvectors"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "LinearMap.IsSymmetric.eigenvectorBasis",
+        "module": "Mathlib.Analysis.InnerProductSpace.Spectrum",
+        "match_kind": "special_case"
+      },
+      "note": "An orthonormal eigenbasis is provided in finite dimensions (and eigenspaces are dense for compact operators).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Multiplication operator",
+      "anchor": {
+        "section": "Multiplication operator form of the spectral theorem",
+        "snippet": "is called a multiplication operator"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The multiplication operator on an L² space is not formalized as such.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Multiplication operators are self-adjoint",
+      "anchor": {
+        "section": "Multiplication operator form of the spectral theorem",
+        "snippet": "Any multiplication operator is a self-adjoint operator"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No multiplication operator construction exists, so its self-adjointness is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Unitary equivalence of operators",
+      "anchor": {
+        "section": "Multiplication operator form of the spectral theorem",
+        "snippet": "are unitarily equivalent if and only if there is a unitary transformation"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "While `unitary` elements exist, the relation of unitary equivalence between operators is not defined.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Unitary equivalence preserves boundedness/self-adjointness",
+      "anchor": {
+        "section": "Multiplication operator form of the spectral theorem",
+        "snippet": "If unitarily equivalent"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Preservation of self-adjointness under unitary equivalence of operators is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Spectral theorem for bounded and unbounded operators",
+      "anchor": {
+        "section": "Multiplication operator form of the spectral theorem",
+        "snippet": "The spectral theorem holds for both bounded and unbounded self-adjoint operators"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The multiplication-operator spectral theorem for general self-adjoint operators is not in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Spectrum equals essential range",
+      "anchor": {
+        "section": "Multiplication operator form of the spectral theorem",
+        "snippet": "is just the essential range of"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The identification of the spectrum with the essential range of a multiplier is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Self-adjoint operator is unitarily equivalent to a multiplication operator",
+      "anchor": {
+        "type": "theorem_box",
+        "value": "is unitarily equivalent to a multiplication operator"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The multiplication-operator form of the spectral theorem is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Functional calculus",
+      "anchor": {
+        "section": "Functional calculus",
+        "snippet": "to define a functional calculus"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "cfc",
+        "module": "Mathlib.Analysis.CStarAlgebra.ContinuousFunctionalCalculus.Unital",
+        "match_kind": "generalization"
+      },
+      "note": "Mathlib has a continuous functional calculus `cfc` for bounded self-adjoint elements; the Borel/unbounded calculus is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Functional calculus of the Hamiltonian",
+      "anchor": {
+        "section": "Functional calculus",
+        "snippet": "One example from quantum mechanics is the case where"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The time-evolution functional calculus exp(itH) of a quantum Hamiltonian is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Resolution of the identity",
+      "anchor": {
+        "section": "Functional calculus",
+        "snippet": "is called resolution of the identity for T"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Projection-valued measures / resolutions of the identity are not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Stieltjes integral representation of T",
+      "anchor": {
+        "section": "Functional calculus",
+        "snippet": "the following Stieltjes integral representation for T can be proved"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The spectral Stieltjes integral representation of a self-adjoint operator is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Dirac notation for the spectral theorem",
+      "anchor": {
+        "section": "Formulation in the physics literature",
+        "snippet": "Dirac notation is used as combined expression for both the spectral theorem and the Borel functional calculus"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Dirac bra-ket formulations are not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Resolution of unity",
+      "anchor": {
+        "section": "Formulation in the physics literature",
+        "snippet": "the theorem is referred to as resolution of unity"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The physics \"resolution of unity\" (completeness relation) is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Biorthogonal basis set",
+      "anchor": {
+        "section": "Formulation in the physics literature",
+        "snippet": "one defines the biorthogonal basis set"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The physics biorthogonal basis set construction is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Symmetric operator with orthonormal eigenbasis",
+      "anchor": {
+        "section": "Formulation for symmetric operators",
+        "snippet": "a simple example of a symmetric (specifically, an essentially self-adjoint) operator that has an orthonormal basis of eigenvectors"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This specific differential-operator example is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "A is symmetric",
+      "anchor": {
+        "section": "Formulation for symmetric operators",
+        "snippet": "integration by parts of the inner product shows that A is symmetric"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Symmetry of this particular second-derivative operator via integration by parts is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Eigenfunctions are sinusoids",
+      "anchor": {
+        "section": "Formulation for symmetric operators",
+        "snippet": "The eigenfunctions of A are the sinusoids"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The identification of eigenfunctions of this operator with sinusoids is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "A has a compact inverse",
+      "anchor": {
+        "section": "Formulation for symmetric operators",
+        "snippet": "The operator A can be seen to have a compact inverse"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Compactness of the inverse of this specific operator is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Pure point spectrum criterion",
+      "anchor": {
+        "section": "Pure point spectrum",
+        "snippet": "has pure point spectrum if and only if"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The pure point spectrum criterion (orthonormal eigenbasis) is not formalized for general operators.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Harmonic oscillator Hamiltonian",
+      "anchor": {
+        "section": "Pure point spectrum",
+        "snippet": "The Hamiltonian for the harmonic oscillator has a quadratic potential"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The harmonic oscillator Hamiltonian is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Momentum operator on an interval",
+      "anchor": {
+        "section": "Boundary conditions",
+        "snippet": "Let us define a momentum operator A on this space by the usual formula"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The momentum operator −i d/dx on an interval is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "No boundary conditions: not symmetric",
+      "anchor": {
+        "section": "Boundary conditions",
+        "snippet": "then A is not symmetric"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This boundary-condition example is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Dirichlet conditions: symmetric",
+      "anchor": {
+        "section": "Boundary conditions",
+        "snippet": "one can easily verify that A is symmetric"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This boundary-condition example is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Dirichlet conditions: not essentially self-adjoint",
+      "anchor": {
+        "section": "Boundary conditions",
+        "snippet": "This operator is not essentially self-adjoint"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This boundary-condition example is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Periodic conditions: essentially self-adjoint",
+      "anchor": {
+        "section": "Boundary conditions",
+        "snippet": "With this domain, A is essentially self-adjoint"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This boundary-condition example is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Singular potential operator not essentially self-adjoint",
+      "anchor": {
+        "section": "Schrödinger operators with singular potentials",
+        "snippet": "is not essentially self-adjoint on the space of smooth, rapidly decaying functions"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Schrödinger operators with singular potentials are not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Adjoint is not symmetric",
+      "anchor": {
+        "section": "Schrödinger operators with singular potentials",
+        "snippet": "is not a symmetric operator, which certainly implies that"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This claim about the adjoint of a singular Schrödinger operator is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Stone's theorem",
+      "anchor": {
+        "section": "Non-self-adjoint operators in quantum mechanics",
+        "snippet": "self-adjoint operators are precisely the infinitesimal generators of unitary groups"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Stone's theorem on one-parameter unitary groups is not formalized (only Stone–Weierstrass exists).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Schrödinger operator essential self-adjointness range",
+      "anchor": {
+        "section": "Non-self-adjoint operators in quantum mechanics",
+        "snippet": "is essentially self-adjoint for 0 < α ≤ 2 but not for α > 2"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This essential self-adjointness range result for Schrödinger operators is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "No self-adjoint momentum operator on a half-line",
+      "anchor": {
+        "section": "Non-self-adjoint operators in quantum mechanics",
+        "snippet": "There is no self-adjoint momentum operator"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Nonexistence of a self-adjoint momentum operator on a half-line is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "D is symmetric",
+      "anchor": {
+        "section": "A symmetric operator that is not essentially self-adjoint",
+        "snippet": "Then D is a symmetric operator as can be shown by integration by parts"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Symmetry of this specific operator via integration by parts is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Solution spaces are 1-dimensional",
+      "anchor": {
+        "section": "A symmetric operator that is not essentially self-adjoint",
+        "snippet": "each one of these solution spaces is 1-dimensional"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This deficiency-space dimension computation is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "D is not essentially self-adjoint",
+      "anchor": {
+        "section": "A symmetric operator that is not essentially self-adjoint",
+        "snippet": "This shows that D is not essentially self-adjoint"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This example showing failure of essential self-adjointness is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Single boundary condition: essentially self-adjoint",
+      "anchor": {
+        "section": "A symmetric operator that is not essentially self-adjoint",
+        "snippet": "would now, in fact, be essentially self-adjoint"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This boundary-condition example is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Self-adjoint extensions of symmetric differential operators",
+      "anchor": {
+        "section": "A symmetric operator that is not essentially self-adjoint",
+        "snippet": "a general fact about self-adjoint extensions of symmetric differential operators"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Von Neumann's theory of self-adjoint extensions and deficiency indices is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Constant-coefficient operator is essentially self-adjoint",
+      "anchor": {
+        "section": "Constant-coefficient operators",
+        "snippet": "is essentially self-adjoint on L 2 ( R n )"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Essential self-adjointness of constant-coefficient differential operators is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Formal adjoint",
+      "anchor": {
+        "section": "Constant-coefficient operators",
+        "snippet": "the formal adjoint of P"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "LinearPMap.IsFormalAdjoint",
+        "module": "Mathlib.Analysis.InnerProductSpace.LinearPMap",
+        "match_kind": null
+      },
+      "note": "Mathlib has the abstract formal-adjoint relation, but not the formal adjoint of a differential operator P(D).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Fourier conjugate of P(D) is multiplication by P",
+      "anchor": {
+        "type": "theorem_box",
+        "value": "Let P a polynomial function on R n with real coefficients"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "VectorFourier.fourierIntegral_fderiv",
+        "module": "Mathlib.Analysis.Fourier.FourierTransformDeriv",
+        "match_kind": null
+      },
+      "note": "Mathlib proves the Fourier transform turns derivatives into multiplication, the building block, but not the P(D) operator-conjugation statement.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Adjoint is restriction of distributional formal adjoint",
+      "anchor": {
+        "type": "theorem_box",
+        "value": "The adjoint P * of P is a restriction of the distributional extension"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This statement about distributional extensions of differential operator adjoints is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Uniform multiplicity",
+      "anchor": {
+        "section": "Uniform multiplicity",
+        "snippet": "A self-adjoint operator A has uniform multiplicity n"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Uniform spectral multiplicity is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Mutually singular measures",
+      "anchor": {
+        "section": "Uniform multiplicity",
+        "snippet": "are mutually singular if and only if they are supported on disjoint Borel sets"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "MeasureTheory.Measure.MutuallySingular",
+        "module": "Mathlib.MeasureTheory.Measure.MutuallySingular",
+        "match_kind": "exact"
+      },
+      "note": "`μ ⟂ₘ ν` is defined exactly as the existence of a null set whose complement is null for the other measure.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Uniqueness of the representation",
+      "anchor": {
+        "section": "Uniform multiplicity",
+        "snippet": "This representation is unique in the following sense"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Uniqueness of the uniform-multiplicity spectral representation is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Direct sum multiplication representation",
+      "anchor": {
+        "type": "theorem_box",
+        "value": "Let A be a self-adjoint operator on a separable Hilbert space H"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The direct-sum-of-multiplication-operators representation is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Uniqueness of the direct-integral representation",
+      "anchor": {
+        "section": "Direct integrals",
+        "snippet": "the direct-integral version is unique in the sense that"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Uniqueness of the direct-integral spectral representation is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Spectral multiplicity function",
+      "anchor": {
+        "section": "Direct integrals",
+        "snippet": "is the spectral multiplicity function of the operator"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The spectral multiplicity function is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Classification of self-adjoint operators",
+      "anchor": {
+        "section": "Direct integrals",
+        "snippet": "Two self-adjoint operators are unitarily equivalent if and only if"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The unitary-equivalence classification via spectral measure and multiplicity is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Direct-integral spectral theorem",
+      "anchor": {
+        "type": "theorem_box",
+        "value": "unitarily equivalent to multiplication by the function λ ↦ λ"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The direct-integral form of the spectral theorem is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "The Laplacian operator",
+      "anchor": {
+        "section": "Example: structure of the Laplacian",
+        "snippet": "The Laplacian on R n is the operator"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The continuous Laplacian operator on Rⁿ is not formalized (only the graph Laplacian matrix exists).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Uniform multiplicity of the Laplacian",
+      "anchor": {
+        "type": "theorem_box",
+        "value": "If n = 1, then −Δ has uniform multiplicity"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The spectral multiplicity structure of the Laplacian is not formalized.",
+      "provenance": "ai"
+    }
+  ]
+}

@@ -1,0 +1,905 @@
+{
+  "slug": "Algebraic_number_theory",
+  "wikipedia_title": "Algebraic number theory",
+  "display_title": "Algebraic number theory",
+  "schema_version": 3,
+  "annotation_style": "theorem_article",
+  "annotations": [
+    {
+      "kind": "definition",
+      "label": "Algebraic number theory",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "Algebraic number theory is a branch of number theory that uses the techniques of abstract algebra"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "A description of the discipline is not a formalizable statement, though its central object `NumberField` is defined in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Typical Diophantine problem",
+      "anchor": {
+        "section": "Diophantus",
+        "snippet": "A typical Diophantine problem is to find two integers"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "An informal motivating example, not a specific theorem present in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Pythagorean triples solve x²+y²=z²",
+      "anchor": {
+        "section": "Diophantus",
+        "snippet": "the solutions to the quadratic Diophantine equation"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "PythagoreanTriple",
+        "module": "Mathlib.NumberTheory.PythagoreanTriples",
+        "match_kind": "exact"
+      },
+      "note": "`PythagoreanTriple` is defined and fully classified via `PythagoreanTriple.classification`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Linear Diophantine equations via Euclidean algorithm",
+      "anchor": {
+        "section": "Diophantus",
+        "snippet": "Solutions to linear Diophantine equations"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Int.gcd_eq_gcd_ab",
+        "module": "Mathlib.Data.Int.GCD",
+        "match_kind": null
+      },
+      "note": "Bézout's identity `Int.gcd_eq_gcd_ab` (with computable `gcdA`/`gcdB`) provides the solutions, but there is no packaged general linear-Diophantine solver.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Fermat's Last Theorem",
+      "anchor": {
+        "section": "Fermat",
+        "snippet": "Fermat's Last Theorem was first conjectured by Pierre de Fermat"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "fermatLastTheoremThree",
+        "module": "Mathlib.NumberTheory.FLT.Three",
+        "match_kind": "special_case"
+      },
+      "note": "The `FermatLastTheorem` statement is defined and proven only for small exponents (n=3 via `fermatLastTheoremThree`, n=4 in FLT.Four); the full theorem is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "First class number formula for quadratic forms",
+      "anchor": {
+        "section": "Dirichlet",
+        "snippet": "proved the first class number formula"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "NumberField.tendsto_sub_one_mul_dedekindZeta_nhdsGT",
+        "module": "Mathlib.NumberTheory.NumberField.DedekindZeta",
+        "match_kind": "generalization"
+      },
+      "note": "Mathlib has the general analytic class number formula for number fields, of which Dirichlet's quadratic-forms version is a special case, but not that historical form itself.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Dirichlet unit theorem",
+      "anchor": {
+        "section": "Dirichlet",
+        "snippet": "he proved the Dirichlet unit theorem"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "NumberField.Units.exist_unique_eq_mul_prod",
+        "module": "Mathlib.NumberTheory.NumberField.Units.DirichletTheorem",
+        "match_kind": "exact"
+      },
+      "note": "The Dirichlet unit theorem is formalized as `NumberField.Units.exist_unique_eq_mul_prod` with the unit `rank` and `fundSystem`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Dirichlet's approximation theorem",
+      "anchor": {
+        "section": "Dirichlet",
+        "snippet": "Dirichlet's approximation theorem"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Real.exists_int_int_abs_mul_sub_le",
+        "module": "Mathlib.NumberTheory.DiophantineApproximation.Basic",
+        "match_kind": "exact"
+      },
+      "note": "Dirichlet's approximation theorem is `Real.exists_int_int_abs_mul_sub_le` (and `AddCircle.exists_norm_nsmul_le`).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Dedekind's definition of an ideal",
+      "anchor": {
+        "section": "Dedekind",
+        "snippet": "Dedekind defined an ideal as a subset of a set of numbers"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Ideal",
+        "module": "Mathlib.RingTheory.Ideal.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`Ideal R` (a submodule closed under multiplication by ring elements) is the standard Mathlib definition.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Artin reciprocity law",
+      "anchor": {
+        "section": "Artin",
+        "snippet": "Emil Artin established the Artin reciprocity law"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No Artin reciprocity law / class field theory main theorem is present in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Modularity theorem",
+      "anchor": {
+        "section": "Modern theory",
+        "snippet": "The resulting modularity theorem"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The modularity theorem is not in Mathlib (an external FLT project is pursuing a special case).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Wiles' proof of modularity for semistable curves",
+      "anchor": {
+        "section": "Modern theory",
+        "snippet": "Andrew Wiles provided a proof of the modularity theorem for semistable elliptic curves"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Modularity of semistable elliptic curves is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Prime element",
+      "anchor": {
+        "section": "Failure of unique factorization",
+        "snippet": "a prime element is an element of the ring satisfying the key property of prime numbers"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Prime",
+        "module": "Mathlib.Algebra.Prime.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`Prime p` (p divides a product implies it divides a factor) is defined for commutative monoids with zero.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Associate elements",
+      "anchor": {
+        "section": "Failure of unique factorization",
+        "snippet": "Numbers such as p and up are said to be associate"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Associated",
+        "module": "Mathlib.Algebra.GroupWithZero.Associated",
+        "match_kind": "exact"
+      },
+      "note": "`Associated x y` (differ by a unit) is defined exactly as in the article.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Unique factorization domain",
+      "anchor": {
+        "section": "Failure of unique factorization",
+        "snippet": "one adopts the definition of unique factorization used in unique factorization domains"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "UniqueFactorizationMonoid",
+        "module": "Mathlib.RingTheory.UniqueFactorizationDomain.Defs",
+        "match_kind": "generalization"
+      },
+      "note": "Mathlib uses `UniqueFactorizationMonoid`, which generalizes the UFD notion to commutative monoids with zero.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Trivial ideal class group implies UFD",
+      "anchor": {
+        "section": "Failure of unique factorization",
+        "snippet": "When the ideal class group is trivial, the ring is a UFD"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "card_classGroup_eq_one_iff",
+        "module": "Mathlib.RingTheory.ClassGroup",
+        "match_kind": "generalization"
+      },
+      "note": "`card_classGroup_eq_one_iff` proves the stronger equivalence (trivial class group ⟺ PID) for Dedekind domains, and PID ⟹ UFD holds in Mathlib, but the exact UFD phrasing is not a single lemma.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Irreducible element",
+      "anchor": {
+        "section": "Failure of unique factorization",
+        "snippet": "An irreducible element x is an element such that if x = yz"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Irreducible",
+        "module": "Mathlib.Algebra.Group.Irreducible.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`Irreducible p` is defined as a non-unit whose every factorization has a unit factor.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Failure of unique factorization in Z[√-5]",
+      "anchor": {
+        "section": "Failure of unique factorization",
+        "snippet": "consider the ring Z [√ -5 ]"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Zsqrtd",
+        "module": "Mathlib.NumberTheory.Zsqrtd.Basic",
+        "match_kind": null
+      },
+      "note": "The ring `Zsqrtd` (ℤ[√d]) is defined, but the specific non-unique-factorization example 6 = 2·3 = (1+√-5)(1-√-5) is not proven in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Unique factorization into prime ideals (Dedekind domains)",
+      "anchor": {
+        "section": "Factorization into prime ideals",
+        "snippet": "If I is an ideal in O , then there is always a factorization"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Ideal.uniqueFactorizationMonoid",
+        "module": "Mathlib.RingTheory.DedekindDomain.Ideal.Basic",
+        "match_kind": "exact"
+      },
+      "note": "Ideals of a Dedekind domain form a `UniqueFactorizationMonoid` via `Ideal.uniqueFactorizationMonoid`, giving unique factorization into prime ideals.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Non-principal prime ideal (2, 1+√-5)",
+      "anchor": {
+        "section": "Factorization into prime ideals",
+        "snippet": "is a prime ideal which cannot be generated by a single element"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This specific non-principal prime ideal in ℤ[√-5] is not constructed in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Ideal number",
+      "anchor": {
+        "section": "Factorization into prime ideals",
+        "snippet": "A generator of this principal ideal is called an ideal number"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Kummer's historical 'ideal number' notion is not defined in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Primes in Gaussian integers via sums of two squares",
+      "anchor": {
+        "section": "Factorization into prime ideals",
+        "snippet": "is provided by Fermat's theorem on sums of two squares"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Nat.Prime.sq_add_sq",
+        "module": "Mathlib.NumberTheory.SumTwoSquares",
+        "match_kind": "exact"
+      },
+      "note": "Fermat's two-squares theorem is `Nat.Prime.sq_add_sq`, with the Gaussian-prime characterization `GaussianInt.prime_iff_mod_four_eq_three_of_nat_prime`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Unique factorization fails iff non-principal prime ideals exist",
+      "anchor": {
+        "section": "Ideal class group",
+        "snippet": "Unique factorization fails in O if and only if there are prime ideals that fail to be principal"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "card_classGroup_eq_one_iff",
+        "module": "Mathlib.RingTheory.ClassGroup",
+        "match_kind": "generalization"
+      },
+      "note": "`card_classGroup_eq_one_iff` gives unique factorization (class number 1) ⟺ every ideal is principal for Dedekind domains, but the exact 'non-principal prime ideal' phrasing is not a separate lemma.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Fractional ideal",
+      "anchor": {
+        "section": "Ideal class group",
+        "snippet": "A fractional ideal is an additive subgroup J of K which is closed under multiplication"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "FractionalIdeal",
+        "module": "Mathlib.RingTheory.FractionalIdeal.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`FractionalIdeal` is defined as a submodule of the fraction field with a common denominator.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Ideal class group",
+      "anchor": {
+        "section": "Ideal class group",
+        "snippet": "by this subgroup is the ideal class group"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "ClassGroup",
+        "module": "Mathlib.RingTheory.ClassGroup",
+        "match_kind": "exact"
+      },
+      "note": "`ClassGroup R` is defined as invertible fractional ideals modulo principal ideals.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Class number",
+      "anchor": {
+        "section": "Ideal class group",
+        "snippet": "The number of elements in the class group is called the class number"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "NumberField.classNumber",
+        "module": "Mathlib.NumberTheory.NumberField.ClassNumber",
+        "match_kind": "exact"
+      },
+      "note": "`NumberField.classNumber` is defined as the cardinality of the class group of `𝓞 K`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Class number of Q(√-5) is 2",
+      "anchor": {
+        "section": "Ideal class group",
+        "snippet": "The class number of Q (√ -5 ) is 2"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This specific class-number computation for ℚ(√-5) is not present in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Divisor group",
+      "anchor": {
+        "section": "Ideal class group",
+        "snippet": "The divisor group Div K is defined to be the free abelian group generated by the prime ideals"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No explicit free-abelian-group divisor group Div_K on prime ideals is defined (only `HeightOneSpectrum` and ideal factorization).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Kernel and cokernel of div",
+      "anchor": {
+        "section": "Ideal class group",
+        "snippet": "The kernel of div is the group of units in O"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "ClassGroup",
+        "module": "Mathlib.RingTheory.ClassGroup",
+        "match_kind": null
+      },
+      "note": "The class group is defined precisely as such a cokernel (of `toPrincipalIdeal`), but the explicit divisor-map exact sequence with kernel = units is not stated as one result.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Real and complex embeddings",
+      "anchor": {
+        "section": "Real and complex embeddings",
+        "snippet": "These are called real embeddings and complex embeddings"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "NumberField.InfinitePlace.IsReal",
+        "module": "Mathlib.NumberTheory.NumberField.InfinitePlace.Basic",
+        "match_kind": "exact"
+      },
+      "note": "Real vs complex embeddings/places are captured by `NumberField.ComplexEmbedding.IsReal` and `InfinitePlace.IsReal`/`IsComplex`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Real quadratic field",
+      "anchor": {
+        "section": "Real and complex embeddings",
+        "snippet": "A real quadratic field Q (√ a )"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "NumberField.IsTotallyReal",
+        "module": "Mathlib.NumberTheory.NumberField.InfinitePlace.TotallyRealComplex",
+        "match_kind": null
+      },
+      "note": "Mathlib has `IsTotallyReal` and `Zsqrtd`, but no dedicated 'real quadratic field' definition.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Imaginary quadratic field",
+      "anchor": {
+        "section": "Real and complex embeddings",
+        "snippet": "an imaginary quadratic field Q (√ − a ) admits no real embeddings"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "NumberField.IsTotallyComplex",
+        "module": "Mathlib.NumberTheory.NumberField.InfinitePlace.TotallyRealComplex",
+        "match_kind": null
+      },
+      "note": "`IsTotallyComplex` (no real embeddings) exists, but there is no dedicated 'imaginary quadratic field' definition.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Signature of a number field",
+      "anchor": {
+        "section": "Real and complex embeddings",
+        "snippet": "The signature of K is the pair"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "NumberField.InfinitePlace.nrRealPlaces",
+        "module": "Mathlib.NumberTheory.NumberField.InfinitePlace.Basic",
+        "match_kind": null
+      },
+      "note": "Both components `nrRealPlaces` and `nrComplexPlaces` are defined, but the pair (r₁,r₂) is not bundled as a 'signature'.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "r₁ + 2r₂ = d",
+      "anchor": {
+        "section": "Real and complex embeddings",
+        "snippet": "It is a theorem that"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "NumberField.InfinitePlace.card_add_two_mul_card_eq_rank",
+        "module": "Mathlib.NumberTheory.NumberField.InfinitePlace.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`card_add_two_mul_card_eq_rank`: nrRealPlaces K + 2·nrComplexPlaces K = finrank ℚ K.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Minkowski embedding",
+      "anchor": {
+        "section": "Real and complex embeddings",
+        "snippet": "This is called the Minkowski embedding"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "NumberField.mixedEmbedding",
+        "module": "Mathlib.NumberTheory.NumberField.CanonicalEmbedding.Basic",
+        "match_kind": "exact"
+      },
+      "note": "The Minkowski embedding is `NumberField.mixedEmbedding` (into ℝ^r₁ × ℂ^r₂), with `canonicalEmbedding` the variant into ℂ^d.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Minkowski space",
+      "anchor": {
+        "section": "Real and complex embeddings",
+        "snippet": "is a real vector space of dimension d called Minkowski space"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "NumberField.mixedEmbedding.mixedSpace",
+        "module": "Mathlib.NumberTheory.NumberField.CanonicalEmbedding.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`mixedSpace K = (ℝ^r₁) × (ℂ^r₂)` is the codomain of the mixed/Minkowski embedding.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Discriminant",
+      "anchor": {
+        "section": "Real and complex embeddings",
+        "snippet": "is the discriminant of O"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "NumberField.discr",
+        "module": "Mathlib.NumberTheory.NumberField.Discriminant.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`NumberField.discr` is the discriminant of the ring of integers.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "p-adic absolute value",
+      "anchor": {
+        "section": "Places",
+        "snippet": "there are p-adic absolute value functions"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "padicNorm",
+        "module": "Mathlib.NumberTheory.Padics.PadicNorm",
+        "match_kind": "exact"
+      },
+      "note": "`padicNorm p q` is the p-adic absolute value on ℚ (with `padicNormE` on ℚ_p).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Ostrowski's theorem",
+      "anchor": {
+        "section": "Places",
+        "snippet": "Ostrowski's theorem states that these are all possible absolute value functions"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Rat.AbsoluteValue.equiv_real_or_padic",
+        "module": "Mathlib.NumberTheory.Ostrowski",
+        "match_kind": "exact"
+      },
+      "note": "Ostrowski's theorem is `Rat.AbsoluteValue.equiv_real_or_padic`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Place of a number field",
+      "anchor": {
+        "section": "Places",
+        "snippet": "A place of an algebraic number field is an equivalence class of absolute value functions"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "NumberField.InfinitePlace",
+        "module": "Mathlib.NumberTheory.NumberField.InfinitePlace.Basic",
+        "match_kind": null
+      },
+      "note": "Mathlib defines `InfinitePlace` and `FinitePlace` separately but has no single unified 'place' type as an equivalence class of absolute values.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Finite and infinite places",
+      "anchor": {
+        "section": "Places",
+        "snippet": "These are called finite places"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "NumberField.FinitePlace",
+        "module": "Mathlib.NumberTheory.NumberField.Completion.FinitePlace",
+        "match_kind": "exact"
+      },
+      "note": "`NumberField.FinitePlace` and `NumberField.InfinitePlace` are both defined.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Adele ring",
+      "anchor": {
+        "section": "Places",
+        "snippet": "Considering all the places of the field together produces the adele ring"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "NumberField.AdeleRing",
+        "module": "Mathlib.NumberTheory.NumberField.AdeleRing",
+        "match_kind": "exact"
+      },
+      "note": "`NumberField.AdeleRing` is the product of the infinite and finite adele rings.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Geometric analogy for places at infinity",
+      "anchor": {
+        "section": "Places at infinity geometrically",
+        "snippet": "There is a geometric analogy for places at infinity"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "An informal geometric analogy, not a formal statement.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Function field of the projective line",
+      "anchor": {
+        "section": "Places at infinity geometrically",
+        "snippet": "then its function field is isomorphic to"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "FunctionField",
+        "module": "Mathlib.NumberTheory.FunctionField",
+        "match_kind": null
+      },
+      "note": "`FunctionField` and `RatFunc` (= k(t)) are defined, but the geometric isomorphism with the function field of ℙ¹ is not stated.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Units in rings of integers",
+      "anchor": {
+        "section": "Units",
+        "snippet": "The integers have only two units"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Int.isUnit_iff",
+        "module": "Mathlib.Algebra.Group.Int.Units",
+        "match_kind": "exact"
+      },
+      "note": "`Int.isUnit_iff`: a unit of ℤ is exactly 1 or -1.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Unit group is finitely generated abelian",
+      "anchor": {
+        "section": "Units",
+        "snippet": "the group of units of O , denoted O × , is a finitely generated abelian group"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "NumberField.Units.exist_unique_eq_mul_prod",
+        "module": "Mathlib.NumberTheory.NumberField.Units.DirichletTheorem",
+        "match_kind": "generalization"
+      },
+      "note": "The Dirichlet unit theorem gives `(𝓞 K)ˣ ≅ torsion × ℤ^rank`, hence finitely generated abelian.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Regulator",
+      "anchor": {
+        "section": "Units",
+        "snippet": "The covolume of this lattice is the regulator of the number field"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "NumberField.Units.regulator",
+        "module": "Mathlib.NumberTheory.NumberField.Units.Regulator",
+        "match_kind": "exact"
+      },
+      "note": "`NumberField.Units.regulator` is defined as the covolume of the unit lattice.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Dedekind zeta function",
+      "anchor": {
+        "section": "Zeta function",
+        "snippet": "The Dedekind zeta function of a number field"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "NumberField.dedekindZeta",
+        "module": "Mathlib.NumberTheory.NumberField.DedekindZeta",
+        "match_kind": "exact"
+      },
+      "note": "`NumberField.dedekindZeta` is defined.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Completion at a place gives a complete field",
+      "anchor": {
+        "section": "Local fields",
+        "snippet": "Completing a number field K at a place w gives a complete field"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "IsDedekindDomain.HeightOneSpectrum.adicCompletion",
+        "module": "Mathlib.RingTheory.DedekindDomain.AdicValuation",
+        "match_kind": "exact"
+      },
+      "note": "`adicCompletion K v` is the completion at a finite place (a complete valued field via `UniformSpace.Completion`); infinite places use `NumberField.Completion`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Kronecker–Weber theorem",
+      "anchor": {
+        "section": "Local fields",
+        "snippet": "the Kronecker–Weber theorem can be deduced easily"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Kronecker–Weber theorem is not formalized in Mathlib (only listed as a target).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Finiteness of the class group",
+      "anchor": {
+        "section": "Finiteness of the class group",
+        "snippet": "the ideal class group of an algebraic number field K is finite"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "NumberField.RingOfIntegers.instFintypeClassGroup",
+        "module": "Mathlib.NumberTheory.NumberField.ClassNumber",
+        "match_kind": "exact"
+      },
+      "note": "The class group of a number field's ring of integers is given a `Fintype` instance, proving finiteness.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Class number (order of class group)",
+      "anchor": {
+        "section": "Finiteness of the class group",
+        "snippet": "The order of the class group is called the class number"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "NumberField.classNumber",
+        "module": "Mathlib.NumberTheory.NumberField.ClassNumber",
+        "match_kind": "exact"
+      },
+      "note": "`NumberField.classNumber` is the order (cardinality) of the class group.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Dirichlet's unit theorem",
+      "anchor": {
+        "section": "Dirichlet's unit theorem",
+        "snippet": "Dirichlet's unit theorem provides a description of the structure of the multiplicative group of units"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "NumberField.Units.exist_unique_eq_mul_prod",
+        "module": "Mathlib.NumberTheory.NumberField.Units.DirichletTheorem",
+        "match_kind": "exact"
+      },
+      "note": "Dirichlet's unit theorem describing the structure of `(𝓞 K)ˣ` is `exist_unique_eq_mul_prod`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Law of quadratic reciprocity",
+      "anchor": {
+        "section": "Reciprocity laws",
+        "snippet": "the law of quadratic reciprocity for positive odd primes states"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "legendreSym.quadratic_reciprocity",
+        "module": "Mathlib.NumberTheory.LegendreSymbol.QuadraticReciprocity",
+        "match_kind": "exact"
+      },
+      "note": "`legendreSym.quadratic_reciprocity`: (q|p)(p|q) = (-1)^((p/2)(q/2)) for distinct odd primes.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Reciprocity law",
+      "anchor": {
+        "section": "Reciprocity laws",
+        "snippet": "A reciprocity law is a generalization of the law of quadratic reciprocity"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "legendreSym.quadratic_reciprocity",
+        "module": "Mathlib.NumberTheory.LegendreSymbol.QuadraticReciprocity",
+        "match_kind": "special_case"
+      },
+      "note": "Only quadratic (and Jacobi-symbol) reciprocity is formalized; the general reciprocity-law concept (Artin/higher) is not.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Class number formula",
+      "anchor": {
+        "section": "Class number formula",
+        "snippet": "The class number formula relates many important invariants of a number field"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "NumberField.tendsto_sub_one_mul_dedekindZeta_nhdsGT",
+        "module": "Mathlib.NumberTheory.NumberField.DedekindZeta",
+        "match_kind": "exact"
+      },
+      "note": "The analytic class number formula (residue of the Dedekind zeta at s=1) is `tendsto_sub_one_mul_dedekindZeta_nhdsGT`.",
+      "provenance": "ai"
+    }
+  ]
+}

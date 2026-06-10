@@ -1,0 +1,1289 @@
+{
+  "slug": "Fourier_transform",
+  "wikipedia_title": "Fourier transform",
+  "display_title": "Fourier transform",
+  "schema_version": 1,
+  "source": "claude-agent-sdk/annotate_articles.py",
+  "annotations": [
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle f(x)\\ {\\stackrel {\\mathcal {F}}{\\longleftrightarrow }}\\ {\\widehat {f}}(\\xi ).}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Notational convention for transform pairs, not a standalone Mathlib declaration."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\delta (x)\\ {\\stackrel {\\mathcal {F}}{\\longleftrightarrow }}\\ 1.}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Dirac delta transform pair not present as a standalone decl in the provided list."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle {\\begin{aligned}{\\widehat {f}}_{3}(\\omega )&\\triangleq \\int _{-\\infty }^{\\infty }f(x)\\cdot e^{-i\\omega x}\\,dx={\\widehat {f}}_{1}\\left({\\tfrac {\\omega }{2\\pi }}\\right),\\\\f(x)&={\\frac {1}{2\\pi }}\\int _{-\\infty }^{\\infty }{\\widehat {f}}_{3}(\\omega )\\cdot e^{i\\omega x}\\,d\\omega .\\end{aligned}}}"
+      },
+      "status": "partial",
+      "decl": "VectorFourier.fourierIntegral",
+      "module": "Mathlib.Analysis.Fourier.FourierTransform",
+      "note": "Angular-frequency convention is a different normalization of the same general definition."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle {\\begin{aligned}{\\widehat {f}}_{2}(\\omega )&\\triangleq {\\frac {1}{\\sqrt {2\\pi }}}\\int _{-\\infty }^{\\infty }f(x)\\cdot e^{-i\\omega x}\\,dx={\\frac {1}{\\sqrt {2\\pi }}}\\ \\ {\\widehat {f}}_{1}\\left({\\tfrac {\\omega }{2\\pi }}\\right),\\\\f(x)&={\\frac {1}{\\sqrt {2\\pi }}}\\int _{-\\infty }^{\\infty }{\\widehat {f}}_{2}(\\omega )\\cdot e^{i\\omega x}\\,d\\omega .\\end{aligned}}}"
+      },
+      "status": "partial",
+      "decl": "VectorFourier.fourierIntegral",
+      "module": "Mathlib.Analysis.Fourier.FourierTransform",
+      "note": "Symmetric 2π convention is a normalization variant of the general definition."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\|f\\|_{1}=\\int _{\\mathbb {R} }|f(x)|\\,dx<\\infty .}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Defines L^1 integrability; not a Fourier-specific decl in the provided list."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle {\\widehat {f}}(\\xi )=\\underbrace {Ae^{i\\theta }} _{\\text{polar coordinate form}}=\\underbrace {A\\cos(\\theta )+iA\\sin(\\theta )} _{\\text{rectangular coordinate form}}.}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Polar/rectangular decomposition of a complex value, expository identity."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle {\\begin{aligned}{\\widehat {f}}(\\xi )\\cdot e^{i2\\pi \\xi x}&=Ae^{i\\theta }\\cdot e^{i2\\pi \\xi x}\\\\[6pt]&=\\underbrace {Ae^{i(2\\pi \\xi x+\\theta )}} _{\\text{polar coordinate form}}\\\\[6pt]&=\\underbrace {A\\cos(2\\pi \\xi x+\\theta )+iA\\sin(2\\pi \\xi x+\\theta )} _{\\text{rectangular coordinate form}},\\end{aligned}}}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Expository identity expressing the modulated sinusoid in polar/rectangular form."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle {\\widehat {f}}(\\xi )=\\sum _{n=-\\infty }^{\\infty }c_{n}\\cdot \\delta \\left(\\xi -{\\tfrac {n}{P}}\\right),}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Transform of a periodic function as a Dirac comb; no such decl in provided list."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle f_{P}(x)\\triangleq \\sum _{n=-\\infty }^{\\infty }f(x+nP)={\\frac {1}{P}}\\sum _{k=-\\infty }^{\\infty }{\\widehat {f}}\\left({\\tfrac {k}{P}}\\right)e^{i2\\pi {\\frac {k}{P}}x},\\quad \\forall k\\in \\mathbb {Z} .}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Poisson summation formula; not in the supplied related decls."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle {\\widehat {f}}\\left({\\tfrac {k}{P}}\\right)=\\int _{P}f_{P}(x)\\cdot e^{-i2\\pi {\\frac {k}{P}}x}\\,dx.}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Fourier series coefficient formula via periodization; not in provided list."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\varphi (\\lambda )=\\int _{-\\infty }^{\\infty }f(x)e^{i\\lambda x}\\,dx.}"
+      },
+      "status": "partial",
+      "decl": "VectorFourier.fourierIntegral",
+      "module": "Mathlib.Analysis.Fourier.FourierTransform",
+      "note": "Alternative-units convention of the same general Fourier integral."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\int _{-\\infty }^{\\infty }|f(x)|\\,dx<\\infty .}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Integrability hypothesis condition, not a Fourier-specific decl."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle a\\ f(x)+b\\ h(x)\\ \\ {\\stackrel {\\mathcal {F}}{\\Longleftrightarrow }}\\ \\ a\\ {\\widehat {f}}(\\xi )+b\\ {\\widehat {h}}(\\xi );\\quad \\ a,b\\in \\mathbb {C} }"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Linearity property of the Fourier transform; no such decl listed."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle f(x-x_{0})\\ \\ {\\stackrel {\\mathcal {F}}{\\Longleftrightarrow }}\\ \\ e^{-i2\\pi x_{0}\\xi }\\ {\\widehat {f}}(\\xi );\\quad \\ x_{0}\\in \\mathbb {R} }"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Time-shifting identity; corresponding decl not in provided list."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle e^{i2\\pi \\xi _{0}x}f(x)\\ \\ {\\stackrel {\\mathcal {F}}{\\Longleftrightarrow }}\\ \\ {\\widehat {f}}(\\xi -\\xi _{0});\\quad \\ \\xi _{0}\\in \\mathbb {R} }"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Frequency-shifting (modulation) identity; not in provided list."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle f(ax)\\ \\ {\\stackrel {\\mathcal {F}}{\\Longleftrightarrow }}\\ \\ {\\frac {1}{|a|}}{\\widehat {f}}\\left({\\frac {\\xi }{a}}\\right);\\quad \\ a\\neq 0}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Time-scaling identity; no such decl listed."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle f(-x)\\ \\ {\\stackrel {\\mathcal {F}}{\\Longleftrightarrow }}\\ \\ {\\widehat {f}}(-\\xi )}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Time-reversal property of the Fourier transform; not in provided list."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle {\\bigl (}f(x){\\bigr )}^{*}\\ \\ {\\stackrel {\\mathcal {F}}{\\Longleftrightarrow }}\\ \\ \\left({\\widehat {f}}(-\\xi )\\right)^{*}}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Conjugation property; corresponding decl not in provided list."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle {\\widehat {f}}(-\\xi )={\\bigl (}{\\widehat {f}}(\\xi ){\\bigr )}^{*}.}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Hermitian-symmetry of FT for real inputs; no such decl listed."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle {\\widehat {f}}(-\\xi )=-({\\widehat {f}}(\\xi ))^{*}.}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Odd-symmetry property for imaginary inputs; not in provided list."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\operatorname {Re} \\{f(x)\\}\\ \\ {\\stackrel {\\mathcal {F}}{\\Longleftrightarrow }}\\ \\ {\\tfrac {1}{2}}\\left({\\widehat {f}}(\\xi )+{\\bigl (}{\\widehat {f}}(-\\xi ){\\bigr )}^{*}\\right)}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Transform of real part; no such decl listed."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\operatorname {Im} \\{f(x)\\}\\ \\ {\\stackrel {\\mathcal {F}}{\\Longleftrightarrow }}\\ \\ {\\tfrac {1}{2i}}\\left({\\widehat {f}}(\\xi )-{\\bigl (}{\\widehat {f}}(-\\xi ){\\bigr )}^{*}\\right)}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Transform of imaginary part; no such decl listed."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle {\\widehat {f}}(0)=\\int _{-\\infty }^{\\infty }f(x)\\,dx.}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "DC-value identity for FT; no such decl in provided list."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\left\\|{\\widehat {f}}\\right\\|_{\\infty }\\leq \\left\\|f\\right\\|_{1}}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Hausdorff–Young L^1 → L^∞ bound; not in provided list."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle {\\widehat {f}}(\\xi )\\to 0{\\text{ as }}|\\xi |\\to \\infty .}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Riemann–Lebesgue lemma; not in provided list."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle f(x)=\\int _{-\\infty }^{\\infty }{\\widehat {f}}(\\xi )e^{i2\\pi x\\xi }\\,d\\xi }"
+      },
+      "status": "formalized",
+      "decl": "MeasureTheory.Integrable.fourierInv_fourier_eq",
+      "module": "Mathlib.Analysis.Fourier.Inversion",
+      "note": "This is exactly the Fourier inversion formula proved in Mathlib."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\langle f,g\\rangle _{L^{2}}=\\int _{-\\infty }^{\\infty }f(x){\\overline {g(x)}}\\,dx=\\int _{-\\infty }^{\\infty }{\\widehat {f}}(\\xi ){\\overline {{\\widehat {g}}(\\xi )}}\\,d\\xi ,}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Parseval identity; not in provided list."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\|f\\|_{L^{2}}^{2}=\\int _{-\\infty }^{\\infty }\\left|f(x)\\right|^{2}\\,dx=\\int _{-\\infty }^{\\infty }\\left|{\\widehat {f}}(\\xi )\\right|^{2}\\,d\\xi .}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Plancherel norm identity; not in provided list."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle h(x)=(f*g)(x)=\\int _{-\\infty }^{\\infty }f(y)g(x-y)\\,dy,}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Definition of convolution; not in the supplied Fourier-related list."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle {\\widehat {h}}(\\xi )={\\widehat {f}}(\\xi )\\,{\\widehat {g}}(\\xi ).}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Convolution theorem; corresponding decl not in provided list."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle h(x)=(f\\star g)(x)=\\int _{-\\infty }^{\\infty }{\\overline {f(y)}}g(x+y)\\,dy}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Cross-correlation definition; not in provided list."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle {\\widehat {h}}(\\xi )={\\overline {{\\widehat {f}}(\\xi )}}\\,{\\widehat {g}}(\\xi ).}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Cross-correlation theorem; not in provided list."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle h(x)=(f\\star f)(x)=\\int _{-\\infty }^{\\infty }{\\overline {f(y)}}f(x+y)\\,dy}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Autocorrelation definition; not in provided list."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle {\\widehat {h}}(\\xi )={\\overline {{\\widehat {f}}(\\xi )}}{\\widehat {f}}(\\xi )=\\left|{\\widehat {f}}(\\xi )\\right|^{2}.}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Wiener–Khinchin–style power-spectrum identity; not in provided list."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle {\\widehat {f'}}(\\xi )={\\mathcal {F}}\\left\\{{\\frac {d}{dx}}f(x)\\right\\}=i2\\pi \\xi {\\widehat {f}}(\\xi ).}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "FT–derivative correspondence; not in provided list."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle {\\widehat {f^{(n)}}}(\\xi )={\\mathcal {F}}\\left\\{{\\frac {d^{n}}{dx^{n}}}f(x)\\right\\}=(i2\\pi \\xi )^{n}{\\widehat {f}}(\\xi ).}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Iterated derivative correspondence; not in provided list."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\left[U\\left({\\frac {1}{2\\pi }}{\\frac {d}{dx}}\\right)+U(x)\\right]\\psi (x)=0}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Eigenfunction-generating ODE; not in provided list."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\left[W\\left({\\frac {i}{2\\pi }}{\\frac {d}{dx}}\\right)+W(x)\\right]\\psi (x)=C\\psi (x)}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Generalized eigenfunction ODE; not in provided list."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\psi _{n}(x)={\\frac {\\sqrt[{4}]{2}}{\\sqrt {n!}}}e^{-\\pi x^{2}}\\mathrm {He} _{n}\\left(2x{\\sqrt {\\pi }}\\right),}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Hermite eigenfunctions of FT; not in provided list."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\mathrm {He} _{n}(x)=(-1)^{n}e^{{\\frac {1}{2}}x^{2}}\\left({\\frac {d}{dx}}\\right)^{n}e^{-{\\frac {1}{2}}x^{2}}.}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Probabilist's Hermite polynomial Rodrigues formula; not in provided list."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle {\\widehat {\\psi }}_{n}(\\xi )=(-i)^{n}\\psi _{n}(\\xi ).}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Hermite-function eigenvalue identity for FT; not in provided list."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle {\\mathcal {F}}[f](\\xi )=\\int dxf(x)\\sum _{n\\geq 0}(-i)^{n}\\psi _{n}(x)\\psi _{n}(\\xi )~.}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Spectral decomposition of FT via Hermite eigenbasis; not in provided list."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle {\\mathcal {F}}[\\psi ]=e^{-itN}\\psi .}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Exponentiated–number-operator form of FT; not in provided list."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle N\\equiv {\\frac {1}{4\\pi }}\\left(2\\pi x-{\\frac {\\partial }{\\partial x}}\\right)\\left(2\\pi x+{\\frac {\\partial }{\\partial x}}\\right)=-{\\frac {1}{4\\pi }}{\\frac {\\partial ^{2}}{\\partial x^{2}}}+\\pi x^{2}-{\\frac {1}{2}}.}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Harmonic-oscillator number operator definition; not in provided list."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle {\\begin{aligned}{\\mathcal {F}}^{0}&=\\mathrm {id} ,\\\\{\\mathcal {F}}^{1}&={\\mathcal {F}},\\\\{\\mathcal {F}}^{2}&={\\mathcal {P}},\\\\{\\mathcal {F}}^{3}&={\\mathcal {F}}^{-1}={\\mathcal {P}}\\circ {\\mathcal {F}}={\\mathcal {F}}\\circ {\\mathcal {P}},\\\\{\\mathcal {F}}^{4}&=\\mathrm {id} \\end{aligned}}}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Periodicity F⁴ = id of the Fourier operator; not in provided list."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\left(M_{\\xi }^{-1}T_{y}^{-1}M_{\\xi }T_{y}f\\right)(x)=e^{i2\\pi \\xi y}f(x),}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Heisenberg commutator identity of translation and modulation; not in provided list."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\left(x_{1},\\xi _{1},t_{1}\\right)\\cdot \\left(x_{2},\\xi _{2},t_{2}\\right)=\\left(x_{1}+x_{2},\\xi _{1}+\\xi _{2},t_{1}t_{2}e^{-2i\\pi x_{1}\\xi _{2}}\\right).}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Heisenberg-group multiplication law; not in provided list."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle J{\\begin{pmatrix}x\\\\\\xi \\end{pmatrix}}={\\begin{pmatrix}-\\xi \\\\x\\end{pmatrix}}}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Symplectic rotation automorphism on R²; not in provided list."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle j\\left(x,\\xi ,t\\right)=\\left(-\\xi ,x,te^{-i2\\pi \\xi x}\\right).}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Automorphism of Heisenberg group H₁; not in provided list."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\rho \\circ j=W\\rho W^{*}.}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Stone–von Neumann intertwiner identity; not in provided list."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle {\\widehat {f}}(\\xi )=\\int _{-\\infty }^{\\infty }e^{-i2\\pi \\xi t}f(t)\\,dt}"
+      },
+      "status": "formalized",
+      "decl": "Real.instFourierTransform",
+      "module": "Mathlib.Analysis.Fourier.FourierTransform",
+      "note": "This is the standard 1D Fourier integral provided by the Real Fourier-transform instance."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\left\\vert \\xi ^{n}{\\widehat {f}}(\\xi )\\right\\vert \\leq C_{n}e^{2\\pi a\\vert \\tau \\vert }}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Paley–Wiener growth estimate; not in provided list."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle f(t)=0\\quad (t<0),\\qquad \\vert f(t)\\vert <Ce^{at}\\quad (t\\geq 0)}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Hypothesis of causal exponential growth; not Fourier-specific decl."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle {\\widehat {f}}(i\\tau )=\\int _{0}^{\\infty }e^{2\\pi \\tau t}f(t)\\,dt,}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Laplace-transform value of complex Fourier transform; not in provided list."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle F(s)=\\int _{0}^{\\infty }f(t)e^{-st}\\,dt.}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "One-sided Laplace transform definition; not in provided Fourier list."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\int _{-\\infty }^{\\infty }{\\widehat {f}}(\\sigma +ia)e^{i2\\pi (\\sigma +ia)t}\\,d\\sigma =\\int _{-\\infty }^{\\infty }{\\widehat {f}}(\\sigma +ib)e^{i2\\pi (\\sigma +ib)t}\\,d\\sigma }"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Contour-shifting identity in complex inverse FT; not in provided list."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle f(t)=\\int _{-\\infty }^{\\infty }{\\widehat {f}}(\\sigma +i\\tau )e^{i2\\pi (\\sigma +i\\tau )t}\\,d\\sigma ,}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Complex-line inverse Fourier integral; not in provided list."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle f(t)={\\frac {1}{i2\\pi }}\\int _{b-i\\infty }^{b+i\\infty }F(s)e^{st}\\,ds}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Mellin (Bromwich) inverse Laplace formula; not in provided list."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle {\\widehat {f}}({\\boldsymbol {\\xi }})={\\mathcal {F}}(f)({\\boldsymbol {\\xi }})=\\int _{\\mathbb {R} ^{n}}f(\\mathbf {x} )e^{-i2\\pi {\\boldsymbol {\\xi }}\\cdot \\mathbf {x} }\\,d\\mathbf {x} }"
+      },
+      "status": "formalized",
+      "decl": "Real.instFourierTransform",
+      "module": "Mathlib.Analysis.Fourier.FourierTransform",
+      "note": "This Euclidean n-dimensional FT definition is exactly Real.instFourierTransform."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\int _{-\\infty }^{\\infty }|f(x)|^{2}\\,dx=1.}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Normalization condition for L² density; not a Fourier-specific decl."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle D_{0}(f)=\\int _{-\\infty }^{\\infty }x^{2}|f(x)|^{2}\\,dx.}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Definition of dispersion-about-zero; not in provided list."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle D_{0}(f)D_{0}({\\widehat {f}})\\geq {\\frac {1}{16\\pi ^{2}}}.}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Heisenberg uncertainty inequality; not in provided list."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle {\\begin{aligned}f(x)&=C_{1}\\,e^{-\\pi {\\frac {x^{2}}{\\sigma ^{2}}}}\\\\\\therefore {\\widehat {f}}(\\xi )&=\\sigma C_{1}\\,e^{-\\pi \\sigma ^{2}\\xi ^{2}}\\end{aligned}}}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Gaussian self-Fourier identity (equality case); not in provided list."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\left(\\int _{-\\infty }^{\\infty }(x-x_{0})^{2}|f(x)|^{2}\\,dx\\right)\\left(\\int _{-\\infty }^{\\infty }(\\xi -\\xi _{0})^{2}\\left|{\\widehat {f}}(\\xi )\\right|^{2}\\,d\\xi \\right)\\geq {\\frac {1}{16\\pi ^{2}}},\\quad \\forall x_{0},\\xi _{0}\\in \\mathbb {R} .}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Translated uncertainty inequality; not in provided list."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle H\\left(\\left|f\\right|^{2}\\right)+H\\left(\\left|{\\widehat {f}}\\right|^{2}\\right)\\geq \\log \\left({\\frac {e}{2}}\\right)}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Hirschman entropic uncertainty; not in provided list."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle H(p)=-\\int _{-\\infty }^{\\infty }p(x)\\log {\\bigl (}p(x){\\bigr )}\\,dx}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Differential entropy definition; not a Fourier decl."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle f(t)=\\int _{0}^{\\infty }{\\bigl (}a(\\lambda )\\cos(2\\pi \\lambda t)+b(\\lambda )\\sin(2\\pi \\lambda t){\\bigr )}\\,d\\lambda .}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Fourier integral expansion via sine/cosine; not in provided list."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle a(\\lambda )=2\\int _{-\\infty }^{\\infty }f(t)\\cos(2\\pi \\lambda t)\\,dt}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Fourier cosine coefficient formula; not in provided list."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle b(\\lambda )=2\\int _{-\\infty }^{\\infty }f(t)\\sin(2\\pi \\lambda t)\\,dt.}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Fourier sine coefficient formula; not in provided list."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle f(t)=2\\int _{0}^{\\infty }\\int _{-\\infty }^{\\infty }f(\\tau )\\cos {\\bigl (}2\\pi \\lambda (\\tau -t){\\bigr )}\\,d\\tau \\,d\\lambda .}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Reconstruction via cosine transform; not in provided list."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle {\\widehat {f}}(\\xi )=F_{0}(|\\xi |)P(\\xi )}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Bochner-type spherical-harmonics decomposition of FT; not in provided list."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle F_{0}(r)=2\\pi i^{-k}r^{-{\\frac {n+2k-2}{2}}}\\int _{0}^{\\infty }f_{0}(s)J_{\\frac {n+2k-2}{2}}(2\\pi rs)s^{\\frac {n+2k}{2}}\\,ds.}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Radial-Bessel formula in Bochner theorem; not in provided list."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle f_{R}(x)=\\int _{E_{R}}{\\widehat {f}}(\\xi )e^{i2\\pi x\\cdot \\xi }\\,d\\xi ,\\quad x\\in \\mathbb {R} ^{n}.}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Truncated inverse FT used in restriction problems; not in provided list."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle f(x)\\mapsto {\\widehat {f}}(\\xi )=\\int _{\\mathbb {R} ^{n}}f(x)e^{-i2\\pi \\xi \\cdot x}\\,dx,\\quad \\forall \\xi \\in \\mathbb {R} ^{n}.}"
+      },
+      "status": "formalized",
+      "decl": "Real.instFourierTransform",
+      "module": "Mathlib.Analysis.Fourier.FourierTransform",
+      "note": "Same Euclidean FT formula, restated as the L¹ → L^∞ operator; matches Mathlib's instance."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\sup _{\\xi \\in \\mathbb {R} ^{n}}\\left\\vert {\\widehat {f}}(\\xi )\\right\\vert \\leq \\int _{\\mathbb {R} ^{n}}\\vert f(x)\\vert \\,dx,}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "L¹ → L^∞ boundedness bound; not in provided list."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle {\\widehat {f}}(\\xi )=\\lim _{R\\to \\infty }\\int _{|x|\\leq R}f(x)e^{-i2\\pi \\xi \\cdot x}\\,dx}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "L² Fourier transform as improper integral limit; not in provided list."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\int _{\\mathbb {R} ^{n}}f(x){\\mathcal {F}}g(x)\\,dx=\\int _{\\mathbb {R} ^{n}}{\\mathcal {F}}f(x)g(x)\\,dx.}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Multiplication (transfer) formula; not in provided list."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle {\\begin{aligned}\\int _{\\mathbb {R} ^{n}}{\\overline {{\\mathcal {F}}f(x)}}{\\mathcal {F}}g(x)\\,dx&=\\int _{\\mathbb {R} ^{n}}{\\mathcal {F}}^{-1}{\\overline {f(x)}}{\\mathcal {F}}g(x)\\,dx\\\\&=\\int _{\\mathbb {R} ^{n}}{\\mathcal {F}}{\\mathcal {F}}^{-1}{\\overline {f(x)}}g(x)\\,dx=\\int _{\\mathbb {R} ^{n}}{\\overline {f(x)}}g(x)\\,dx\\end{aligned}}}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Inner-product preservation derivation; not in provided list."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle {\\mathcal {F}}:C_{c}^{\\infty }(\\mathbb {R} ^{n})\\rightarrow {\\mathcal {S}}(\\mathbb {R} ^{n})\\setminus C_{c}^{\\infty }(\\mathbb {R} ^{n}).}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Mapping property between test-function spaces; not in provided list."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\int _{\\mathbb {R} ^{n}}{\\widehat {f}}(x)g(x)\\,dx=\\int _{\\mathbb {R} ^{n}}f(x){\\widehat {g}}(x)\\,dx.}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "FT multiplication formula on Schwartz space; not in provided list."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle T_{f}(\\varphi )=\\int _{\\mathbb {R} ^{n}}f(x)\\varphi (x)\\,dx,\\quad \\forall \\varphi \\in {\\mathcal {S}}(\\mathbb {R} ^{n}).}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Tempered distribution induced by a function; not in provided list."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\langle {\\widehat {T}}_{f},\\varphi \\rangle =\\langle T_{f},{\\widehat {\\varphi }}\\rangle ,\\quad \\forall \\varphi \\in {\\mathcal {S}}(\\mathbb {R} ^{n}).}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "FT of tempered distribution via duality; not in provided list."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle {\\widehat {\\mu }}(\\xi )=\\int _{\\mathbb {R} ^{n}}e^{-i2\\pi x\\cdot \\xi }\\,d\\mu ,}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Fourier–Stieltjes transform of a measure; not in provided list."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle d\\mu =f(x)\\,dx,}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Notational expression for absolutely continuous measure; not Fourier-specific."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle {\\widehat {\\mu }}(\\xi )={\\widehat {f}}(\\xi ),}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Compatibility of FT with Fourier–Stieltjes for density measures; not in provided list."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle {\\widehat {f}}(\\xi )=\\int _{G}{\\overline {\\xi (x)}}f(x)\\,d\\mu \\quad {\\text{for any }}\\xi \\in {\\widehat {G}}.}"
+      },
+      "status": "partial",
+      "decl": "VectorFourier.fourierIntegral",
+      "module": "Mathlib.Analysis.Fourier.FourierTransform",
+      "note": "LCA-group Fourier transform; Mathlib's VectorFourier.fourierIntegral is a closely related generalization."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle f^{*}(g)={\\overline {f\\left(g^{-1}\\right)}}.}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Involution on L¹(G) for Gelfand transform; not in provided list."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle a\\mapsto {\\bigl (}\\varphi \\mapsto \\varphi (a){\\bigr )}.}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Gelfand-representation map; not in provided list."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle {\\widehat {f}}(\\sigma )=\\int _{G}f(g)U_{g^{-1}}^{(\\sigma )}\\,d\\lambda (g).}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "FT on compact nonabelian group; not in provided list."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\left\\langle {\\widehat {f}}(\\sigma )\\xi ,\\eta \\right\\rangle _{H_{\\sigma }}=\\int _{G}f(g)\\left\\langle U_{g^{-1}}^{(\\sigma )}\\xi ,\\eta \\right\\rangle \\,d\\lambda (g).}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Weak form of compact-group FT; not in provided list."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle {\\widehat {\\mu }}(\\sigma )=\\int _{G}U_{g^{-1}}^{(\\sigma )}\\,d\\mu (g),}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Fourier–Stieltjes transform on compact group; not in provided list."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\left\\langle {\\widehat {\\mu }}(\\sigma )\\xi ,\\eta \\right\\rangle _{H_{\\sigma }}=\\int _{G}\\left\\langle U_{g^{-1}}^{(\\sigma )}\\xi ,\\eta \\right\\rangle \\,d\\mu (g).}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Weak Fourier–Stieltjes formula; not in provided list."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle d\\mu =f\\,d\\lambda }"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Absolute continuity notation, not Fourier-specific."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\mu \\mapsto {\\widehat {\\mu }}}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Fourier–Stieltjes mapping on M(G); not in provided list."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\sup _{\\sigma \\in \\Sigma }\\|{\\widehat {\\mu }}(\\sigma )\\|\\leq \\|\\mu \\|.}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Operator-norm bound on FT of measure; not in provided list."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle {\\widehat {\\mu *\\nu }}(\\sigma )={\\widehat {\\nu }}(\\sigma ){\\widehat {\\mu }}(\\sigma ).}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Convolution-to-product on compact group; not in provided list."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle f^{*}(g)={\\overline {f(g^{-1})}},}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Involution on M(G) for absolutely continuous case; not in provided list."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle f(g)=\\sum _{\\sigma \\in \\Sigma }d_{\\sigma }\\operatorname {tr} \\left({\\widehat {f}}(\\sigma )U_{g}^{(\\sigma )}\\right),}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Peter–Weyl Fourier inversion on compact groups; not in provided list."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\|f\\|_{2}^{2}=\\sum _{\\sigma \\in \\Sigma }d_{\\sigma }\\|{\\widehat {f}}(\\sigma )\\|_{\\mathrm {HS} }^{2},}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Plancherel formula on compact groups; not in provided list."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle {\\frac {\\partial ^{2}y(x,t)}{\\partial ^{2}x}}={\\frac {\\partial y(x,t)}{\\partial t}}.}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Heat equation example; not a Fourier-specific decl."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle {\\frac {\\partial ^{2}y(x,t)}{\\partial ^{2}x}}={\\frac {\\partial ^{2}y(x,t)}{\\partial ^{2}t}}.}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Wave equation example; not in provided list."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle y(x,0)=f(x),\\qquad {\\frac {\\partial y(x,0)}{\\partial t}}=g(x).}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Cauchy boundary conditions; not Fourier-specific decl."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\cos {\\bigl (}2\\pi \\xi (x\\pm t){\\bigr )}{\\text{ or }}\\sin {\\bigl (}2\\pi \\xi (x\\pm t){\\bigr )}}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Elementary travelling-wave solutions; not a Fourier decl."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle {\\begin{aligned}y(x,t)=\\int _{0}^{\\infty }d\\xi {\\Bigl [}&a_{+}(\\xi )\\cos {\\bigl (}2\\pi \\xi (x+t){\\bigr )}+a_{-}(\\xi )\\cos {\\bigl (}2\\pi \\xi (x-t){\\bigr )}+{}\\\\&b_{+}(\\xi )\\sin {\\bigl (}2\\pi \\xi (x+t){\\bigr )}+b_{-}(\\xi )\\sin \\left(2\\pi \\xi (x-t)\\right){\\Bigr ]}\\end{aligned}}}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Superposition of plane waves for wave equation; not in provided list."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle 2\\int _{-\\infty }^{\\infty }y(x,0)\\cos(2\\pi \\xi x)\\,dx=a_{+}+a_{-}}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Boundary cosine-transform relation; not in provided list."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle 2\\int _{-\\infty }^{\\infty }y(x,0)\\sin(2\\pi \\xi x)\\,dx=b_{+}+b_{-}.}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Boundary sine-transform relation; not in provided list."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle 2\\int _{-\\infty }^{\\infty }{\\frac {\\partial y(u,0)}{\\partial t}}\\sin(2\\pi \\xi x)\\,dx=(2\\pi \\xi )\\left(-a_{+}+a_{-}\\right)}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Boundary sine-transform of velocity; not in provided list."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle 2\\int _{-\\infty }^{\\infty }{\\frac {\\partial y(u,0)}{\\partial t}}\\cos(2\\pi \\xi x)\\,dx=(2\\pi \\xi )\\left(b_{+}-b_{-}\\right).}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Boundary cosine-transform of velocity; not in provided list."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\xi ^{2}{\\widehat {y}}(\\xi ,f)=f^{2}{\\widehat {y}}(\\xi ,f).}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Wave-equation transform algebraic constraint; not in provided list."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\iint {\\widehat {y}}\\varphi (\\xi ,f)\\,d\\xi \\,df=\\int s_{+}\\varphi (\\xi ,\\xi )\\,d\\xi +\\int s_{-}\\varphi (\\xi ,-\\xi )\\,d\\xi ,}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Distributional pairing on the cone; not in provided list."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle y(x,0)=\\int {\\bigl \\{}s_{+}(\\xi )+s_{-}(\\xi ){\\bigr \\}}e^{i2\\pi \\xi x+0}\\,d\\xi }"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Reconstructed initial value via inverse FT; not in provided list."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle {\\frac {\\partial y(x,0)}{\\partial t}}=\\int {\\bigl \\{}s_{+}(\\xi )-s_{-}(\\xi ){\\bigr \\}}i2\\pi \\xi e^{i2\\pi \\xi x+0}\\,d\\xi .}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Reconstructed initial velocity via inverse FT; not in provided list."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\varphi (p)=\\int dq\\,\\psi (q)e^{-ipq/h},}"
+      },
+      "status": "partial",
+      "decl": "VectorFourier.fourierIntegral",
+      "module": "Mathlib.Analysis.Fourier.FourierTransform",
+      "note": "Position-to-momentum representation is the FT with a different normalization."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\psi (q)=\\int dp\\,\\varphi (p)e^{ipq/h}.}"
+      },
+      "status": "partial",
+      "decl": "MeasureTheory.Integrable.fourierInv_fourier_eq",
+      "module": "Mathlib.Analysis.Fourier.Inversion",
+      "note": "Inverse momentum-to-position FT; an alternative-normalization instance of Mathlib's inversion."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle -{\\frac {\\partial ^{2}}{\\partial x^{2}}}\\psi (x,t)=i{\\frac {h}{2\\pi }}{\\frac {\\partial }{\\partial t}}\\psi (x,t).}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Free Schrödinger equation example; not in provided list."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle -{\\frac {\\partial ^{2}}{\\partial x^{2}}}\\psi (x,t)+V(x)\\psi (x,t)=i{\\frac {h}{2\\pi }}{\\frac {\\partial }{\\partial t}}\\psi (x,t).}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Schrödinger equation with potential; not in provided list."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\left({\\frac {\\partial ^{2}}{\\partial x^{2}}}+1\\right)\\psi (x,t)={\\frac {\\partial ^{2}}{\\partial t^{2}}}\\psi (x,t).}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Klein–Gordon equation example; not in provided list."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle R_{f}(\\tau )=\\lim _{T\\rightarrow \\infty }{\\frac {1}{2T}}\\int _{-T}^{T}f(t)f(t+\\tau )\\,dt.}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Autocorrelation function for signals; not in provided list."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle P_{f}(\\xi )=\\int _{-\\infty }^{\\infty }R_{f}(\\tau )e^{-i2\\pi \\xi \\tau }\\,d\\tau .}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Power spectral density (Wiener–Khinchin); not in provided list."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle {\\tilde {f}}(\\xi ),\\ F(\\xi ),\\ {\\mathcal {F}}\\left(f\\right)(\\xi ),\\ \\left({\\mathcal {F}}f\\right)(\\xi ),\\ {\\mathcal {F}}(f),\\ {\\mathcal {F}}\\{f\\},\\ {\\mathcal {F}}{\\bigl (}f(t){\\bigr )},\\ {\\mathcal {F}}{\\bigl \\{}f(t){\\bigr \\}}.}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Alternative notations for the Fourier transform; purely notational."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\xi \\rightarrow f,\\quad x\\rightarrow t,\\quad f\\rightarrow x,\\quad {\\widehat {f}}\\rightarrow X.}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Variable-renaming convention from engineering; purely notational."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle {\\widehat {f}}(\\xi )=A(\\xi )e^{i\\varphi (\\xi )}}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Polar decomposition of the Fourier transform; not in provided list."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle A(\\xi )=\\left|{\\widehat {f}}(\\xi )\\right|,}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Amplitude spectrum definition; not in provided list."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\varphi (\\xi )=\\arg \\left({\\widehat {f}}(\\xi )\\right),}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Phase spectrum definition; not in provided list."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle f(x)=\\int _{-\\infty }^{\\infty }A(\\xi )\\ e^{i{\\bigl (}2\\pi \\xi x+\\varphi (\\xi ){\\bigr )}}\\,d\\xi ,}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Inverse transform in amplitude-phase form; not in provided list."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle {\\mathcal {F}}{\\bigl (}\\operatorname {rect} (x){\\bigr )}=\\operatorname {sinc} (\\xi )}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Specific FT(rect) = sinc identity; not in provided list."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle {\\mathcal {F}}{\\bigl (}f(x+x_{0}){\\bigr )}={\\mathcal {F}}{\\bigl (}f(x){\\bigr )}\\,e^{i2\\pi x_{0}\\xi }}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Operator-notation shift identity; not in provided list."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle E\\left(e^{it\\cdot X}\\right)=\\int e^{it\\cdot x}\\,d\\mu _{X}(x).}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Characteristic function of a random variable; not in provided list."
+    }
+  ]
+}

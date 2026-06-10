@@ -1,0 +1,1097 @@
+{
+  "slug": "Algebraic_geometry",
+  "wikipedia_title": "Algebraic geometry",
+  "display_title": "Algebraic geometry",
+  "schema_version": 3,
+  "annotation_style": "theorem_article",
+  "annotations": [
+    {
+      "kind": "definition",
+      "label": "Algebraic geometry",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "Algebraic geometry is a branch of mathematics which uses abstract algebraic techniques"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "A field-of-study description, not a formalizable mathematical statement.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Algebraic varieties",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "The fundamental objects of study in algebraic geometry are algebraic varieties"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "AlgebraicGeometry.Scheme",
+        "module": "Mathlib.AlgebraicGeometry.Scheme",
+        "match_kind": "generalization"
+      },
+      "note": "Mathlib has no dedicated classical 'algebraic variety' object; schemes (and PrimeSpectrum/zeroLocus) generalize them.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Point on an algebraic curve",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "A point of the plane lies on an algebraic curve if its coordinates satisfy a given polynomial equation"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "MvPolynomial.mem_zeroLocus_iff",
+        "module": "Mathlib.RingTheory.Nullstellensatz",
+        "match_kind": "special_case"
+      },
+      "note": "Membership in MvPolynomial.zeroLocus (aeval x p = 0) captures a point satisfying polynomial equations.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Mainstream algebraic geometry",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "The mainstream of algebraic geometry is devoted to the study of the complex points of the algebraic varieties"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "A descriptive remark about the discipline, not a formal statement.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Diophantine / arithmetic geometry",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "Diophantine geometry and, more generally, arithmetic geometry is the study of algebraic varieties over fields that are not algebraically closed"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "A field-of-study description, not a formalizable statement.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Computational algebraic geometry",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "Computational algebraic geometry is an area that has emerged at the intersection of algebraic geometry and computer algebra"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "A field-of-study description, not a formalizable statement.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Fermat's Last Theorem via schemes",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "Wiles' proof of the longstanding conjecture called Fermat's Last Theorem is an example of the power of this approach"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "FermatLastTheorem",
+        "module": "Mathlib.NumberTheory.FLT.Basic",
+        "match_kind": null
+      },
+      "note": "The FermatLastTheorem statement is defined and exponents 3 and 4 are proven, but the full theorem is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Sphere as a vanishing set",
+      "anchor": {
+        "section": "Zeros of simultaneous polynomials",
+        "snippet": "the two-dimensional sphere of radius 1 in three-dimensional Euclidean space R 3 could be defined as the set of all points"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib's Metric.sphere is metric, not the polynomial vanishing set of this worked example.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Slanted circle in R^3",
+      "anchor": {
+        "section": "Zeros of simultaneous polynomials",
+        "snippet": "which satisfy the two polynomial equations"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This specific worked example is not present in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Affine space",
+      "anchor": {
+        "section": "Affine varieties",
+        "snippet": "We consider the affine space of dimension n over k , denoted A n ( k )"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "AffineSpace",
+        "module": "Mathlib.LinearAlgebra.AffineSpace.Defs",
+        "match_kind": null
+      },
+      "note": "Mathlib's AffineSpace is the AddTorsor notion; the AG affine space A^n underlying MvPolynomial.zeroLocus (σ → K) is not a named object.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Polynomial (regular) function",
+      "anchor": {
+        "section": "Affine varieties",
+        "snippet": "is said to be polynomial (or regular ) if it can be written as a polynomial"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "MvPolynomial.aeval",
+        "module": "Mathlib.Algebra.MvPolynomial.Basic",
+        "match_kind": "generalization"
+      },
+      "note": "Polynomial functions are realized via MvPolynomial evaluation (aeval), though 'regular function' is not a named predicate.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Ring of regular functions on A^n",
+      "anchor": {
+        "section": "Affine varieties",
+        "snippet": "the set of the regular functions on A n is a ring, which is denoted k [ A n ]"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "MvPolynomial",
+        "module": "Mathlib.Algebra.MvPolynomial.Basic",
+        "match_kind": "exact"
+      },
+      "note": "k[A^n] is exactly MvPolynomial σ k, which carries a CommRing instance in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Vanishing set V(S)",
+      "anchor": {
+        "section": "Affine varieties",
+        "snippet": "is the set V ( S ) of all points in A n where every polynomial in S vanishes"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "MvPolynomial.zeroLocus",
+        "module": "Mathlib.RingTheory.Nullstellensatz",
+        "match_kind": "exact"
+      },
+      "note": "MvPolynomial.zeroLocus (with zeroLocus_span) is exactly the common vanishing set of a set of polynomials.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Algebraic set",
+      "anchor": {
+        "section": "Affine varieties",
+        "snippet": "for some S , is called an algebraic set"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "MvPolynomial.zeroLocus",
+        "module": "Mathlib.RingTheory.Nullstellensatz",
+        "match_kind": null
+      },
+      "note": "Algebraic sets are the images of MvPolynomial.zeroLocus, but Mathlib has no standalone 'algebraic set' predicate for affine n-space.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Ideal I(U) of a subset",
+      "anchor": {
+        "section": "Affine varieties",
+        "snippet": "define I ( U ) to be the set of all polynomials whose vanishing set contains U"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "MvPolynomial.vanishingIdeal",
+        "module": "Mathlib.RingTheory.Nullstellensatz",
+        "match_kind": "exact"
+      },
+      "note": "MvPolynomial.vanishingIdeal is exactly the ideal of polynomials vanishing on a subset.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Zariski topology",
+      "anchor": {
+        "section": "Affine varieties",
+        "snippet": "the Zariski topology , a topology on A n whose closed sets are the algebraic sets"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "PrimeSpectrum.zariskiTopology",
+        "module": "Mathlib.RingTheory.Spectrum.Prime.Topology",
+        "match_kind": "generalization"
+      },
+      "note": "Mathlib defines the Zariski topology on the prime spectrum with closed sets the zeroLocus sets, generalizing the topology on A^n.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "U = V(I(U)) iff algebraic set",
+      "anchor": {
+        "section": "Affine varieties",
+        "snippet": "Then U = V ( I ( U )) if and only if U is an algebraic set"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "PrimeSpectrum.zeroLocus_vanishingIdeal_eq_closure",
+        "module": "Mathlib.RingTheory.Spectrum.Prime.Topology",
+        "match_kind": "generalization"
+      },
+      "note": "Mathlib proves V(I(U)) equals the closure of U on the prime spectrum, giving U = V(I(U)) iff U is closed (algebraic).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Hilbert's Nullstellensatz",
+      "anchor": {
+        "section": "Affine varieties",
+        "snippet": "it says that I ( V ( S )) is the radical of the ideal generated by S"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "MvPolynomial.vanishingIdeal_zeroLocus_eq_radical",
+        "module": "Mathlib.RingTheory.Nullstellensatz",
+        "match_kind": "exact"
+      },
+      "note": "This is exactly Hilbert's Nullstellensatz: vanishingIdeal (zeroLocus I) = I.radical over an algebraically closed field.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Hilbert's basis theorem",
+      "anchor": {
+        "section": "Affine varieties",
+        "snippet": "Hilbert's basis theorem implies that ideals in k [ A n ] are always finitely generated"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "MvPolynomial.isNoetherianRing",
+        "module": "Mathlib.RingTheory.Polynomial.Basic",
+        "match_kind": "exact"
+      },
+      "note": "Polynomial.isNoetherianRing is the Hilbert basis theorem and MvPolynomial.isNoetherianRing gives that ideals of k[A^n] are finitely generated.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Irreducible algebraic set",
+      "anchor": {
+        "section": "Affine varieties",
+        "snippet": "An algebraic set is called irreducible if it cannot be written as the union of two smaller algebraic sets"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "IsIrreducible",
+        "module": "Mathlib.Topology.Irreducible",
+        "match_kind": "generalization"
+      },
+      "note": "IsIrreducible (not a union of two proper closed sets) specializes to this notion under the Zariski topology.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Unique decomposition into irreducible components",
+      "anchor": {
+        "section": "Affine varieties",
+        "snippet": "Any algebraic set is a finite union of irreducible algebraic sets and this decomposition is unique"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "TopologicalSpace.NoetherianSpace.exists_finset_irreducible",
+        "module": "Mathlib.Topology.NoetherianSpace",
+        "match_kind": "generalization"
+      },
+      "note": "In Noetherian spaces every closed set is a finite union of irreducibles, with finite_irreducibleComponents giving the canonical (unique) components.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Variety",
+      "anchor": {
+        "section": "Affine varieties",
+        "snippet": "An irreducible algebraic set is also called a variety"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "IsIrreducible",
+        "module": "Mathlib.Topology.Irreducible",
+        "match_kind": null
+      },
+      "note": "The notion 'irreducible algebraic set' is expressible via IsIrreducible but Mathlib has no named affine 'variety' object.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Variety iff prime ideal",
+      "anchor": {
+        "section": "Affine varieties",
+        "snippet": "an algebraic set is a variety if and only if it may be defined as the vanishing set of a prime ideal of the polynomial ring"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "PrimeSpectrum.isIrreducible_iff_vanishingIdeal_isPrime",
+        "module": "Mathlib.RingTheory.Spectrum.Prime.Topology",
+        "match_kind": "generalization"
+      },
+      "note": "Mathlib proves a closed subset is irreducible iff its vanishing ideal is prime, the spectrum analogue of variety ⇔ prime ideal.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Regular function on an algebraic set",
+      "anchor": {
+        "section": "Regular functions",
+        "snippet": "A regular function on an algebraic set V contained in A n is the restriction to V of a regular function on A n"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "AlgebraicGeometry.Scheme.presheaf",
+        "module": "Mathlib.AlgebraicGeometry.Scheme",
+        "match_kind": "generalization"
+      },
+      "note": "Regular functions appear scheme-theoretically as structure-sheaf sections; the classical restriction-to-V definition is not named.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Tietze extension theorem",
+      "anchor": {
+        "section": "Regular functions",
+        "snippet": "the Tietze extension theorem guarantees that a continuous function on a closed subset always extends to the ambient topological space"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "ContinuousMap.exists_restrict_eq",
+        "module": "Mathlib.Topology.TietzeExtension",
+        "match_kind": "exact"
+      },
+      "note": "Mathlib proves the Tietze extension theorem for closed sets into TietzeExtension spaces.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Coordinate ring k[V]",
+      "anchor": {
+        "section": "Regular functions",
+        "snippet": "This ring is called the coordinate ring of V"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The coordinate ring is realizable as MvPolynomial σ k ⧸ I(V) but is not defined as a named object in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "k[V] = k[A^n]/I(V)",
+      "anchor": {
+        "section": "Regular functions",
+        "snippet": "Thus k [ V ] may be identified with k [ A n ]/ I ( V )"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The quotient MvPolynomial σ k ⧸ vanishingIdeal exists but no lemma identifies it as the coordinate ring of V.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Regular map to affine space",
+      "anchor": {
+        "section": "Morphism of affine varieties",
+        "snippet": "We define a regular map f from V to A m by letting f = ( f 1 , ..., f m )"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "AlgebraicGeometry.Scheme.Hom",
+        "module": "Mathlib.AlgebraicGeometry.Scheme",
+        "match_kind": "generalization"
+      },
+      "note": "Regular maps are formalized scheme-theoretically as scheme morphisms, not as classical tuples of polynomials on a variety.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Regular map to a variety",
+      "anchor": {
+        "section": "Morphism of affine varieties",
+        "snippet": "we say that f is a regular map from V to V ′ if the range of f is contained in V ′"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "AlgebraicGeometry.Scheme.Hom",
+        "module": "Mathlib.AlgebraicGeometry.Scheme",
+        "match_kind": "generalization"
+      },
+      "note": "Morphisms of schemes generalize regular maps between varieties; the classical formulation is not present.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Morphisms and category of algebraic sets",
+      "anchor": {
+        "section": "Morphism of affine varieties",
+        "snippet": "The regular maps are also called morphisms , as they make the collection of all affine algebraic sets into a category"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "AlgebraicGeometry.AffineScheme",
+        "module": "Mathlib.AlgebraicGeometry.AffineScheme",
+        "match_kind": "generalization"
+      },
+      "note": "Mathlib has the category of (affine) schemes, generalizing the category of affine algebraic sets.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Equivalence of categories",
+      "anchor": {
+        "section": "Morphism of affine varieties",
+        "snippet": "This defines an equivalence of categories between the category of algebraic sets and the opposite category of the finitely generated reduced k -algebras"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "AlgebraicGeometry.AffineScheme.equivCommRingCat",
+        "module": "Mathlib.AlgebraicGeometry.AffineScheme",
+        "match_kind": "generalization"
+      },
+      "note": "Mathlib proves AffineScheme ≌ CommRingᵒᵖ, the scheme-level antiequivalence, but not the classical algebraic-sets ⇔ reduced f.g. k-algebras version.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Function field k(V)",
+      "anchor": {
+        "section": "Rational function and birational equivalence",
+        "snippet": "has thus a field of fractions which is denoted k ( V ) and called the field of the rational functions on V"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "AlgebraicGeometry.Scheme.functionField",
+        "module": "Mathlib.AlgebraicGeometry.FunctionField",
+        "match_kind": "generalization"
+      },
+      "note": "Scheme.functionField defines the function field of an integral scheme, a field (fraction field of the coordinate ring in the affine case).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Rational map",
+      "anchor": {
+        "section": "Rational function and birational equivalence",
+        "snippet": "one may define a rational map from a variety V to a variety V '"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "AlgebraicGeometry.Scheme.RationalMap",
+        "module": "Mathlib.AlgebraicGeometry.Birational.RationalMap",
+        "match_kind": "generalization"
+      },
+      "note": "Scheme.RationalMap formalizes rational maps as equivalence classes of morphisms defined on dense opens.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Birational equivalence",
+      "anchor": {
+        "section": "Rational function and birational equivalence",
+        "snippet": "Two affine varieties are birationally equivalent if there are two rational functions between them which are inverse one to the other"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "AlgebraicGeometry.Scheme.RationalMap",
+        "module": "Mathlib.AlgebraicGeometry.Birational.RationalMap",
+        "match_kind": null
+      },
+      "note": "Rational maps are formalized but no dedicated birational-equivalence relation/isomorphism was found in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Rational variety",
+      "anchor": {
+        "section": "Rational function and birational equivalence",
+        "snippet": "An affine variety is a rational variety if it is birationally equivalent to an affine space"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has no notion of rational variety.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Circle is a rational curve",
+      "anchor": {
+        "section": "Rational function and birational equivalence",
+        "snippet": "is a rational curve, as it has the parametric equation"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The rational parametrization of the circle as a worked example is not formalized as such.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Resolution of singularities (Hironaka)",
+      "anchor": {
+        "section": "Rational function and birational equivalence",
+        "snippet": "It was solved in the affirmative in characteristic 0 by Heisuke Hironaka in 1964"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Resolution of singularities is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Projective space P^n",
+      "anchor": {
+        "section": "Projective variety",
+        "snippet": "the projective space P n of dimension n is usually defined as the set of the lines passing through a point, considered as the origin, in the affine space of dimension n + 1"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Projectivization",
+        "module": "Mathlib.LinearAlgebra.Projectivization.Basic",
+        "match_kind": "generalization"
+      },
+      "note": "Projectivization ℙ K V is the set of lines through the origin in a vector space, with P^n = ℙ k (k^{n+1}).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Homogeneous coordinates",
+      "anchor": {
+        "section": "Projective variety",
+        "snippet": "This defines the homogeneous coordinates of a point of P n as a sequence of n + 1 elements of the base field k"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Projectivization.mk",
+        "module": "Mathlib.LinearAlgebra.Projectivization.Basic",
+        "match_kind": null
+      },
+      "note": "Projectivization.mk represents a point by a nonzero vector defined up to scalar, i.e. homogeneous coordinates, but they are not separately named.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Vanishing on a line iff homogeneous",
+      "anchor": {
+        "section": "Projective variety",
+        "snippet": "A polynomial in n + 1 variables vanishes at all points of a line passing through the origin if and only if it is homogeneous"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No lemma characterizing homogeneity via vanishing on lines through the origin was found.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Projective algebraic set",
+      "anchor": {
+        "section": "Projective variety",
+        "snippet": "This allows us to define a projective algebraic set in P n as the set V ( f 1 , ..., f k )"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "ProjectiveSpectrum.zeroLocus",
+        "module": "Mathlib.AlgebraicGeometry.ProjectiveSpectrum.Topology",
+        "match_kind": "generalization"
+      },
+      "note": "ProjectiveSpectrum.zeroLocus gives the vanishing set of homogeneous polynomials in the Proj setting.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Projective variety",
+      "anchor": {
+        "section": "Projective variety",
+        "snippet": "The projective varieties are the projective algebraic sets whose defining ideal is prime"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "ProjectiveSpectrum",
+        "module": "Mathlib.AlgebraicGeometry.ProjectiveSpectrum.Topology",
+        "match_kind": null
+      },
+      "note": "ProjectiveSpectrum points are relevant homogeneous prime ideals, but a named 'projective variety' object is not defined.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Decomposition of projective algebraic sets",
+      "anchor": {
+        "section": "Projective variety",
+        "snippet": "Every projective algebraic set may be uniquely decomposed into a finite union of projective varieties"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "TopologicalSpace.NoetherianSpace.exists_finset_irreducible",
+        "module": "Mathlib.Topology.NoetherianSpace",
+        "match_kind": "generalization"
+      },
+      "note": "Finite/unique irreducible decomposition holds in Noetherian spaces, applicable to ProjectiveSpectrum, but not stated specifically for projective varieties.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Regular functions on projective variety are constant",
+      "anchor": {
+        "section": "Projective variety",
+        "snippet": "The only regular functions which may be defined properly on a projective variety are the constant functions"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The result that global regular functions on a connected projective variety are constant is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Parabola vs cubic at infinity",
+      "anchor": {
+        "section": "Projective variety",
+        "snippet": "If we draw it, we get a parabola"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This illustrative example is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Bézout's theorem",
+      "anchor": {
+        "section": "Projective variety",
+        "snippet": "Bézout's theorem on the number of intersection points between two varieties can be stated in its sharpest form only in projective space"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib's Bezout files concern Bézout domains, not the intersection-number theorem for projective curves.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Real algebraic geometry",
+      "anchor": {
+        "section": "Real algebraic geometry",
+        "snippet": "Real algebraic geometry is the study of real algebraic varieties"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "A field-of-study description, not a formalizable statement.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Circle with no real points",
+      "anchor": {
+        "section": "Real algebraic geometry",
+        "snippet": "is a circle if"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This worked example is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Semi-algebraic sets",
+      "anchor": {
+        "section": "Real algebraic geometry",
+        "snippet": "semi-algebraic sets , which are the solutions of systems of polynomial inequalities"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Semi-algebraic sets are not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Hyperbola branch as semi-algebraic set",
+      "anchor": {
+        "section": "Real algebraic geometry",
+        "snippet": "the branch in the first quadrant is a semi-algebraic set defined by"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This semi-algebraic example is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Hilbert's sixteenth problem (ovals)",
+      "anchor": {
+        "section": "Real algebraic geometry",
+        "snippet": "Decide which respective positions are possible for the ovals of a non-singular plane curve of degree 8"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Hilbert's sixteenth problem is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "CAD computes topology of semi-algebraic sets",
+      "anchor": {
+        "section": "Computational algebraic geometry",
+        "snippet": "Cylindrical algebraic decomposition (CAD) allows the computation of the topology of semi-algebraic sets"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Cylindrical algebraic decomposition is not implemented in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Numerical algebraic geometry",
+      "anchor": {
+        "section": "Computational algebraic geometry",
+        "snippet": "called numerical algebraic geometry has been developed over the last several decades"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "A field-of-study description, not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Gröbner basis",
+      "anchor": {
+        "section": "Gröbner basis",
+        "snippet": "A Gröbner basis is a system of generators of a polynomial ideal whose computation allows the deduction of many properties"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has monomial orders but no Gröbner basis definition (only doc references).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Emptiness criterion via Gröbner basis",
+      "anchor": {
+        "section": "Gröbner basis",
+        "snippet": "V is empty (over an algebraically closed extension of the basis field) if and only if the Gröbner basis for any monomial ordering is reduced to {1}"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No Gröbner basis machinery exists in Mathlib to state this criterion.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Doubly exponential degree of Gröbner bases",
+      "anchor": {
+        "section": "Gröbner basis",
+        "snippet": "they may contain, in the worst case, polynomials whose degree is doubly exponential in the number of variables"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "A complexity bound on Gröbner bases, which Mathlib does not formalize.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Cylindrical algebraic decomposition",
+      "anchor": {
+        "section": "Cylindrical algebraic decomposition (CAD)",
+        "snippet": "CAD is an algorithm which was introduced in 1973 by G. Collins to implement with an acceptable complexity"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "CAD is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Tarski's quantifier elimination",
+      "anchor": {
+        "section": "Cylindrical algebraic decomposition (CAD)",
+        "snippet": "Tarski's theorem asserts that, from such a formula, one may compute an equivalent formula without quantifiers"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has model theory and Presburger QE but not Tarski's quantifier elimination for real-closed fields.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "CAD complexity",
+      "anchor": {
+        "section": "Cylindrical algebraic decomposition (CAD)",
+        "snippet": "The complexity of CAD is doubly exponential in the number of variables"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "A complexity statement about CAD, not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Doubly exponential worst-case complexity",
+      "anchor": {
+        "section": "Asymptotic complexity vs. practical efficiency",
+        "snippet": "The basic general algorithms of computational geometry have a doubly exponential worst-case complexity"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "A complexity-theoretic claim, not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Scheme",
+      "anchor": {
+        "section": "Abstract modern viewpoint",
+        "snippet": "algebraic varieties were subsumed into Alexander Grothendieck 's concept of a scheme"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "AlgebraicGeometry.Scheme",
+        "module": "Mathlib.AlgebraicGeometry.Scheme",
+        "match_kind": "exact"
+      },
+      "note": "AlgebraicGeometry.Scheme is the formalized notion of a scheme as a locally ringed space locally isomorphic to Spec of a ring.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Affine schemes antiequivalent to commutative rings",
+      "anchor": {
+        "section": "Abstract modern viewpoint",
+        "snippet": "Their local objects are affine schemes or prime spectra which are locally ringed spaces which form a category which is antiequivalent to the category of commutative unital rings"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "AlgebraicGeometry.AffineScheme.equivCommRingCat",
+        "module": "Mathlib.AlgebraicGeometry.AffineScheme",
+        "match_kind": "exact"
+      },
+      "note": "AffineScheme.equivCommRingCat gives the equivalence AffineScheme ≌ CommRingᵒᵖ, i.e. the antiequivalence with commutative rings.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Delian problem",
+      "anchor": {
+        "section": "Before the 16th century",
+        "snippet": "was to construct a length x so that the cube of side x contained the same volume as the rectangular box a 2 b"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Delian (cube-doubling) problem is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Abelian varieties",
+      "anchor": {
+        "section": "20th century",
+        "snippet": "the abelian varieties , which are the projective varieties whose points form an abelian group"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Abelian varieties are not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Analytic variety",
+      "anchor": {
+        "section": "Analytic geometry",
+        "snippet": "An analytic variety over the field of real or complex numbers is defined locally as the set of common solutions of several equations involving analytic functions"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has analytic functions and manifolds but no notion of analytic variety.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Complex manifolds are complex analytic varieties",
+      "anchor": {
+        "section": "Analytic geometry",
+        "snippet": "Any complex manifold is a complex analytic variety"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Complex analytic varieties are not formalized, so this relationship is not stated.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Not all complex analytic varieties are manifolds",
+      "anchor": {
+        "section": "Analytic geometry",
+        "snippet": "not all complex analytic varieties are manifolds"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Complex analytic varieties are not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "GAGA",
+      "anchor": {
+        "section": "Analytic geometry",
+        "snippet": "as has been shown by Jean-Pierre Serre in his paper GAGA"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Serre's GAGA theorems are not formalized in Mathlib.",
+      "provenance": "ai"
+    }
+  ]
+}

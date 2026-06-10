@@ -1,0 +1,121 @@
+{
+  "slug": "Nicolas_Bourbaki",
+  "wikipedia_title": "Nicolas Bourbaki",
+  "display_title": "Nicolas Bourbaki",
+  "schema_version": 3,
+  "annotation_style": "theorem_article",
+  "annotations": [
+    {
+      "kind": "proposition",
+      "label": "Russell–Whitehead's 1+1=2",
+      "anchor": {
+        "section": "Éléments de mathématique",
+        "snippet": "before establishing the proposition usually abbreviated as"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "one_add_one_eq_two",
+        "module": "Mathlib.Data.Nat.Cast.Defs",
+        "match_kind": "generalization"
+      },
+      "note": "`one_add_one_eq_two` proves `1 + 1 = 2` in any `AddMonoidWithOne`, generalizing the famous proposition.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Empty set notation ∅",
+      "anchor": {
+        "section": "Influence",
+        "snippet": "used it to denote the empty set"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Set.empty_def",
+        "module": "Mathlib.Data.Set.Basic",
+        "match_kind": "exact"
+      },
+      "note": "The `∅` notation for sets is provided by the `EmptyCollection (Set α)` instance (Mathlib.Data.Set.Defs) and characterized by `Set.empty_def`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Injective, surjective, bijective functions",
+      "anchor": {
+        "section": "Influence",
+        "snippet": "were introduced to refer to functions which satisfy certain properties"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Function.Bijective",
+        "module": "Mathlib.Logic.Function.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`Function.Bijective` is defined in Mathlib as `Injective f ∧ Surjective f`, with all three notions used pervasively.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Pavés and boules",
+      "anchor": {
+        "section": "Influence",
+        "snippet": "naming them pavés ( paving stones ) and boules ( balls )"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Metric.ball",
+        "module": "Mathlib.Topology.MetricSpace.Pseudo.Defs",
+        "match_kind": "generalization"
+      },
+      "note": "Balls are `Metric.ball` (general metric spaces) and boxes/pavés are formalized as `BoxIntegral.Box`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Barrel (topological vector space)",
+      "anchor": {
+        "section": "Influence",
+        "snippet": "Bourbaki defined a barrel as a set which is convex"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "BarrelledSpace",
+        "module": "Mathlib.Analysis.LocallyConvex.Barrelled",
+        "match_kind": null
+      },
+      "note": "Mathlib defines `BarrelledSpace` via seminorms but the file's TODO explicitly notes that barrels (convex, balanced, absorbing, closed sets) themselves are not yet defined.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Mother structures",
+      "anchor": {
+        "section": "Influence",
+        "snippet": "in terms of Bourbaki's project: composition, neighborhood, and order"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The three 'mother structures' (algebraic, topological, order) exist individually in Mathlib but Bourbaki's organizing meta-concept is not a formalizable mathematical statement.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Systems as examples of a group",
+      "anchor": {
+        "section": "Articles",
+        "snippet": "showed that all could be described as examples of a group"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This is a historical/expository claim (Weil's kinship-structures appendix) rather than a precise mathematical statement, and is not formalized.",
+      "provenance": "ai"
+    }
+  ]
+}

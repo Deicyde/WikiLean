@@ -1,0 +1,1307 @@
+{
+  "slug": "Simplex",
+  "wikipedia_title": "Simplex",
+  "display_title": "Simplex",
+  "schema_version": 3,
+  "annotation_style": "theorem_article",
+  "annotations": [
+    {
+      "kind": "definition",
+      "label": "Simplex",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "is a generalization of the notion of a triangle or tetrahedron to arbitrary dimensions"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Affine.Simplex",
+        "module": "Mathlib.LinearAlgebra.AffineSpace.Simplex.Basic",
+        "match_kind": "exact"
+      },
+      "note": "Mathlib defines a simplex as a bundled collection of `n+1` affinely independent points in affine space, the standard formalization of an n-simplex.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "0-simplex is a point",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "a 0-dimensional simplex is a point"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Affine.Simplex.mkOfPoint",
+        "module": "Mathlib.LinearAlgebra.AffineSpace.Simplex.Basic",
+        "match_kind": "special_case"
+      },
+      "note": "`mkOfPoint` constructs a 0-simplex from a single point, and `range_mkOfPoint_points` shows its point set is a singleton.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "1-simplex is a line segment",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "a 1-dimensional simplex is a line segment"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "stdSimplex_fin_two",
+        "module": "Mathlib.Analysis.Convex.StdSimplex",
+        "match_kind": "special_case"
+      },
+      "note": "`stdSimplex_fin_two` proves the standard 1-simplex equals the segment between the two unit vectors.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "2-simplex is a triangle",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "a 2-dimensional simplex is a triangle"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Affine.Triangle",
+        "module": "Mathlib.LinearAlgebra.AffineSpace.Simplex.Basic",
+        "match_kind": "special_case"
+      },
+      "note": "`Affine.Triangle` is defined as the abbreviation `Simplex k P 2`, a 2-simplex.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "3-simplex is a tetrahedron",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "a 3-dimensional simplex is a tetrahedron"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Affine.Simplex",
+        "module": "Mathlib.LinearAlgebra.AffineSpace.Simplex.Basic",
+        "match_kind": null
+      },
+      "note": "The 3-simplex `Simplex k P 3` exists but Mathlib has no dedicated 'tetrahedron' object identifying it as such.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "4-simplex is a 5-cell",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "a 4-dimensional simplex is a 5-cell"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Affine.Simplex",
+        "module": "Mathlib.LinearAlgebra.AffineSpace.Simplex.Basic",
+        "match_kind": null
+      },
+      "note": "The 4-simplex `Simplex k P 4` exists but there is no '5-cell' object in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "k-simplex",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "is a k -dimensional polytope that is the convex hull of its k + 1 vertices"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Affine.Simplex",
+        "module": "Mathlib.LinearAlgebra.AffineSpace.Simplex.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`Affine.Simplex k P n` is the k+1 affinely independent vertices, whose convex hull is the k-simplex.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "(Lead)",
+          "snippet": "is a k -dimensional polytope that is the convex hull of its k + 1 vertices"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle C=\\left\\{\\theta _{0}u_{0}+\\dots +\\theta _{k}u_{k}~{\\Bigg |}~\\sum _{i=0}^{k}\\theta _{i}=1{\\mbox{ and }}\\theta _{i}\\geq 0{\\mbox{ for }}i=0,\\dots ,k\\right\\}.}"
+        }
+      ]
+    },
+    {
+      "kind": "definition",
+      "label": "Regular simplex",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "is a simplex that is also a regular polytope"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has no notion of regular polytope or regular simplex.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Standard / probability simplex",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "is the k -dimensional simplex whose vertices are the k + 1 standard unit vectors"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "stdSimplex",
+        "module": "Mathlib.Analysis.Convex.StdSimplex",
+        "match_kind": "exact"
+      },
+      "note": "`stdSimplex` is the set of nonnegative vectors summing to 1, with `convexHull_rangle_single_eq_stdSimplex` showing it is the hull of the unit vectors.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "(Lead)",
+          "snippet": "is the k -dimensional simplex whose vertices are the k + 1 standard unit vectors"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\left\\{{\\vec {x}}\\in \\mathbf {R} ^{k+1}:x_{0}+\\dots +x_{k}=1,x_{i}\\geq 0{\\text{ for }}i=0,\\dots ,k\\right\\}.}"
+        }
+      ]
+    },
+    {
+      "kind": "definition",
+      "label": "Simplicial complex",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "simplices to form a simplicial complex"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Geometry.SimplicialComplex",
+        "module": "Mathlib.Analysis.Convex.SimplicialComplex.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`Geometry.SimplicialComplex` formalizes geometric simplicial complexes in a module over an ordered ring.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Abstract simplicial complex",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "a simplex is simply a finite set and the complex is a family of such sets that is closed under taking subsets"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "AbstractSimplicialComplex",
+        "module": "Mathlib.AlgebraicTopology.SimplicialComplex.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`AbstractSimplicialComplex` is a downward-closed family of nonempty finite sets containing all singletons.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Face of a simplex",
+      "anchor": {
+        "section": "Elements",
+        "snippet": "is called a face of the simplex"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Affine.Simplex.face",
+        "module": "Mathlib.LinearAlgebra.AffineSpace.Simplex.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`Affine.Simplex.face` is the subsimplex on a given subset of the vertices.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "m-face, vertices, edges, facets",
+      "anchor": {
+        "section": "Elements",
+        "snippet": "are called the vertices"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Affine.Simplex.faceOpposite",
+        "module": "Mathlib.LinearAlgebra.AffineSpace.Simplex.Basic",
+        "match_kind": null
+      },
+      "note": "Vertices are `points`, facets are `faceOpposite`, and m-faces are `face`, but the bundled terminology (edges, etc.) is not a single declaration.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Number of m-faces",
+      "anchor": {
+        "section": "Elements",
+        "snippet": "the number of m -faces is equal to the binomial coefficient"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No lemma counting the m-faces of a simplex by binomial coefficient was found.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Coface",
+      "anchor": {
+        "section": "Elements",
+        "snippet": "is a coface of a simplex B if B is a face of A"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No notion of coface exists in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Extended f-vector",
+      "anchor": {
+        "section": "Elements",
+        "snippet": "The extended f-vector for an n -simplex can be computed by"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No f-vector of a simplex/polytope is formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Edge count is triangle number",
+      "anchor": {
+        "section": "Elements",
+        "snippet": "The number of 1-faces (edges) of the n -simplex is the n -th triangle number"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No edge-counting lemma for simplices was found.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Fewest vertices requiring n dimensions",
+      "anchor": {
+        "section": "Elements",
+        "snippet": "is the polytope with the fewest vertices that requires n dimensions"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This minimality property of the simplex is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Join construction",
+      "anchor": {
+        "section": "Elements",
+        "snippet": "can be constructed as a join"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "convexJoin",
+        "module": "Mathlib.Analysis.Convex.Join",
+        "match_kind": null
+      },
+      "note": "`convexJoin` gives the join of convex sets, but the specific construction of a simplex as a join of vertices is not stated.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "(−1)-simplex",
+      "anchor": {
+        "section": "Elements",
+        "snippet": "the empty set is defined to be a (−1)-simplex"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "`Affine.Simplex` requires `n : ℕ` (at least one point), so the empty (−1)-simplex is not represented.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Standard n-simplex",
+      "anchor": {
+        "section": "Standard simplex",
+        "snippet": "is the subset of R n +1 given by"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "stdSimplex",
+        "module": "Mathlib.Analysis.Convex.StdSimplex",
+        "match_kind": "exact"
+      },
+      "note": "`stdSimplex 𝕜 ι` is exactly `{f | (∀ x, 0 ≤ f x) ∧ ∑ x, f x = 1}`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Simplex in affine hyperplane",
+      "anchor": {
+        "section": "Standard simplex",
+        "snippet": "lies in the affine hyperplane obtained by removing the restriction"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "stdSimplex.sum_eq_one",
+        "module": "Mathlib.Analysis.Convex.StdSimplex",
+        "match_kind": null
+      },
+      "note": "`stdSimplex.sum_eq_one`/`stdSimplex_eq_inter` encode the `∑ = 1` hyperplane condition, but it is not phrased as an affine hyperplane embedding.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Vertices of standard n-simplex",
+      "anchor": {
+        "section": "Standard simplex",
+        "snippet": "The n + 1 vertices of the standard n -simplex are the points"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "single_mem_stdSimplex",
+        "module": "Mathlib.Analysis.Convex.StdSimplex",
+        "match_kind": "exact"
+      },
+      "note": "`single_mem_stdSimplex` and `stdSimplex.vertex` give the vertices `Pi.single i 1`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Standard simplex as 0/1-polytope",
+      "anchor": {
+        "section": "Standard simplex",
+        "snippet": "is an example of a 0/1-polytope"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has no notion of 0/1-polytope.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Canonical map to affine simplex",
+      "anchor": {
+        "section": "Standard simplex",
+        "snippet": "There is a canonical map from the standard n -simplex to an arbitrary n -simplex"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Set.Finite.convexHull_eq_image",
+        "module": "Mathlib.Analysis.Convex.StdSimplex",
+        "match_kind": null
+      },
+      "note": "`Set.Finite.convexHull_eq_image` realizes the convex hull as the image of `stdSimplex` under the weight-to-point map, but no packaged canonical map to an `Affine.Simplex` exists.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Barycentric coordinates",
+      "anchor": {
+        "section": "Standard simplex",
+        "snippet": "are called the barycentric coordinates of a point in the n -simplex"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "AffineBasis.coord",
+        "module": "Mathlib.LinearAlgebra.AffineSpace.Basis",
+        "match_kind": "exact"
+      },
+      "note": "`AffineBasis.coord` is the family of barycentric coordinate affine maps.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Affine n-simplex",
+      "anchor": {
+        "section": "Standard simplex",
+        "snippet": "is often called an affine n -simplex"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Affine.Simplex",
+        "module": "Mathlib.LinearAlgebra.AffineSpace.Simplex.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`Affine.Simplex` is precisely the affine n-simplex in affine space.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Generalized barycentric coordinates",
+      "anchor": {
+        "section": "Standard simplex",
+        "snippet": "These are known as generalized barycentric coordinates"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Generalized barycentric coordinates for arbitrary convex polytopes are not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Softmax function",
+      "anchor": {
+        "section": "Standard simplex",
+        "snippet": "is the softmax function , or normalized exponential function"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No softmax/normalized exponential function is defined in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Δ0",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "is the point 1 in R 1"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "stdSimplex_unique",
+        "module": "Mathlib.Analysis.Convex.StdSimplex",
+        "match_kind": "special_case"
+      },
+      "note": "`stdSimplex_unique` shows the standard simplex on a one-element index is the single point `fun _ ↦ 1`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Δ1",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "is the line segment joining (1, 0) and (0, 1) in R 2"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "stdSimplex_fin_two",
+        "module": "Mathlib.Analysis.Convex.StdSimplex",
+        "match_kind": "special_case"
+      },
+      "note": "`stdSimplex_fin_two` equals the segment between `Pi.single 0 1` and `Pi.single 1 1`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Δ2",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "is the equilateral triangle with vertices"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "stdSimplex",
+        "module": "Mathlib.Analysis.Convex.StdSimplex",
+        "match_kind": "special_case"
+      },
+      "note": "The standard 2-simplex `stdSimplex ℝ (Fin 3)` exists but its equilateral-triangle geometry is not proven.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Δ3",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "is the regular tetrahedron with vertices"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "stdSimplex",
+        "module": "Mathlib.Analysis.Convex.StdSimplex",
+        "match_kind": "special_case"
+      },
+      "note": "The standard 3-simplex exists as `stdSimplex ℝ (Fin 4)` but its regular-tetrahedron geometry is not proven.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Δ4",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "is the regular 5-cell with vertices"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "stdSimplex",
+        "module": "Mathlib.Analysis.Convex.StdSimplex",
+        "match_kind": "special_case"
+      },
+      "note": "The standard 4-simplex exists as `stdSimplex ℝ (Fin 5)` but its regular-5-cell geometry is not proven.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Increasing coordinates (indefinite sum)",
+      "anchor": {
+        "section": "Increasing coordinates",
+        "snippet": "An alternative coordinate system is given by taking the indefinite sum"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This alternative increasing-coordinate parametrization is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Ordered simplex fundamental domain, volume 1/n!",
+      "anchor": {
+        "section": "Increasing coordinates",
+        "snippet": "the ordered simplex is a (closed) fundamental domain for the action of the symmetric group on the n -cube"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No result identifying the ordered simplex as a fundamental domain of `Sₙ` on the cube with volume `1/n!` was found.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Order-only presentation",
+      "anchor": {
+        "section": "Increasing coordinates",
+        "snippet": "it uses the order but not addition"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This observation about the order-only coordinate presentation is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Projection onto standard simplex",
+      "anchor": {
+        "section": "Projection onto the standard simplex",
+        "snippet": "possibly with coordinates that are negative or in excess of 1"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Euclidean projection algorithm onto the standard simplex is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Simplex as corner of cube",
+      "anchor": {
+        "section": "Corner of cube",
+        "snippet": "This yields an n -simplex as a corner of the n -cube"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The corner-of-cube construction of a simplex is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Inductive construction of regular simplex",
+      "anchor": {
+        "section": "Cartesian coordinates for a regular n -dimensional simplex in R n",
+        "snippet": "One way to write down a regular n -simplex in R n is to choose two points"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The inductive Cartesian construction of a regular simplex is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Two choices for additional vertex",
+      "anchor": {
+        "section": "Cartesian coordinates for a regular n -dimensional simplex in R n",
+        "snippet": "there are two choices for the additional vertex"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This step of the regular-simplex construction is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Centered unit-side-length vertices",
+      "anchor": {
+        "section": "Cartesian coordinates for a regular n -dimensional simplex in R n",
+        "snippet": "It can be translated to the origin by subtracting the mean of its vertices"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Centering a regular simplex at its vertex centroid is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Inscribed hypersphere radius",
+      "anchor": {
+        "section": "Cartesian coordinates for a regular n -dimensional simplex in R n",
+        "snippet": "This simplex is inscribed in a hypersphere of radius"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Affine.Simplex.circumsphere",
+        "module": "Mathlib.Geometry.Euclidean.Circumcenter",
+        "match_kind": null
+      },
+      "note": "Every simplex has a circumsphere (`circumsphere`/`mem_circumsphere`), but the specific radius formula for the regular simplex is not derived.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Inscribed in unit hypersphere",
+      "anchor": {
+        "section": "Cartesian coordinates for a regular n -dimensional simplex in R n",
+        "snippet": "A different rescaling produces a simplex that is inscribed in a unit hypersphere"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Affine.Simplex.circumradius",
+        "module": "Mathlib.Geometry.Euclidean.Circumcenter",
+        "match_kind": null
+      },
+      "note": "`circumradius` exists generally, but the unit-circumsphere rescaling of a regular simplex is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Side length of unit-hypersphere simplex",
+      "anchor": {
+        "section": "Cartesian coordinates for a regular n -dimensional simplex in R n",
+        "snippet": "The side length of this simplex is"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The side-length formula for the unit-circumsphere regular simplex is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Cyclic group construction",
+      "anchor": {
+        "section": "Cartesian coordinates for a regular n -dimensional simplex in R n",
+        "snippet": "A highly symmetric way to construct a regular n -simplex is to use a representation of the cyclic group"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The cyclic-group representation construction of a regular simplex is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Sufficient condition for orbit to be regular simplex",
+      "anchor": {
+        "section": "Cartesian coordinates for a regular n -dimensional simplex in R n",
+        "snippet": "A sufficient condition for the orbit of a point to be a regular simplex"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This orbit condition for a regular simplex is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Volume via determinant",
+      "anchor": {
+        "section": "Volume",
+        "snippet": "The volume of an n -simplex in n -dimensional space with vertices"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The determinant/n! volume formula for a simplex is not formalized (only the parallelepiped version exists).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Volume via Gram determinant",
+      "anchor": {
+        "section": "Volume",
+        "snippet": "employs a Gram determinant and works even when"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Gram-determinant volume formula for simplices is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Symmetric volume formula",
+      "anchor": {
+        "section": "Volume",
+        "snippet": "A more symmetric way to compute the volume of an n -simplex"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The symmetric homogeneous-coordinate volume formula is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Volume via Cayley–Menger determinant",
+      "anchor": {
+        "section": "Volume",
+        "snippet": "is via the Cayley–Menger determinant"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Cayley–Menger determinant volume formula is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Parallelotope volume formula",
+      "anchor": {
+        "section": "Volume",
+        "snippet": "it is the formula for the volume of an n - parallelotope"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Basis.addHaar_parallelepiped",
+        "module": "Mathlib.MeasureTheory.Measure.Lebesgue.EqHaar",
+        "match_kind": "exact"
+      },
+      "note": "`Basis.addHaar_parallelepiped` gives the parallelepiped volume as `ENNReal.ofReal |b.det v|`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Cube decomposition into n-path simplices",
+      "anchor": {
+        "section": "Volume",
+        "snippet": "If P is the unit n -hypercube, then the union of the n -simplexes formed by the convex hull of each n -path is P"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The decomposition of the hypercube into n! path simplices is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "General parallelotope decomposition",
+      "anchor": {
+        "section": "Volume",
+        "snippet": "If P is a general parallelotope, the same assertions hold"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The analogous parallelotope simplex decomposition is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Volume under standard n-simplex",
+      "anchor": {
+        "section": "Volume",
+        "snippet": "the volume under a standard n -simplex"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The 1/n! volume of the region under the standard simplex is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Volume of regular unit-side simplex",
+      "anchor": {
+        "section": "Volume",
+        "snippet": "The volume of a regular n -simplex with unit side length is"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The closed-form volume of a unit-side regular simplex is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Dihedral angle of regular simplex",
+      "anchor": {
+        "section": "Dihedral angles of the regular n -simplex",
+        "snippet": "they have the same dihedral angle of cos −1 (1/ n )"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The arccos(1/n) dihedral angle of the regular simplex is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "n-dimensional Pythagorean theorem",
+      "anchor": {
+        "section": "Simplices with an \"orthogonal corner\"",
+        "snippet": "there exists an n -dimensional version of the Pythagorean theorem"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The de Gua / n-dimensional Pythagorean theorem for orthogonal-corner simplices is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Pythagoras and de Gua's theorem cases",
+      "anchor": {
+        "section": "Simplices with an \"orthogonal corner\"",
+        "snippet": "For a 2-simplex, the theorem is the Pythagorean theorem for triangles with a right angle"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "norm_add_sq_eq_norm_sq_add_norm_sq_iff_angle_eq_pi_div_two",
+        "module": "Mathlib.Geometry.Euclidean.Angle.Unoriented.RightAngle",
+        "match_kind": "special_case"
+      },
+      "note": "The 2-simplex (Pythagorean) case is formalized via the right-angle norm identity, but the 3-simplex de Gua case is not.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Hasse diagram isomorphic to hypercube edges",
+      "anchor": {
+        "section": "Relation to the ( n + 1)-hypercube",
+        "snippet": "The Hasse diagram of the face lattice of an n -simplex is isomorphic to the graph of the ( n + 1) - hypercube 's edges"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The face-lattice Hasse diagram / hypercube edge graph isomorphism is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Simplex as vertex figure of hypercube",
+      "anchor": {
+        "section": "Relation to the ( n + 1)-hypercube",
+        "snippet": "The n -simplex is also the vertex figure of the ( n + 1) -hypercube"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Vertex figures of polytopes are not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Simplex equivalent to n-ball",
+      "anchor": {
+        "section": "Topology",
+        "snippet": "an n -simplex is equivalent to an n -ball"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "stdSimplexHomeomorphUnitInterval",
+        "module": "Mathlib.Analysis.Convex.StdSimplex",
+        "match_kind": "special_case"
+      },
+      "note": "Only the n=1 case (homeomorphism with the unit interval) is formalized; no general simplex-to-ball homeomorphism exists.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Simplex is manifold with corners",
+      "anchor": {
+        "section": "Topology",
+        "snippet": "Every n -simplex is an n -dimensional manifold with corners"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The simplex is not equipped with a manifold-with-corners structure in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Simplex as space of probability distributions",
+      "anchor": {
+        "section": "Probability",
+        "snippet": "the points of the standard n -simplex in ( n + 1) -space form the space of possible probability distributions on a finite set"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "stdSimplex",
+        "module": "Mathlib.Analysis.Convex.StdSimplex",
+        "match_kind": null
+      },
+      "note": "`stdSimplex` is exactly the nonnegative, sum-one vectors, but no explicit identification with `PMF`/probability distributions is provided.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Affine homeomorphism correspondence",
+      "anchor": {
+        "section": "Probability",
+        "snippet": "This correspondence is an affine homeomorphism"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No affine homeomorphism between the standard simplex and a space of probability distributions is formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Aitchison geometry",
+      "anchor": {
+        "section": "Aitchison geometry",
+        "snippet": "is a natural way to construct an inner product space from the standard simplex"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Aitchison geometry is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Self-dual compounds",
+      "anchor": {
+        "section": "Compounds",
+        "snippet": "Since all simplices are self-dual, they can form a series of compounds"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Self-duality of simplices and polytope compounds are not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Two triangles form a hexagram",
+      "anchor": {
+        "section": "Compounds",
+        "snippet": "Two triangles form a hexagram"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The hexagram compound is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Stella octangula",
+      "anchor": {
+        "section": "Compounds",
+        "snippet": "Two tetrahedra form a compound of two tetrahedra or stella octangula"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The stella octangula compound is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Compound of two 5-cells",
+      "anchor": {
+        "section": "Compounds",
+        "snippet": "Two 5-cells form a compound of two 5-cells in four dimensions"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The compound of two 5-cells is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Simplicial complexes",
+      "anchor": {
+        "section": "Algebraic topology",
+        "snippet": "simplices are used as building blocks to construct an interesting class of topological spaces called simplicial complexes"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "AbstractSimplicialComplex",
+        "module": "Mathlib.AlgebraicTopology.SimplicialComplex.Basic",
+        "match_kind": "exact"
+      },
+      "note": "Both `AbstractSimplicialComplex` and the geometric `Geometry.SimplicialComplex` are formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Simplicial homology",
+      "anchor": {
+        "section": "Algebraic topology",
+        "snippet": "to define a certain kind of homology called simplicial homology"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": null,
+        "module": "Mathlib.AlgebraicTopology.SimplicialSet.Homology.Basic",
+        "match_kind": null
+      },
+      "note": "Mathlib formalizes homology of simplicial sets/objects (and singular homology), but not classical simplicial homology of a simplicial complex directly.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Affine k-chain",
+      "anchor": {
+        "section": "Algebraic topology",
+        "snippet": "is called an affine k - chain"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The notion of a formal sum of affine simplices (affine chain) is not formalized as such.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Boundary of n-simplex is a chain",
+      "anchor": {
+        "section": "Algebraic topology",
+        "snippet": "the boundary of an n -simplex is an affine ( n − 1) -chain"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": null,
+        "module": "Mathlib.AlgebraicTopology.AlternatingFaceMapComplex",
+        "match_kind": null
+      },
+      "note": "The alternating-face-map boundary operator is formalized for simplicial objects, but not specifically as an affine-chain boundary.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Boundary of boundary is zero",
+      "anchor": {
+        "section": "Algebraic topology",
+        "snippet": "the boundary of the boundary of a simplex is zero"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": null,
+        "module": "Mathlib.AlgebraicTopology.AlternatingFaceMapComplex",
+        "match_kind": null
+      },
+      "note": "The alternating face map complex is a genuine chain complex (so `d ∘ d = 0`), but this is for simplicial objects, not the affine-simplex boundary.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Embedding into a manifold",
+      "anchor": {
+        "section": "Algebraic topology",
+        "snippet": "a simplex (and a chain) can be embedded into a manifold"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Embedding of simplices/chains into a manifold is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Singular n-simplex",
+      "anchor": {
+        "section": "Algebraic topology",
+        "snippet": "is frequently referred to as a singular n -simplex"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "TopCat.toSSetObjEquiv",
+        "module": "Mathlib.AlgebraicTopology.SingularSet",
+        "match_kind": "exact"
+      },
+      "note": "`TopCat.toSSetObjEquiv` identifies n-simplices of the singular simplicial set with continuous maps from the standard topological simplex.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Algebraic standard n-simplex",
+      "anchor": {
+        "section": "Algebraic geometry",
+        "snippet": "the algebraic standard n-simplex is commonly defined as the subset of affine ( n + 1) -dimensional space"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The algebro-geometric standard simplex (as a scheme/subvariety with `∑ tᵢ = 1`) is not formalized.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Algebraic geometry",
+          "snippet": "the algebraic standard n-simplex is commonly defined as the subset of affine ( n + 1) -dimensional space"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\Delta ^{n}:=\\left\\{x\\in \\mathbb {A} ^{n+1}~{\\Bigg |}~\\sum _{i=1}^{n+1}x_{i}=1\\right\\},}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle R[\\Delta ^{n}]:=R[x_{1},\\ldots ,x_{n+1}]\\left/\\left(1-\\sum x_{i}\\right)\\right.}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Simplicial object assembly",
+      "anchor": {
+        "section": "Algebraic geometry",
+        "snippet": "the n -simplices for different dimensions n assemble into one simplicial object"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "CategoryTheory.SimplicialObject",
+        "module": "Mathlib.AlgebraicTopology.SimplicialObject.Basic",
+        "match_kind": "generalization"
+      },
+      "note": "`SimplicialObject`/`CosimplicialObject` is the general framework into which simplices of all dimensions assemble (e.g. `SimplexCategory.toTop`).",
+      "provenance": "ai"
+    }
+  ]
+}

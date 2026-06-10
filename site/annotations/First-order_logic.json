@@ -1,0 +1,1529 @@
+{
+  "slug": "First-order_logic",
+  "wikipedia_title": "First-order logic",
+  "display_title": "First-order logic",
+  "schema_version": 3,
+  "annotation_style": "theorem_article",
+  "annotations": [
+    {
+      "kind": "definition",
+      "label": "First-order logic",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "is a type of formal system used in mathematics"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "FirstOrder.Language",
+        "module": "Mathlib.ModelTheory.Basic",
+        "match_kind": null
+      },
+      "note": "Mathlib formalizes first-order logic via FirstOrder.Language together with Structure, Term, BoundedFormula, and Realize.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Theory",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "is usually a first-order logic together with a specified domain of discourse"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "FirstOrder.Language.Theory",
+        "module": "Mathlib.ModelTheory.Syntax",
+        "match_kind": "exact"
+      },
+      "note": "A theory is defined as a set of sentences (Set L.Sentence).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "First-order vs higher-order logic",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "distinguishes first-order logic from higher-order logic"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib's ModelTheory only formalizes first-order quantification over elements; higher-order logic and the distinction are absent.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Predicate",
+      "anchor": {
+        "section": "Introduction",
+        "snippet": "A predicate evaluates to true or false for an entity or entities in the domain of discourse"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "FirstOrder.Language.Structure",
+        "module": "Mathlib.ModelTheory.Basic",
+        "match_kind": null
+      },
+      "note": "Predicates correspond to interpreted relation symbols via Structure.RelMap (relation → Prop), but \"predicate\" is not a standalone definition.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Interpretation (model)",
+      "anchor": {
+        "section": "Introduction",
+        "snippet": "An interpretation (or model) of a first-order formula specifies what each predicate means"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "FirstOrder.Language.Structure",
+        "module": "Mathlib.ModelTheory.Basic",
+        "match_kind": "exact"
+      },
+      "note": "An interpretation is a FirstOrder.Language.Structure assigning meanings (funMap, RelMap) to all symbols.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Terms and formulas",
+      "anchor": {
+        "section": "Syntax",
+        "snippet": "There are two key types of well-formed expressions: terms"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "FirstOrder.Language.Term",
+        "module": "Mathlib.ModelTheory.Syntax",
+        "match_kind": "exact"
+      },
+      "note": "Terms and formulas are the inductive types FirstOrder.Language.Term and FirstOrder.Language.BoundedFormula.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Logical and non-logical symbols",
+      "anchor": {
+        "section": "Alphabet",
+        "snippet": "It is common to divide the symbols of the alphabet into logical symbols"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "FirstOrder.Language",
+        "module": "Mathlib.ModelTheory.Basic",
+        "match_kind": null
+      },
+      "note": "A Language carries only non-logical symbols (Functions/Relations); logical symbols are built into BoundedFormula's constructors, but the explicit division is not a named concept.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Sufficiency of symbols",
+      "anchor": {
+        "section": "Logical symbols",
+        "snippet": "Either one of the quantifiers along with negation"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "FirstOrder.Language.BoundedFormula.ex",
+        "module": "Mathlib.ModelTheory.Syntax",
+        "match_kind": "invocation"
+      },
+      "note": "Mathlib derives ∃, ⊓, ⊔, ⊤ from ⊥, imp, and all (e.g. BoundedFormula.ex := φ.not.all.not), but expressive completeness is not proved as a theorem.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Signature",
+      "anchor": {
+        "section": "Non-logical symbols",
+        "snippet": "This choice is made via a signature"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "FirstOrder.Language",
+        "module": "Mathlib.ModelTheory.Basic",
+        "match_kind": "exact"
+      },
+      "note": "A signature is a FirstOrder.Language, given by Functions and Relations indexed by arity.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Predicate symbol",
+      "anchor": {
+        "section": "Non-logical symbols",
+        "snippet": "A predicate symbol (or relation symbol ) with some valence"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "FirstOrder.Language.Relations",
+        "module": "Mathlib.ModelTheory.Basic",
+        "match_kind": "exact"
+      },
+      "note": "Relation symbols of valence n are the type Language.Relations n.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Function symbol",
+      "anchor": {
+        "section": "Non-logical symbols",
+        "snippet": "A function symbol , with some valence greater than or equal to 0"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "FirstOrder.Language.Functions",
+        "module": "Mathlib.ModelTheory.Basic",
+        "match_kind": "exact"
+      },
+      "note": "Function symbols of arity n are the type Language.Functions n.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Constant symbol",
+      "anchor": {
+        "section": "Non-logical symbols",
+        "snippet": "Function symbols of valence 0 are called constant symbols"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "FirstOrder.Language.Constants",
+        "module": "Mathlib.ModelTheory.Basic",
+        "match_kind": "exact"
+      },
+      "note": "Constants are defined as Language.Constants := L.Functions 0, the arity-0 function symbols.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Formation rules",
+      "anchor": {
+        "section": "Formation rules",
+        "snippet": "The formation rules define the terms and formulas of first-order logic"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "FirstOrder.Language.BoundedFormula",
+        "module": "Mathlib.ModelTheory.Syntax",
+        "match_kind": "exact"
+      },
+      "note": "The formation rules are the inductive definitions of Term and BoundedFormula.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Terms",
+      "anchor": {
+        "section": "Terms",
+        "snippet": "The set of terms is inductively defined by the following rules"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "FirstOrder.Language.Term",
+        "module": "Mathlib.ModelTheory.Syntax",
+        "match_kind": "exact"
+      },
+      "note": "Term is inductively defined with var and func constructors exactly matching the formation rules.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Formulas (well-formed formulas)",
+      "anchor": {
+        "section": "Formulas",
+        "snippet": "The set of formulas (also called well-formed formulas"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "FirstOrder.Language.BoundedFormula",
+        "module": "Mathlib.ModelTheory.Syntax",
+        "match_kind": "exact"
+      },
+      "note": "Well-formed formulas are the inductive BoundedFormula (and Formula := BoundedFormula α 0).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Atomic formulas",
+      "anchor": {
+        "section": "Formulas",
+        "snippet": "The formulas obtained from the first rule are said to be atomic formulas"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "FirstOrder.Language.BoundedFormula.IsAtomic",
+        "module": "Mathlib.ModelTheory.Complexity",
+        "match_kind": "exact"
+      },
+      "note": "IsAtomic characterizes formulas that are equalities or relations applied to terms.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Unique readability of formulas",
+      "anchor": {
+        "section": "Formulas",
+        "snippet": "This property is known as unique readability of formulas"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "FirstOrder.Language.BoundedFormula",
+        "module": "Mathlib.ModelTheory.Syntax",
+        "match_kind": null
+      },
+      "note": "Formulas are an inductive datatype, so unique readability holds automatically via constructor injectivity, but it is not stated as a theorem.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Operator precedence conventions",
+      "anchor": {
+        "section": "Notational conventions",
+        "snippet": "conventions have been developed about the precedence of the logical operators"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Operator precedence is a parsing/notation convention, not a formalizable mathematical statement.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Free and bound variables",
+      "anchor": {
+        "section": "Free and bound variables",
+        "snippet": "In a formula, a variable may occur free or bound"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "FirstOrder.Language.BoundedFormula.freeVarFinset",
+        "module": "Mathlib.ModelTheory.Syntax",
+        "match_kind": null
+      },
+      "note": "BoundedFormula structurally separates free variables (indexed by α, computed by freeVarFinset) from bound variables (de Bruijn indices in Fin n).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "First-order sentence",
+      "anchor": {
+        "section": "Free and bound variables",
+        "snippet": "A formula in first-order logic with no free variable occurrences is called a first-order sentence"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "FirstOrder.Language.Sentence",
+        "module": "Mathlib.ModelTheory.Syntax",
+        "match_kind": "exact"
+      },
+      "note": "Sentence := Formula Empty, a formula with no free variables.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Language of ordered abelian groups",
+      "anchor": {
+        "section": "Example: ordered abelian groups",
+        "snippet": "In mathematics, the language of ordered abelian groups has one constant symbol"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "FirstOrder.Language.order",
+        "module": "Mathlib.ModelTheory.Order",
+        "match_kind": null
+      },
+      "note": "Mathlib has the order language (single ≤ relation) and a separate ring language, but not the combined ordered-abelian-group signature (0, −, +, ≤).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Interpretation of a first-order language",
+      "anchor": {
+        "section": "Semantics",
+        "snippet": "An interpretation of a first-order language assigns a denotation to each non-logical symbol"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "FirstOrder.Language.Structure",
+        "module": "Mathlib.ModelTheory.Basic",
+        "match_kind": "exact"
+      },
+      "note": "A Structure assigns denotations to non-logical symbols via funMap and RelMap.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Structure (model)",
+      "anchor": {
+        "section": "First-order structures",
+        "snippet": "The most common way of specifying an interpretation"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "FirstOrder.Language.Structure",
+        "module": "Mathlib.ModelTheory.Basic",
+        "match_kind": "exact"
+      },
+      "note": "FirstOrder.Language.Structure is the class of first-order structures on a carrier type.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Domain of discourse",
+      "anchor": {
+        "section": "First-order structures",
+        "snippet": "The domain of discourse D is a nonempty set of"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": null,
+        "module": "Mathlib.ModelTheory.Basic",
+        "match_kind": null
+      },
+      "note": "The domain is just the carrier type M (taken Nonempty in models), not a named definition.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Interpretation of non-logical symbols",
+      "anchor": {
+        "section": "First-order structures",
+        "snippet": "Non-logical symbols are interpreted as follows"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "FirstOrder.Language.Structure",
+        "module": "Mathlib.ModelTheory.Basic",
+        "match_kind": "exact"
+      },
+      "note": "Structure.funMap and Structure.RelMap interpret function and relation symbols respectively.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Variable assignment",
+      "anchor": {
+        "section": "Evaluation of truth values",
+        "snippet": "A formula evaluates to true or false given an interpretation and a variable assignment"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "FirstOrder.Language.Term.realize",
+        "module": "Mathlib.ModelTheory.Semantics",
+        "match_kind": null
+      },
+      "note": "Variable assignments are represented as functions α → M (and Fin n → M) passed to Term.realize and BoundedFormula.Realize, not a named structure.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "T-schema",
+      "anchor": {
+        "section": "Evaluation of truth values",
+        "snippet": "The inductive definition used to make this assignment is called the T-schema"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "FirstOrder.Language.BoundedFormula.Realize",
+        "module": "Mathlib.ModelTheory.Semantics",
+        "match_kind": "exact"
+      },
+      "note": "BoundedFormula.Realize is the inductive Tarskian truth definition over the formula constructors.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Alternate truth definition",
+      "anchor": {
+        "section": "Evaluation of truth values",
+        "snippet": "There is a second common approach to defining truth values"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib defines truth only via the Tarski recursion (Realize); the alternative satisfaction-relation approach is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Equivalence of truth definitions",
+      "anchor": {
+        "section": "Evaluation of truth values",
+        "snippet": "This alternate approach gives exactly the same truth values to all sentences"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Only one truth definition (Realize) exists in Mathlib, so this equivalence between two definitions is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Satisfiability",
+      "anchor": {
+        "section": "Validity, satisfiability, and logical consequence",
+        "snippet": "A sentence is satisfiable if there is some interpretation under which it is true"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "FirstOrder.Language.Theory.IsSatisfiable",
+        "module": "Mathlib.ModelTheory.Satisfiability",
+        "match_kind": "generalization"
+      },
+      "note": "Theory.IsSatisfiable means a theory has a nonempty model; sentence satisfiability is the singleton case.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Satisfiability with free variables",
+      "anchor": {
+        "section": "Validity, satisfiability, and logical consequence",
+        "snippet": "Satisfiability of formulas with free variables is more complicated"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "FirstOrder.Language.Formula.Realize",
+        "module": "Mathlib.ModelTheory.Semantics",
+        "match_kind": null
+      },
+      "note": "Open formulas are evaluated by Formula.Realize with a variable assignment, but a dedicated satisfiability notion for free-variable formulas is not separately defined.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Logically valid formula",
+      "anchor": {
+        "section": "Validity, satisfiability, and logical consequence",
+        "snippet": "A formula is logically valid (or simply valid ) if it is true in every interpretation"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "FirstOrder.Language.Theory.ModelsBoundedFormula",
+        "module": "Mathlib.ModelTheory.Satisfiability",
+        "match_kind": "special_case"
+      },
+      "note": "Validity is the empty-theory case (∅ ⊨ᵇ φ) of Theory.ModelsBoundedFormula, true in all interpretations.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Logical consequence",
+      "anchor": {
+        "section": "Validity, satisfiability, and logical consequence",
+        "snippet": "is a logical consequence of a formula"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "FirstOrder.Language.Theory.ModelsBoundedFormula",
+        "module": "Mathlib.ModelTheory.Satisfiability",
+        "match_kind": "exact"
+      },
+      "note": "T ⊨ᵇ φ (ModelsBoundedFormula) means φ holds in every model of T, i.e. semantic logical consequence.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Tarski–Givant relation algebra equivalence",
+      "anchor": {
+        "section": "Algebraizations",
+        "snippet": "showed that the fragment of first-order logic that has no atomic sentence lying in the scope of more than three quantifiers has the same expressive power as relation algebra"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Relation algebra and this expressive-power equivalence are not present in Mathlib's model theory.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "First-order theory",
+      "anchor": {
+        "section": "First-order theories, models, and elementary classes",
+        "snippet": "A first-order theory of a particular signature is a set of axioms"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "FirstOrder.Language.Theory",
+        "module": "Mathlib.ModelTheory.Syntax",
+        "match_kind": "exact"
+      },
+      "note": "A theory is Set L.Sentence, a set of sentences (axioms) over a signature.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Model and elementary class",
+      "anchor": {
+        "section": "First-order theories, models, and elementary classes",
+        "snippet": "A first-order structure that satisfies all sentences in a given theory is said to be a model of the theory"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "FirstOrder.Language.Theory.Model",
+        "module": "Mathlib.ModelTheory.Semantics",
+        "match_kind": "exact"
+      },
+      "note": "Theory.Model (M ⊨ T) defines a model satisfying every sentence; the notion of \"elementary class\" itself is not separately named.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Existence of nonstandard models",
+      "anchor": {
+        "section": "First-order theories, models, and elementary classes",
+        "snippet": "the Löwenheim–Skolem theorem shows that most first-order theories will also have other, nonstandard models"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "FirstOrder.Language.Theory.exists_model_card_eq",
+        "module": "Mathlib.ModelTheory.Satisfiability",
+        "match_kind": null
+      },
+      "note": "exists_model_card_eq yields models of other cardinalities for theories with an infinite model, but \"nonstandard model\" is not a named concept.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Consistent and complete theory",
+      "anchor": {
+        "section": "First-order theories, models, and elementary classes",
+        "snippet": "A theory is consistent (within a deductive system )"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "FirstOrder.Language.Theory.IsComplete",
+        "module": "Mathlib.ModelTheory.Satisfiability",
+        "match_kind": null
+      },
+      "note": "Mathlib has the semantic IsComplete and IsSatisfiable (consistency), but not the deductive-system-relative (syntactic) notions described.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Gödel's incompleteness theorem",
+      "anchor": {
+        "section": "First-order theories, models, and elementary classes",
+        "snippet": "Gödel's incompleteness theorem shows that effective first-order theories that include a sufficient portion of the arithmetic"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has no deductive system or arithmetic-encoding machinery, so Gödel's incompleteness theorem is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Empty domains and rules of inference",
+      "anchor": {
+        "section": "Empty domains",
+        "snippet": "Many common rules of inference are valid only when the domain of discourse is required to be nonempty"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": null,
+        "module": "Mathlib.ModelTheory.Satisfiability",
+        "match_kind": null
+      },
+      "note": "Mathlib's models/satisfiability assume Nonempty carriers, reflecting the nonempty-domain requirement, but rules of inference themselves are not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Deductive system",
+      "anchor": {
+        "section": "Deductive systems",
+        "snippet": "A deductive system is used to demonstrate, on a purely syntactic basis"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib's model theory is purely semantic; no syntactic deductive system is formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Sound and complete deductive system",
+      "anchor": {
+        "section": "Deductive systems",
+        "snippet": "A deductive system is sound if any formula that can be derived in the system is logically valid"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No deductive system exists in Mathlib, so soundness/completeness of derivability are not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Semidecidability of logical consequence",
+      "anchor": {
+        "section": "Deductive systems",
+        "snippet": "logical consequence in first-order logic is only semidecidable"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No decidability/computability analysis of first-order consequence is present in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Rule of inference",
+      "anchor": {
+        "section": "Rules of inference",
+        "snippet": "A rule of inference states that, given a particular formula"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Inference rules belong to a deductive system, which Mathlib does not formalize.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Substitution rule",
+      "anchor": {
+        "section": "Rules of inference",
+        "snippet": "The substitution rule states that for any φ and any term t"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "FirstOrder.Language.BoundedFormula.subst",
+        "module": "Mathlib.ModelTheory.Syntax",
+        "match_kind": null
+      },
+      "note": "Substitution of terms for variables is formalized (BoundedFormula.subst), but not packaged as a derivation/inference rule.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Hilbert-style deductive system",
+      "anchor": {
+        "section": "Hilbert-style systems and natural deduction",
+        "snippet": "A deduction in a Hilbert-style deductive system is a list of formulas"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No Hilbert-style proof calculus is formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Natural deduction systems",
+      "anchor": {
+        "section": "Hilbert-style systems and natural deduction",
+        "snippet": "Natural deduction systems resemble Hilbert-style systems"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Natural deduction for first-order logic is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Sequent",
+      "anchor": {
+        "section": "Sequent calculus",
+        "snippet": "it uses sequents , which are expressions of the form"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Sequents and sequent calculus are not formalized in Mathlib's model theory.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Tableaux method",
+      "anchor": {
+        "section": "Tableaux method",
+        "snippet": "the derivations in the tableaux method are not lists of formulas"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The tableaux proof method is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Resolution rule sound and complete",
+      "anchor": {
+        "section": "Resolution",
+        "snippet": "The resolution rule is a single rule of inference that, together with unification"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Resolution and unification are not formalized in Mathlib's model theory.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Provable identities",
+      "anchor": {
+        "section": "Provable identities",
+        "snippet": "Many identities can be proved, which establish equivalences between particular formulas"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "FirstOrder.Language.Theory.Iff",
+        "module": "Mathlib.ModelTheory.Equivalence",
+        "match_kind": null
+      },
+      "note": "Semantic equivalence of formulas (φ ⇔[T] ψ) and many realize-equivalence lemmas are formalized, giving these identities semantically rather than via provability.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "First-order logic with equality",
+      "anchor": {
+        "section": "Equality and its axioms",
+        "snippet": "The most common convention, known as first-order logic with equality"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "FirstOrder.Language.Term.bdEqual",
+        "module": "Mathlib.ModelTheory.Syntax",
+        "match_kind": "exact"
+      },
+      "note": "Equality is a primitive logical symbol (BoundedFormula.equal / Term.bdEqual) interpreted as genuine equality in Realize.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Reflexivity axiom",
+      "anchor": {
+        "section": "Equality and its axioms",
+        "snippet": "For each variable x , x = x"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": null,
+        "module": "Mathlib.ModelTheory.Semantics",
+        "match_kind": null
+      },
+      "note": "Since equality is realized as honest =, x = x holds automatically (Eq.refl) and is not stated as a separate first-order equality axiom.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Substitution for functions axiom",
+      "anchor": {
+        "section": "Equality and its axioms",
+        "snippet": "For all variables x and y , and any function symbol f"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": null,
+        "module": "Mathlib.ModelTheory.Semantics",
+        "match_kind": null
+      },
+      "note": "Function symbols are interpreted by genuine functions (funMap), so congruence under equality holds automatically (congrArg) rather than as a stated axiom.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Substitution for formulas (Leibniz's law)",
+      "anchor": {
+        "section": "Equality and its axioms",
+        "snippet": "For any variables x and y and any formula"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": null,
+        "module": "Mathlib.ModelTheory.Semantics",
+        "match_kind": null
+      },
+      "note": "Because equality is genuine =, substitution of equals in formulas holds via congruence of Realize rather than as a first-order equality axiom.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Symmetry and transitivity of equality",
+      "anchor": {
+        "section": "Equality and its axioms",
+        "snippet": "Many other properties of equality are consequences of the axioms above"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": null,
+        "module": "Mathlib.ModelTheory.Semantics",
+        "match_kind": null
+      },
+      "note": "Equality is genuine =, so symmetry/transitivity hold via Eq.symm/Eq.trans rather than being derived from first-order equality axioms.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "First-order logic without equality",
+      "anchor": {
+        "section": "First-order logic without equality",
+        "snippet": "This convention is known as first-order logic without equality"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib's BoundedFormula always includes the equality constructor; an equality-free variant is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Normal model",
+      "anchor": {
+        "section": "First-order logic without equality",
+        "snippet": "the term normal model is used to refer to an interpretation where no distinct individuals"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Equality is always interpreted as genuine equality in Mathlib, so the normal/non-normal model distinction is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Theory with equality",
+      "anchor": {
+        "section": "Defining equality within a theory",
+        "snippet": "the theory is said to have equality, or to be a theory with equality"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Defining a congruence relation that behaves like equality within a theory is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Ad hoc definitions of equality",
+      "anchor": {
+        "section": "Defining equality within a theory",
+        "snippet": "Some theories allow other ad hoc definitions of equality"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Ad hoc internal definitions of equality are not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Gödel's completeness theorem",
+      "anchor": {
+        "section": "Completeness and undecidability",
+        "snippet": "Gödel's completeness theorem , proved by Kurt Gödel in 1929, establishes that there are sound, complete, effective deductive systems"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has no deductive system, so the completeness theorem relating provability to semantic validity is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Semidecidability of first-order consequence",
+      "anchor": {
+        "section": "Completeness and undecidability",
+        "snippet": "Thus first-order logical consequence is semidecidable"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Semidecidability of first-order consequence is a computability result not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Undecidability of first-order logic",
+      "anchor": {
+        "section": "Completeness and undecidability",
+        "snippet": "first-order logic is undecidable (although semidecidable)"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Church–Turing undecidability of first-order validity is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Decidable fragments exist",
+      "anchor": {
+        "section": "Decidable fragments",
+        "snippet": "There are systems weaker than full first-order logic for which the logical consequence relation is decidable"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Decidability of fragments of first-order logic is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Two-variable counting fragment C2",
+      "anchor": {
+        "section": "Decidable fragments",
+        "snippet": "FOL with two variables and the counting quantifiers"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The two-variable counting fragment C2 and its decidability are not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Monadic first-order fragment",
+      "anchor": {
+        "section": "Decidable fragments",
+        "snippet": "monadic first-order fragment (MFO, or Löwenheim fragment)"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The monadic (Löwenheim) fragment and its decidability are not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Löb–Gurevich fragment",
+      "anchor": {
+        "section": "Decidable fragments",
+        "snippet": "Löb–Gurevich fragment: FOL without equality, with only unary function symbols"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Löb–Gurevich fragment is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Rabin fragment",
+      "anchor": {
+        "section": "Decidable fragments",
+        "snippet": "Rabin fragment: FOL with equality, with exactly one unary function symbol"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Rabin fragment is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Bernays–Schönfinkel–Ramsey fragment",
+      "anchor": {
+        "section": "Decidable fragments",
+        "snippet": "Bernays–Schönfinkel–Ramsey fragment: all relational first-order sentences in prenex normal form"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Although prenex normal form (IsPrenex) is formalized, the BSR fragment and its decidability are not.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Löwenheim–Skolem theorem",
+      "anchor": {
+        "section": "Löwenheim–Skolem theorem",
+        "snippet": "The Löwenheim–Skolem theorem shows that if a first-order theory of cardinality"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "FirstOrder.Language.exists_elementarySubstructure_card_eq",
+        "module": "Mathlib.ModelTheory.Skolem",
+        "match_kind": "exact"
+      },
+      "note": "The Downward Löwenheim–Skolem theorem is formalized (with the upward direction as exists_elementaryEmbedding_card_eq in Satisfiability).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Infinite structures not categorically axiomatizable",
+      "anchor": {
+        "section": "Löwenheim–Skolem theorem",
+        "snippet": "The Löwenheim–Skolem theorem implies that infinite structures cannot be categorically axiomatized in first-order logic"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "FirstOrder.Language.Theory.exists_model_card_eq",
+        "module": "Mathlib.ModelTheory.Satisfiability",
+        "match_kind": null
+      },
+      "note": "exists_model_card_eq gives models of every sufficiently large cardinality, implying no infinite structure is categorically axiomatizable, though not stated in that form.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Compactness theorem",
+      "anchor": {
+        "section": "Compactness theorem",
+        "snippet": "The compactness theorem states that a set of first-order sentences has a model if and only if every finite subset of it has a model"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "FirstOrder.Language.Theory.isSatisfiable_iff_isFinitelySatisfiable",
+        "module": "Mathlib.ModelTheory.Satisfiability",
+        "match_kind": "exact"
+      },
+      "note": "This is exactly the compactness theorem: a theory is satisfiable iff finitely satisfiable.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Finite graphs not an elementary class",
+      "anchor": {
+        "section": "Compactness theorem",
+        "snippet": "the class of all finite graphs is not an elementary class"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib formalizes the theory of simple graphs but not the non-axiomatizability of the class of finite graphs.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Connected graphs not an elementary class",
+      "anchor": {
+        "section": "Compactness theorem",
+        "snippet": "connected graphs are not an elementary class in first-order logic"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Non-axiomatizability of connectedness in first-order logic is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Lindström's theorem",
+      "anchor": {
+        "section": "Lindström's theorem",
+        "snippet": "Per Lindström showed that the metalogical properties just discussed actually characterize first-order logic"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Lindström's characterization theorem is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "No categorical first-order theory with infinite model",
+      "anchor": {
+        "section": "Expressiveness",
+        "snippet": "if a first-order theory has any infinite model, then it has infinite models of every cardinality"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "FirstOrder.Language.Theory.exists_model_card_eq",
+        "module": "Mathlib.ModelTheory.Satisfiability",
+        "match_kind": "generalization"
+      },
+      "note": "exists_model_card_eq shows a theory with an infinite model has a model of every sufficiently large cardinality.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Formalizing natural language",
+      "anchor": {
+        "section": "Formalizing natural languages",
+        "snippet": "First-order logic is able to formalize many simple quantifier constructions in natural language"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Claims about formalizing natural-language quantifiers are informal and not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Reducing logical symbols",
+      "anchor": {
+        "section": "Restricted languages",
+        "snippet": "First-order logic can be studied in languages with fewer logical symbols than were described above"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "FirstOrder.Language.BoundedFormula",
+        "module": "Mathlib.ModelTheory.Syntax",
+        "match_kind": null
+      },
+      "note": "BoundedFormula uses a minimal set of primitives (falsum, imp, all, equal, rel) and derives the others, realizing this reduction in its construction.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Eliminating function and constant symbols",
+      "anchor": {
+        "section": "Restricted languages",
+        "snippet": "It is possible to entirely avoid function symbols and constant symbols"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Relational and algebraic languages (IsRelational) exist, but the function-to-relation elimination reduction is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Restricting arities via pairing function",
+      "anchor": {
+        "section": "Restricted languages",
+        "snippet": "It is also possible to restrict the arities of function symbols and predicate symbols"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Reducing arities via a pairing function is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Many-sorted first-order logic",
+      "anchor": {
+        "section": "Many-sorted logic",
+        "snippet": "Many-sorted first-order logic allows variables to have different sorts"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib's first-order logic is single-sorted; many-sorted logic is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Reduction to single-sorted logic",
+      "anchor": {
+        "section": "Many-sorted logic",
+        "snippet": "many-sorted first-order logic can be reduced to single-sorted first-order logic"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The reduction of many-sorted to single-sorted logic is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Uniqueness quantification",
+      "anchor": {
+        "section": "Additional quantifiers",
+        "snippet": "This notation, called uniqueness quantification"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "ExistsUnique",
+        "module": "Mathlib.Logic.ExistsUnique",
+        "match_kind": "exact"
+      },
+      "note": "ExistsUnique (∃!) is defined as ∃ x, p x ∧ ∀ y, p y → y = x at the ambient logic level, matching uniqueness quantification (not a BoundedFormula constructor).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Extra quantifiers",
+      "anchor": {
+        "section": "Additional quantifiers",
+        "snippet": "First-order logic with extra quantifiers has new quantifiers"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Generalized quantifiers (e.g. \"there exist infinitely many\") are not added to Mathlib's BoundedFormula.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Infinitary logic",
+      "anchor": {
+        "section": "Infinitary logics",
+        "snippet": "Infinitary logic allows infinitely long sentences"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib's formulas are finite; infinitary logic is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Infinitary logic notation L_αβ",
+      "anchor": {
+        "section": "Infinitary logics",
+        "snippet": "The most commonly studied infinitary logics are denoted"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The L_αβ infinitary logics are not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Intuitionistic first-order logic",
+      "anchor": {
+        "section": "Non-classical and modal logics",
+        "snippet": "Intuitionistic first-order logic uses intuitionistic rather than classical reasoning"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib's model theory uses classical semantics; intuitionistic first-order logic is not formalized as an object.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "First-order modal logic",
+      "anchor": {
+        "section": "Non-classical and modal logics",
+        "snippet": "First-order modal logic allows one to describe other possible worlds"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "First-order modal logic and possible-worlds semantics are not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "First-order fuzzy logics",
+      "anchor": {
+        "section": "Non-classical and modal logics",
+        "snippet": "First-order fuzzy logics are first-order extensions of propositional fuzzy logics"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "First-order fuzzy logics are not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Fixpoint logic",
+      "anchor": {
+        "section": "Fixpoint logic",
+        "snippet": "Fixpoint logic extends first-order logic by adding the closure under the least fixed points"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Fixpoint logic is not formalized in Mathlib's model theory.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Second-order logic",
+      "anchor": {
+        "section": "Higher-order logics",
+        "snippet": "Second-order logic extends first-order logic by adding the latter type of quantification"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib's Language supports only first-order quantification over elements; second-order logic is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Second-order consequence not semidecidable",
+      "anchor": {
+        "section": "Higher-order logics",
+        "snippet": "the (semantic) logical consequence relation for second-order and higher-order logic is not semidecidable"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Decidability properties of second-order consequence are not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Metalogical theorems fail in higher-order logic",
+      "anchor": {
+        "section": "Higher-order logics",
+        "snippet": "the Löwenheim–Skolem theorem and compactness theorem of first-order logic become false when generalized"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Failure of Löwenheim–Skolem and compactness in higher-order logic is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Automated theorem proving",
+      "anchor": {
+        "section": "Automated theorem proving and formal methods",
+        "snippet": "Automated theorem proving refers to the development of computer programs that search and find derivations"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Automated theorem proving is a description of software, not a mathematical statement formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Model checking for first-order logic",
+      "anchor": {
+        "section": "Automated theorem proving and formal methods",
+        "snippet": "efficient algorithms are known to decide whether an input finite structure satisfies a first-order formula"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Complexity results on model checking finite structures against first-order formulas are not formalized in Mathlib.",
+      "provenance": "ai"
+    }
+  ]
+}

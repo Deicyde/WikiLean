@@ -1,0 +1,457 @@
+{
+  "slug": "Fubinis_theorem",
+  "wikipedia_title": "Fubini's theorem",
+  "display_title": "Fubini's theorem",
+  "schema_version": 3,
+  "annotation_style": "theorem_article",
+  "annotations": [
+    {
+      "kind": "theorem",
+      "label": "Fubini's theorem (informal)",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "Fubini's theorem gives the conditions under which a double integral can be computed as an iterated integral"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "MeasureTheory.integral_prod",
+        "module": "Mathlib.MeasureTheory.Integral.Prod",
+        "match_kind": "generalization"
+      },
+      "note": "Mathlib formalizes Fubini for integrable functions on a product of σ-finite spaces as `MeasureTheory.integral_prod`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Fubini's theorem (Lebesgue integrable)",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "More formally, the theorem states that if a function is Lebesgue integrable on a rectangle"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "MeasureTheory.integral_prod",
+        "module": "Mathlib.MeasureTheory.Integral.Prod",
+        "match_kind": "exact"
+      },
+      "note": "`MeasureTheory.integral_prod` states ∫ f d(μ.prod ν) = ∫∫ f x y dν dμ for integrable f.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Tonelli's theorem (introductory)",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "Tonelli's theorem , introduced by Leonida Tonelli in 1909, is similar but is applied to a non-negative measurable function"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "MeasureTheory.lintegral_prod",
+        "module": "Mathlib.MeasureTheory.Measure.Prod",
+        "match_kind": "exact"
+      },
+      "note": "`MeasureTheory.lintegral_prod` is Tonelli's theorem for non-negative measurable functions (ℝ≥0∞-valued lintegral).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Fubini–Tonelli theorem (introductory)",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "The Fubini and Tonelli theorems are usually combined and form the Fubini–Tonelli theorem"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "MeasureTheory.integral_prod",
+        "module": "Mathlib.MeasureTheory.Integral.Prod",
+        "match_kind": "exact"
+      },
+      "note": "The combined Fubini–Tonelli is captured by `MeasureTheory.integral_prod` together with `MeasureTheory.lintegral_prod`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Fubini's theorem for infinite series (Pringsheim)",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "A related result is often called Fubini's theorem for infinite series"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Summable.tsum_prod",
+        "module": "Mathlib.Topology.Algebra.InfiniteSum.Constructions",
+        "match_kind": "exact"
+      },
+      "note": "`Summable.tsum_prod` (and `tsum_comm`) gives the Fubini-style interchange of double summations for summable families.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Product measure",
+      "anchor": {
+        "section": "Product measures",
+        "snippet": "A measure μ on X × Y is called a product measure"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "MeasureTheory.Measure.prod",
+        "module": "Mathlib.MeasureTheory.Measure.Prod",
+        "match_kind": "exact"
+      },
+      "note": "`MeasureTheory.Measure.prod` defines the product measure on X × Y satisfying `prod_prod : μ.prod ν (s ×ˢ t) = μ s * ν t`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Maximal product measure",
+      "anchor": {
+        "section": "Product measures",
+        "snippet": "There is always a unique maximal product measure on X × Y"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "MeasureTheory.Measure.prod",
+        "module": "Mathlib.MeasureTheory.Measure.Prod",
+        "match_kind": null
+      },
+      "note": "Mathlib defines a canonical product measure (uniquely determined under σ-finiteness) but does not develop the general theory of distinct/maximal product measures.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Fubini's theorem for integrable functions",
+      "anchor": {
+        "section": "For integrable functions",
+        "snippet": "Fubini's theorem states that if f is X × Y integrable"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "MeasureTheory.integral_prod",
+        "module": "Mathlib.MeasureTheory.Integral.Prod",
+        "match_kind": "exact"
+      },
+      "note": "`MeasureTheory.integral_prod` is exactly Fubini for product-integrable functions on σ-finite spaces.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Tonelli's theorem",
+      "anchor": {
+        "section": "Tonelli's theorem for non-negative measurable functions",
+        "snippet": "Tonelli's theorem states that if"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "MeasureTheory.lintegral_prod",
+        "module": "Mathlib.MeasureTheory.Measure.Prod",
+        "match_kind": "exact"
+      },
+      "note": "`MeasureTheory.lintegral_prod` is Tonelli's theorem for AEMeasurable ℝ≥0∞-valued functions on σ-finite spaces.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Interchange of summations (Tonelli special case)",
+      "anchor": {
+        "section": "Tonelli's theorem for non-negative measurable functions",
+        "snippet": "A special case of Tonelli's theorem is in the interchange of the summations"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "ENNReal.tsum_comm",
+        "module": "Mathlib.Topology.Algebra.InfiniteSum.ENNReal",
+        "match_kind": "special_case"
+      },
+      "note": "Interchange of non-negative double sums is available as `ENNReal.tsum_comm` and `Summable.tsum_prod`/`tsum_comm`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Fubini–Tonelli theorem",
+      "anchor": {
+        "section": "Fubini–Tonelli theorem",
+        "snippet": "Combining Fubini's theorem with Tonelli's theorem gives the Fubini–Tonelli theorem"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "MeasureTheory.integral_prod",
+        "module": "Mathlib.MeasureTheory.Integral.Prod",
+        "match_kind": "exact"
+      },
+      "note": "The combined Fubini–Tonelli statement follows from `integral_prod` paired with `lintegral_prod`/`hasFiniteIntegral_prod_iff` in `Mathlib.MeasureTheory.Integral.Prod`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Fubini's theorem for complete measures",
+      "anchor": {
+        "section": "For complete measures",
+        "snippet": "For this reason, one sometimes uses versions of Fubini's theorem for complete measures"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "MeasureTheory.integral_prod",
+        "module": "Mathlib.MeasureTheory.Integral.Prod",
+        "match_kind": null
+      },
+      "note": "Mathlib proves Fubini for the standard (non-completed) product measure and has the null-measurable / completion machinery in `Mathlib.MeasureTheory.Measure.NullMeasurable`, but no separately stated Fubini specifically for the completion.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Failure of Tonelli's theorem for non σ-finite spaces",
+      "anchor": {
+        "section": "Failure of Tonelli's theorem for non σ-finite spaces",
+        "snippet": "Suppose that X is the unit interval with the Lebesgue measurable sets and Lebesgue measure"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No counterexample of this form (non σ-finite failure of Tonelli) is recorded in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Failure of Fubini's theorem for non-maximal product measures",
+      "anchor": {
+        "section": "Failure of Fubini's theorem for non-maximal product measures",
+        "snippet": "if we give X × Y the product measure such that the measure of a set is the sum of the Lebesgue measures of its horizontal sections"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib does not formalize counterexamples concerning non-maximal product measures.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Failure of Tonelli's theorem for non-measurable functions",
+      "anchor": {
+        "section": "Failure of Tonelli's theorem for non-measurable functions",
+        "snippet": "Suppose that X is the first uncountable ordinal"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No Mathlib counterexample using the first uncountable ordinal for Tonelli failure was found.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Failure of Fubini's theorem for non-measurable functions",
+      "anchor": {
+        "section": "Failure of Fubini's theorem for non-measurable functions",
+        "snippet": "A variation of the example above shows that Fubini's theorem can fail for non-measurable functions"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No corresponding non-measurable Fubini counterexample is formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Sierpiński's continuum-hypothesis example",
+      "anchor": {
+        "section": "Failure of Fubini's theorem for non-measurable functions",
+        "snippet": "Wacław Sierpiński demonstrated that assuming the continuum hypothesis"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has no CH-based Sierpiński counterexample to Fubini.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Failure of Fubini's theorem for non-integrable functions (sign example)",
+      "anchor": {
+        "section": "Failure of Fubini's theorem for non-integrable functions",
+        "snippet": "A simple example to show that the repeated integrals can be different in general is to take the two measure spaces to be the positive integers"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No formalized counterexample showing failure of iterated-sum equality on ℕ × ℕ was found in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Product of two integrals formula",
+      "anchor": {
+        "section": "Product of two integrals",
+        "snippet": "For the product of two integrals with lower limit zero and a common upper limit we have the following formula"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "MeasureTheory.integral_prod_mul",
+        "module": "Mathlib.MeasureTheory.Integral.Prod",
+        "match_kind": "generalization"
+      },
+      "note": "`MeasureTheory.integral_prod_mul` gives ∫∫ f x · g y = (∫ f)(∫ g), the general form of the product-of-integrals identity.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Arcsine integral via Fubini",
+      "anchor": {
+        "section": "Arcsine integral",
+        "snippet": "Values of the inverse sine integral can be determined by exchanging the order of integration using Fubini's theorem"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib defines `Real.arcsin` but does not formalize this Fubini-based evaluation of the inverse-sine integral.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Dirichlet eta function",
+      "anchor": {
+        "section": "Dirichlet eta function",
+        "snippet": "The Dirichlet series defines the Dirichlet eta function as follows"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No `dirichletEta`/`riemannEta` definition is present in Mathlib (only `riemannZeta` and related L-functions).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Dirichlet eta value via Fubini",
+      "anchor": {
+        "section": "Dirichlet eta function",
+        "snippet": "can be proven using Fubini's theorem"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Since the Dirichlet eta function itself is not in Mathlib, this Fubini-based evaluation is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Integral of complete elliptic integral of the first kind",
+      "anchor": {
+        "section": "Integrals of complete elliptic integrals",
+        "snippet": "The improper integral of the complete elliptic integral of the first kind"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib does not define the complete elliptic integral K, so this identity is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Integral of complete elliptic integral of the second kind",
+      "anchor": {
+        "section": "Integrals of complete elliptic integrals",
+        "snippet": "The same procedure applies to the complete elliptic integral of the second kind"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib does not define the complete elliptic integral E, so this identity is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Euler–Mascheroni constant via exponential integral",
+      "anchor": {
+        "section": "Double execution for the exponential integral function",
+        "snippet": "The Euler–Mascheroni constant"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Real.eulerMascheroniConstant",
+        "module": "Mathlib.NumberTheory.Harmonic.EulerMascheroni",
+        "match_kind": null
+      },
+      "note": "`Real.eulerMascheroniConstant` is defined as `lim (harmonic n - log n)` but the integral representation via Ei used in this example is not in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Normal distribution integral",
+      "anchor": {
+        "section": "Normal distribution integral",
+        "snippet": "The integral of the normal distribution can be evaluated"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "integral_gaussian",
+        "module": "Mathlib.Analysis.SpecialFunctions.Gaussian.GaussianIntegral",
+        "match_kind": "exact"
+      },
+      "note": "`integral_gaussian` proves ∫ exp(-b x²) = √(π/b) via the Fubini-style square-and-polar trick (uses `integral_prod_mul`).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Dilogarithm of one via Basel problem",
+      "anchor": {
+        "section": "Dilogarithm of one",
+        "snippet": "This can be applied to the Basel problem"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "hasSum_zeta_two",
+        "module": "Mathlib.NumberTheory.ZetaValues",
+        "match_kind": null
+      },
+      "note": "Mathlib proves the Basel sum `hasSum_zeta_two : HasSum (1/n²) (π²/6)` but does not define the dilogarithm or this specific Fubini-derived identity.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Legendre's relation (lemniscatic case)",
+      "anchor": {
+        "section": "Legendre's relation",
+        "snippet": "For the lemniscatic special case of Legendre's relation"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has no formalization of Legendre's relation between complete elliptic integrals.",
+      "provenance": "ai"
+    }
+  ]
+}

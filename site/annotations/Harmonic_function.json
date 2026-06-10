@@ -1,0 +1,581 @@
+{
+  "slug": "Harmonic_function",
+  "wikipedia_title": "Harmonic function",
+  "display_title": "Harmonic function",
+  "schema_version": 3,
+  "annotation_style": "theorem_article",
+  "annotations": [
+    {
+      "kind": "definition",
+      "label": "Harmonic function",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "a harmonic function is a twice continuously differentiable function"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "InnerProductSpace.HarmonicAt",
+        "module": "Mathlib.Analysis.InnerProductSpace.Harmonic.Basic",
+        "match_kind": "generalization"
+      },
+      "note": "Defined for finite-dimensional real inner product spaces as C² with vanishing Laplacian in a neighborhood; `HarmonicOnNhd` is the open-set version.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "(Lead)",
+          "snippet": "a harmonic function is a twice continuously differentiable function"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle {\\frac {\\partial ^{2}f}{\\partial x_{1}^{2}}}+{\\frac {\\partial ^{2}f}{\\partial x_{2}^{2}}}+\\cdots +{\\frac {\\partial ^{2}f}{\\partial x_{n}^{2}}}=0}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\nabla ^{2}f=0}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\Delta f=0}"
+        }
+      ]
+    },
+    {
+      "kind": "example",
+      "label": "Real/imaginary part of holomorphic function",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "The real or imaginary part of any holomorphic function"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "AnalyticAt.harmonicAt_re",
+        "module": "Mathlib.Analysis.InnerProductSpace.Harmonic.Constructions",
+        "match_kind": "exact"
+      },
+      "note": "Both `AnalyticAt.harmonicAt_re` and `AnalyticAt.harmonicAt_im` are formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Logarithm-type harmonic function on punctured plane",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "This can describe the electric potential due to a line charge or the gravity potential due to a long cylindrical mass"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "AnalyticAt.harmonicAt_log_norm",
+        "module": "Mathlib.Analysis.InnerProductSpace.Harmonic.Constructions",
+        "match_kind": "generalization"
+      },
+      "note": "Harmonicity of `log ‖f‖` for nonvanishing analytic `f`; the article's `log|z|` is the case `f = id`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Harmonic functions of three variables table",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "Examples of harmonic functions of three variables are given in the table below"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No specific 3-variable harmonic examples (e.g., `1/r`) are formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Constant, linear and affine harmonic functions",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "The constant, linear and affine functions"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "InnerProductSpace.harmonicAt_const",
+        "module": "Mathlib.Analysis.InnerProductSpace.Harmonic.Basic",
+        "match_kind": "special_case"
+      },
+      "note": "Constant case is explicit (`harmonicAt_const`); linear/affine cases are not stated as lemmas though they follow from smoothness.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Harmonic functions form a vector space",
+      "anchor": {
+        "section": "Properties",
+        "snippet": "can be seen as the kernel of the Laplace operator"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "InnerProductSpace.HarmonicAt.add",
+        "module": "Mathlib.Analysis.InnerProductSpace.Harmonic.Basic",
+        "match_kind": "invocation"
+      },
+      "note": "Closure under addition, subtraction, negation, and scalar multiplication is proved (`.add`, `.sub`, `.neg`, `.const_smul`), but no bundled `Submodule`/kernel statement exists.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Partial derivatives of harmonic functions are harmonic",
+      "anchor": {
+        "section": "Properties",
+        "snippet": "then all partial derivatives of"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No lemma stating that derivatives of harmonic functions are themselves harmonic was found.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Harmonic functions are analytic",
+      "anchor": {
+        "section": "Properties",
+        "snippet": "All harmonic functions are analytic"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "HarmonicAt.analyticAt",
+        "module": "Mathlib.Analysis.Complex.Harmonic.Analytic",
+        "match_kind": "special_case"
+      },
+      "note": "Proved on `ℂ` only (for `f : ℂ → ℝ`); the file notes a TODO to generalize to arbitrary finite-dimensional inner product spaces.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Uniform limit of harmonic functions is harmonic",
+      "anchor": {
+        "section": "Properties",
+        "snippet": "The uniform limit of a convergent sequence of harmonic functions is still harmonic"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No formalization of uniform-limit closure for harmonic functions was found.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Harmonic functions are locally real parts of holomorphic functions",
+      "anchor": {
+        "section": "Connections with complex function theory",
+        "snippet": "is locally the real part of a holomorphic function"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "InnerProductSpace.HarmonicOnNhd.exists_analyticOnNhd_ball_re_eq",
+        "module": "Mathlib.Analysis.Complex.Harmonic.Analytic",
+        "match_kind": "exact"
+      },
+      "note": "Given `f` harmonic on a ball, produces an analytic `F : ℂ → ℂ` with `Re F = f` on the ball.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Regularity theorem for harmonic functions",
+      "anchor": {
+        "section": "Regularity theorem for harmonic functions",
+        "snippet": "Harmonic functions are infinitely differentiable in open sets"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "HarmonicAt.analyticAt",
+        "module": "Mathlib.Analysis.Complex.Harmonic.Analytic",
+        "match_kind": "invocation"
+      },
+      "note": "Real-analyticity (hence C^∞) on `ℂ` follows from `HarmonicAt.analyticAt`; no direct `ContDiff ℝ ⊤` statement and no version in general dimension.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Maximum principle",
+      "anchor": {
+        "section": "Maximum principle",
+        "snippet": "Harmonic functions satisfy the following maximum principle"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No maximum principle for harmonic functions was found in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Mean value property",
+      "anchor": {
+        "section": "The mean value property",
+        "snippet": "the value"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "InnerProductSpace.HarmonicOnNhd.circleAverage_eq",
+        "module": "Mathlib.Analysis.Complex.Harmonic.MeanValue",
+        "match_kind": "special_case"
+      },
+      "note": "Circle-average mean value property is proved for `f : ℂ → ℝ` (with a `HarmonicContOnCl` variant); no ball/volume version or higher-dimensional version found.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "The mean value property",
+          "snippet": "the value"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle u(x)={\\frac {1}{n\\omega _{n}r^{n-1}}}\\int _{\\partial B(x,r)}u\\,d\\sigma ={\\frac {1}{\\omega _{n}r^{n}}}\\int _{B(x,r)}u\\,dV}"
+        }
+      ]
+    },
+    {
+      "kind": "theorem",
+      "label": "Converse of mean value property",
+      "anchor": {
+        "section": "The mean value property",
+        "snippet": "all locally integrable functions satisfying the (volume) mean-value property are both infinitely differentiable and harmonic"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No converse mean-value characterization of harmonicity is in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Mean value property via convolution",
+      "anchor": {
+        "section": "The mean value property",
+        "snippet": "In terms of convolutions"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No convolution formulation of the mean value property is present.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "The mean value property",
+          "snippet": "In terms of convolutions"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\chi _{r}:={\\frac {1}{|B(0,r)|}}\\chi _{B(0,r)}={\\frac {n}{\\omega _{n}r^{n}}}\\chi _{B(0,r)}}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle u(x)=u*\\chi _{r}(x)}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Generalized weighted mean value property",
+      "anchor": {
+        "section": "The mean value property",
+        "snippet": "This statement of the mean value property can be generalized as follows"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "InnerProductSpace.HarmonicOnNhd.circleAverage_poissonKernel_smul",
+        "module": "Mathlib.Analysis.Complex.Harmonic.Poisson",
+        "match_kind": "special_case"
+      },
+      "note": "Poisson and Herglotz–Riesz weighted versions are formalized for the complex plane, which is a particular weighted generalization of the mean value property.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Harnack's inequality",
+      "anchor": {
+        "section": "Harnack's inequality",
+        "snippet": "Harnack's inequality"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No Harnack inequality for harmonic functions was found.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Removal of singularities for harmonic functions",
+      "anchor": {
+        "section": "Removal of singularities",
+        "snippet": "The following principle of removal of singularities holds for harmonic functions"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No removable-singularity theorem for harmonic functions was found.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Removal of singularities",
+          "snippet": "The following principle of removal of singularities holds for harmonic functions"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle f(x)=o\\left(\\vert x-x_{0}\\vert ^{2-n}\\right),\\qquad {\\text{as }}x\\to x_{0},}"
+        }
+      ]
+    },
+    {
+      "kind": "theorem",
+      "label": "Liouville's theorem for harmonic functions",
+      "anchor": {
+        "section": "Liouville's theorem",
+        "snippet": "which is bounded above or bounded below, then"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "InnerProductSpace.bounded_harmonic_on_complex_plane_is_constant",
+        "module": "Mathlib.Analysis.Complex.Harmonic.Liouville",
+        "match_kind": "special_case"
+      },
+      "note": "Two-sided bounded version on the complex plane is proved (for any real-Banach codomain); the one-sided-bounded variant is not stated.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Weakly harmonic function",
+      "anchor": {
+        "section": "Weakly harmonic function",
+        "snippet": "is weakly harmonic if it satisfies Laplace's equation"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No notion of weakly harmonic / distributional Laplacian is defined for harmonic functions.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Weakly harmonic function",
+          "snippet": "is weakly harmonic if it satisfies Laplace's equation"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\Delta f=0\\,}"
+        }
+      ]
+    },
+    {
+      "kind": "theorem",
+      "label": "Weyl's lemma",
+      "anchor": {
+        "section": "Weakly harmonic function",
+        "snippet": "A weakly harmonic function coincides almost everywhere with a strongly harmonic function"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Weyl's lemma on regularity of weakly harmonic functions is not formalized.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Weakly harmonic function",
+          "snippet": "A weakly harmonic function coincides almost everywhere with a strongly harmonic function"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\Delta f=0\\,}"
+        }
+      ]
+    },
+    {
+      "kind": "definition",
+      "label": "Dirichlet's principle",
+      "anchor": {
+        "section": "Weakly harmonic function",
+        "snippet": "Dirichlet's principle"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Dirichlet's principle (minimization of the Dirichlet energy) is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Harmonic function on a Riemannian manifold",
+      "anchor": {
+        "section": "Harmonic functions on manifolds",
+        "snippet": "Harmonic functions can be defined on an arbitrary Riemannian manifold"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No definition of harmonic function via the Laplace–Beltrami operator on Riemannian manifolds was found.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Harmonic functions on manifolds",
+          "snippet": "Harmonic functions can be defined on an arbitrary Riemannian manifold"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\Delta f=0.}"
+        }
+      ]
+    },
+    {
+      "kind": "definition",
+      "label": "Subharmonic function",
+      "anchor": {
+        "section": "Subharmonic functions",
+        "snippet": "is called subharmonic"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No definition of subharmonic function is present in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Characterization of subharmonic functions",
+      "anchor": {
+        "section": "Subharmonic functions",
+        "snippet": "a function is subharmonic if and only if, in the interior of any ball in its domain"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No subharmonic theory is formalized, so no characterization either.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Harmonic forms and harmonic maps",
+      "anchor": {
+        "section": "Harmonic forms",
+        "snippet": "it is possible to define harmonic vector-valued functions, or harmonic maps of two Riemannian manifolds"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No notion of harmonic differential forms or harmonic maps is defined.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Harmonic curves are geodesics",
+      "anchor": {
+        "section": "Harmonic forms",
+        "snippet": "is a harmonic map if and only if it is a geodesic"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The equivalence between harmonic curves and geodesics is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Harmonic map between manifolds",
+      "anchor": {
+        "section": "Harmonic maps between manifolds",
+        "snippet": "a harmonic map"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No definition of harmonic map between Riemannian manifolds is present.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Harmonic maps between manifolds",
+          "snippet": "a harmonic map"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle D[u]={\\frac {1}{2}}\\int _{M}\\left\\|du\\right\\|^{2}\\,d\\operatorname {Vol} }"
+        }
+      ]
+    },
+    {
+      "kind": "example",
+      "label": "Minimal surfaces as harmonic immersions",
+      "anchor": {
+        "section": "Harmonic maps between manifolds",
+        "snippet": "minimal surfaces , which are precisely the harmonic immersions of a surface into three-dimensional Euclidean space"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Minimal surfaces are not defined in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Harmonic coordinates",
+      "anchor": {
+        "section": "Harmonic maps between manifolds",
+        "snippet": "Harmonic coordinates are a harmonic diffeomorphism"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Harmonic coordinates on Riemannian manifolds are not formalized.",
+      "provenance": "ai"
+    }
+  ]
+}

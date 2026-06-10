@@ -1,0 +1,185 @@
+{
+  "slug": "Likelihood-ratio_test",
+  "wikipedia_title": "Likelihood-ratio test",
+  "display_title": "Likelihood-ratio test",
+  "schema_version": 3,
+  "annotation_style": "theorem_article",
+  "annotations": [
+    {
+      "kind": "definition",
+      "label": "Likelihood-ratio test",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "the likelihood-ratio test is a hypothesis test that involves comparing the goodness of fit of two competing statistical models"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has no hypothesis-testing framework; only the log-likelihood ratio function `llr` between measures is defined, not a test procedure.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Likelihood ratio test statistic (general)",
+      "anchor": {
+        "section": "General",
+        "snippet": "The likelihood ratio test statistic for the null hypothesis"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No notion of supremum of a likelihood function over a parameter subspace as a test statistic is present in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Bounds on the likelihood ratio",
+      "anchor": {
+        "section": "General",
+        "snippet": "the likelihood ratio is bounded between zero and one and the likelihood ratio test statistic between 0 and infinity"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No declaration in Mathlib establishes the 0–1 bounds of a likelihood ratio test statistic since the statistic itself is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Log-likelihood form of the test statistic",
+      "anchor": {
+        "section": "General",
+        "snippet": "Often the likelihood-ratio test statistic is expressed as a difference between the log-likelihoods"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "MeasureTheory.llr",
+        "module": "Mathlib.MeasureTheory.Measure.LogLikelihoodRatio",
+        "match_kind": "generalization"
+      },
+      "note": "Mathlib defines `llr μ ν x := log (μ.rnDeriv ν x).toReal`, capturing the log-likelihood ratio between measures, but not the supremum-based test-statistic form used in hypothesis testing.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Nested models requirement",
+      "anchor": {
+        "section": "General",
+        "snippet": "The likelihood-ratio test requires that the models be nested"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No notion of nested statistical models or parameter-subspace containment for testing is formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Simple-vs.-simple likelihood ratio",
+      "anchor": {
+        "section": "Case of simple hypotheses",
+        "snippet": "A simple-vs.-simple hypothesis test has completely specified models under both the null hypothesis and the alternative hypothesis"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No formalization of simple null/alternative hypotheses or the corresponding likelihood ratio framework in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Decision rule for likelihood-ratio test",
+      "anchor": {
+        "section": "Case of simple hypotheses",
+        "snippet": "The likelihood-ratio test provides the decision rule as follows"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib contains no formalization of test critical regions, rejection rules, or decision procedures.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Neyman–Pearson lemma",
+      "anchor": {
+        "section": "Case of simple hypotheses",
+        "snippet": "The Neyman–Pearson lemma states that this likelihood-ratio test is the most powerful among all level"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Search for `Neyman`/`Pearson`/`MostPowerful` in Mathlib returns no results; the Neyman–Pearson lemma is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Interpretation of low/high likelihood-ratio values",
+      "anchor": {
+        "section": "Interpretation",
+        "snippet": "Low values of the likelihood ratio mean that the observed result was much less likely to occur under the null hypothesis as compared to the alternative"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This is an informal interpretive remark about a non-formalized object and has no counterpart in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "One-sample t-test from likelihood ratio",
+      "anchor": {
+        "section": "An example",
+        "snippet": "Suppose that we have a random sample, of size n , from a population that is normally-distributed"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No t-test, Student-t distribution, or worked likelihood-ratio derivation thereof is present in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Wilks' theorem",
+      "anchor": {
+        "section": "Asymptotic distribution: Wilks’ theorem",
+        "snippet": "Assuming H 0 is true, there is a fundamental result by Samuel S. Wilks"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Grep finds no `Wilks` declaration or chi-squared distribution in Mathlib, so the asymptotic χ²-distribution result is unformalized.",
+      "provenance": "ai"
+    }
+  ]
+}

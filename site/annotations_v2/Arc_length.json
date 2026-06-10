@@ -1,0 +1,159 @@
+{
+  "slug": "Arc_length",
+  "wikipedia_title": "Arc length",
+  "display_title": "Arc length",
+  "schema_version": 1,
+  "source": "claude-agent-sdk/annotate_articles.py",
+  "annotations": [
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle L=\\int _{a}^{b}{\\sqrt {x'(t)^{2}+y'(t)^{2}}}\\,dt.}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Mathlib defines arc length via eVariationOn (supremum); no theorem equates it to this parametric integral formula."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle L(f)=\\int _{a}^{b}|f'(t)|\\,dt}"
+      },
+      "status": "partial",
+      "decl": "eVariationOn",
+      "module": "Mathlib.Topology.EMetricSpace.BoundedVariation",
+      "note": "Mathlib's arc length is the total variation supremum; the integral-of-derivative-norm form is not formalized as a theorem."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle {\\sqrt {dx^{2}+dy^{2}}}={\\sqrt {1+\\left({\\frac {dy}{dx}}\\right)^{2}\\,}}dx.}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Heuristic infinitesimal expression, not a Mathlib statement."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle s=\\int _{a}^{b}{\\sqrt {1+\\left({\\frac {dy}{dx}}\\right)^{2}\\,}}dx.}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Arc length of a graph y=f(x) as an explicit integral is not formalized in Mathlib."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\int _{-{\\frac {\\sqrt {2}}{2}}}^{\\frac {\\sqrt {2}}{2}}{\\frac {dx}{\\sqrt {1-x^{2}}}}\\,.}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Specific worked example for the quarter unit circle; not a Mathlib lemma."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\arcsin x{\\bigg |}_{-{\\frac {\\sqrt {2}}{2}}}^{\\frac {\\sqrt {2}}{2}}={\\frac {\\pi }{2}}}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Numerical evaluation example; not stated as a Mathlib theorem."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle D(\\mathbf {x} \\circ \\mathbf {C} )=(\\mathbf {x} _{u}\\ \\mathbf {x} _{v}){\\binom {u'}{v'}}=\\mathbf {x} _{u}u'+\\mathbf {x} _{v}v'.}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Chain-rule expansion used inside a derivation; not a standalone Mathlib lemma."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\left(\\mathbf {x} _{u}u'+\\mathbf {x} _{v}v'\\right)\\cdot (\\mathbf {x} _{u}u'+\\mathbf {x} _{v}v')=g_{11}\\left(u'\\right)^{2}+2g_{12}u'v'+g_{22}\\left(v'\\right)^{2}}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "First fundamental form expansion; differential-geometric metric machinery is not in Mathlib."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\mathbf {x} (r,\\theta )=(r\\cos \\theta ,r\\sin \\theta ).}"
+      },
+      "status": "partial",
+      "decl": "polarCoord",
+      "module": "Mathlib.Analysis.SpecialFunctions.PolarCoord",
+      "note": "Mathlib's polarCoord.symm is exactly this map (r,θ) ↦ (r cos θ, r sin θ) as a partial homeomorphism."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\left(\\mathbf {x_{r}} \\cdot \\mathbf {x_{r}} \\right)\\left(r'\\right)^{2}+2\\left(\\mathbf {x} _{r}\\cdot \\mathbf {x} _{\\theta }\\right)r'\\theta '+\\left(\\mathbf {x} _{\\theta }\\cdot \\mathbf {x} _{\\theta }\\right)\\left(\\theta '\\right)^{2}=\\left(r'\\right)^{2}+r^{2}\\left(\\theta '\\right)^{2}.}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Polar-metric squared-speed expansion; intermediate identity not in Mathlib."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\int _{t_{1}}^{t_{2}}{\\sqrt {\\left({\\frac {dr}{dt}}\\right)^{2}+r^{2}\\left({\\frac {d\\theta }{dt}}\\right)^{2}\\,}}dt=\\int _{\\theta (t_{1})}^{\\theta (t_{2})}{\\sqrt {\\left({\\frac {dr}{d\\theta }}\\right)^{2}+r^{2}\\,}}d\\theta .}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Polar-coordinate arc length integral is not formalized in Mathlib."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\mathbf {x} (r,\\theta ,\\phi )=(r\\sin \\theta \\cos \\phi ,r\\sin \\theta \\sin \\phi ,r\\cos \\theta ).}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "No spherical-coordinate map is defined in Mathlib."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\left(\\mathbf {x} _{r}\\cdot \\mathbf {x} _{r}\\right)\\left(r'^{2}\\right)+\\left(\\mathbf {x} _{\\theta }\\cdot \\mathbf {x} _{\\theta }\\right)\\left(\\theta '\\right)^{2}+\\left(\\mathbf {x} _{\\phi }\\cdot \\mathbf {x} _{\\phi }\\right)\\left(\\phi '\\right)^{2}=\\left(r'\\right)^{2}+r^{2}\\left(\\theta '\\right)^{2}+r^{2}\\sin ^{2}\\theta \\left(\\phi '\\right)^{2}.}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Spherical-metric squared-speed expansion; not formalized in Mathlib."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\int _{t_{1}}^{t_{2}}{\\sqrt {\\left({\\frac {dr}{dt}}\\right)^{2}+r^{2}\\left({\\frac {d\\theta }{dt}}\\right)^{2}+r^{2}\\sin ^{2}\\theta \\left({\\frac {d\\phi }{dt}}\\right)^{2}\\,}}dt.}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Spherical-coordinate arc length integral is not formalized in Mathlib."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\int _{t_{1}}^{t_{2}}{\\sqrt {\\left({\\frac {dr}{dt}}\\right)^{2}+r^{2}\\left({\\frac {d\\theta }{dt}}\\right)^{2}+\\left({\\frac {dz}{dt}}\\right)^{2}\\,}}dt.}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Cylindrical-coordinate arc length integral is not formalized in Mathlib."
+    }
+  ]
+}

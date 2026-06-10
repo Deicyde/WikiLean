@@ -1,0 +1,917 @@
+{
+  "slug": "Velocity",
+  "wikipedia_title": "Velocity",
+  "display_title": "Velocity",
+  "schema_version": 3,
+  "annotation_style": "theorem_article",
+  "annotations": [
+    {
+      "kind": "definition",
+      "label": "Velocity",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "Velocity is a measurement of speed in a certain direction of motion"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Velocity is a physics concept; Mathlib has no notion of velocity, only the underlying derivative machinery.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Speed",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "The scalar absolute value ( magnitude ) of velocity is called speed"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib formalizes vector magnitude (`norm`) but not the physics naming of speed as the magnitude of velocity.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Acceleration",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "If there is a change in speed, direction or both, then the object is said to be undergoing an acceleration"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Acceleration is a physics concept not defined in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Average velocity",
+      "anchor": {
+        "section": "Average velocity",
+        "snippet": "The average velocity of an object over a period of time is its change in position"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This physics definition (displacement over elapsed time) has no dedicated Mathlib declaration.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Average velocity",
+          "snippet": "The average velocity of an object over a period of time is its change in position"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle {\\bar {v}}={\\frac {\\Delta s}{\\Delta t}}.}"
+        }
+      ]
+    },
+    {
+      "kind": "definition",
+      "label": "Instantaneous velocity",
+      "anchor": {
+        "section": "Instantaneous velocity",
+        "snippet": "The instantaneous velocity of an object is the limit average velocity as the time interval approaches zero"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "deriv",
+        "module": "Mathlib.Analysis.Calculus.Deriv.Basic",
+        "match_kind": null
+      },
+      "note": "The limit-of-difference-quotient idea is exactly Mathlib's `deriv`, but velocity-of-position is not formalized as such.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Instantaneous velocity",
+          "snippet": "The instantaneous velocity of an object is the limit average velocity as the time interval approaches zero"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle {\\boldsymbol {v}}=\\lim _{{\\Delta t}\\to 0}{\\frac {\\Delta {\\boldsymbol {s}}}{\\Delta t}}={\\frac {d{\\boldsymbol {s}}}{dt}}.}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Area under v–t graph is displacement",
+      "anchor": {
+        "section": "Instantaneous velocity",
+        "snippet": "the area under a velocity vs. time ( v vs. t graph) is the displacement"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "intervalIntegral.integral_eq_sub_of_hasDerivAt",
+        "module": "Mathlib.MeasureTheory.Integral.IntervalIntegral.FundThmCalculus",
+        "match_kind": "generalization"
+      },
+      "note": "This is an instance of the fundamental theorem of calculus, formalized generally as `integral_eq_sub_of_hasDerivAt`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Speed vs velocity",
+      "anchor": {
+        "section": "Difference between speed and velocity",
+        "snippet": "Speed, the scalar magnitude of a velocity vector, denotes only how fast an object is moving"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The conceptual scalar-vs-vector distinction for speed/velocity is physics terminology, not a Mathlib statement.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Condition for constant velocity",
+      "anchor": {
+        "section": "Difference between speed and velocity",
+        "snippet": "To have a constant velocity , an object must have a constant speed in a constant direction"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "A physics characterization of constant velocity with no Mathlib counterpart.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Car in circular path",
+      "anchor": {
+        "section": "Difference between speed and velocity",
+        "snippet": "a car moving at a constant 20 kilometres per hour in a circular path has a constant speed"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "A physics illustrative example, not a formalizable mathematical statement.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Units of velocity",
+      "anchor": {
+        "section": "Units",
+        "snippet": "velocity is measured in metres per second"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Physical units are not modeled in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Velocity as rate of change of position",
+      "anchor": {
+        "section": "Average velocity (2)",
+        "snippet": "Velocity is defined as the rate of change of position with respect to time"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "deriv",
+        "module": "Mathlib.Analysis.Calculus.Deriv.Basic",
+        "match_kind": null
+      },
+      "note": "The rate-of-change concept is `deriv`, but its identification with velocity is physics-specific and not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Average velocity ≤ average speed",
+      "anchor": {
+        "section": "Average velocity (2)",
+        "snippet": "The average velocity is always less than or equal to the average speed of an object"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "intervalIntegral.norm_integral_le_integral_norm",
+        "module": "Mathlib.MeasureTheory.Integral.IntervalIntegral.Basic",
+        "match_kind": "generalization"
+      },
+      "note": "Equivalent to ‖∫v‖ ≤ ∫‖v‖, the triangle inequality for integrals formalized as `norm_integral_le_integral_norm`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Velocity as slope of tangent line",
+      "anchor": {
+        "section": "Average velocity (2)",
+        "snippet": "the instantaneous velocity (or, simply, velocity) can be thought of as the slope of the tangent line to the curve at any point"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "HasDerivAt",
+        "module": "Mathlib.Analysis.Calculus.Deriv.Basic",
+        "match_kind": null
+      },
+      "note": "The derivative-as-slope-of-tangent interpretation is captured by `HasDerivAt`/`deriv`, though not phrased in terms of velocity.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Average speed over equal time intervals",
+      "anchor": {
+        "section": "Special cases",
+        "snippet": "When a particle moves with different uniform speeds"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "A physics word-problem setup with no corresponding Mathlib theorem.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Special cases",
+          "snippet": "When a particle moves with different uniform speeds"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle {\\bar {v}}={\\frac {v_{1}t_{1}+v_{2}t_{2}+v_{3}t_{3}+\\dots +v_{n}t_{n}}{t_{1}+t_{2}+t_{3}+\\dots +t_{n}}}}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle {\\bar {v}}={\\frac {v_{1}+v_{2}+v_{3}+\\dots +v_{n}}{n}}={\\frac {1}{n}}\\sum _{i=1}^{n}{v_{i}}}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Arithmetic mean of speeds",
+      "anchor": {
+        "section": "Special cases",
+        "snippet": "average speed is given by the arithmetic mean of the speeds"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has Finset averages but no named theorem equating average speed over equal times with an arithmetic mean.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Special cases",
+          "snippet": "average speed is given by the arithmetic mean of the speeds"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle {\\bar {v}}={\\frac {v_{1}t_{1}+v_{2}t_{2}+v_{3}t_{3}+\\dots +v_{n}t_{n}}{t_{1}+t_{2}+t_{3}+\\dots +t_{n}}}}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle {\\bar {v}}={\\frac {v_{1}+v_{2}+v_{3}+\\dots +v_{n}}{n}}={\\frac {1}{n}}\\sum _{i=1}^{n}{v_{i}}}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Average speed over equal distances",
+      "anchor": {
+        "section": "Special cases",
+        "snippet": "When a particle moves different distances"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "A physics word-problem setup not formalized in Mathlib.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Special cases",
+          "snippet": "When a particle moves different distances"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle {\\bar {v}}={s_{1}+s_{2}+s_{3}+\\dots +s_{n} \\over t_{1}+t_{2}+t_{3}+\\dots +t_{n}}={{s_{1}+s_{2}+s_{3}+\\dots +s_{n}} \\over {{s_{1} \\over v_{1}}+{s_{2} \\over v_{2}}+{s_{3} \\over v_{3}}+\\dots +{s_{n} \\over v_{n}}}}}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle {\\bar {v}}=n\\left({1 \\over v_{1}}+{1 \\over v_{2}}+{1 \\over v_{3}}+\\dots +{1 \\over v_{n}}\\right)^{-1}=n\\left(\\sum _{i=1}^{n}{\\frac {1}{v_{i}}}\\right)^{-1}.}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Harmonic mean of speeds",
+      "anchor": {
+        "section": "Special cases",
+        "snippet": "average speed is given by the harmonic mean of the speeds"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Harmonic mean appears only in inequality lemmas (MeanInequalities) and is not defined as a function nor linked to average speed.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Special cases",
+          "snippet": "average speed is given by the harmonic mean of the speeds"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle {\\bar {v}}={s_{1}+s_{2}+s_{3}+\\dots +s_{n} \\over t_{1}+t_{2}+t_{3}+\\dots +t_{n}}={{s_{1}+s_{2}+s_{3}+\\dots +s_{n}} \\over {{s_{1} \\over v_{1}}+{s_{2} \\over v_{2}}+{s_{3} \\over v_{3}}+\\dots +{s_{n} \\over v_{n}}}}}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle {\\bar {v}}=n\\left({1 \\over v_{1}}+{1 \\over v_{2}}+{1 \\over v_{3}}+\\dots +{1 \\over v_{n}}\\right)^{-1}=n\\left(\\sum _{i=1}^{n}{\\frac {1}{v_{i}}}\\right)^{-1}.}"
+        }
+      ]
+    },
+    {
+      "kind": "definition",
+      "label": "Instantaneous acceleration",
+      "anchor": {
+        "section": "Relationship to acceleration",
+        "snippet": "instantaneous acceleration is defined as the derivative of velocity with respect to time"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "deriv",
+        "module": "Mathlib.Analysis.Calculus.Deriv.Basic",
+        "match_kind": null
+      },
+      "note": "The derivative operation `deriv` exists but acceleration as the derivative of velocity is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Velocity as area under a–t graph",
+      "anchor": {
+        "section": "Relationship to acceleration",
+        "snippet": "velocity is expressed as the area under an a ( t ) acceleration vs. time graph"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "intervalIntegral.integral_eq_sub_of_hasDerivAt",
+        "module": "Mathlib.MeasureTheory.Integral.IntervalIntegral.FundThmCalculus",
+        "match_kind": "generalization"
+      },
+      "note": "Another instance of the fundamental theorem of calculus, formalized as `integral_eq_sub_of_hasDerivAt`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "suvat velocity equation",
+      "anchor": {
+        "section": "Constant acceleration",
+        "snippet": "In the special case of constant acceleration, velocity can be studied using the suvat equations"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The kinematic suvat equations are physics results not present in Mathlib.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Constant acceleration",
+          "snippet": "In the special case of constant acceleration, velocity can be studied using the suvat equations"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle {\\boldsymbol {v}}={\\boldsymbol {u}}+{\\boldsymbol {a}}t}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle {\\boldsymbol {x}}={\\frac {({\\boldsymbol {u}}+{\\boldsymbol {v}})}{2}}t={\\boldsymbol {\\bar {v}}}t.}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle {\\begin{aligned}v^{2}={\\boldsymbol {v}}\\cdot {\\boldsymbol {v}}&amp;=({\\boldsymbol {u}}+{\\boldsymbol {a}}t)\\cdot ({\\boldsymbol {u}}+{\\boldsymbol {a}}t)\\\\&amp;=u^{2}+2t({\\boldsymbol {a}}\\cdot {\\boldsymbol {u}})+a^{2}t^{2}\\end{aligned}}}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle {\\begin{aligned}(2{\\boldsymbol {a}})\\cdot {\\boldsymbol {x}}&amp;=(2{\\boldsymbol {a}})\\cdot \\left({\\boldsymbol {u}}t+{\\tfrac {1}{2}}{\\boldsymbol {a}}t^{2}\\right)\\\\[1ex]&amp;=2t({\\boldsymbol {a}}\\cdot {\\boldsymbol {u}})+a^{2}t^{2}=v^{2}-u^{2}\\end{aligned}}}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\therefore v^{2}=u^{2}+2({\\boldsymbol {a}}\\cdot {\\boldsymbol {x}})}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Displacement and average velocity",
+      "anchor": {
+        "section": "Constant acceleration",
+        "snippet": "it is possible to relate the displacement and the average velocity"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "A kinematics relation under constant acceleration, not formalized in Mathlib.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Constant acceleration",
+          "snippet": "it is possible to relate the displacement and the average velocity"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle {\\boldsymbol {v}}={\\boldsymbol {u}}+{\\boldsymbol {a}}t}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle {\\boldsymbol {x}}={\\frac {({\\boldsymbol {u}}+{\\boldsymbol {v}})}{2}}t={\\boldsymbol {\\bar {v}}}t.}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle {\\begin{aligned}v^{2}={\\boldsymbol {v}}\\cdot {\\boldsymbol {v}}&amp;=({\\boldsymbol {u}}+{\\boldsymbol {a}}t)\\cdot ({\\boldsymbol {u}}+{\\boldsymbol {a}}t)\\\\&amp;=u^{2}+2t({\\boldsymbol {a}}\\cdot {\\boldsymbol {u}})+a^{2}t^{2}\\end{aligned}}}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle {\\begin{aligned}(2{\\boldsymbol {a}})\\cdot {\\boldsymbol {x}}&amp;=(2{\\boldsymbol {a}})\\cdot \\left({\\boldsymbol {u}}t+{\\tfrac {1}{2}}{\\boldsymbol {a}}t^{2}\\right)\\\\[1ex]&amp;=2t({\\boldsymbol {a}}\\cdot {\\boldsymbol {u}})+a^{2}t^{2}=v^{2}-u^{2}\\end{aligned}}}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\therefore v^{2}=u^{2}+2({\\boldsymbol {a}}\\cdot {\\boldsymbol {x}})}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Torricelli equation",
+      "anchor": {
+        "section": "Constant acceleration",
+        "snippet": "known as the Torricelli equation"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Torricelli kinematic equation (v²=u²+2as) is a physics result absent from Mathlib.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Constant acceleration",
+          "snippet": "known as the Torricelli equation"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle {\\boldsymbol {v}}={\\boldsymbol {u}}+{\\boldsymbol {a}}t}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle {\\boldsymbol {x}}={\\frac {({\\boldsymbol {u}}+{\\boldsymbol {v}})}{2}}t={\\boldsymbol {\\bar {v}}}t.}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle {\\begin{aligned}v^{2}={\\boldsymbol {v}}\\cdot {\\boldsymbol {v}}&amp;=({\\boldsymbol {u}}+{\\boldsymbol {a}}t)\\cdot ({\\boldsymbol {u}}+{\\boldsymbol {a}}t)\\\\&amp;=u^{2}+2t({\\boldsymbol {a}}\\cdot {\\boldsymbol {u}})+a^{2}t^{2}\\end{aligned}}}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle {\\begin{aligned}(2{\\boldsymbol {a}})\\cdot {\\boldsymbol {x}}&amp;=(2{\\boldsymbol {a}})\\cdot \\left({\\boldsymbol {u}}t+{\\tfrac {1}{2}}{\\boldsymbol {a}}t^{2}\\right)\\\\[1ex]&amp;=2t({\\boldsymbol {a}}\\cdot {\\boldsymbol {u}})+a^{2}t^{2}=v^{2}-u^{2}\\end{aligned}}}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\therefore v^{2}=u^{2}+2({\\boldsymbol {a}}\\cdot {\\boldsymbol {x}})}"
+        }
+      ]
+    },
+    {
+      "kind": "definition",
+      "label": "Momentum",
+      "anchor": {
+        "section": "Momentum",
+        "snippet": "Newton's second law defines momentum , p, as a vector that is the product of an object's mass and velocity"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Momentum is a physics quantity not defined in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Kinetic energy",
+      "anchor": {
+        "section": "Kinetic energy",
+        "snippet": "The kinetic energy of a moving object is dependent on its velocity"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Kinetic energy is a physics concept with no Mathlib definition.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Drag force",
+      "anchor": {
+        "section": "Drag (fluid resistance)",
+        "snippet": "drag is a force acting opposite to the relative motion of any object moving with respect to a surrounding fluid"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Drag is a fluid-dynamics concept not present in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Drag force equation",
+      "anchor": {
+        "section": "Drag (fluid resistance)",
+        "snippet": "is dependent on the square of velocity and is given as"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The drag-force formula is an empirical physics equation absent from Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Escape velocity",
+      "anchor": {
+        "section": "Escape velocity",
+        "snippet": "Escape velocity is the minimum speed a ballistic object needs to escape from a massive body such as Earth"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Escape velocity is a gravitational-physics concept not formalized in Mathlib.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Escape velocity",
+          "snippet": "Escape velocity is the minimum speed a ballistic object needs to escape from a massive body such as Earth"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle v_{\\text{e}}={\\sqrt {\\frac {2GM}{r}}}={\\sqrt {2gr}},}"
+        }
+      ]
+    },
+    {
+      "kind": "definition",
+      "label": "Lorentz factor",
+      "anchor": {
+        "section": "The Lorentz factor of special relativity",
+        "snippet": "the dimensionless Lorentz factor appears frequently, and is given by"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "A grep for `Lorentz` found no relevant declaration; the special-relativity Lorentz factor is not in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Relative velocity",
+      "anchor": {
+        "section": "Relative velocity",
+        "snippet": "Relative velocity is a measurement of velocity between two objects as determined in a single coordinate system"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Relative velocity is a physics concept not defined in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Relative velocity as vector difference",
+      "anchor": {
+        "section": "Relative velocity",
+        "snippet": "the velocity of object A relative to object B is defined as the difference of the two velocity vectors"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This reduces to vector subtraction (`Sub`), but no Mathlib decl formalizes the physics notion of relative velocity.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Relative velocity",
+          "snippet": "the velocity of object A relative to object B is defined as the difference of the two velocity vectors"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle {\\boldsymbol {v}}_{A{\\text{ relative to }}B}={\\boldsymbol {v}}-{\\boldsymbol {w}}}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle {\\boldsymbol {v}}_{B{\\text{ relative to }}A}={\\boldsymbol {w}}-{\\boldsymbol {v}}}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "One-dimensional relative velocity",
+      "anchor": {
+        "section": "Scalar velocities",
+        "snippet": "the velocities are scalars and the equation is either"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Scalar relative-velocity addition/subtraction is trivial arithmetic, not a formalized physics statement.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Scalar velocities",
+          "snippet": "the velocities are scalars and the equation is either"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle v_{\\text{rel}}=v-(-w),}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle v_{\\text{rel}}=v-(+w),}"
+        }
+      ]
+    },
+    {
+      "kind": "definition",
+      "label": "Cartesian velocity components",
+      "anchor": {
+        "section": "Cartesian coordinates",
+        "snippet": "velocity is broken up into components that correspond with each dimensional axis"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has coordinate functions on `EuclideanSpace`, but Cartesian velocity components as such are not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Speed from 2D distance formula",
+      "anchor": {
+        "section": "Cartesian coordinates",
+        "snippet": "The magnitude of this vector represents speed and is found by the distance formula"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "EuclideanSpace.norm_eq",
+        "module": "Mathlib.Analysis.InnerProductSpace.PiL2",
+        "match_kind": "generalization"
+      },
+      "note": "The Euclidean magnitude/distance formula ‖x‖ = √(∑ xᵢ²) is formalized generally as `EuclideanSpace.norm_eq`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Three-dimensional velocity component",
+      "anchor": {
+        "section": "Cartesian coordinates",
+        "snippet": "In three-dimensional systems where there is an additional z-axis, the corresponding velocity component is defined as"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "A physics component definition with no dedicated Mathlib declaration.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Radial and transverse velocity",
+      "anchor": {
+        "section": "Polar coordinates",
+        "snippet": "a two-dimensional velocity is described by a radial velocity"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Radial/transverse velocity decomposition is a physics concept not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Angular velocity",
+      "anchor": {
+        "section": "Polar coordinates",
+        "snippet": "Both arise from angular velocity , which is the rate of rotation about the origin"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Angular velocity is a physics concept with no Mathlib definition.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Transverse velocity",
+      "anchor": {
+        "section": "Polar coordinates",
+        "snippet": "The transverse velocity is the component of velocity along a circle centered at the origin"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Transverse velocity is a physics concept not formalized in Mathlib.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Polar coordinates",
+          "snippet": "The transverse velocity is the component of velocity along a circle centered at the origin"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle {\\boldsymbol {v}}={\\boldsymbol {v}}_{T}+{\\boldsymbol {v}}_{R}}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Radial speed",
+      "anchor": {
+        "section": "Polar coordinates",
+        "snippet": "The radial speed (or magnitude of the radial velocity) is the dot product of the velocity vector and the unit vector in the radial direction"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Matrix.dotProduct",
+        "module": "Mathlib.Data.Matrix.Mul",
+        "match_kind": null
+      },
+      "note": "The dot product underlying radial speed is formalized (`Matrix.dotProduct`/inner product), but the physics statement is not.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Polar coordinates",
+          "snippet": "The radial speed (or magnitude of the radial velocity) is the dot product of the velocity vector and the unit vector in the radial direction"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle v_{R}={\\frac {{\\boldsymbol {v}}\\cdot {\\boldsymbol {r}}}{\\left|{\\boldsymbol {r}}\\right|}}={\\boldsymbol {v}}\\cdot {\\hat {\\boldsymbol {r}}}}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Transverse speed",
+      "anchor": {
+        "section": "Polar coordinates",
+        "snippet": "The transverse speed (or magnitude of the transverse velocity) is the magnitude of the cross product of the unit vector in the radial direction and the velocity vector"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "crossProduct",
+        "module": "Mathlib.LinearAlgebra.CrossProduct",
+        "match_kind": null
+      },
+      "note": "The cross product is formalized as `crossProduct`, but its use to define transverse speed is not.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Polar coordinates",
+          "snippet": "The transverse speed (or magnitude of the transverse velocity) is the magnitude of the cross product of the unit vector in the radial direction and the velocity vector"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle v_{T}={\\frac {|{\\boldsymbol {r}}\\times {\\boldsymbol {v}}|}{|{\\boldsymbol {r}}|}}={\\boldsymbol {v}}\\cdot {\\hat {\\boldsymbol {t}}}=\\omega |{\\boldsymbol {r}}|}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\omega ={\\frac {|{\\boldsymbol {r}}\\times {\\boldsymbol {v}}|}{|{\\boldsymbol {r}}|^{2}}}.}"
+        }
+      ]
+    },
+    {
+      "kind": "definition",
+      "label": "Angular momentum in scalar form",
+      "anchor": {
+        "section": "Polar coordinates",
+        "snippet": "Angular momentum in scalar form is the mass times the distance to the origin times the transverse velocity"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Angular momentum is a physics quantity not defined in Mathlib.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Polar coordinates",
+          "snippet": "Angular momentum in scalar form is the mass times the distance to the origin times the transverse velocity"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle L=mrv_{T}=mr^{2}\\omega }"
+        }
+      ]
+    },
+    {
+      "kind": "definition",
+      "label": "Moment of inertia",
+      "anchor": {
+        "section": "Polar coordinates",
+        "snippet": "is known as moment of inertia"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Moment of inertia is a physics quantity with no Mathlib definition.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Kepler's laws of planetary motion",
+      "anchor": {
+        "section": "Polar coordinates",
+        "snippet": "These relations are known as Kepler's laws of planetary motion"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "A grep for `Kepler` found no declaration; Kepler's laws are not formalized in Mathlib.",
+      "provenance": "ai"
+    }
+  ]
+}

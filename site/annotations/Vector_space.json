@@ -1,0 +1,1549 @@
+{
+  "slug": "Vector_space",
+  "wikipedia_title": "Vector space",
+  "display_title": "Vector space",
+  "schema_version": 3,
+  "annotation_style": "theorem_article",
+  "annotations": [
+    {
+      "kind": "definition",
+      "label": "Vector space",
+      "anchor": {
+        "section": "Definition and basic properties",
+        "snippet": "A vector space over a field F is a non-empty set V together with a binary operation and a binary function that satisfy the eight axioms listed below"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Module",
+        "module": "Mathlib.Algebra.Module.Defs",
+        "match_kind": "generalization"
+      },
+      "note": "Mathlib's `Module R M` over a field R is exactly a vector space; it generalizes from field to semiring.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Vector addition",
+      "anchor": {
+        "section": "Definition and basic properties",
+        "snippet": "The binary operation, called vector addition or simply addition assigns to any two vectors"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "AddCommMonoid",
+        "module": "Mathlib.Algebra.Group.Defs",
+        "match_kind": "generalization"
+      },
+      "note": "Module extends `AddCommMonoid`/`AddCommGroup`, providing the vector addition operation via `HAdd.hAdd`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Scalar multiplication",
+      "anchor": {
+        "section": "Definition and basic properties",
+        "snippet": "The binary function, called scalar multiplication , assigns to any scalar"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "SMul.smul",
+        "module": "Mathlib.Algebra.Group.Defs",
+        "match_kind": "generalization"
+      },
+      "note": "Scalar multiplication is the `SMul` class, with `Module` packaging the axiomatic compatibility with addition.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Real and complex vector spaces",
+      "anchor": {
+        "section": "Definition and basic properties",
+        "snippet": "When the scalar field is the real numbers , the vector space is called a real vector space"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Module",
+        "module": "Mathlib.Algebra.Module.Defs",
+        "match_kind": "special_case"
+      },
+      "note": "Real/complex vector spaces are `Module ℝ V` / `Module ℂ V` instances of the generic `Module` class.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Vector space as module over a field",
+      "anchor": {
+        "section": "Definition and basic properties",
+        "snippet": "Even more concisely, a vector space is a module over a field"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Module",
+        "module": "Mathlib.Algebra.Module.Defs",
+        "match_kind": "exact"
+      },
+      "note": "Mathlib defines vector spaces precisely this way: `Module K V` with `K` a field.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Linear combination",
+      "anchor": {
+        "section": "Bases, vector coordinates, and subspaces",
+        "snippet": "a linear combination of elements of G is an element of V of the form"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Finsupp.linearCombination",
+        "module": "Mathlib.LinearAlgebra.Finsupp.LinearCombination",
+        "match_kind": "exact"
+      },
+      "note": "`Finsupp.linearCombination` sends a finitely supported coefficient family to its linear combination.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Bases, vector coordinates, and subspaces",
+          "snippet": "a linear combination of elements of G is an element of V of the form"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle a_{1}\\mathbf {g} _{1}+a_{2}\\mathbf {g} _{2}+\\cdots +a_{k}\\mathbf {g} _{k},}"
+        }
+      ]
+    },
+    {
+      "kind": "definition",
+      "label": "Linearly independent",
+      "anchor": {
+        "section": "Bases, vector coordinates, and subspaces",
+        "snippet": "are said to be linearly independent if no element of G can be written as a linear combination of the other elements of G"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "LinearIndependent",
+        "module": "Mathlib.LinearAlgebra.LinearIndependent.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`LinearIndependent R v` is defined as injectivity of `Finsupp.linearCombination`.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Bases, vector coordinates, and subspaces",
+          "snippet": "are said to be linearly independent if no element of G can be written as a linear combination of the other elements of G"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle a_{1}\\mathbf {g} _{1}+a_{2}\\mathbf {g} _{2}+\\cdots +a_{k}\\mathbf {g} _{k},}"
+        }
+      ]
+    },
+    {
+      "kind": "definition",
+      "label": "Linear subspace",
+      "anchor": {
+        "section": "Bases, vector coordinates, and subspaces",
+        "snippet": "A linear subspace or vector subspace W of a vector space V is a non-empty subset of V that is closed under vector addition and scalar multiplication"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Submodule",
+        "module": "Mathlib.Algebra.Module.Submodule.Defs",
+        "match_kind": "generalization"
+      },
+      "note": "`Submodule R M` is a subset closed under addition, zero, and scalar multiplication; it specialises to a linear subspace when `R` is a field.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Bases, vector coordinates, and subspaces",
+          "snippet": "A linear subspace or vector subspace W of a vector space V is a non-empty subset of V that is closed under vector addition and scalar multiplication"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle a_{1}\\mathbf {g} _{1}+a_{2}\\mathbf {g} _{2}+\\cdots +a_{k}\\mathbf {g} _{k},}"
+        }
+      ]
+    },
+    {
+      "kind": "definition",
+      "label": "Linear span",
+      "anchor": {
+        "section": "Bases, vector coordinates, and subspaces",
+        "snippet": "the linear span or simply the span of G is the smallest linear subspace of V that contains G"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Submodule.span",
+        "module": "Mathlib.LinearAlgebra.Span.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`Submodule.span R s` is the smallest submodule containing `s`.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Bases, vector coordinates, and subspaces",
+          "snippet": "the linear span or simply the span of G is the smallest linear subspace of V that contains G"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle a_{1}\\mathbf {g} _{1}+a_{2}\\mathbf {g} _{2}+\\cdots +a_{k}\\mathbf {g} _{k},}"
+        }
+      ]
+    },
+    {
+      "kind": "definition",
+      "label": "Basis of a vector space",
+      "anchor": {
+        "section": "Bases, vector coordinates, and subspaces",
+        "snippet": "A subset of a vector space is a basis if its elements are linearly independent and span the vector space"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Module.Basis",
+        "module": "Mathlib.LinearAlgebra.Basis.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`Basis` is the structure bundling a linearly independent, spanning family, defined as a `LinearEquiv` with `ι →₀ R`.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Bases, vector coordinates, and subspaces",
+          "snippet": "A subset of a vector space is a basis if its elements are linearly independent and span the vector space"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle a_{1}\\mathbf {g} _{1}+a_{2}\\mathbf {g} _{2}+\\cdots +a_{k}\\mathbf {g} _{k},}"
+        }
+      ]
+    },
+    {
+      "kind": "theorem",
+      "label": "Every vector space has a basis",
+      "anchor": {
+        "section": "Bases, vector coordinates, and subspaces",
+        "snippet": "Every vector space has at least one basis, or many in general"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "exists_basis",
+        "module": "Mathlib.LinearAlgebra.Basis.VectorSpace",
+        "match_kind": "exact"
+      },
+      "note": "`exists_basis : ∃ s : Set V, Nonempty (Basis s K V)` proves every vector space has a basis.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Bases, vector coordinates, and subspaces",
+          "snippet": "Every vector space has at least one basis, or many in general"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle a_{1}\\mathbf {g} _{1}+a_{2}\\mathbf {g} _{2}+\\cdots +a_{k}\\mathbf {g} _{k},}"
+        }
+      ]
+    },
+    {
+      "kind": "theorem",
+      "label": "Dimension theorem for vector spaces",
+      "anchor": {
+        "section": "Bases, vector coordinates, and subspaces",
+        "snippet": "all bases of a vector space have the same cardinality , which is called the dimension of the vector space"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "mk_eq_mk_of_basis",
+        "module": "Mathlib.LinearAlgebra.Dimension.StrongRankCondition",
+        "match_kind": "exact"
+      },
+      "note": "`mk_eq_mk_of_basis` states any two bases have the same cardinality (over a ring satisfying `StrongRankCondition`).",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Bases, vector coordinates, and subspaces",
+          "snippet": "all bases of a vector space have the same cardinality , which is called the dimension of the vector space"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle a_{1}\\mathbf {g} _{1}+a_{2}\\mathbf {g} _{2}+\\cdots +a_{k}\\mathbf {g} _{k},}"
+        }
+      ]
+    },
+    {
+      "kind": "definition",
+      "label": "Coordinates on a basis",
+      "anchor": {
+        "section": "Bases, vector coordinates, and subspaces",
+        "snippet": "are called the coordinates of v on the basis"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Basis.repr",
+        "module": "Mathlib.LinearAlgebra.Basis.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`Basis.repr` is the linear equivalence sending `v` to its coordinates `ι →₀ R`.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Bases, vector coordinates, and subspaces",
+          "snippet": "are called the coordinates of v on the basis"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\mathbf {v} =a_{1}\\mathbf {b} _{1}+\\cdots +a_{n}\\mathbf {b} _{n},}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Coordinate map is an isomorphism",
+      "anchor": {
+        "section": "Bases, vector coordinates, and subspaces",
+        "snippet": "It is thus a vector space isomorphism , which allows translating reasonings and computations"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Basis.repr",
+        "module": "Mathlib.LinearAlgebra.Basis.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`Basis.repr` is by definition a `LinearEquiv` between `M` and `ι →₀ R`, hence an isomorphism.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Arrows in the plane",
+      "anchor": {
+        "section": "Arrows in the plane",
+        "snippet": "The first example of a vector space consists of arrows in a fixed plane"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has no formal counterpart to the informal arrows-in-the-plane example as a named declaration.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Ordered pairs of numbers",
+      "anchor": {
+        "section": "Ordered pairs of numbers",
+        "snippet": "A second key example of a vector space is provided by pairs of real numbers"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Prod.module",
+        "module": "Mathlib.Algebra.Module.Prod",
+        "match_kind": "generalization"
+      },
+      "note": "Mathlib supplies `Module` instances on products like `ℝ × ℝ` via `Prod.module`.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Ordered pairs of numbers",
+          "snippet": "A second key example of a vector space is provided by pairs of real numbers"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle {\\begin{aligned}(x_{1},y_{1})+(x_{2},y_{2})&amp;=(x_{1}+x_{2},y_{1}+y_{2}),\\\\a(x,y)&amp;=(ax,ay).\\end{aligned}}}"
+        }
+      ]
+    },
+    {
+      "kind": "example",
+      "label": "Coordinate space F^n",
+      "anchor": {
+        "section": "Coordinate space",
+        "snippet": "The simplest example of a vector space over a field F is the field F itself"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Pi.module",
+        "module": "Mathlib.Algebra.Module.Pi",
+        "match_kind": "generalization"
+      },
+      "note": "`Pi.module` provides a `Module` instance on `ι → F`, realizing the coordinate space `Fⁿ`.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Coordinate space",
+          "snippet": "The simplest example of a vector space over a field F is the field F itself"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle (a_{1},a_{2},\\dots ,a_{n})}"
+        }
+      ]
+    },
+    {
+      "kind": "example",
+      "label": "Complex numbers and field extensions",
+      "anchor": {
+        "section": "Complex numbers and other field extensions",
+        "snippet": "The set of complex numbers C , numbers that can be written in the form"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Algebra",
+        "module": "Mathlib.Algebra.Algebra.Defs",
+        "match_kind": "generalization"
+      },
+      "note": "Field extensions are encoded via `Algebra K L` (which entails `Module K L`); `Complex.instAlgebra` provides ℂ as an ℝ-algebra.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Function spaces",
+      "anchor": {
+        "section": "Function spaces",
+        "snippet": "Functions from any fixed set Ω to a field F also form vector spaces"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Pi.module",
+        "module": "Mathlib.Algebra.Module.Pi",
+        "match_kind": "exact"
+      },
+      "note": "`Pi.module` gives functions `Ω → F` a `Module F` structure pointwise.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Function spaces",
+          "snippet": "Functions from any fixed set Ω to a field F also form vector spaces"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle (f+g)(w)=f(w)+g(w),}"
+        }
+      ]
+    },
+    {
+      "kind": "example",
+      "label": "Solutions of homogeneous linear equations",
+      "anchor": {
+        "section": "Linear equations",
+        "snippet": "Systems of homogeneous linear equations are closely tied to vector spaces"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "LinearMap.ker",
+        "module": "Mathlib.Algebra.Module.Submodule.Ker",
+        "match_kind": "exact"
+      },
+      "note": "Solutions to a homogeneous system are the kernel of the associated linear map, available as `LinearMap.ker` (a `Submodule`).",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Linear equations",
+          "snippet": "Systems of homogeneous linear equations are closely tied to vector spaces"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle {\\begin{alignedat}{9}&amp;&amp;a\\,&amp;&amp;+\\,3b\\,&amp;\\,+&amp;\\,&amp;c&amp;\\,=0\\\\4&amp;&amp;a\\,&amp;&amp;+\\,2b\\,&amp;\\,+&amp;\\,2&amp;c&amp;\\,=0\\\\\\end{alignedat}}}"
+        }
+      ]
+    },
+    {
+      "kind": "definition",
+      "label": "Linear map",
+      "anchor": {
+        "section": "Linear maps and matrices",
+        "snippet": "The relation of two vector spaces can be expressed by linear map or linear transformation"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "LinearMap",
+        "module": "Mathlib.Algebra.Module.LinearMap.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`LinearMap` is the structure of additive maps that commute with scalar multiplication.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Linear maps and matrices",
+          "snippet": "The relation of two vector spaces can be expressed by linear map or linear transformation"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle {\\begin{aligned}f(\\mathbf {v} +\\mathbf {w} )&amp;=f(\\mathbf {v} )+f(\\mathbf {w} ),\\\\f(a\\cdot \\mathbf {v} )&amp;=a\\cdot f(\\mathbf {v} )\\end{aligned}}}"
+        }
+      ]
+    },
+    {
+      "kind": "definition",
+      "label": "Isomorphism of vector spaces",
+      "anchor": {
+        "section": "Linear maps and matrices",
+        "snippet": "An isomorphism is a linear map f : V → W such that there exists an inverse map"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "LinearEquiv",
+        "module": "Mathlib.Algebra.Module.Equiv.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`LinearEquiv` is a bundled invertible linear map, i.e. a linear isomorphism.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Space of linear maps and dual space",
+      "anchor": {
+        "section": "Linear maps and matrices",
+        "snippet": "Linear maps V → W between two vector spaces form a vector space"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Module.Dual",
+        "module": "Mathlib.LinearAlgebra.Dual.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`Module.Dual R M := M →ₗ[R] R`; the space of linear maps `V →ₗ[R] W` has a `Module` instance via `LinearMap.module`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Classification of vector spaces by dimension",
+      "anchor": {
+        "section": "Linear maps and matrices",
+        "snippet": "two vector spaces over a given field are isomorphic if their dimensions agree and vice versa"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "nonempty_linearEquiv_of_finrank_eq",
+        "module": "Mathlib.LinearAlgebra.Dimension.FreeAndStrongRankCondition",
+        "match_kind": "exact"
+      },
+      "note": "`nonempty_linearEquiv_of_finrank_eq` produces a linear equivalence between two vector spaces with equal finrank.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Matrix representation of a linear map",
+      "anchor": {
+        "section": "Matrices",
+        "snippet": "Matrices are a useful notion to encode linear maps"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "LinearMap.toMatrix",
+        "module": "Mathlib.LinearAlgebra.Matrix.ToLin",
+        "match_kind": "exact"
+      },
+      "note": "`LinearMap.toMatrix` is the linear equivalence between linear maps and matrices given chosen bases.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Matrices",
+          "snippet": "Matrices are a useful notion to encode linear maps"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\mathbf {x} =(x_{1},x_{2},\\ldots ,x_{n})\\mapsto \\left(\\sum _{j=1}^{n}a_{1j}x_{j},\\sum _{j=1}^{n}a_{2j}x_{j},\\ldots ,\\sum _{j=1}^{n}a_{mj}x_{j}\\right),}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Determinant detects isomorphism",
+      "anchor": {
+        "section": "Matrices",
+        "snippet": "The determinant det ( A ) of a square matrix A is a scalar that tells whether the associated map is an isomorphism or not"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "LinearMap.isUnit_iff_isUnit_det",
+        "module": "Mathlib.LinearAlgebra.Matrix.ToLinearEquiv",
+        "match_kind": "exact"
+      },
+      "note": "Over a field, `Matrix.det_ne_zero_iff_isUnit`/`LinearMap.isUnit_iff_isUnit_det` show invertibility is detected by the determinant.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Eigenvector and eigenvalue",
+      "anchor": {
+        "section": "Eigenvalues and eigenvectors",
+        "snippet": "Any nonzero vector v satisfying λ v = f ( v ) , where λ is a scalar, is called an eigenvector of f with eigenvalue λ"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Module.End.HasEigenvector",
+        "module": "Mathlib.LinearAlgebra.Eigenspace.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`Module.End.HasEigenvector` and `Module.End.HasEigenvalue` define these notions for endomorphisms of a module.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Eigenvalues and eigenvectors",
+          "snippet": "Any nonzero vector v satisfying λ v = f ( v ) , where λ is a scalar, is called an eigenvector of f with eigenvalue λ"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\det(f-\\lambda \\cdot \\operatorname {Id} )=0.}"
+        }
+      ]
+    },
+    {
+      "kind": "definition",
+      "label": "Characteristic polynomial",
+      "anchor": {
+        "section": "Eigenvalues and eigenvectors",
+        "snippet": "the expression on the left hand side can be seen to be a polynomial function in λ , called the characteristic polynomial of f"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "LinearMap.charpoly",
+        "module": "Mathlib.LinearAlgebra.Charpoly.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`LinearMap.charpoly f` is defined as `det (X - f)` via a chosen basis; `Matrix.charpoly` is the matrix version.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Eigenvalues and eigenvectors",
+          "snippet": "the expression on the left hand side can be seen to be a polynomial function in λ , called the characteristic polynomial of f"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\det(f-\\lambda \\cdot \\operatorname {Id} )=0.}"
+        }
+      ]
+    },
+    {
+      "kind": "definition",
+      "label": "Eigenspace",
+      "anchor": {
+        "section": "Eigenvalues and eigenvectors",
+        "snippet": "The set of all eigenvectors corresponding to a particular eigenvalue of f forms a vector space known as the eigenspace"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Module.End.eigenspace",
+        "module": "Mathlib.LinearAlgebra.Eigenspace.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`Module.End.eigenspace f μ` is the submodule of vectors satisfying `f x = μ • x`.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Eigenvalues and eigenvectors",
+          "snippet": "The set of all eigenvectors corresponding to a particular eigenvalue of f forms a vector space known as the eigenspace"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\det(f-\\lambda \\cdot \\operatorname {Id} )=0.}"
+        }
+      ]
+    },
+    {
+      "kind": "definition",
+      "label": "Hyperplane",
+      "anchor": {
+        "section": "Subspaces and quotient spaces",
+        "snippet": "any subspace of dimension 1 less, i.e., of dimension"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No dedicated `Hyperplane` definition was found; the notion appears only in informal docstrings and theorem names.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Quotient vector space",
+      "anchor": {
+        "section": "Subspaces and quotient spaces",
+        "snippet": "The counterpart to subspaces are quotient vector spaces"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Submodule.Quotient",
+        "module": "Mathlib.LinearAlgebra.Quotient.Defs",
+        "match_kind": "generalization"
+      },
+      "note": "The quotient `M ⧸ S` of a module by a submodule (and its `Module` structure) is built via `Submodule.quotientRel` in `LinearAlgebra/Quotient/Defs.lean`.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Subspaces and quotient spaces",
+          "snippet": "The counterpart to subspaces are quotient vector spaces"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\mathbf {v} +W=\\{\\mathbf {v} +\\mathbf {w} :\\mathbf {w} \\in W\\},}"
+        }
+      ]
+    },
+    {
+      "kind": "definition",
+      "label": "Kernel of a linear map",
+      "anchor": {
+        "section": "Subspaces and quotient spaces",
+        "snippet": "The kernel"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "LinearMap.ker",
+        "module": "Mathlib.Algebra.Module.Submodule.Ker",
+        "match_kind": "exact"
+      },
+      "note": "`LinearMap.ker f` is the submodule of vectors mapped to zero.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Linear differential operator",
+      "anchor": {
+        "section": "Subspaces and quotient spaces",
+        "snippet": "this assignment is linear, called a linear differential operator"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "fderiv",
+        "module": "Mathlib.Analysis.Calculus.FDeriv.Basic",
+        "match_kind": null
+      },
+      "note": "Mathlib has linear maps and Fréchet derivatives but no abstract class called `LinearDifferentialOperator`; instances like `fderiv` realize the concept.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Subspaces and quotient spaces",
+          "snippet": "this assignment is linear, called a linear differential operator"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle a_{0}f+a_{1}{\\frac {df}{dx}}+a_{2}{\\frac {d^{2}f}{dx^{2}}}+\\cdots +a_{n}{\\frac {d^{n}f}{dx^{n}}}=0,}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle f\\mapsto D(f)=\\sum _{i=0}^{n}a_{i}{\\frac {d^{i}f}{dx^{i}}},}"
+        }
+      ]
+    },
+    {
+      "kind": "theorem",
+      "label": "Category of vector spaces is abelian",
+      "anchor": {
+        "section": "Subspaces and quotient spaces",
+        "snippet": "the category of vector spaces (over a fixed field"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "ModuleCat.abelian",
+        "module": "Mathlib.Algebra.Category.ModuleCat.Abelian",
+        "match_kind": "generalization"
+      },
+      "note": "`ModuleCat R` is proved abelian for any ring `R`, in particular for fields.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Subspaces and quotient spaces",
+          "snippet": "the category of vector spaces (over a fixed field"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle V/\\ker(f)\\;\\equiv \\;\\operatorname {im} (f)}"
+        }
+      ]
+    },
+    {
+      "kind": "definition",
+      "label": "Direct product of vector spaces",
+      "anchor": {
+        "section": "Direct product and direct sum",
+        "snippet": "The direct product"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Pi.module",
+        "module": "Mathlib.Algebra.Module.Pi",
+        "match_kind": "exact"
+      },
+      "note": "The direct product `∏ i, M i` carries a `Module` instance via `Pi.module`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Direct sum of vector spaces",
+      "anchor": {
+        "section": "Direct product and direct sum",
+        "snippet": "A variant of this construction is the direct sum"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "DirectSum",
+        "module": "Mathlib.Algebra.DirectSum.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`DirectSum ι (β i)` (notation `⨁ i, β i`) provides the direct sum of an indexed family of modules.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Bilinear map",
+      "anchor": {
+        "section": "Tensor product",
+        "snippet": "is called bilinear if"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "LinearMap.mk₂",
+        "module": "Mathlib.LinearAlgebra.BilinearMap",
+        "match_kind": "exact"
+      },
+      "note": "Bilinear maps are represented as iterated linear maps `M →ₗ[R] N →ₗ[R] P`, constructed via `LinearMap.mk₂`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Tensor product of vector spaces",
+      "anchor": {
+        "section": "Tensor product",
+        "snippet": "The tensor product is a particular vector space that is a universal recipient of bilinear maps"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "TensorProduct",
+        "module": "Mathlib.LinearAlgebra.TensorProduct.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`TensorProduct R M N` defines the tensor product of two modules.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Tensor product",
+          "snippet": "The tensor product is a particular vector space that is a universal recipient of bilinear maps"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\mathbf {v} _{1}\\otimes \\mathbf {w} _{1}+\\mathbf {v} _{2}\\otimes \\mathbf {w} _{2}+\\cdots +\\mathbf {v} _{n}\\otimes \\mathbf {w} _{n},}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle {\\begin{alignedat}{6}a\\cdot (\\mathbf {v} \\otimes \\mathbf {w} )~&amp;=~(a\\cdot \\mathbf {v} )\\otimes \\mathbf {w} ~=~\\mathbf {v} \\otimes (a\\cdot \\mathbf {w} ),&amp;&amp;~~{\\text{ where }}a{\\text{ is a scalar}}\\\\(\\mathbf {v} _{1}+\\mathbf {v} _{2})\\otimes \\mathbf {w} ~&amp;=~\\mathbf {v} _{1}\\otimes \\mathbf {w} +\\mathbf {v} _{2}\\otimes \\mathbf {w} &amp;&amp;\\\\\\mathbf {v} \\otimes (\\mathbf {w} _{1}+\\mathbf {w} _{2})~&amp;=~\\mathbf {v} \\otimes \\mathbf {w} _{1}+\\mathbf {v} \\otimes \\mathbf {w} _{2}.&amp;&amp;\\\\\\end{alignedat}}}"
+        }
+      ]
+    },
+    {
+      "kind": "theorem",
+      "label": "Universal property of tensor product",
+      "anchor": {
+        "section": "Tensor product",
+        "snippet": "This is called the universal property of the tensor product"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "TensorProduct.lift",
+        "module": "Mathlib.LinearAlgebra.TensorProduct.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`TensorProduct.lift` produces the unique linear map from a bilinear map, realising the universal property.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Tensor product",
+          "snippet": "This is called the universal property of the tensor product"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\mathbf {v} _{1}\\otimes \\mathbf {w} _{1}+\\mathbf {v} _{2}\\otimes \\mathbf {w} _{2}+\\cdots +\\mathbf {v} _{n}\\otimes \\mathbf {w} _{n},}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle {\\begin{alignedat}{6}a\\cdot (\\mathbf {v} \\otimes \\mathbf {w} )~&amp;=~(a\\cdot \\mathbf {v} )\\otimes \\mathbf {w} ~=~\\mathbf {v} \\otimes (a\\cdot \\mathbf {w} ),&amp;&amp;~~{\\text{ where }}a{\\text{ is a scalar}}\\\\(\\mathbf {v} _{1}+\\mathbf {v} _{2})\\otimes \\mathbf {w} ~&amp;=~\\mathbf {v} _{1}\\otimes \\mathbf {w} +\\mathbf {v} _{2}\\otimes \\mathbf {w} &amp;&amp;\\\\\\mathbf {v} \\otimes (\\mathbf {w} _{1}+\\mathbf {w} _{2})~&amp;=~\\mathbf {v} \\otimes \\mathbf {w} _{1}+\\mathbf {v} \\otimes \\mathbf {w} _{2}.&amp;&amp;\\\\\\end{alignedat}}}"
+        }
+      ]
+    },
+    {
+      "kind": "definition",
+      "label": "Ordered vector space",
+      "anchor": {
+        "section": "Vector spaces with additional structure",
+        "snippet": "A vector space may be given a partial order"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "PosSMulStrictMono",
+        "module": "Mathlib.Algebra.Order.Module.Defs",
+        "match_kind": "generalization"
+      },
+      "note": "Mathlib encodes ordered modules via mixin classes such as `PosSMulStrictMono` over an ordered scalar action.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Vector spaces with additional structure",
+          "snippet": "A vector space may be given a partial order"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle f=f^{+}-f^{-}.}"
+        }
+      ]
+    },
+    {
+      "kind": "definition",
+      "label": "Normed and inner product spaces",
+      "anchor": {
+        "section": "Normed vector spaces and inner product spaces",
+        "snippet": "Vector spaces endowed with such data are known as normed vector spaces and inner product spaces"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "NormedSpace",
+        "module": "Mathlib.Analysis.Normed.Module.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`NormedSpace` and `InnerProductSpace` (in `Mathlib.Analysis.InnerProductSpace.Defs`) capture these structures.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Standard dot product",
+      "anchor": {
+        "section": "Normed vector spaces and inner product spaces",
+        "snippet": "can be equipped with the standard dot product"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "EuclideanSpace",
+        "module": "Mathlib.Analysis.InnerProductSpace.PiL2",
+        "match_kind": "exact"
+      },
+      "note": "`EuclideanSpace 𝕜 ι` carries the standard dot product via its `InnerProductSpace` instance.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Normed vector spaces and inner product spaces",
+          "snippet": "can be equipped with the standard dot product"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\langle \\mathbf {x} ,\\mathbf {y} \\rangle =\\mathbf {x} \\cdot \\mathbf {y} =x_{1}y_{1}+\\cdots +x_{n}y_{n}.}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\mathbf {x} \\cdot \\mathbf {y} =\\cos \\left(\\angle (\\mathbf {x} ,\\mathbf {y} )\\right)\\cdot |\\mathbf {x} |\\cdot |\\mathbf {y} |.}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\langle \\mathbf {x} |\\mathbf {y} \\rangle =x_{1}y_{1}+x_{2}y_{2}+x_{3}y_{3}-x_{4}y_{4}.}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\langle \\mathbf {x} |\\mathbf {y} \\rangle =-x_{0}y_{0}+x_{1}y_{1}+x_{2}y_{2}+x_{3}y_{3}.}"
+        }
+      ]
+    },
+    {
+      "kind": "definition",
+      "label": "Orthogonal vectors",
+      "anchor": {
+        "section": "Normed vector spaces and inner product spaces",
+        "snippet": "are called orthogonal"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Submodule.orthogonal",
+        "module": "Mathlib.Analysis.InnerProductSpace.Subspace",
+        "match_kind": "generalization"
+      },
+      "note": "Orthogonality is `inner x y = 0`; `Submodule.orthogonal` gives the orthogonal complement of a subspace.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Normed vector spaces and inner product spaces",
+          "snippet": "are called orthogonal"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\langle \\mathbf {x} ,\\mathbf {y} \\rangle =\\mathbf {x} \\cdot \\mathbf {y} =x_{1}y_{1}+\\cdots +x_{n}y_{n}.}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\mathbf {x} \\cdot \\mathbf {y} =\\cos \\left(\\angle (\\mathbf {x} ,\\mathbf {y} )\\right)\\cdot |\\mathbf {x} |\\cdot |\\mathbf {y} |.}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\langle \\mathbf {x} |\\mathbf {y} \\rangle =x_{1}y_{1}+x_{2}y_{2}+x_{3}y_{3}-x_{4}y_{4}.}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\langle \\mathbf {x} |\\mathbf {y} \\rangle =-x_{0}y_{0}+x_{1}y_{1}+x_{2}y_{2}+x_{3}y_{3}.}"
+        }
+      ]
+    },
+    {
+      "kind": "example",
+      "label": "Lorentz product on Minkowski space",
+      "anchor": {
+        "section": "Normed vector spaces and inner product spaces",
+        "snippet": "An important variant of the standard dot product is used in Minkowski space"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No formalisation of Minkowski space or its Lorentz bilinear form was found in Mathlib.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Normed vector spaces and inner product spaces",
+          "snippet": "An important variant of the standard dot product is used in Minkowski space"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\langle \\mathbf {x} ,\\mathbf {y} \\rangle =\\mathbf {x} \\cdot \\mathbf {y} =x_{1}y_{1}+\\cdots +x_{n}y_{n}.}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\mathbf {x} \\cdot \\mathbf {y} =\\cos \\left(\\angle (\\mathbf {x} ,\\mathbf {y} )\\right)\\cdot |\\mathbf {x} |\\cdot |\\mathbf {y} |.}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\langle \\mathbf {x} |\\mathbf {y} \\rangle =x_{1}y_{1}+x_{2}y_{2}+x_{3}y_{3}-x_{4}y_{4}.}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\langle \\mathbf {x} |\\mathbf {y} \\rangle =-x_{0}y_{0}+x_{1}y_{1}+x_{2}y_{2}+x_{3}y_{3}.}"
+        }
+      ]
+    },
+    {
+      "kind": "definition",
+      "label": "Topological vector space",
+      "anchor": {
+        "section": "Topological vector spaces",
+        "snippet": "Convergence questions are treated by considering vector spaces"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "ContinuousSMul",
+        "module": "Mathlib.Topology.Algebra.MulAction",
+        "match_kind": "exact"
+      },
+      "note": "A topological vector space is a `Module` with `IsTopologicalAddGroup` plus `ContinuousSMul`; the classes live in `Mathlib/Topology/Algebra`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Complete vector space",
+      "anchor": {
+        "section": "Topological vector spaces",
+        "snippet": "such a vector space is called complete"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "CompleteSpace",
+        "module": "Mathlib.Topology.UniformSpace.Cauchy",
+        "match_kind": "generalization"
+      },
+      "note": "`CompleteSpace` from uniform-space theory specialises to completeness of a topological vector space.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Topological vector spaces",
+          "snippet": "such a vector space is called complete"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\lim _{n\\to \\infty }|\\mathbf {v} _{n}-\\mathbf {v} |=0.}"
+        }
+      ]
+    },
+    {
+      "kind": "theorem",
+      "label": "Weierstrass approximation theorem",
+      "anchor": {
+        "section": "Topological vector spaces",
+        "snippet": "any continuous function on"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "polynomialFunctions_closure_eq_top",
+        "module": "Mathlib.Topology.ContinuousMap.Weierstrass",
+        "match_kind": "exact"
+      },
+      "note": "`polynomialFunctions_closure_eq_top` states polynomials are uniformly dense in `C([a,b], ℝ)`.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Topological vector spaces",
+          "snippet": "any continuous function on"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\lim _{n\\to \\infty }|\\mathbf {v} _{n}-\\mathbf {v} |=0.}"
+        }
+      ]
+    },
+    {
+      "kind": "theorem",
+      "label": "Hahn–Banach theorem",
+      "anchor": {
+        "section": "Topological vector spaces",
+        "snippet": "The fundamental Hahn–Banach theorem is concerned with separating subspaces of appropriate topological vector spaces by continuous functionals"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "exists_extension_norm_eq",
+        "module": "Mathlib.Analysis.Normed.Module.HahnBanach",
+        "match_kind": "exact"
+      },
+      "note": "`exists_extension_norm_eq` is the analytic Hahn–Banach extension theorem; geometric versions live in `Mathlib/Analysis/LocallyConvex/Separation.lean`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Banach space",
+      "anchor": {
+        "section": "Banach spaces",
+        "snippet": "Banach spaces , introduced by Stefan Banach , are complete normed vector spaces"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "NormedSpace",
+        "module": "Mathlib.Analysis.Normed.Module.Basic",
+        "match_kind": "exact"
+      },
+      "note": "Mathlib expresses Banach spaces as `[NormedSpace 𝕜 E] [CompleteSpace E]`; no separate `Banach` class is needed.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Lebesgue spaces",
+      "anchor": {
+        "section": "Banach spaces",
+        "snippet": "and equipped with this norm are called Lebesgue spaces"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "MeasureTheory.Lp",
+        "module": "Mathlib.MeasureTheory.Function.LpSpace.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`MeasureTheory.Lp E p μ` defines Lᵖ as a normed space of equivalence classes of measurable functions.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Completeness of Lebesgue spaces",
+      "anchor": {
+        "section": "Banach spaces",
+        "snippet": "These spaces are complete"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "MeasureTheory.Lp.instCompleteSpace",
+        "module": "Mathlib.MeasureTheory.Function.LpSpace.Complete",
+        "match_kind": "exact"
+      },
+      "note": "`MeasureTheory.Lp.instCompleteSpace` provides the `CompleteSpace` instance on `Lᵖ`.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Banach spaces",
+          "snippet": "These spaces are complete"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\lim _{k,\\ n\\to \\infty }\\int _{\\Omega }\\left|f_{k}(x)-f_{n}(x)\\right|^{p}\\,{d\\mu (x)}=0}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\lim _{k\\to \\infty }\\int _{\\Omega }\\left|f(x)-f_{k}(x)\\right|^{p}\\,{d\\mu (x)}=0.}"
+        }
+      ]
+    },
+    {
+      "kind": "definition",
+      "label": "Sobolev spaces",
+      "anchor": {
+        "section": "Banach spaces",
+        "snippet": "Imposing boundedness conditions not only on the function, but also on its derivatives leads to Sobolev spaces"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": null,
+        "module": "Mathlib.Analysis.Distribution.Sobolev",
+        "match_kind": null
+      },
+      "note": "Sobolev norms appear (e.g. in `SobolevInequality.lean` and `Distribution/Sobolev.lean`), but no bundled `SobolevSpace` definition with `Wᵏ,ᵖ`-norm is present.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Hilbert space",
+      "anchor": {
+        "section": "Hilbert spaces",
+        "snippet": "Complete inner product spaces are known as Hilbert spaces , in honor of David Hilbert"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "InnerProductSpace",
+        "module": "Mathlib.Analysis.InnerProductSpace.Defs",
+        "match_kind": "exact"
+      },
+      "note": "Hilbert spaces are written `[InnerProductSpace 𝕜 E] [CompleteSpace E]`; no separate class is introduced.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Hilbert spaces",
+          "snippet": "Complete inner product spaces are known as Hilbert spaces , in honor of David Hilbert"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\langle f\\ ,\\ g\\rangle =\\int _{\\Omega }f(x){\\overline {g(x)}}\\,dx,}"
+        }
+      ]
+    },
+    {
+      "kind": "theorem",
+      "label": "Stone–Weierstrass theorem",
+      "anchor": {
+        "section": "Hilbert spaces",
+        "snippet": "By the Stone–Weierstrass theorem , every continuous function on"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "ContinuousMap.subalgebra_topologicalClosure_eq_top_of_separatesPoints",
+        "module": "Mathlib.Topology.ContinuousMap.StoneWeierstrass",
+        "match_kind": "exact"
+      },
+      "note": "The Stone–Weierstrass theorem is stated for point-separating subalgebras of `C(X, ℝ)` in `StoneWeierstrass.lean`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Spectral theorem",
+      "anchor": {
+        "section": "Hilbert spaces",
+        "snippet": "The spectral theorem decomposes a linear compact operator acting on functions in terms of these eigenfunctions and their eigenvalues"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "LinearMap.IsSymmetric.eigenvectorBasis_apply_self_apply",
+        "module": "Mathlib.Analysis.InnerProductSpace.Spectrum",
+        "match_kind": "special_case"
+      },
+      "note": "Mathlib has the finite-dimensional spectral theorem (`LinearMap.IsSymmetric.eigenvectorBasis_apply_self_apply`) but not the full compact-operator version.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Algebra over a field",
+      "anchor": {
+        "section": "Algebras over fields",
+        "snippet": "A vector space equipped with an additional bilinear operator defining the multiplication of two vectors is an algebra over a field"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Algebra",
+        "module": "Mathlib.Algebra.Algebra.Defs",
+        "match_kind": "generalization"
+      },
+      "note": "`Algebra R A` packages a commutative-ring-scalar action with multiplicative compatibility; over a field it is an algebra over a field.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Polynomial ring",
+      "anchor": {
+        "section": "Algebras over fields",
+        "snippet": "forms an algebra known as the polynomial ring"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Polynomial",
+        "module": "Mathlib.Algebra.Polynomial.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`Polynomial R` is the (univariate) polynomial ring; it carries an `Algebra R R[X]` instance.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Lie algebra",
+      "anchor": {
+        "section": "Algebras over fields",
+        "snippet": "Another crucial example are Lie algebras , which are neither commutative nor associative"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "LieAlgebra",
+        "module": "Mathlib.Algebra.Lie.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`LieRing` and `LieAlgebra` formalise Lie algebras over a commutative ring.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Tensor algebra",
+      "anchor": {
+        "section": "Algebras over fields",
+        "snippet": "is a formal way of adding products to any vector space"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "TensorAlgebra",
+        "module": "Mathlib.LinearAlgebra.TensorAlgebra.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`TensorAlgebra R M` is the universal (associative) algebra generated by a module.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Algebras over fields",
+          "snippet": "is a formal way of adding products to any vector space"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\mathbf {v} _{1}\\otimes \\mathbf {v} _{2}\\otimes \\cdots \\otimes \\mathbf {v} _{n},}"
+        }
+      ]
+    },
+    {
+      "kind": "definition",
+      "label": "Symmetric and exterior algebras",
+      "anchor": {
+        "section": "Algebras over fields",
+        "snippet": "Forcing two such elements to be equal leads to the symmetric algebra , whereas forcing"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "ExteriorAlgebra",
+        "module": "Mathlib.LinearAlgebra.ExteriorAlgebra.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`ExteriorAlgebra R M` and `SymmetricAlgebra`/`IsSymmetricAlgebra` (`Mathlib/LinearAlgebra/SymmetricAlgebra/Basic.lean`) formalise these constructions.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Algebras over fields",
+          "snippet": "Forcing two such elements to be equal leads to the symmetric algebra , whereas forcing"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\mathbf {v} _{1}\\otimes \\mathbf {v} _{2}\\otimes \\cdots \\otimes \\mathbf {v} _{n},}"
+        }
+      ]
+    },
+    {
+      "kind": "definition",
+      "label": "Vector bundle",
+      "anchor": {
+        "section": "Vector bundles",
+        "snippet": "A vector bundle is a family of vector spaces parametrized continuously by a topological space X"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "VectorBundle",
+        "module": "Mathlib.Topology.VectorBundle.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`VectorBundle` is the typeclass capturing a fiber bundle with vector-space fibers and linear transition functions.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Vector bundles",
+          "snippet": "A vector bundle is a family of vector spaces parametrized continuously by a topological space X"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\pi :E\\to X}"
+        }
+      ]
+    },
+    {
+      "kind": "definition",
+      "label": "Line bundle",
+      "anchor": {
+        "section": "Vector bundles",
+        "snippet": "The case dim V = 1 is called a line bundle"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No dedicated `LineBundle` definition was found; only informal references appear in module docs.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Vector bundles",
+          "snippet": "The case dim V = 1 is called a line bundle"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\pi :E\\to X}"
+        }
+      ]
+    },
+    {
+      "kind": "example",
+      "label": "Tangent bundle",
+      "anchor": {
+        "section": "Vector bundles",
+        "snippet": "the tangent bundle consists of the collection of tangent spaces parametrized by the points of a differentiable manifold"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "TangentBundle",
+        "module": "Mathlib.Geometry.Manifold.IsManifold.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`TangentBundle I M` is defined as the total space of `TangentSpace I` and instantiates `VectorBundle`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Hairy ball theorem",
+      "anchor": {
+        "section": "Vector bundles",
+        "snippet": "by the hairy ball theorem , there is no (tangent) vector field on the 2-sphere"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "A search for `hairy_ball`/`hairyBall` found no matches in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Cotangent bundle",
+      "anchor": {
+        "section": "Vector bundles",
+        "snippet": "The cotangent bundle of a differentiable manifold consists, at every point of the manifold, of the dual of the tangent space"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has `CotangentSpace` in algebraic settings (e.g. Kähler differentials) but no smooth-manifold cotangent bundle.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Module over a ring",
+      "anchor": {
+        "section": "Modules",
+        "snippet": "Modules are to rings what vector spaces are to fields"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Module",
+        "module": "Mathlib.Algebra.Module.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`Module R M` is the central definition of modules over a (semi)ring.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Free module",
+      "anchor": {
+        "section": "Modules",
+        "snippet": "those modules that do (including all vector spaces) are known as free modules"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Module.Free",
+        "module": "Mathlib.LinearAlgebra.FreeModule.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`Module.Free R M` asserts the existence of a basis.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Affine space",
+      "anchor": {
+        "section": "Affine and projective spaces",
+        "snippet": "an affine space is a set with a free transitive vector space action"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "AddTorsor",
+        "module": "Mathlib.Algebra.AddTorsor.Defs",
+        "match_kind": "exact"
+      },
+      "note": "Affine spaces are scoped notation `AffineSpace` for `AddTorsor G P` (a free transitive additive group action).",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Affine and projective spaces",
+          "snippet": "an affine space is a set with a free transitive vector space action"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle V\\times V\\to W,\\;(\\mathbf {v} ,\\mathbf {a} )\\mapsto \\mathbf {a} +\\mathbf {v} .}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle A\\mathbf {v} =\\mathbf {b} }"
+        }
+      ]
+    },
+    {
+      "kind": "definition",
+      "label": "Affine subspace",
+      "anchor": {
+        "section": "Affine and projective spaces",
+        "snippet": "an affine subspace is a subset of W obtained by translating a linear subspace V by a fixed vector"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "AffineSubspace",
+        "module": "Mathlib.LinearAlgebra.AffineSpace.AffineSubspace.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`AffineSubspace k P` is a subset closed under affine combinations, with `direction` the underlying linear subspace.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Affine and projective spaces",
+          "snippet": "an affine subspace is a subset of W obtained by translating a linear subspace V by a fixed vector"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle V\\times V\\to W,\\;(\\mathbf {v} ,\\mathbf {a} )\\mapsto \\mathbf {a} +\\mathbf {v} .}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle A\\mathbf {v} =\\mathbf {b} }"
+        }
+      ]
+    },
+    {
+      "kind": "definition",
+      "label": "Projective space",
+      "anchor": {
+        "section": "Affine and projective spaces",
+        "snippet": "The set of one-dimensional subspaces of a fixed finite-dimensional vector space V is known as projective space"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Projectivization",
+        "module": "Mathlib.LinearAlgebra.Projectivization.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`Projectivization K V` is the quotient of nonzero vectors by scalar equivalence, i.e. projective space.",
+      "provenance": "ai"
+    }
+  ]
+}

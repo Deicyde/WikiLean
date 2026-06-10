@@ -1,0 +1,969 @@
+{
+  "slug": "Limit_of_a_function",
+  "wikipedia_title": "Limit of a function",
+  "display_title": "Limit of a function",
+  "schema_version": 3,
+  "annotation_style": "theorem_article",
+  "annotations": [
+    {
+      "kind": "definition",
+      "label": "(ε, δ)-definition of limit",
+      "anchor": {
+        "section": "( ε , δ ) -definition of limit",
+        "snippet": "as x approaches p , exists, and it equals L"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Metric.tendsto_nhds_nhds",
+        "module": "Mathlib.Topology.MetricSpace.Pseudo.Defs",
+        "match_kind": "exact"
+      },
+      "note": "Mathlib's ε-δ characterization of `Tendsto f (𝓝 a) (𝓝 b)` between (pseudo)metric spaces matches the article's ε-δ definition exactly.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Limit of 4x+1 at x=2",
+      "anchor": {
+        "section": "( ε , δ ) -definition of limit",
+        "snippet": "we can take δ = ε /4"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This is a worked numerical example, not a named theorem; no dedicated Mathlib statement was located.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Limit on a subset of the real line",
+      "anchor": {
+        "section": "( ε , δ ) -definition of limit",
+        "snippet": "A more general definition applies for functions defined on subsets"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Metric.tendsto_nhdsWithin_nhds",
+        "module": "Mathlib.Topology.MetricSpace.Pseudo.Defs",
+        "match_kind": "exact"
+      },
+      "note": "The ε-δ characterization of `Tendsto f (𝓝[s] a) (𝓝 b)` matches the article's restricted-domain definition.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Limit on half-line domain at x=1",
+      "anchor": {
+        "section": "( ε , δ ) -definition of limit",
+        "snippet": "we can take δ = ε , so that for all real x ≥ −3"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Specific worked example with no corresponding named declaration in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Limit independent of value at p",
+      "anchor": {
+        "section": "( ε , δ ) -definition of limit",
+        "snippet": "Note that here f (1) is undefined"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "nhdsWithin",
+        "module": "Mathlib.Topology.Defs.Filter",
+        "match_kind": "invocation"
+      },
+      "note": "Mathlib's `𝓝[≠] p` filter encodes the deleted neighborhood used to ignore `f p`, but the article's specific example itself is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Where limits can exist",
+      "anchor": {
+        "section": "( ε , δ ) -definition of limit",
+        "snippet": "where int S is the interior of S"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Filter.NeBot",
+        "module": "Mathlib.Order.Filter.Defs",
+        "match_kind": "invocation"
+      },
+      "note": "Mathlib uses `(𝓝[s \\ {p}] p).NeBot` (cluster-point conditions) for the analogous existence requirement, but the article's exact closure/interior-based statement is not stated as a single lemma.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Right-handed limit",
+      "anchor": {
+        "section": "Existence and one-sided limits",
+        "snippet": "The limit of f as x approaches p from above is L if:"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Function.rightLim",
+        "module": "Mathlib.Topology.Order.LeftRightLim",
+        "match_kind": "exact"
+      },
+      "note": "`Function.rightLim` and `Tendsto f (𝓝[>] p) (𝓝 L)` (with `nhdsGT` notation in `Mathlib.Topology.Defs.Filter`) capture the right-handed limit.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Left-handed limit",
+      "anchor": {
+        "section": "Existence and one-sided limits",
+        "snippet": "The limit of f as x approaches p from below is L if:"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Function.leftLim",
+        "module": "Mathlib.Topology.Order.LeftRightLim",
+        "match_kind": "exact"
+      },
+      "note": "`Function.leftLim` and `Tendsto f (𝓝[<] p) (𝓝 L)` capture the left-handed limit.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Non-existence implies non-zero oscillation",
+      "anchor": {
+        "section": "Existence and one-sided limits",
+        "snippet": "If the limit does not exist, then the oscillation of f at p is non-zero"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "eq_zero_iff_continuousAt",
+        "module": "Mathlib.Analysis.Oscillation",
+        "match_kind": "generalization"
+      },
+      "note": "Mathlib has `oscillation` and the equivalence `oscillation f x = 0 ↔ ContinuousAt f x`, from which the article's contrapositive follows, but the exact stated implication isn't a separate lemma.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Limit along a subset T",
+      "anchor": {
+        "section": "More general definition using limit points and subsets",
+        "snippet": "the limit of f , as x approaches p from values in T , is L"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "nhdsWithin",
+        "module": "Mathlib.Topology.Defs.Filter",
+        "match_kind": "exact"
+      },
+      "note": "Limits along a subset are expressed in Mathlib as `Tendsto f (𝓝[T] p) (𝓝 L)` using `nhdsWithin`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Square root limit from above at 0",
+      "anchor": {
+        "section": "More general definition using limit points and subsets",
+        "snippet": "since for every ε > 0 , we may take δ = ε 2 such that for all x ≥ 0"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Specific numerical example for sqrt; no dedicated Mathlib statement for this particular limit was found.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Non-deleted limit",
+      "anchor": {
+        "section": "Deleted versus non-deleted limits",
+        "snippet": "The non-deleted limit of f , as x approaches p , is L if"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Filter.Tendsto",
+        "module": "Mathlib.Order.Filter.Defs",
+        "match_kind": "exact"
+      },
+      "note": "Mathlib's `Tendsto f (𝓝 p) (𝓝 L)` (undeleted) versus `Tendsto f (𝓝[≠] p) (𝓝 L)` (deleted) exactly model both variants.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Sin(1/(x-1)) has no limit at 1",
+      "anchor": {
+        "section": "Non-existence of one-sided limit(s)",
+        "snippet": "has no limit at x 0 = 1"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No specific lemma about sin(1/(x-1)) lacking a limit at 1 was found in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Dirichlet function has no limit anywhere",
+      "anchor": {
+        "section": "Non-existence of one-sided limit(s)",
+        "snippet": "has no limit at any x -coordinate"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The everywhere non-existence of a limit for the Dirichlet function is not present as a named statement in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Step function with unequal one-sided limits at 0",
+      "anchor": {
+        "section": "Non-equality of one-sided limits",
+        "snippet": "has a limit at every non-zero x -coordinate"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No dedicated statement about a step function whose left/right limits at 0 differ was located.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Functions with a limit only at 0",
+      "anchor": {
+        "section": "Limits at only one point",
+        "snippet": "both have a limit at x = 0 and it equals 0"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No specific construction of a function with a limit only at zero is present as a named Mathlib lemma.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Function with limits at countably many points",
+      "anchor": {
+        "section": "Limits at countably many points",
+        "snippet": "has a limit at any x -coordinate of the form"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No counterpart of this particular construction was located in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Limit as x approaches infinity",
+      "anchor": {
+        "section": "Limits at infinity",
+        "snippet": "The limit of f as x approaches infinity is L"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Filter.atTop",
+        "module": "Mathlib.Order.Filter.AtTopBot.Basic",
+        "match_kind": "exact"
+      },
+      "note": "Limits at +∞ are formalized as `Tendsto f atTop (𝓝 L)` using the `Filter.atTop` filter.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Limit as x approaches minus infinity",
+      "anchor": {
+        "section": "Limits at infinity",
+        "snippet": "the limit of f as x approaches minus infinity is L"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Filter.atBot",
+        "module": "Mathlib.Order.Filter.AtTopBot.Basic",
+        "match_kind": "exact"
+      },
+      "note": "Limits at -∞ are formalized as `Tendsto f atBot (𝓝 L)` using the `Filter.atBot` filter.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Limit at +∞ of (3/x)+4",
+      "anchor": {
+        "section": "Limits at infinity",
+        "snippet": "we can take c = 3/ ε"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Specific worked example; no individualized Mathlib statement found.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Limit at −∞ of exponential decay",
+      "anchor": {
+        "section": "Limits at infinity",
+        "snippet": "we can take c = max{1, −ln( ε )}"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Specific worked example; the general limit `Real.tendsto_exp_atBot` is in Mathlib but this exact computation is not.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Infinite limit at a point (+∞)",
+      "anchor": {
+        "section": "Infinite limits",
+        "snippet": "the limit of f as x approaches p is infinity"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Filter.Tendsto",
+        "module": "Mathlib.Order.Filter.Defs",
+        "match_kind": "exact"
+      },
+      "note": "Expressed in Mathlib as `Tendsto f (𝓝 p) atTop` using the `atTop` filter on the codomain.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Infinite limit at a point (−∞)",
+      "anchor": {
+        "section": "Infinite limits",
+        "snippet": "the limit of f as x approaches p is minus infinity"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Filter.Tendsto",
+        "module": "Mathlib.Order.Filter.Defs",
+        "match_kind": "exact"
+      },
+      "note": "Expressed as `Tendsto f (𝓝 p) atBot` using the `atBot` filter on the codomain.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Limit diverging to +∞ at x=1",
+      "anchor": {
+        "section": "Infinite limits",
+        "snippet": "if 0 < x − 1 < δ , then f ( x ) > N"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Specific worked example with no corresponding named Mathlib lemma.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Limit diverging to −∞ at 0",
+      "anchor": {
+        "section": "Infinite limits",
+        "snippet": "we can take δ = e − N"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Specific worked example; no matching named lemma was located.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Limits at infinity of rational functions",
+      "anchor": {
+        "section": "Limits at infinity for rational functions",
+        "snippet": "There are three basic rules for evaluating limits at infinity for a rational function"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Polynomial.div_tendsto_atTop_zero_of_degree_lt",
+        "module": "Mathlib.Analysis.Polynomial.Basic",
+        "match_kind": "exact"
+      },
+      "note": "The three cases (deg P < deg Q, equal, greater) are formalized via `div_tendsto_atTop_zero_of_degree_lt`, `div_tendsto_atTop_leadingCoeff_div_of_degree_eq`, and `div_tendsto_atTop_of_degree_gt'`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Limit at infinity gives horizontal asymptote",
+      "anchor": {
+        "section": "Limits at infinity for rational functions",
+        "snippet": "If the limit at infinity exists, it represents a horizontal asymptote at y = L"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has limits at infinity but does not define `HorizontalAsymptote` as a named concept.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Limit of a two-variable function",
+      "anchor": {
+        "section": "Ordinary limits",
+        "snippet": "the limit of f as ( x , y ) approaches ( p , q ) is L"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Filter.Tendsto",
+        "module": "Mathlib.Order.Filter.Defs",
+        "match_kind": "exact"
+      },
+      "note": "Two-variable ordinary limits are `Tendsto f (𝓝 (p, q)) (𝓝 L)` using the product topology's neighborhood filter.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Multivariable limit existing at (0,0)",
+      "anchor": {
+        "section": "Ordinary limits",
+        "snippet": "such that for all real x ≠ 0 and real y ≠ 0"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Specific worked example with no Mathlib counterpart found.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Function with no limit at (0,0)",
+      "anchor": {
+        "section": "Ordinary limits",
+        "snippet": "does not have a limit at (0, 0)"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Specific counterexample, not stated as a Mathlib lemma.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Double (multiple) limit",
+      "anchor": {
+        "section": "Multiple limits",
+        "snippet": "the double limit of f as x approaches p and y approaches q is L"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Filter.prod",
+        "module": "Mathlib.Order.Filter.Prod",
+        "match_kind": "exact"
+      },
+      "note": "The double/multiple limit is `Tendsto f (𝓝 p ×ˢ 𝓝 q) (𝓝 L)` using the product `Filter.prod`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Ordinary limit implies multiple limit",
+      "anchor": {
+        "section": "Multiple limits",
+        "snippet": "if the ordinary limit exists and equals L , then the multiple limit exists and also equals L"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Filter.tendsto_prod_iff",
+        "module": "Mathlib.Order.Filter.Prod",
+        "match_kind": "generalization"
+      },
+      "note": "Mathlib has the relationship between product and neighborhood filters (`nhds_prod_eq` and `tendsto_prod_iff`), from which this implication follows, but it's not stated as a standalone lemma.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Double limit at +∞",
+      "anchor": {
+        "section": "Multiple limits at infinity",
+        "snippet": "the double limit of f as x and y approaches infinity is L"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Filter.prod",
+        "module": "Mathlib.Order.Filter.Prod",
+        "match_kind": "exact"
+      },
+      "note": "Expressed as `Tendsto f (atTop ×ˢ atTop) (𝓝 L)`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Double limit at −∞",
+      "anchor": {
+        "section": "Multiple limits at infinity",
+        "snippet": "the double limit of f as x and y approaches minus infinity is L"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Filter.prod",
+        "module": "Mathlib.Order.Filter.Prod",
+        "match_kind": "exact"
+      },
+      "note": "Expressed as `Tendsto f (atBot ×ˢ atBot) (𝓝 L)`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Pointwise limit",
+      "anchor": {
+        "section": "Pointwise limits and uniform limits",
+        "snippet": "the pointwise limit of f as x approaches p is g"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "tendsto_pi_nhds",
+        "module": "Mathlib.Topology.Constructions",
+        "match_kind": "exact"
+      },
+      "note": "Pointwise convergence is characterized by `tendsto_pi_nhds`: `Tendsto F l (𝓝 g) ↔ ∀ i, Tendsto (fun x => F x i) l (𝓝 (g i))` in the product topology.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Pointwise limit example",
+      "anchor": {
+        "section": "Pointwise limits and uniform limits",
+        "snippet": "has a pointwise limit of constant zero function"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Specific example; no dedicated Mathlib statement located for this particular family.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Uniform limit",
+      "anchor": {
+        "section": "Pointwise limits and uniform limits",
+        "snippet": "the uniform limit of f on T as x approaches p is g"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "TendstoUniformlyOn",
+        "module": "Mathlib.Topology.UniformSpace.UniformConvergence",
+        "match_kind": "exact"
+      },
+      "note": "`TendstoUniformlyOn` (and `TendstoUniformly`) formalize uniform convergence in uniform spaces.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Uniform limit example",
+      "anchor": {
+        "section": "Pointwise limits and uniform limits",
+        "snippet": "has a uniform limit of constant zero function"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Specific example; no matching Mathlib statement found.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Iterated limit",
+      "anchor": {
+        "section": "Iterated limits",
+        "snippet": "This limit is known as iterated limit of the multivariable function"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Iterated limits as a named concept (`lim_{x→p} lim_{y→q} f(x,y)`) are not given a dedicated definition in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Moore-Osgood theorem",
+      "anchor": {
+        "section": "Iterated limits",
+        "snippet": "A sufficient condition of equality is given by the Moore-Osgood theorem"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Grepping for `Moore`/`Osgood` returns no matches in Mathlib4.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Limit between metric spaces",
+      "anchor": {
+        "section": "Functions on metric spaces",
+        "snippet": "the limit of f as x approaches p is L and write"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Metric.tendsto_nhds_nhds",
+        "module": "Mathlib.Topology.MetricSpace.Pseudo.Defs",
+        "match_kind": "exact"
+      },
+      "note": "The ε-δ characterization between metric spaces matches Mathlib's `Metric.tendsto_nhds_nhds`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Limit of a vector-valued function (Euclidean)",
+      "anchor": {
+        "section": "Euclidean metric",
+        "snippet": "Then, under the usual Euclidean metric"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "EuclideanSpace",
+        "module": "Mathlib.Analysis.InnerProductSpace.EuclideanDist",
+        "match_kind": "invocation"
+      },
+      "note": "`EuclideanSpace ℝ (Fin n)` carries the Euclidean metric, and `Tendsto f l (𝓝 L)` on it captures vector-valued limits.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Limit theorem for vector-valued functions",
+      "anchor": {
+        "section": "Euclidean metric",
+        "snippet": "the limit theorem for vector-valued function states that if the limit of each component exists"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "tendsto_pi_nhds",
+        "module": "Mathlib.Topology.Constructions",
+        "match_kind": "exact"
+      },
+      "note": "Componentwise convergence iff convergence in the product topology is exactly `tendsto_pi_nhds`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Limit under the Manhattan metric",
+      "anchor": {
+        "section": "Manhattan metric",
+        "snippet": "Then, under the Manhattan metric"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "PiLp",
+        "module": "Mathlib.Analysis.Normed.Lp.PiLp",
+        "match_kind": "invocation"
+      },
+      "note": "`PiLp 1 fun i => ℝ` is the Manhattan metric instance; convergence reduces (via `PiLp.equiv`) to the usual product convergence.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Uniform limit via uniform metric",
+      "anchor": {
+        "section": "Uniform metric",
+        "snippet": "the uniform limit of f on T as x approaches p is g and write"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "TendstoUniformlyOn",
+        "module": "Mathlib.Topology.UniformSpace.UniformConvergence",
+        "match_kind": "exact"
+      },
+      "note": "Uniform convergence under the supremum/uniform metric is `TendstoUniformlyOn`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Limit in topological spaces",
+      "anchor": {
+        "section": "Functions on topological spaces",
+        "snippet": "there exists an open punctured neighbourhood"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Filter.Tendsto",
+        "module": "Mathlib.Order.Filter.Defs",
+        "match_kind": "exact"
+      },
+      "note": "Mathlib's `Tendsto f (𝓝[≠] p) (𝓝 L)` (deleted) and `Tendsto f (𝓝 p) (𝓝 L)` (undeleted) define topological limits via neighborhood filters.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Sequential limit",
+      "anchor": {
+        "section": "Functions on topological spaces",
+        "snippet": "There is another type of limit of a function, namely the sequential limit"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Filter.Tendsto",
+        "module": "Mathlib.Order.Filter.Defs",
+        "match_kind": "exact"
+      },
+      "note": "Sequential limits are `Tendsto u atTop (𝓝 a)` for `u : ℕ → X`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Topological limit implies sequential limit",
+      "anchor": {
+        "section": "Functions on topological spaces",
+        "snippet": "however, the converse need not hold in general"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Filter.Tendsto.comp",
+        "module": "Mathlib.Order.Filter.Tendsto",
+        "match_kind": "invocation"
+      },
+      "note": "If `Tendsto f (𝓝 p) (𝓝 L)` and `Tendsto x_n atTop (𝓝 p)`, then `Tendsto (f ∘ x_n) atTop (𝓝 L)` by `Tendsto.comp`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Heine definition (sequential)",
+      "anchor": {
+        "section": "In terms of sequences",
+        "snippet": "for all sequences x n (with, for all n , x n not equal to a ) converging to a the sequence f ( x n ) converges to L"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Filter.tendsto_iff_seq_tendsto",
+        "module": "Mathlib.Order.Filter.AtTopBot.CountablyGenerated",
+        "match_kind": "exact"
+      },
+      "note": "`tendsto_iff_seq_tendsto` gives the Heine sequential characterization for countably generated filters (covering first-countable / metric spaces).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Non-standard calculus definition of limit",
+      "anchor": {
+        "section": "In non-standard calculus",
+        "snippet": "In non-standard calculus the limit of a function is defined by:"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has no nonstandard-analysis hyperreal/infinitesimal framework that would express this definition.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Nearness definition of limit",
+      "anchor": {
+        "section": "In terms of nearness",
+        "snippet": "A point x is defined to be near a set"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No nearness-space (Herrlich-style) limit definition was located in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Continuity at a point via limits",
+      "anchor": {
+        "section": "Relationship to continuity",
+        "snippet": "A function f is said to be continuous at c if it is both defined at c"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "ContinuousAt",
+        "module": "Mathlib.Topology.Defs.Filter",
+        "match_kind": "exact"
+      },
+      "note": "`ContinuousAt f x` is defined as `Tendsto f (𝓝 x) (𝓝 (f x))`, exactly the limit-equals-value condition.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Limit equals both one-sided limits",
+      "anchor": {
+        "section": "Properties",
+        "snippet": "If a function f is real-valued, then the limit of f at p is L if and only if both the right-handed limit and left-handed limit"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "nhdsLE_sup_nhdsGE",
+        "module": "Mathlib.Topology.Order.LeftRight",
+        "match_kind": "invocation"
+      },
+      "note": "From `nhdsLE_sup_nhdsGE : 𝓝[≤] a ⊔ 𝓝[≥] a = 𝓝 a` and `tendsto_sup`, the two-sided limit equals both one-sided limits iff they agree.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Continuity iff limit equals value",
+      "anchor": {
+        "section": "Properties",
+        "snippet": "The function f is continuous at p if and only if the limit of f ( x ) as x approaches p exists and is equal to f ( p )"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "ContinuousAt",
+        "module": "Mathlib.Topology.Defs.Filter",
+        "match_kind": "exact"
+      },
+      "note": "This is the definition of `ContinuousAt` in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Linearity of the limit operation",
+      "anchor": {
+        "section": "Properties",
+        "snippet": "If N is a normed vector space , then the limit operation is linear"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Filter.Tendsto.add",
+        "module": "Mathlib.Topology.Algebra.Monoid.Defs",
+        "match_kind": "exact"
+      },
+      "note": "Linearity follows from `Tendsto.add`, `Tendsto.const_smul`, etc., available for topological additive groups and modules.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Algebraic limit theorem",
+      "anchor": {
+        "section": "Properties",
+        "snippet": "This fact is often called the algebraic limit theorem"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Filter.Tendsto.mul",
+        "module": "Mathlib.Topology.Algebra.Monoid.Defs",
+        "match_kind": "exact"
+      },
+      "note": "Mathlib provides `Tendsto.add`, `Tendsto.mul`, `Tendsto.sub`, `Tendsto.div`, etc., collectively giving the algebraic limit theorem.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Chain rule for limits of compositions",
+      "anchor": {
+        "section": "Limits of compositions of functions",
+        "snippet": "this \" chain rule \" does hold if one of the following additional conditions holds"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Filter.Tendsto.comp",
+        "module": "Mathlib.Order.Filter.Tendsto",
+        "match_kind": "generalization"
+      },
+      "note": "`Tendsto.comp` gives composition of limits at the filter level, which subsumes the article's conditional chain rule (continuity at the inner limit point ensures the side condition).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Limit of a rational function at infinity",
+      "anchor": {
+        "section": "Rational functions",
+        "snippet": "For n a nonnegative integer and constants"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Polynomial.div_tendsto_atTop_leadingCoeff_div_of_degree_eq",
+        "module": "Mathlib.Analysis.Polynomial.Basic",
+        "match_kind": "exact"
+      },
+      "note": "The case-analysis on degree (lt/eq/gt) for rational function limits at infinity is given by the `Polynomial.div_tendsto_atTop_*` family of lemmas.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "L'Hôpital's rule",
+      "anchor": {
+        "section": "L'Hôpital's rule",
+        "snippet": "This rule uses derivatives to find limits of indeterminate forms 0/0 or ±∞/∞"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "HasDerivAt.lhopital_zero_right_on_Ioo",
+        "module": "Mathlib.Analysis.Calculus.LHopital",
+        "match_kind": "exact"
+      },
+      "note": "`Mathlib.Analysis.Calculus.LHopital` formalizes multiple variants of L'Hôpital's rule for 0/0 and ±∞/∞ indeterminate forms.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Limits as shorthand for sums and integrals",
+      "anchor": {
+        "section": "Summations and integrals",
+        "snippet": "Specifying an infinite bound on a summation or integral is a common shorthand for specifying a limit"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "HasSum",
+        "module": "Mathlib.Topology.Algebra.InfiniteSum.Defs",
+        "match_kind": "invocation"
+      },
+      "note": "Mathlib uses `HasSum`/`tsum` and improper-integral limits (via `Tendsto` on `atTop`), so this notational shorthand is implicit in those definitions rather than a standalone item.",
+      "provenance": "ai"
+    }
+  ]
+}

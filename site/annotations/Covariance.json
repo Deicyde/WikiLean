@@ -1,0 +1,489 @@
+{
+  "slug": "Covariance",
+  "wikipedia_title": "Covariance",
+  "display_title": "Covariance",
+  "schema_version": 3,
+  "annotation_style": "theorem_article",
+  "annotations": [
+    {
+      "kind": "definition",
+      "label": "Covariance (informal)",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "covariance is a measure of the joint variability of two random variables"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "ProbabilityTheory.covariance",
+        "module": "Mathlib.Probability.Moments.Covariance",
+        "match_kind": "exact"
+      },
+      "note": "`ProbabilityTheory.covariance X Y μ = ∫ ω, (X ω - μ[X]) * (Y ω - μ[Y]) ∂μ` directly captures the informal notion.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Covariance of two real random variables",
+      "anchor": {
+        "section": "Definition",
+        "snippet": "the covariance is defined as the expected value (or mean) of the product of their deviations from their individual expected values"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "ProbabilityTheory.covariance",
+        "module": "Mathlib.Probability.Moments.Covariance",
+        "match_kind": "exact"
+      },
+      "note": "Defined as `∫ ω, (X ω - μ[X]) * (Y ω - μ[Y]) ∂μ`, exactly matching the deviation-product definition.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Product-form identity for covariance",
+      "anchor": {
+        "section": "Definition",
+        "snippet": "this can be simplified to the expected value of their product minus the product of their expected values"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "ProbabilityTheory.covariance_eq_sub",
+        "module": "Mathlib.Probability.Moments.Covariance",
+        "match_kind": "exact"
+      },
+      "note": "`covariance_eq_sub` gives `cov[X,Y;μ] = μ[X*Y] - μ[X]*μ[Y]` assuming `IsProbabilityMeasure μ` and `MemLp _ 2 μ`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Covariance of complex random variables",
+      "anchor": {
+        "section": "Complex random variables",
+        "snippet": "The covariance between two complex random variables"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "`ProbabilityTheory.covariance` is restricted to ℝ-valued random variables; no complex-valued analogue with conjugation found.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Pseudo-covariance",
+      "anchor": {
+        "section": "Complex random variables",
+        "snippet": "A related pseudo-covariance can also be defined."
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No definition of pseudo-covariance (E[(Z-EZ)(W-EW)] without conjugation) appears in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Covariance for equally-probable discrete pairs",
+      "anchor": {
+        "section": "Discrete random variables",
+        "snippet": "with equal probabilities"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "ProbabilityTheory.covariance",
+        "module": "Mathlib.Probability.Moments.Covariance",
+        "match_kind": "special_case"
+      },
+      "note": "The general `covariance` integrates against any measure; the equiprobable finite-sample case follows by instantiation but no dedicated lemma was found.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Mean-free expression for discrete covariance",
+      "anchor": {
+        "section": "Discrete random variables",
+        "snippet": "It can also be equivalently expressed, without directly referring to the means"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The pairwise-difference identity `(1/n²)∑ᵢ∑ⱼ ½(xᵢ-xⱼ)(yᵢ-yⱼ)` was not found in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Covariance for unequally-probable discrete pairs",
+      "anchor": {
+        "section": "Discrete random variables",
+        "snippet": "but with possibly unequal probabilities"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "ProbabilityTheory.covariance",
+        "module": "Mathlib.Probability.Moments.Covariance",
+        "match_kind": "special_case"
+      },
+      "note": "Subsumed by the general `covariance` against a weighted (e.g. finite/discrete) measure, but no dedicated discrete-formula lemma exists.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Covariance via joint probability matrix",
+      "anchor": {
+        "section": "Discrete random variables",
+        "snippet": "the covariance is calculated using a double summation over the indices of the matrix"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No formula expressing `cov` as a double sum `∑ᵢ∑ⱼ pᵢⱼ (xᵢ-μₓ)(yⱼ-μᵧ)` was found.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Covariance of linear combinations of independent variables",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "Consider three independent random variables"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "ProbabilityTheory.covariance_add_left",
+        "module": "Mathlib.Probability.Moments.Covariance",
+        "match_kind": "invocation"
+      },
+      "note": "The bilinearity lemmas (`covariance_add_left/right`, `covariance_smul_left/right`) plus `IndepFun.covariance_eq_zero` let one derive the example, but the specific worked example is not stated.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Covariance from joint pmf",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "Suppose that"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No worked example computing covariance from a tabulated joint pmf appears in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Variance as covariance with itself",
+      "anchor": {
+        "section": "Covariance with itself",
+        "snippet": "The variance is a special case of the covariance in which the two variables are identical"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "ProbabilityTheory.covariance_self",
+        "module": "Mathlib.Probability.Moments.Variance",
+        "match_kind": "exact"
+      },
+      "note": "`covariance_self` proves `cov[X, X; μ] = Var[X; μ]` for AEMeasurable `X`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Covariance of linear combinations",
+      "anchor": {
+        "section": "Covariance of linear combinations",
+        "snippet": "the following facts are a consequence of the definition of covariance"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "ProbabilityTheory.covariance_add_left",
+        "module": "Mathlib.Probability.Moments.Covariance",
+        "match_kind": "exact"
+      },
+      "note": "Bilinearity is given by `covariance_add_left/right`, `covariance_smul_left/right`, `covariance_const_left/right`, `covariance_comm`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Covariance of weighted sums",
+      "anchor": {
+        "section": "Covariance of linear combinations",
+        "snippet": "For a sequence"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "ProbabilityTheory.covariance_sum_sum'",
+        "module": "Mathlib.Probability.Moments.Covariance",
+        "match_kind": "exact"
+      },
+      "note": "`covariance_sum_sum'` expands `cov[∑ᵢ Xᵢ, ∑ⱼ Yⱼ; μ] = ∑ᵢ∑ⱼ cov[Xᵢ, Yⱼ; μ]`; combined with `covariance_const_mul_*` this covers weighted sums.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Hoeffding's covariance identity",
+      "anchor": {
+        "section": "Hoeffding's covariance identity",
+        "snippet": "A useful identity to compute the covariance between two random variables"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has Hoeffding's inequality/lemma for sub-Gaussian variables but not the covariance identity `cov(X,Y) = ∫∫(F(x,y) - F_X(x)F_Y(y)) dx dy`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Uncorrelated random variables",
+      "anchor": {
+        "section": "Uncorrelatedness and independence",
+        "snippet": "Random variables whose covariance is zero are called uncorrelated"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No named `Uncorrelated` predicate exists; the property `cov[X,Y;μ] = 0` is used directly throughout.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Independence implies zero covariance",
+      "anchor": {
+        "section": "Uncorrelatedness and independence",
+        "snippet": "are independent random variables , then their covariance is zero"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "ProbabilityTheory.IndepFun.covariance_eq_zero",
+        "module": "Mathlib.Probability.Moments.Covariance",
+        "match_kind": "exact"
+      },
+      "note": "`IndepFun.covariance_eq_zero` shows independent `X,Y` with `MemLp _ 2 μ` have `cov[X, Y; μ] = 0`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Uncorrelated but not independent",
+      "anchor": {
+        "section": "Uncorrelatedness and independence",
+        "snippet": "The converse, however, is not generally true."
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No counterexample (e.g., `Y = X²` with symmetric `X`) demonstrating uncorrelated-but-dependent is formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Uncorrelatedness implies independence for jointly normal",
+      "anchor": {
+        "section": "Uncorrelatedness and independence",
+        "snippet": "if two variables are jointly normally distributed"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "ProbabilityTheory.HasGaussianLaw.iIndepFun_of_covariance_eq_zero",
+        "module": "Mathlib.Probability.Distributions.Gaussian.HasGaussianLaw.Independence",
+        "match_kind": "generalization"
+      },
+      "note": "`HasGaussianLaw.iIndepFun_of_covariance_eq_zero` proves jointly Gaussian with pairwise zero covariance implies independence (generalises the 2-variable Wikipedia statement).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Positively and negatively correlated",
+      "anchor": {
+        "section": "Uncorrelatedness and independence",
+        "snippet": "whose covariance is positive are called positively correlated"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No named predicates for positive/negative correlation; sign of `cov` is used directly.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Inner-product-like properties of covariance",
+      "anchor": {
+        "section": "Relationship to inner products",
+        "snippet": "it satisfies similar properties to those of an inner product"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "ProbabilityTheory.isPosSemidef_covarianceBilin",
+        "module": "Mathlib.Probability.Moments.CovarianceBilin",
+        "match_kind": "exact"
+      },
+      "note": "Bilinearity, symmetry (`covariance_comm`) and positive-semidefiniteness (`isPosSemidef_covarianceBilin`) are all established.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Covariance as L2 inner product on quotient space",
+      "anchor": {
+        "section": "Relationship to inner products",
+        "snippet": "these properties imply that the covariance defines an inner product over the quotient vector space"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib does not construct the inner-product structure on the quotient of finite-variance variables modulo a.s.-constant differences.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Cauchy–Schwarz inequality for covariance",
+      "anchor": {
+        "section": "Relationship to inner products",
+        "snippet": "for random variables with finite variance, the inequality"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No explicit `|cov[X,Y;μ]|² ≤ Var[X;μ] * Var[Y;μ]` lemma found; the positive-semidefinite bilinear form is available but the inequality is not stated.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Sample covariance matrix",
+      "anchor": {
+        "section": "Calculating the sample covariance",
+        "snippet": "The sample covariances among"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No sample-covariance estimator (using `1/(N-1)` Bessel-corrected sums) was found in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Unbiasedness of sample mean and sample covariance",
+      "anchor": {
+        "section": "Calculating the sample covariance",
+        "snippet": "The sample mean and the sample covariance matrix are unbiased estimates"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Unbiased-estimator framework and unbiasedness of sample mean/covariance is absent from Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Auto-covariance matrix of a real random vector",
+      "anchor": {
+        "section": "Auto-covariance matrix of real random vectors",
+        "snippet": "its auto-covariance matrix (also known as the variance–covariance matrix or simply the covariance matrix )"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "ProbabilityTheory.covarianceBilin",
+        "module": "Mathlib.Probability.Moments.CovarianceBilin",
+        "match_kind": "generalization"
+      },
+      "note": "`covarianceBilin` and `covarianceOperator` capture the covariance as a bilinear form/operator on Hilbert space, generalising the matrix; no `Matrix`-valued covariance is defined.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Covariance matrix under linear transformation",
+      "anchor": {
+        "section": "Auto-covariance matrix of real random vectors",
+        "snippet": "The covariance matrix of the matrix-vector product A X is"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "ProbabilityTheory.covarianceBilin_map",
+        "module": "Mathlib.Probability.Moments.CovarianceBilin",
+        "match_kind": "generalization"
+      },
+      "note": "`covarianceBilin_map` shows `covarianceBilin (μ.map L) u v = covarianceBilin μ (L.adjoint u) (L.adjoint v)`, the operator analogue of `A Σ Aᵀ`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Cross-covariance matrix of real random vectors",
+      "anchor": {
+        "section": "Cross-covariance matrix of real random vectors",
+        "snippet": "cross-covariance matrix is equal to"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No cross-covariance matrix between two random vectors is defined in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Cross-covariance sesquilinear form on Hilbert spaces",
+      "anchor": {
+        "section": "Cross-covariance sesquilinear form of random vectors in a real or complex Hilbert space",
+        "snippet": "the covariance of"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "ProbabilityTheory.covarianceBilin",
+        "module": "Mathlib.Probability.Moments.CovarianceBilin",
+        "match_kind": "special_case"
+      },
+      "note": "Mathlib has `covarianceBilin` for a single ℝ-Hilbert-space measure but no cross-covariance form between two distinct random vectors, and no complex/sesquilinear version.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Pearson product-moment correlation coefficient",
+      "anchor": {
+        "section": "Correlation",
+        "snippet": "The Pearson product-moment correlation coefficient between two random variables"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Grep for `Pearson`/`correlation`/`correlationCoeff` in `Mathlib/` returned no results; the normalized coefficient `cov/(σ_X σ_Y)` is not defined.",
+      "provenance": "ai"
+    }
+  ]
+}

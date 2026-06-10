@@ -1,0 +1,1617 @@
+{
+  "slug": "Gamma_distribution",
+  "wikipedia_title": "Gamma distribution",
+  "display_title": "Gamma distribution",
+  "schema_version": 3,
+  "annotation_style": "theorem_article",
+  "annotations": [
+    {
+      "kind": "definition",
+      "label": "Gamma distribution",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "the gamma distribution is a versatile two- parameter family of continuous probability distributions"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "ProbabilityTheory.gammaMeasure",
+        "module": "Mathlib.Probability.Distributions.Gamma",
+        "match_kind": "exact"
+      },
+      "note": "`gammaMeasure a r` defines the gamma distribution on ℝ as `volume.withDensity (gammaPDF a r)` with shape `a` and rate `r`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Special cases of gamma",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "The exponential distribution , Erlang distribution , and chi-squared distribution are special cases of the gamma distribution"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "ProbabilityTheory.expMeasure",
+        "module": "Mathlib.Probability.Distributions.Exponential",
+        "match_kind": "special_case"
+      },
+      "note": "Only the exponential special case is formalized: `expMeasure r := gammaMeasure 1 r`; Erlang and chi-squared distributions are not in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Maximum entropy characterization",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "The gamma distribution is the maximum entropy probability distribution"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No max-entropy characterization of the gamma distribution is in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Erlang as sum of exponentials",
+      "anchor": {
+        "section": "Definitions",
+        "snippet": "If α is a positive integer , then the distribution represents an Erlang distribution"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Erlang distribution and its representation as a sum of independent exponentials are not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Shape-rate parameterization",
+      "anchor": {
+        "section": "Characterization using shape α and rate β",
+        "snippet": "The gamma distribution can be parameterized in terms of a shape parameter α and an inverse scale parameter"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "ProbabilityTheory.gammaMeasure",
+        "module": "Mathlib.Probability.Distributions.Gamma",
+        "match_kind": "exact"
+      },
+      "note": "`gammaMeasure a r` is the shape-rate parameterization (parameter `r` is rate).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "PDF (shape-rate)",
+      "anchor": {
+        "section": "Characterization using shape α and rate β",
+        "snippet": "The corresponding probability density function in the shape-rate parameterization is"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "ProbabilityTheory.gammaPDFReal",
+        "module": "Mathlib.Probability.Distributions.Gamma",
+        "match_kind": "exact"
+      },
+      "note": "`gammaPDFReal a r x = r^a / Gamma a * x^(a-1) * exp (-(r*x))` for `0 ≤ x` matches the shape-rate PDF.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "CDF as regularized gamma (rate)",
+      "anchor": {
+        "section": "Characterization using shape α and rate β",
+        "snippet": "The cumulative distribution function is the regularized gamma function:"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "ProbabilityTheory.cdf_gammaMeasure_eq_integral",
+        "module": "Mathlib.Probability.Distributions.Gamma",
+        "match_kind": "generalization"
+      },
+      "note": "The gamma CDF is expressed as an integral of the PDF, but Mathlib has no regularized lower incomplete gamma function to equate it to.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Erlang CDF series expansion",
+      "anchor": {
+        "section": "Characterization using shape α and rate β",
+        "snippet": "the cumulative distribution function has the following series expansion"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Erlang CDF series expansion is not in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Shape-scale parameterization",
+      "anchor": {
+        "section": "Characterization using shape α and scale θ",
+        "snippet": "A random variable X that is gamma-distributed with shape α and scale θ is denoted"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "ProbabilityTheory.gammaMeasure",
+        "module": "Mathlib.Probability.Distributions.Gamma",
+        "match_kind": "generalization"
+      },
+      "note": "Mathlib parameterizes the gamma by shape and rate; the shape-scale form (θ = 1/r) is not separately defined but follows by substitution.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "PDF (shape-scale)",
+      "anchor": {
+        "section": "Characterization using shape α and scale θ",
+        "snippet": "The probability density function using the shape-scale parametrization is"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "ProbabilityTheory.gammaPDFReal",
+        "module": "Mathlib.Probability.Distributions.Gamma",
+        "match_kind": "generalization"
+      },
+      "note": "Only the shape-rate form `gammaPDFReal` is defined; shape-scale would require substituting `r = 1/θ`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "CDF as regularized gamma (scale)",
+      "anchor": {
+        "section": "Characterization using shape α and scale θ",
+        "snippet": "The cumulative distribution function is the regularized gamma function:"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "ProbabilityTheory.cdf_gammaMeasure_eq_integral",
+        "module": "Mathlib.Probability.Distributions.Gamma",
+        "match_kind": "generalization"
+      },
+      "note": "Mathlib has the CDF as an integral but no regularized incomplete gamma function and no explicit shape-scale form.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Erlang CDF (scale form)",
+      "anchor": {
+        "section": "Characterization using shape α and scale θ",
+        "snippet": "It can also be expressed as follows, if α is a positive integer"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Erlang-form CDF is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Mean of gamma",
+      "anchor": {
+        "section": "Mean and variance",
+        "snippet": "The mean of gamma distribution is given by the product of its shape and scale parameters"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The mean of the gamma distribution is not formalized in Mathlib.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Mean and variance",
+          "snippet": "The mean of gamma distribution is given by the product of its shape and scale parameters"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\mu =\\alpha \\theta =\\alpha /\\beta }"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\sigma ^{2}=\\alpha \\theta ^{2}=\\alpha /\\beta ^{2}}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\sigma /\\mu =\\alpha ^{-0.5}=1/{\\sqrt {\\alpha }}}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Variance of gamma",
+      "anchor": {
+        "section": "Mean and variance",
+        "snippet": "The variance is:"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The variance of the gamma distribution is not formalized.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Mean and variance",
+          "snippet": "The variance is:"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\mu =\\alpha \\theta =\\alpha /\\beta }"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\sigma ^{2}=\\alpha \\theta ^{2}=\\alpha /\\beta ^{2}}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\sigma /\\mu =\\alpha ^{-0.5}=1/{\\sqrt {\\alpha }}}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Coefficient of variation",
+      "anchor": {
+        "section": "Mean and variance",
+        "snippet": "The square root of the inverse shape parameter gives the coefficient of variation"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Coefficient of variation for gamma is not formalized.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Mean and variance",
+          "snippet": "The square root of the inverse shape parameter gives the coefficient of variation"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\mu =\\alpha \\theta =\\alpha /\\beta }"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\sigma ^{2}=\\alpha \\theta ^{2}=\\alpha /\\beta ^{2}}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\sigma /\\mu =\\alpha ^{-0.5}=1/{\\sqrt {\\alpha }}}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Skewness of gamma",
+      "anchor": {
+        "section": "Skewness",
+        "snippet": "The skewness of the gamma distribution only depends on its shape parameter"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Skewness of the gamma distribution is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Raw moments",
+      "anchor": {
+        "section": "Higher moments",
+        "snippet": "The r -th raw moment is given by:"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Higher raw moments of the gamma distribution are not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Cumulants of gamma",
+      "anchor": {
+        "section": "Cumulants",
+        "snippet": "The r -th cumulant is given by:"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Cumulants of the gamma distribution are not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Median (implicit)",
+      "anchor": {
+        "section": "Median approximations and bounds",
+        "snippet": "The median for this distribution is the value"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The median of the gamma distribution is not formalized.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Median approximations and bounds",
+          "snippet": "The median for this distribution is the value"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle {\\frac {1}{\\Gamma (\\alpha )\\theta ^{\\alpha }}}\\int _{0}^{\\nu }x^{\\alpha -1}e^{-x/\\theta }dx={\\frac {1}{2}}.}"
+        }
+      ]
+    },
+    {
+      "kind": "theorem",
+      "label": "Chen–Rubin median bounds",
+      "anchor": {
+        "section": "Median approximations and bounds",
+        "snippet": "A rigorous treatment of the problem of determining an asymptotic expansion and bounds for the median of the gamma distribution was handled first by Chen and Rubin"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Chen–Rubin median bounds are not in Mathlib.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Median approximations and bounds",
+          "snippet": "A rigorous treatment of the problem of determining an asymptotic expansion and bounds for the median of the gamma distribution was handled first by Chen and Rubin"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\alpha -{\\tfrac {1}{3}}&lt;\\nu (\\alpha )&lt;\\alpha ,}"
+        }
+      ]
+    },
+    {
+      "kind": "theorem",
+      "label": "Choi Laurent series for median",
+      "anchor": {
+        "section": "Median approximations and bounds",
+        "snippet": "K. P. Choi found the first five terms in a Laurent series asymptotic approximation of the median"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Choi's Laurent series for the gamma median is not in Mathlib.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Median approximations and bounds",
+          "snippet": "K. P. Choi found the first five terms in a Laurent series asymptotic approximation of the median"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle {\\begin{aligned}\\nu (\\alpha )=\\alpha &amp;-{\\frac {1}{3}}+{\\frac {8}{405}}\\alpha ^{-1}+{\\frac {184}{25\\,515}}\\alpha ^{-2}+{\\frac {2248}{3\\,444\\,525}}\\alpha ^{-3}\\\\[1ex]&amp;-{\\frac {19\\,006\\,408}{15\\,345\\,358\\,875}}\\alpha ^{-4}-{\\mathcal {O}}{\\left(\\alpha ^{-5}\\right)}+\\cdots \\end{aligned}}}"
+        }
+      ]
+    },
+    {
+      "kind": "theorem",
+      "label": "Berg–Pedersen median properties",
+      "anchor": {
+        "section": "Median approximations and bounds",
+        "snippet": "Berg and Pedersen also proved many properties of the median, showing that it is a convex function"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Berg–Pedersen results on the gamma median are not in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Gaunt–Merkle linear upper bound",
+      "anchor": {
+        "section": "Median approximations and bounds",
+        "snippet": "A closer linear upper bound, for"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Gaunt–Merkle linear upper bound for the median is not in Mathlib.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Median approximations and bounds",
+          "snippet": "A closer linear upper bound, for"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\nu (\\alpha )\\leq \\alpha -1+\\log 2~~}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Wilson–Hilferty median approximation",
+      "anchor": {
+        "section": "Median approximations and bounds",
+        "snippet": "An approximation to the median that is asymptotically accurate at high α and reasonable down to"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Wilson–Hilferty median approximation is not in Mathlib.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Median approximations and bounds",
+          "snippet": "An approximation to the median that is asymptotically accurate at high α and reasonable down to"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\nu (\\alpha )=\\alpha \\left(1-{\\frac {1}{9\\alpha }}\\right)^{3}}"
+        }
+      ]
+    },
+    {
+      "kind": "theorem",
+      "label": "Lyon closed-form median bounds",
+      "anchor": {
+        "section": "Median approximations and bounds",
+        "snippet": "In 2021, Lyon proposed several approximations of the form"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Lyon's closed-form median bounds are not in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Lyon non-closed-form bounds",
+      "anchor": {
+        "section": "Median approximations and bounds",
+        "snippet": "Lyon also showed (informally in 2021, rigorously in 2023) two other lower bounds"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Lyon's other median bounds are not in Mathlib.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Median approximations and bounds",
+          "snippet": "Lyon also showed (informally in 2021, rigorously in 2023) two other lower bounds"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\nu (\\alpha )&gt;\\left({\\frac {2}{\\Gamma (\\alpha +1)}}\\right)^{-1/\\alpha }}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\nu (\\alpha )\\geq \\nu (1)+(\\alpha -1)\\nu ^{\\prime }(1)\\quad }"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\nu (\\alpha )\\geq \\log 2+(\\alpha -1)\\left[\\gamma -2\\operatorname {Ei} (-\\log 2)-\\log \\log 2\\right]}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Interpolated median bounds",
+      "anchor": {
+        "section": "Median approximations and bounds",
+        "snippet": "he showed that interpolations between bounds could provide excellent approximations"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Interpolated median bounds are not in Mathlib.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Median approximations and bounds",
+          "snippet": "he showed that interpolations between bounds could provide excellent approximations"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\nu (\\alpha )\\approx {\\tilde {g}}(\\alpha )\\nu _{L\\infty }(\\alpha )+(1-{\\tilde {g}}(\\alpha ))\\nu _{U}(\\alpha )}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle g(\\alpha )={\\frac {\\nu _{U}(\\alpha )-\\nu (\\alpha )}{\\nu _{U}(\\alpha )-\\nu _{L\\infty }(\\alpha )}}}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle {\\tilde {g}}_{1}(\\alpha )={\\frac {\\alpha }{b_{0}+\\alpha }}}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle b_{0}={\\frac {{\\frac {8}{405}}+e^{-\\gamma }\\log 2-{\\frac {\\log ^{2}2}{2}}}{e^{-\\gamma }-\\log 2+{\\frac {1}{3}}}}-\\log 2\\approx 0.143472}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle b_{0}={\\frac {e^{-\\gamma }-\\log 2+{\\frac {1}{3}}}{1-{\\frac {e^{-\\gamma }\\pi ^{2}}{12}}}}\\approx 0.374654}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Sum of gammas (same scale)",
+      "anchor": {
+        "section": "Summation",
+        "snippet": "If X i has a Gamma"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The convolution/summation property `Gamma(α₁,θ) + Gamma(α₂,θ) = Gamma(α₁+α₂,θ)` is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Infinite divisibility",
+      "anchor": {
+        "section": "Summation",
+        "snippet": "The gamma distribution exhibits infinite divisibility"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Infinite divisibility of the gamma distribution is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Scaling of gamma",
+      "anchor": {
+        "section": "Scaling",
+        "snippet": "multiplication by a positive constant c divides the rate"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Scaling behavior of gamma random variables is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Exponential family form",
+      "anchor": {
+        "section": "Exponential family",
+        "snippet": "The gamma distribution is a two-parameter exponential family with natural parameters"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has no exponential family framework or such characterization for gamma.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Natural exponential family (fixed shape)",
+      "anchor": {
+        "section": "Exponential family",
+        "snippet": "the resulting one-parameter family of distributions is a natural exponential family"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Natural exponential family form of gamma is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Logarithmic expectation",
+      "anchor": {
+        "section": "Logarithmic expectation and variance",
+        "snippet": "where ψ is the digamma function"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has the digamma function but `E[log X]` for gamma is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Logarithmic variance via trigamma",
+      "anchor": {
+        "section": "Logarithmic expectation and variance",
+        "snippet": "where [MATH] is the trigamma function"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Variance of `log X` via trigamma is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Information entropy formula",
+      "anchor": {
+        "section": "Information entropy",
+        "snippet": "The information entropy is"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Entropy of the gamma distribution is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Information entropy (α,θ form)",
+      "anchor": {
+        "section": "Information entropy",
+        "snippet": "In the α , θ parameterization, the information entropy is given by"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Shape-scale entropy formula is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "KL divergence (rate form)",
+      "anchor": {
+        "section": "Kullback–Leibler divergence",
+        "snippet": "The Kullback–Leibler divergence (KL-divergence), of Gamma"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has general KL divergence but the explicit closed form between two gamma distributions is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "KL divergence (scale form)",
+      "anchor": {
+        "section": "Kullback–Leibler divergence",
+        "snippet": "Written using the α , θ parameterization, the KL-divergence"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Scale-form KL divergence between two gammas is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Laplace transform / MGF",
+      "anchor": {
+        "section": "Laplace transform",
+        "snippet": "The Laplace transform of the gamma PDF, which is the moment-generating function of the gamma distribution, is"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib defines mgf generally but not the closed form `(1 - θt)^{-α}` for the gamma.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Sum of iid exponentials is gamma",
+      "anchor": {
+        "section": "General",
+        "snippet": "independent and identically distributed random variables following an exponential distribution with rate parameter"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The sum-of-iid-exponentials-is-gamma theorem is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Gamma(1,β) is exponential",
+      "anchor": {
+        "section": "General",
+        "snippet": "If X ~ Gamma(1, β )"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "ProbabilityTheory.expMeasure",
+        "module": "Mathlib.Probability.Distributions.Exponential",
+        "match_kind": "exact"
+      },
+      "note": "`expMeasure r := gammaMeasure 1 r` definitionally identifies `Gamma(1, r)` with the exponential distribution.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Gamma to chi-squared",
+      "anchor": {
+        "section": "General",
+        "snippet": "If X ~ Gamma( ν /2, 2)"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The chi-squared distribution is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Schulz-Zimm special case",
+      "anchor": {
+        "section": "General",
+        "snippet": "If θ = 1/ α , one obtains the Schulz-Zimm distribution"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Schulz-Zimm distribution is not in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Erlang waiting time in Poisson process",
+      "anchor": {
+        "section": "General",
+        "snippet": "If α is an integer , the gamma distribution is an Erlang distribution and is the probability distribution of the waiting time"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Erlang distribution and Poisson-process waiting times are not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Maxwell–Boltzmann relation",
+      "anchor": {
+        "section": "General",
+        "snippet": "If X has a Maxwell–Boltzmann distribution with parameter a"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Maxwell–Boltzmann distribution is not in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Log-gamma transform",
+      "anchor": {
+        "section": "General",
+        "snippet": "follows a log-gamma distribution"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Log-gamma distribution is not in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Exp-gamma transform",
+      "anchor": {
+        "section": "General",
+        "snippet": "follows an exponential-gamma (abbreviated exp-gamma) distribution"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Exp-gamma distribution is not in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Generalized gamma transform (p=2)",
+      "anchor": {
+        "section": "General",
+        "snippet": "follows a generalized gamma distribution with parameters p = 2"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Generalized gamma distribution is not in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Generalized gamma transform (power q)",
+      "anchor": {
+        "section": "General",
+        "snippet": "More generally, if X ~ Gamma( α , θ )"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Power transforms to generalized gamma are not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Inverse-gamma reciprocal",
+      "anchor": {
+        "section": "General",
+        "snippet": "then 1/ X ~ Inv-Gamma"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Inverse-gamma distribution is not in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Beta distribution from gammas",
+      "anchor": {
+        "section": "General",
+        "snippet": "then X /( X + Y ) has a beta distribution"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "ProbabilityTheory.betaPDFReal",
+        "module": "Mathlib.Probability.Distributions.Beta",
+        "match_kind": "generalization"
+      },
+      "note": "Mathlib has the beta PDF but not the theorem that X/(X+Y) is beta when X, Y are independent gammas.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Convergence in distribution",
+      "anchor": {
+        "section": "General",
+        "snippet": "converges in distribution to"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Convergence in distribution statements for gamma family are not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Dirichlet from gammas",
+      "anchor": {
+        "section": "General",
+        "snippet": "follows a Dirichlet distribution with parameters"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Dirichlet distribution is not in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Normal limit for large α",
+      "anchor": {
+        "section": "General",
+        "snippet": "For large α the gamma distribution converges to normal distribution"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Normal limit for large α is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Conjugate prior for normal precision",
+      "anchor": {
+        "section": "General",
+        "snippet": "The gamma distribution is the conjugate prior for the precision of the normal distribution"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Conjugate prior framework and the gamma-normal-precision result are not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Multivariate generalizations",
+      "anchor": {
+        "section": "General",
+        "snippet": "The matrix gamma distribution and the Wishart distribution are multivariate generalizations"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Matrix gamma and Wishart distributions are not in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Special case of generalized gammas",
+      "anchor": {
+        "section": "General",
+        "snippet": "The gamma distribution is a special case of the generalized gamma distribution"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Generalized gamma distribution is not in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Discrete analog: negative binomial",
+      "anchor": {
+        "section": "General",
+        "snippet": "the negative binomial distribution is sometimes considered the discrete analog of the gamma distribution"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Negative binomial distribution is not in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Tweedie family member",
+      "anchor": {
+        "section": "General",
+        "snippet": "the gamma distribution is a member of the family of Tweedie exponential dispersion models"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Tweedie exponential dispersion family is not in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Modified half-normal family",
+      "anchor": {
+        "section": "General",
+        "snippet": "The Gamma distribution is a member of the family of Modified half-normal distribution"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Modified half-normal family is not in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Beta prime marginal",
+      "anchor": {
+        "section": "General",
+        "snippet": "For the shape-scale parameterization"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Beta prime distribution is not in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Compound gamma distribution",
+      "anchor": {
+        "section": "Compound gamma",
+        "snippet": "has a closed-form solution known as the compound gamma distribution"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Compound gamma distribution is not in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "K-distribution from gamma mean prior",
+      "anchor": {
+        "section": "Compound gamma",
+        "snippet": "then it results in K-distribution"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "K-distribution is not in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Likelihood function",
+      "anchor": {
+        "section": "Maximum likelihood estimation",
+        "snippet": "The likelihood function for N iid observations"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Likelihood function for gamma samples is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Log-likelihood",
+      "anchor": {
+        "section": "Maximum likelihood estimation",
+        "snippet": "from which we calculate the log-likelihood function"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Log-likelihood for gamma samples is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "MLE for θ",
+      "anchor": {
+        "section": "Maximum likelihood estimation",
+        "snippet": "Finding the maximum with respect to θ by taking the derivative and setting it equal to zero yields the maximum likelihood estimator"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "MLE for θ is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "MLE equation for α",
+      "anchor": {
+        "section": "Maximum likelihood estimation",
+        "snippet": "Finding the maximum with respect to α by taking the derivative and setting it equal to zero yields"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "MLE score equation for α is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Approximate initial value for α",
+      "anchor": {
+        "section": "Maximum likelihood estimation",
+        "snippet": "which is within 1.5% of the correct value"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Initial-value approximation for α is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Newton–Raphson update",
+      "anchor": {
+        "section": "Maximum likelihood estimation",
+        "snippet": "An explicit form for the Newton–Raphson update of this initial guess is"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Newton–Raphson update for α-MLE is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Empirical moment matching at MLE",
+      "anchor": {
+        "section": "Maximum likelihood estimation",
+        "snippet": "the expected values for x and"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Empirical moment matching at the MLE is not formalized.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Maximum likelihood estimation",
+          "snippet": "the expected values for x and"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle {\\begin{aligned}{\\hat {\\alpha }}{\\hat {\\theta }}&amp;={\\bar {x}}&amp;&amp;{\\text{and}}&amp;\\psi ({\\hat {\\alpha }})+\\ln {\\hat {\\theta }}&amp;={\\overline {\\ln x}}.\\end{aligned}}}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Underflow probability",
+      "anchor": {
+        "section": "Maximum likelihood estimation",
+        "snippet": "the probability that there is at least one underflow is"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Underflow-probability discussion is not formalized.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Maximum likelihood estimation",
+          "snippet": "the probability that there is at least one underflow is"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\Pr({\\text{underflow}})=1-(1-F(\\varepsilon ;\\alpha ,\\theta ))^{N}}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Closed-form estimator for α",
+      "anchor": {
+        "section": "Closed-form estimators",
+        "snippet": "The estimate for the shape α is"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Closed-form estimator for α is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Closed-form estimator for θ",
+      "anchor": {
+        "section": "Closed-form estimators",
+        "snippet": "and the estimate for the scale θ is"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Closed-form estimator for θ is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Bias-corrected scale estimator",
+      "anchor": {
+        "section": "Closed-form estimators",
+        "snippet": "A bias-corrected variant of the estimator for the scale θ is"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Bias-corrected scale estimator is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Bias correction for shape",
+      "anchor": {
+        "section": "Closed-form estimators",
+        "snippet": "A bias correction for the shape parameter α is given as"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Bias correction for shape estimator is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Posterior for θ",
+      "anchor": {
+        "section": "Bayesian minimum mean squared error",
+        "snippet": "the posterior density function for theta"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Bayesian posterior for θ is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Posterior mean and SD",
+      "anchor": {
+        "section": "Bayesian minimum mean squared error",
+        "snippet": "which shows that the mean ± standard deviation estimate of the posterior distribution"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Posterior mean ± SD is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Conjugate prior list",
+      "anchor": {
+        "section": "Conjugate prior",
+        "snippet": "the gamma distribution is the conjugate prior to many likelihood distributions"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Conjugate-prior relationships are not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Gamma's conjugate prior form",
+      "anchor": {
+        "section": "Conjugate prior",
+        "snippet": "The gamma distribution's conjugate prior is"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Conjugate prior of the gamma is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Waiting time application",
+      "anchor": {
+        "section": "Occurrence and applications",
+        "snippet": "Consider a sequence of events, with the waiting time for each event being an exponential distribution"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Waiting-time application discussion is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Molecular motor dwell time",
+      "anchor": {
+        "section": "Occurrence and applications",
+        "snippet": "In biophysics, the dwell time between steps of a molecular motor"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Application example, not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Insurance and rainfall modeling",
+      "anchor": {
+        "section": "Occurrence and applications",
+        "snippet": "The gamma distribution has been used to model the size of insurance claims"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Application example, not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Negative binomial mixture",
+      "anchor": {
+        "section": "Occurrence and applications",
+        "snippet": "a mixture of Poisson distributions with gamma-distributed rates has a known closed form distribution"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Negative binomial as Poisson-gamma mixture is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Cancer incidence age",
+      "anchor": {
+        "section": "Occurrence and applications",
+        "snippet": "In oncology , the age distribution of cancer incidence often follows the gamma distribution"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Application example, not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Inter-spike intervals",
+      "anchor": {
+        "section": "Occurrence and applications",
+        "snippet": "In neuroscience , the gamma distribution is often used to describe the distribution of inter-spike intervals"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Application example, not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Bacterial protein bursts",
+      "anchor": {
+        "section": "Occurrence and applications",
+        "snippet": "In bacterial gene expression where protein production can occur in bursts"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Application example, not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Phylogenetics rate variation",
+      "anchor": {
+        "section": "Occurrence and applications",
+        "snippet": "In phylogenetics , the gamma distribution is the most commonly used approach to model among-sites rate variation"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Application example, not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Inverse transform for exponential",
+      "anchor": {
+        "section": "Random variate generation",
+        "snippet": "if U is uniformly distributed on (0, 1], then −ln U is distributed Gamma(1, 1)"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Inverse-transform sampling for the exponential is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Ahrens–Dieter acceptance–rejection",
+      "anchor": {
+        "section": "Random variate generation",
+        "snippet": "The following is a version of the Ahrens-Dieter acceptance–rejection method"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Ahrens–Dieter acceptance–rejection algorithm is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Marsaglia transformation–rejection",
+      "anchor": {
+        "section": "Random variate generation",
+        "snippet": "Marsaglia's simple transformation-rejection method relying on one normal variate"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Marsaglia transformation–rejection method is not formalized.",
+      "provenance": "ai"
+    }
+  ]
+}

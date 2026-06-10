@@ -1,0 +1,1271 @@
+{
+  "slug": "Covering_space",
+  "wikipedia_title": "Covering space",
+  "display_title": "Covering space",
+  "schema_version": 3,
+  "annotation_style": "theorem_article",
+  "annotations": [
+    {
+      "kind": "definition",
+      "label": "Covering / covering space",
+      "anchor": {
+        "section": "Definition",
+        "snippet": "A covering of"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "IsCoveringMap",
+        "module": "Mathlib.Topology.Covering.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`IsCoveringMap f` requires every point to have an evenly covered neighborhood with discrete fiber, matching the Wikipedia definition.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Sheets of a covering",
+      "anchor": {
+        "section": "Definition",
+        "snippet": "are called sheets"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The components of the preimage in an evenly covered neighborhood are not given a name in Mathlib's `IsEvenlyCovered` setup.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Fiber of a covering",
+      "anchor": {
+        "section": "Definition",
+        "snippet": "is called the fiber of"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "IsEvenlyCovered.fiberHomeomorph",
+        "module": "Mathlib.Topology.Covering.Basic",
+        "match_kind": "invocation"
+      },
+      "note": "The fiber is just `f ⁻¹' {x}` in Mathlib with no dedicated name, but `IsEvenlyCovered.fiberHomeomorph` shows it is homeomorphic to the discrete model fiber.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Degree of a covering",
+      "anchor": {
+        "section": "Definition",
+        "snippet": "this value is called the degree of the covering"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has no defined `degree` of a covering map as a numerical invariant.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Path-connected covering",
+      "anchor": {
+        "section": "Definition",
+        "snippet": "is called a path-connected covering"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The notion `IsCoveringMap f ∧ PathConnectedSpace E` is not packaged as a named definition.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Covering equivalent to locally trivial fiber bundle",
+      "anchor": {
+        "section": "Definition",
+        "snippet": "This definition is equivalent to the statement that"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "IsFiberBundle.isCoveringMap",
+        "module": "Mathlib.Topology.Covering.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`IsFiberBundle.isCoveringMap` gives one direction and `IsEvenlyCovered.toTrivialization` gives the other, establishing equivalence between coverings and discrete-fiber fiber bundles.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Trivial covering",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "the identity map"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No specific lemma asserts that the identity / a homeomorphism is a covering map, though it follows from `IsCoveringMap.of_discreteTopology` only on discrete spaces.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Trivial n-sheeted covering",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "the covering is called the trivial"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No lemma states that the projection `X × F → X` for discrete `F` is a covering as a named example.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Exponential covering of the unit circle",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "is a covering of the unit circle"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "AddCircle.isCoveringMap_coe",
+        "module": "Mathlib.Topology.Covering.AddCircle",
+        "match_kind": "exact"
+      },
+      "note": "`AddCircle.isCoveringMap_coe` (and `Complex.isCoveringMap_exp`) formalize the universal exponential covering of the circle.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "n-fold covering of the unit circle",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "Another covering of the unit circle"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "AddCircle.isAddQuotientCoveringMap_zsmul",
+        "module": "Mathlib.Topology.Covering.AddCircle",
+        "match_kind": "exact"
+      },
+      "note": "Multiplication by `n` on `AddCircle p` is a covering map via `isAddQuotientCoveringMap_zsmul`; complex `z ↦ z^n` is handled by `isCoveringMap_npow`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Local homeomorphism that is not a covering",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "A map which is a local homeomorphism but not a covering"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No specific counterexample of a non-covering local homeomorphism is recorded.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Double covering for odd n",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "is a homomorphic double covering"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The double covering `S^n → RP^n` is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Covering is a local homeomorphism",
+      "anchor": {
+        "section": "Local homeomorphism",
+        "snippet": "it is a local homeomorphism"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "IsCoveringMap.isLocalHomeomorph",
+        "module": "Mathlib.Topology.Covering.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`IsCoveringMap.isLocalHomeomorph` directly states that any covering map is a local homeomorphism.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Orientation double cover of non-orientable manifold",
+      "anchor": {
+        "section": "Local homeomorphism",
+        "snippet": "connected and non-orientable manifold"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib does not yet have orientation double cover constructions.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Covering of a connected Lie group is a Lie group",
+      "anchor": {
+        "section": "Local homeomorphism",
+        "snippet": "is a connected Lie group"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No statement transferring Lie group structure along a covering map exists in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Covering of a graph is a graph",
+      "anchor": {
+        "section": "Local homeomorphism",
+        "snippet": "is a graph"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has no topological graph theory of this kind; `Quiver.Covering` is purely combinatorial.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Universal cover of connected manifold",
+      "anchor": {
+        "section": "Local homeomorphism",
+        "snippet": "is a connected manifold"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Universal covers of manifolds are not constructed in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Universal cover of connected Riemann surface",
+      "anchor": {
+        "section": "Local homeomorphism",
+        "snippet": "is a connected Riemann surface"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No Riemann surface theory exists in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Factorisation of coverings (first)",
+      "anchor": {
+        "section": "Factorisation",
+        "snippet": "are coverings, so is"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No composition lemma for `IsCoveringMap` exists; grep for `IsCoveringMap.comp` returns nothing.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Factorisation of coverings (second)",
+      "anchor": {
+        "section": "Factorisation",
+        "snippet": "are coverings, so is"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The cancellation form for covering factorisations is not in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Product of coverings is a covering",
+      "anchor": {
+        "section": "Product of coverings",
+        "snippet": "is a covering"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No `Prod`-style lemma about `IsCoveringMap` exists in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Equivalent coverings / isomorphic covering spaces",
+      "anchor": {
+        "section": "Equivalence of coverings",
+        "snippet": "Both coverings are called equivalent"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has no equivalence relation on covering maps.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Lifting property of coverings",
+      "anchor": {
+        "section": "Lifting property",
+        "snippet": "All coverings satisfy the lifting property"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "IsCoveringMap.existsUnique_continuousMap_lifts_of_range_le",
+        "module": "Mathlib.Topology.Homotopy.Lifting",
+        "match_kind": "exact"
+      },
+      "note": "The full lifting criterion (Hatcher 1.33) is `existsUnique_continuousMap_lifts_of_range_le`; the homotopy lifting property is `liftHomotopy`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Lift of path and homotopy",
+      "anchor": {
+        "section": "Lifting property",
+        "snippet": "is a lift of a path in"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "IsCoveringMap.liftPath",
+        "module": "Mathlib.Topology.Homotopy.Lifting",
+        "match_kind": "exact"
+      },
+      "note": "`IsCoveringMap.liftPath` (with `exists_path_lifts`) and `liftHomotopy` give unique lifts of paths and homotopies.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Fundamental group of the unit circle is infinite cyclic",
+      "anchor": {
+        "section": "Lifting property",
+        "snippet": "is an infinite cyclic group"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib does not yet compute π₁(S¹) ≅ ℤ; no grep hits for fundamental group of circle.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Path lift gives bijection between fibers",
+      "anchor": {
+        "section": "Lifting property",
+        "snippet": "is bijective"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "IsCoveringMap.monodromy_bijective",
+        "module": "Mathlib.Topology.Homotopy.Lifting",
+        "match_kind": "exact"
+      },
+      "note": "`IsCoveringMap.monodromy_bijective` states the monodromy along a homotopy class is a bijection between fibers.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Induced homomorphism on fundamental group is injective",
+      "anchor": {
+        "section": "Lifting property",
+        "snippet": "is injective and the subgroup"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "IsCoveringMap.injective_path_homotopic_map",
+        "module": "Mathlib.Topology.Homotopy.Lifting",
+        "match_kind": "exact"
+      },
+      "note": "`IsCoveringMap.injective_path_homotopic_map` proves the induced map on fundamental groupoid Hom-sets (in particular π₁) is injective.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Holomorphic map between Riemann surfaces",
+      "anchor": {
+        "section": "Holomorphic maps between Riemann surfaces",
+        "snippet": "is holomorphic in a point"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has no Riemann surface formalization; the relevant `RiemannSurface` type does not exist.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Holomorphic map (global)",
+      "anchor": {
+        "section": "Holomorphic maps between Riemann surfaces",
+        "snippet": "we say"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Global holomorphic maps between Riemann surfaces are not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Local expression of a holomorphic map",
+      "anchor": {
+        "section": "Holomorphic maps between Riemann surfaces",
+        "snippet": "is called the local expression of"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No notion of `local expression` of a holomorphic map between Riemann surfaces exists.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Non-constant holomorphic map between compact Riemann surfaces is surjective and open",
+      "anchor": {
+        "section": "Holomorphic maps between Riemann surfaces",
+        "snippet": "is surjective and an open map"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Not in Mathlib; no Riemann surface theory.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Ramification index, ramification point, branch point",
+      "anchor": {
+        "section": "Ramification point and branch point",
+        "snippet": "is called the ramification index of"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No ramification index for holomorphic maps between Riemann surfaces is defined in Mathlib (only number-theoretic ramification indices).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Degree of a holomorphic map",
+      "anchor": {
+        "section": "Degree of a holomorphic map",
+        "snippet": "is the cardinality of the fiber of an unramified point"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Degree of a holomorphic map between Riemann surfaces is not defined.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Degree is well-defined",
+      "anchor": {
+        "section": "Degree of a holomorphic map",
+        "snippet": "This number is well-defined"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Without the degree definition there is no well-definedness lemma.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Branched covering",
+      "anchor": {
+        "section": "Definition (2)",
+        "snippet": "is called a branched covering"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has no `BranchedCover` definition.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Branched covering of degree n",
+      "anchor": {
+        "section": "Examples (2)",
+        "snippet": "is a branched covering of degree"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Not formalized as branched covering, though `isCoveringMapOn_npow` covers the unramified locus.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Non-constant holomorphic map is a branched covering",
+      "anchor": {
+        "section": "Examples (2)",
+        "snippet": "Every non-constant, holomorphic map between compact Riemann surfaces"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Not formalized; requires Riemann surface and branched cover infrastructure.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Universal covering",
+      "anchor": {
+        "section": "Definition (3)",
+        "snippet": "denoted as the universal covering of the space"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Universal covers are not constructed in Mathlib (no `universalCover` declaration).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Existence of universal covering",
+      "anchor": {
+        "section": "Existence",
+        "snippet": "connected, locally simply connected topological space"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Existence of the universal cover is not formalized; `LocallySimplyConnected` doesn't exist either.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Fundamental group acts freely on universal cover",
+      "anchor": {
+        "section": "Existence",
+        "snippet": "acts freely on"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Not in Mathlib without a universal cover construction.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Universal covering of the unit circle",
+      "anchor": {
+        "section": "Examples (3)",
+        "snippet": "is the universal covering of the unit circle"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "AddCircle.isCoveringMap_coe",
+        "module": "Mathlib.Topology.Covering.AddCircle",
+        "match_kind": "invocation"
+      },
+      "note": "The covering map ℝ → S¹ is formalized, but its universality (as the universal cover) is not asserted.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Universal covering of projective space",
+      "anchor": {
+        "section": "Examples (3)",
+        "snippet": "is the universal covering of the projective space"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Universal covering of the unitary group",
+      "anchor": {
+        "section": "Examples (3)",
+        "snippet": "is the universal covering of the unitary group"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Not formalized.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Examples (3)",
+          "snippet": "is the universal covering of the unitary group"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle p(A,t)=\\exp(2\\pi it)A}"
+        }
+      ]
+    },
+    {
+      "kind": "example",
+      "label": "Quotient map as universal covering",
+      "anchor": {
+        "section": "Examples (3)",
+        "snippet": "it follows that the quotient map"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Universality of quotient covers is not stated.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Examples (3)",
+          "snippet": "it follows that the quotient map"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle p:\\mathrm {SU} (2)\\rightarrow \\mathrm {SU} (2)/\\mathbb {Z_{2}} \\cong \\mathrm {SO} (3)}"
+        }
+      ]
+    },
+    {
+      "kind": "example",
+      "label": "Hawaiian earring has no universal covering",
+      "anchor": {
+        "section": "Examples (3)",
+        "snippet": "A topological space which has no universal covering is the Hawaiian earring"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Hawaiian earring is not defined in Mathlib (no grep hits).",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Examples (3)",
+          "snippet": "A topological space which has no universal covering is the Hawaiian earring"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle X=\\bigcup _{n\\in \\mathbb {N} }\\left\\{(x_{1},x_{2})\\in \\mathbb {R} ^{2}:{\\Bigl (}x_{1}-{\\frac {1}{n}}{\\Bigr )}^{2}+x_{2}^{2}={\\frac {1}{n^{2}}}\\right\\}}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Fundamental groupoid of orbit space",
+      "anchor": {
+        "section": "G-coverings",
+        "snippet": "the fundamental groupoid of the orbit space"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The action groupoid description of π₁ of an orbit space is not in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Smooth covering",
+      "anchor": {
+        "section": "Smooth coverings",
+        "snippet": "is called a smooth covering"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No `SmoothCovering` concept exists in Mathlib (only the topological `IsCoveringMap`).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Deck transformation",
+      "anchor": {
+        "section": "Definition (4)",
+        "snippet": "A deck transformation is a homeomorphism"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Deck transformations are not defined in Mathlib (no `DeckTransformation` symbol).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Regular (normal/Galois) cover",
+      "anchor": {
+        "section": "Definition (4)",
+        "snippet": "we call the cover regular"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Regular/normal/Galois covers are not defined; only `IsQuotientCoveringMap` is the closest related concept.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Regular cover is a principal G-bundle",
+      "anchor": {
+        "section": "Definition (4)",
+        "snippet": "Every such regular cover is a principal"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Principal bundles are not defined in Mathlib for this purpose.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Universal cover is regular with deck group equal to fundamental group",
+      "anchor": {
+        "section": "Definition (4)",
+        "snippet": "Every universal cover"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Not formalized without universal cover or deck transformations.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Deck transformations of the exponential cover",
+      "anchor": {
+        "section": "Examples (4)",
+        "snippet": "is a deck transformation"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Deck transformations of the n-fold cover",
+      "anchor": {
+        "section": "Examples (4)",
+        "snippet": "is a deck transformation"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Punctured plane regular cover",
+      "anchor": {
+        "section": "Examples (4)",
+        "snippet": "is a regular cover"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Deck transformations permute fibers freely",
+      "anchor": {
+        "section": "Properties",
+        "snippet": "it permutes the elements of a fiber"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No deck transformation theory in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Normal covering",
+      "anchor": {
+        "section": "Definition (5)",
+        "snippet": "is called normal"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Normal coverings are not defined in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Normal covering iff normal subgroup",
+      "anchor": {
+        "section": "Properties (2)",
+        "snippet": "is a normal covering iff"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Deck transformation group of a normal covering",
+      "anchor": {
+        "section": "Properties (2)",
+        "snippet": "If"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Deck transformation group via normalizer",
+      "anchor": {
+        "section": "Properties (2)",
+        "snippet": "is the normaliser of"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Discontinuous group action",
+      "anchor": {
+        "section": "Properties (2)",
+        "snippet": "acts discontinuously on"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "ProperlyDiscontinuousSMul",
+        "module": "Mathlib.Topology.Algebra.ConstMulAction",
+        "match_kind": "exact"
+      },
+      "note": "`ProperlyDiscontinuousSMul` captures the standard notion of properly discontinuous group action used for covering quotients.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Quotient by discontinuous action is normal covering",
+      "anchor": {
+        "section": "Properties (2)",
+        "snippet": "then the quotient map"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "isQuotientCoveringMap_quotientMk_of_properlyDiscontinuousSMul",
+        "module": "Mathlib.Topology.Covering.Quotient",
+        "match_kind": "generalization"
+      },
+      "note": "Quotient by a properly discontinuous free action is shown to be an `IsQuotientCoveringMap` (hence a covering), but not labelled as a normal cover.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Normal coverings of the circle",
+      "anchor": {
+        "section": "Examples (5)",
+        "snippet": "is a normal coverings for every"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The circle's coverings are formalized but not marked as normal.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Simply connected covering is normal",
+      "anchor": {
+        "section": "Examples (5)",
+        "snippet": "Every simply connected covering is a normal covering"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Path-connected quotient: fundamental group calculation",
+      "anchor": {
+        "section": "Calculation",
+        "snippet": "is path-connected"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The π₁ computation for path-connected quotients is not in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Simply connected quotient: fundamental group is G",
+      "anchor": {
+        "section": "Calculation",
+        "snippet": "is simply connected"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Not formalized; no theorem π₁(X/G) ≅ G for free discontinuous G-action on simply connected X.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Antipodal map and fundamental group of sphere",
+      "anchor": {
+        "section": "Examples (6)",
+        "snippet": "The antipodal map"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Universal covering of SO(n)",
+      "anchor": {
+        "section": "Examples (6)",
+        "snippet": "is the special orthogonal group"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Not formalized (no Spin group covering SO(n)).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Universal covering of the Klein bottle",
+      "anchor": {
+        "section": "Examples (6)",
+        "snippet": "one gets the universal covering"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Klein bottle universal cover is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Normal covering of the Klein bottle via torus",
+      "anchor": {
+        "section": "Examples (6)",
+        "snippet": "be the torus which is embedded in the"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Universal covering of the lens space",
+      "anchor": {
+        "section": "Examples (6)",
+        "snippet": "is the universal covering of the lens space"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Lens space universal cover is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Existence of covering for each subgroup",
+      "anchor": {
+        "section": "Galois correspondence",
+        "snippet": "there exists a path-connected covering"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Coverings equivalent iff subgroups conjugate",
+      "anchor": {
+        "section": "Galois correspondence",
+        "snippet": "they are equivalent iff the subgroups"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Galois correspondence bijection",
+      "anchor": {
+        "section": "Galois correspondence",
+        "snippet": "up to equivalence between coverings, there is a bijection"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Galois correspondence for covering spaces is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Degree of covering equals index of subgroup",
+      "anchor": {
+        "section": "Galois correspondence",
+        "snippet": "the covering"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Not formalized (no degree definition either).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Category of coverings",
+      "anchor": {
+        "section": "Category of coverings",
+        "snippet": "The objects of the category"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No category of covering maps is constructed in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Category of G-sets",
+      "anchor": {
+        "section": "G-Set",
+        "snippet": "is the category of sets which are G-sets"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Action",
+        "module": "Mathlib.CategoryTheory.Action.Basic",
+        "match_kind": "generalization"
+      },
+      "note": "`Action (Type) G` realises the category of G-sets as a special case of the general `Action V G` construction.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Equivalence of categories: coverings and G-sets",
+      "anchor": {
+        "section": "Equivalence",
+        "snippet": "is an equivalence of categories"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The equivalence between coverings of X and π₁(X)-sets is not formalized.",
+      "provenance": "ai"
+    }
+  ]
+}

@@ -1,0 +1,969 @@
+{
+  "slug": "Normal_distribution",
+  "wikipedia_title": "Normal distribution",
+  "display_title": "Normal distribution",
+  "schema_version": 1,
+  "source": "claude-agent-sdk/annotate_articles.py",
+  "annotations": [
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle f(x)={\\frac {1}{\\sqrt {2\\pi \\sigma ^{2}}}}\\exp {\\left(-{\\frac {(x-\\mu )^{2}}{2\\sigma ^{2}}}\\right)}\\,.}"
+      },
+      "status": "formalized",
+      "decl": "gaussianPDFReal",
+      "module": "Mathlib.Probability.Distributions.Gaussian.Real",
+      "note": "This is exactly the definition of gaussianPDFReal."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\varphi (z)={\\frac {e^{-z^{2}/2}}{\\sqrt {2\\pi }}}\\,.}"
+      },
+      "status": "partial",
+      "decl": "gaussianPDFReal",
+      "module": "Mathlib.Probability.Distributions.Gaussian.Real",
+      "note": "Standard normal density is the μ=0, v=1 special case of gaussianPDFReal; no dedicated standard-normal decl."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle f(x\\mid \\mu ,\\sigma ^{2})={\\frac {1}{\\sigma }}\\varphi \\left({\\frac {x-\\mu }{\\sigma }}\\right)\\,.}"
+      },
+      "status": "partial",
+      "decl": "gaussianPDFReal",
+      "module": "Mathlib.Probability.Distributions.Gaussian.Real",
+      "note": "gaussianPDFReal captures the general density directly; the standardization rewrite is not a separate lemma here."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle X\\sim {\\mathcal {N}}(\\mu ,\\sigma ^{2}).}"
+      },
+      "status": "formalized",
+      "decl": "gaussianReal",
+      "module": "Mathlib.Probability.Distributions.Gaussian.Real",
+      "note": "gaussianReal μ v is exactly the normal distribution N(μ,σ²) on ℝ."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle f(x)={\\sqrt {\\frac {\\tau }{2\\pi }}}e^{-\\tau (x-\\mu )^{2}/2}.}"
+      },
+      "status": "partial",
+      "decl": "gaussianPDFReal",
+      "module": "Mathlib.Probability.Distributions.Gaussian.Real",
+      "note": "Mathlib parameterises by variance, not precision τ=1/σ², so only the underlying density is formalized."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle f(x)={\\frac {\\tau '}{\\sqrt {2\\pi }}}e^{-(\\tau ')^{2}(x-\\mu )^{2}/2}.}"
+      },
+      "status": "partial",
+      "decl": "gaussianPDFReal",
+      "module": "Mathlib.Probability.Distributions.Gaussian.Real",
+      "note": "Same density expressed with τ'=1/σ; Mathlib has the variance parameterisation only."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\Phi (x)={\\frac {1}{\\sqrt {2\\pi }}}\\int _{-\\infty }^{x}e^{-t^{2}/2}\\,dt\\,.}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "No dedicated standard-normal CDF Φ decl is in the provided list."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\operatorname {erf} (x)={\\frac {1}{\\sqrt {\\pi }}}\\int _{-x}^{x}e^{-t^{2}}\\,dt={\\frac {2}{\\sqrt {\\pi }}}\\int _{0}^{x}e^{-t^{2}}\\,dt\\,.}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "The error function is not among the provided related decls."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\Phi (x)={\\frac {1}{2}}\\left[1+\\operatorname {erf} \\left({\\frac {x}{\\sqrt {2}}}\\right)\\right].}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Identity between Φ and erf is not provided as a Mathlib decl here."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle F(x)=\\Phi {\\left({\\frac {x-\\mu }{\\sigma }}\\right)}={\\frac {1}{2}}\\left[1+\\operatorname {erf} \\left({\\frac {x-\\mu }{\\sigma {\\sqrt {2}}}}\\right)\\right].}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "General normal CDF in closed form via erf is not in the provided list."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\operatorname {P} (a<x\\leq b)={\\frac {1}{2}}\\left[\\operatorname {erf} \\left({\\frac {b-\\mu }{\\sigma {\\sqrt {2}}}}\\right)-\\operatorname {erf} \\left({\\frac {a-\\mu }{\\sigma {\\sqrt {2}}}}\\right)\\right]}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Interval probability via erf is not a standalone Mathlib decl in the list."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\int \\Phi (x)\\,dx=x\\Phi (x)+\\varphi (x)+C.}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Antiderivative of Φ is not in the provided decls."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\Phi (x)={\\frac {1}{2}}+{\\frac {1}{\\sqrt {2\\pi }}}e^{-x^{2}/2}\\sum _{n=0}^{\\infty }{\\frac {1}{(2n+1)!!}}x^{2n+1}\\,.}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Asymptotic series expansion of Φ is not in the provided decls."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\varphi (x)={\\frac {1}{\\sqrt {2\\pi }}}\\sum _{n=0}^{\\infty }{\\frac {(-1)^{n}}{n!\\,2^{n}}}x^{2n}}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Taylor series for φ is not in the provided decls."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\Phi (x)={\\frac {1}{2}}+{\\frac {1}{\\sqrt {2\\pi }}}\\sum _{n=0}^{\\infty }{\\frac {(-1)^{n}}{n!\\,2^{n}(2n+1)}}x^{2n+1}.}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Taylor series for Φ is not in the provided decls."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\Phi (x)=\\sum _{n=0}^{\\infty }{\\frac {\\Phi ^{(n)}(x_{0})}{n!}}(x-x_{0})^{n}\\,,}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Taylor expansion of Φ about arbitrary x₀ is not in the provided decls."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle {\\begin{aligned}\\Phi ^{(0)}(x_{0})&={\\frac {1}{\\sqrt {2\\pi }}}\\int _{-\\infty }^{x_{0}}e^{-t^{2}/2}\\,dt\\\\\\Phi ^{(1)}(x_{0})&={\\frac {1}{\\sqrt {2\\pi }}}e^{-x_{0}^{2}/2}\\\\\\Phi ^{(n)}(x_{0})&=-\\left(x_{0}\\Phi ^{(n-1)}(x_{0})+(n-2)\\Phi ^{(n-2)}(x_{0})\\right),&n\\geq 2\\,.\\end{aligned}}}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Hermite-style recurrence for Φ⁽ⁿ⁾ is not in the provided decls."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle F(\\mu +n\\sigma )-F(\\mu -n\\sigma )=\\Phi (n)-\\Phi (-n)=\\operatorname {erf} \\left({\\frac {n}{\\sqrt {2}}}\\right).}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Coverage probability formula is not in the provided decls."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle 1-p\\approx {\\frac {\\sqrt {2}}{n{\\sqrt {\\pi e^{n^{2}}}}}}}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Tail asymptotic approximation is not in the provided decls."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\Phi ^{-1}(p)={\\sqrt {2}}\\operatorname {erf} ^{-1}(2p-1),\\quad p\\in (0,1).}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Probit function in terms of inverse erf is not in the provided decls."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle F^{-1}(p)=\\mu +\\sigma \\Phi ^{-1}(p)=\\mu +\\sigma {\\sqrt {2}}\\operatorname {erf} ^{-1}(2p-1),\\quad p\\in (0,1).}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "General quantile function for N(μ,σ²) is not in the provided decls."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle x_{n}=x_{n-1}-{\\frac {\\Phi (x_{n-1})-q}{\\varphi (x_{n-1})}}\\,.}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Newton-iteration for the quantile is not in the provided decls."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\operatorname {E} \\left[(X-\\mu )^{p}\\right]={\\begin{cases}0&{\\text{if }}p{\\text{ is odd,}}\\\\\\sigma ^{p}(p-1)!!&{\\text{if }}p{\\text{ is even.}}\\end{cases}}}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Closed form for central moments is not in the provided decls."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle {\\begin{aligned}\\operatorname {E} \\left[|X-\\mu |^{p}\\right]&=\\sigma ^{p}(p-1)!!\\cdot {\\begin{cases}{\\sqrt {\\frac {2}{\\pi }}}&{\\text{if }}p{\\text{ is odd}}\\\\1&{\\text{if }}p{\\text{ is even}}\\end{cases}}\\\\[8pt]&=\\sigma ^{p}\\cdot {\\frac {2^{p/2}\\Gamma \\left({\\frac {p+1}{2}}\\right)}{\\sqrt {\\pi }}}.\\end{aligned}}}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Closed form for absolute central moments is not in the provided decls."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle {\\begin{aligned}\\operatorname {E} \\left[X^{p}\\right]&=\\sigma ^{p}\\cdot {\\left(-i{\\sqrt {2}}\\right)}^{p}\\,U{\\left(-{\\frac {p}{2}},{\\frac {1}{2}},-{\\frac {\\mu ^{2}}{2\\sigma ^{2}}}\\right)},\\\\\\operatorname {E} \\left[|X|^{p}\\right]&=\\sigma ^{p}\\cdot 2^{p/2}{\\frac {\\Gamma {\\left({\\frac {1+p}{2}}\\right)}}{\\sqrt {\\pi }}}\\,{}_{1}F_{1}{\\left(-{\\frac {p}{2}},{\\frac {1}{2}},-{\\frac {\\mu ^{2}}{2\\sigma ^{2}}}\\right)}.\\end{aligned}}}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Non-central moments via confluent hypergeometric U is not in the provided decls."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\operatorname {E} \\left[X\\mid a<X<b\\right]=\\mu -\\sigma ^{2}{\\frac {f(b)-f(a)}{F(b)-F(a)}}\\,,}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Truncated conditional expectation formula is not in the provided decls."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle {\\hat {f}}(t)=\\int _{-\\infty }^{\\infty }f(x)e^{-itx}\\,dx=e^{-i\\mu t}e^{-{\\frac {1}{2}}\\sigma ^{2}t^{2}}\\,,}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Fourier transform of the Gaussian density is not a standalone decl in the list."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\varphi _{X}(t)={\\hat {f}}(-t)\\,.}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Relation between characteristic function and Fourier transform is not in the provided decls."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\operatorname {E} [\\cos(tx)]=\\cos(\\mu t)e^{-{\\frac {1}{2}}\\sigma ^{2}t^{2}}}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "E[cos(tX)] formula for normal is not in the provided decls."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\operatorname {E} [\\sin(tx)]=\\sin(\\mu t)e^{-{\\frac {1}{2}}\\sigma ^{2}t^{2}}.}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "E[sin(tX)] formula for normal is not in the provided decls."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\operatorname {E} [\\cosh(tx)]=\\cosh(\\mu t)e^{{\\frac {1}{2}}\\sigma ^{2}t^{2}}}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "E[cosh(tX)] formula for normal is not in the provided decls."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\operatorname {E} [\\sinh(tx)]=\\sinh(\\mu t)e^{{\\frac {1}{2}}\\sigma ^{2}t^{2}}.}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "E[sinh(tX)] formula for normal is not in the provided decls."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle M(t)=\\operatorname {E} \\left[e^{tX}\\right]={\\hat {f}}(it)=e^{\\mu t}e^{\\sigma ^{2}t^{2}/2}\\,.}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Moment generating function of normal is not in the provided decls."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle g(t)=\\ln M(t)=\\mu t+{\\tfrac {1}{2}}\\sigma ^{2}t^{2}\\,.}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Cumulant generating function of normal is not in the provided decls."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle F(x)={\\begin{cases}0&{\\text{if }}x<\\mu \\\\1&{\\text{if }}x\\geq \\mu .\\end{cases}}}"
+      },
+      "status": "partial",
+      "decl": "gaussianReal",
+      "module": "Mathlib.Probability.Distributions.Gaussian.Real",
+      "note": "gaussianReal handles v=0 as a Dirac mass at μ, capturing this degenerate CDF."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle H(X)=-\\int _{-\\infty }^{\\infty }f(x)\\ln f(x)\\,dx\\,,}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Differential entropy definition is not in the provided decls."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle L=-\\int _{-\\infty }^{\\infty }f(x)\\ln f(x)\\,dx-\\lambda _{0}\\left(1-\\int _{-\\infty }^{\\infty }f(x)\\,dx\\right)-\\lambda _{1}\\left(\\mu -\\int _{-\\infty }^{\\infty }f(x)x\\,dx\\right)-\\lambda _{2}\\left(\\sigma ^{2}-\\int _{-\\infty }^{\\infty }f(x)(x-\\mu )^{2}\\,dx\\right)\\,.}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Maximum-entropy Lagrangian construction is a proof intermediate, not a decl."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle 0=\\delta L=\\int _{-\\infty }^{\\infty }\\delta f(x)\\left(-\\ln f(x)-1+\\lambda _{0}+\\lambda _{1}x+\\lambda _{2}(x-\\mu )^{2}\\right)\\,dx\\,.}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "First-variation step in max-entropy proof is an intermediate, not a decl."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle f(x)=\\exp \\left(-1+\\lambda _{0}+\\lambda _{1}x+\\lambda _{2}(x-\\mu )^{2}\\right)\\,.}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Solving the Euler-Lagrange equation is a proof intermediate, not a decl."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle f(x)={\\frac {1}{\\sqrt {2\\pi \\sigma ^{2}}}}e^{-{\\frac {(x-\\mu )^{2}}{2\\sigma ^{2}}}}\\,.}"
+      },
+      "status": "formalized",
+      "decl": "gaussianPDFReal",
+      "module": "Mathlib.Probability.Distributions.Gaussian.Real",
+      "note": "Same normal density as gaussianPDFReal."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle H(X)={\\tfrac {1}{2}}(1+\\ln 2\\sigma ^{2}\\pi )\\,,}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Closed-form entropy of the normal is not in the provided decls."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle D_{\\mathrm {KL} }(X_{1}\\parallel X_{2})={\\frac {(\\mu _{1}-\\mu _{2})^{2}}{2\\sigma _{2}^{2}}}+{\\frac {1}{2}}\\left({\\frac {\\sigma _{1}^{2}}{\\sigma _{2}^{2}}}-1-\\ln {\\frac {\\sigma _{1}^{2}}{\\sigma _{2}^{2}}}\\right)}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "KL divergence between two normals is not in the provided decls."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle H^{2}(X_{1},X_{2})=1-{\\sqrt {\\frac {2\\sigma _{1}\\sigma _{2}}{\\sigma _{1}^{2}+\\sigma _{2}^{2}}}}\\exp \\left(-{\\frac {1}{4}}{\\frac {(\\mu _{1}-\\mu _{2})^{2}}{\\sigma _{1}^{2}+\\sigma _{2}^{2}}}\\right)}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Hellinger distance between two normals is not in the provided decls."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle {\\mathcal {I}}(\\mu ,\\sigma ^{2})={\\begin{pmatrix}{\\frac {1}{\\sigma ^{2}}}&0\\\\0&{\\frac {1}{2\\sigma ^{4}}}\\end{pmatrix}}}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Fisher information matrix for normal is not in the provided decls."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\mu \\mid x_{1},\\ldots ,x_{n}\\sim {\\mathcal {N}}\\left({\\frac {{\\frac {\\sigma ^{2}}{n}}\\mu _{0}+\\sigma _{0}^{2}{\\bar {x}}}{{\\frac {\\sigma ^{2}}{n}}+\\sigma _{0}^{2}}},\\left({\\frac {n}{\\sigma ^{2}}}+{\\frac {1}{\\sigma _{0}^{2}}}\\right)^{-1}\\right)}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Bayesian conjugate posterior for the mean is not in the provided decls."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle Z={\\sqrt {n}}{\\biggl (}{\\frac {1}{n}}\\sum _{i=1}^{n}X_{i}{\\biggr )}}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "CLT-statistic construction is not a standalone Mathlib decl in the list."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\ln p(x)=-{\\frac {1}{2}}\\left({\\frac {x-\\mu }{\\sigma }}\\right)^{2}-\\ln \\left(\\sigma {\\sqrt {2\\pi }}\\right).}"
+      },
+      "status": "partial",
+      "decl": "gaussianPDFReal",
+      "module": "Mathlib.Probability.Distributions.Gaussian.Real",
+      "note": "Just the logarithm of gaussianPDFReal; no separate log-density decl."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle X_{3}={\\frac {aX_{1}+bX_{2}-(a+b)\\mu }{\\sqrt {a^{2}+b^{2}}}}+\\mu }"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Specific linear-combination formula for two normals is not in the provided decls."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle X_{1}^{2}+\\cdots +X_{n}^{2}\\sim \\chi _{n}^{2}.}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Sum of squares of standard normals being chi-squared is not in the provided decls."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle t={\\frac {{\\overline {X}}-\\mu }{S/{\\sqrt {n}}}}={\\frac {{\\frac {1}{n}}(X_{1}+\\cdots +X_{n})-\\mu }{\\sqrt {{\\frac {1}{n(n-1)}}\\left[(X_{1}-{\\overline {X}})^{2}+\\cdots +(X_{n}-{\\overline {X}})^{2}\\right]}}}\\sim t_{n-1}.}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Construction of Student-t statistic is not in the provided decls."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle F={\\frac {\\left(X_{1}^{2}+X_{2}^{2}+\\cdots +X_{n}^{2}\\right)/n}{\\left(Y_{1}^{2}+Y_{2}^{2}+\\cdots +Y_{m}^{2}\\right)/m}}\\sim F_{n,m}.}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "F-distribution construction is not in the provided decls."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle f_{X}(x)={\\begin{cases}N(\\mu ,\\sigma _{1}^{2}),&{\\text{ if }}x\\leq \\mu \\\\N(\\mu ,\\sigma _{2}^{2}),&{\\text{ if }}x\\geq \\mu \\end{cases}}}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Two-piece normal distribution is not in the provided decls."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle {\\begin{aligned}\\operatorname {E} (X)&=\\mu +{\\sqrt {\\frac {2}{\\pi }}}(\\sigma _{2}-\\sigma _{1}),\\\\\\operatorname {V} (X)&=\\left(1-{\\frac {2}{\\pi }}\\right)(\\sigma _{2}-\\sigma _{1})^{2}+\\sigma _{1}\\sigma _{2},\\\\\\operatorname {T} (X)&={\\sqrt {\\frac {2}{\\pi }}}(\\sigma _{2}-\\sigma _{1})\\left[\\left({\\frac {4}{\\pi }}-1\\right)(\\sigma _{2}-\\sigma _{1})^{2}+\\sigma _{1}\\sigma _{2}\\right].\\end{aligned}}}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Moments of two-piece normal are not in the provided decls."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle {\\begin{aligned}\\ln {\\mathcal {L}}(\\mu ,\\sigma ^{2})&=\\sum _{i=1}^{n}\\ln f(x_{i}\\mid \\mu ,\\sigma ^{2})\\\\&=-{\\frac {n}{2}}\\ln(2\\pi )-{\\frac {n}{2}}\\ln \\sigma ^{2}-{\\frac {1}{2\\sigma ^{2}}}\\sum _{i=1}^{n}(x_{i}-\\mu )^{2}.\\end{aligned}}}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Closed-form log-likelihood for an i.i.d. normal sample is not in the provided decls."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle {\\hat {\\mu }}={\\overline {x}}\\equiv {\\frac {1}{n}}\\sum _{i=1}^{n}x_{i},\\qquad {\\hat {\\sigma }}^{2}={\\frac {1}{n}}\\sum _{i=1}^{n}(x_{i}-{\\overline {x}})^{2}.}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "MLE formulas for μ and σ² are not in the provided decls."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\ln {\\mathcal {L}}({\\hat {\\mu }},{\\hat {\\sigma }}^{2})=-{\\frac {n}{2}}[\\ln \\left(2\\pi {\\hat {\\sigma }}^{2}\\right)+1]}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Maximised log-likelihood value is not in the provided decls."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle {\\hat {\\mu }}\\sim {\\mathcal {N}}(\\mu ,\\sigma ^{2}/n).}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Distribution of the sample mean is not in the provided decls."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle {\\sqrt {n}}({\\hat {\\mu }}-\\mu )\\,\\xrightarrow {d} \\,{\\mathcal {N}}(0,\\sigma ^{2}).}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Asymptotic normality of the sample mean is not in the provided decls."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle s^{2}={\\frac {n}{n-1}}{\\hat {\\sigma }}^{2}={\\frac {1}{n-1}}\\sum _{i=1}^{n}(x_{i}-{\\overline {x}})^{2}.}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Bessel-corrected sample variance is not in the provided decls."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle s^{2}\\sim {\\frac {\\sigma ^{2}}{n-1}}\\cdot \\chi _{n-1}^{2},\\qquad {\\hat {\\sigma }}^{2}\\sim {\\frac {\\sigma ^{2}}{n}}\\cdot \\chi _{n-1}^{2}.}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Chi-squared distribution of sample variance is not in the provided decls."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle {\\sqrt {n}}({\\hat {\\sigma }}^{2}-\\sigma ^{2})\\simeq {\\sqrt {n}}(s^{2}-\\sigma ^{2})\\,\\xrightarrow {d} \\,{\\mathcal {N}}(0,2\\sigma ^{4}).}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Asymptotic normality of variance estimator is not in the provided decls."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle t={\\frac {{\\hat {\\mu }}-\\mu }{s/{\\sqrt {n}}}}={\\frac {{\\overline {x}}-\\mu }{\\sqrt {{\\frac {1}{n(n-1)}}\\sum (x_{i}-{\\overline {x}})^{2}}}}\\sim t_{n-1}}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "t-statistic distribution for normal sample is not in the provided decls."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\mu \\in \\left[{\\hat {\\mu }}-t_{n-1,1-\\alpha /2}{\\frac {s}{\\sqrt {n}}},\\,{\\hat {\\mu }}+t_{n-1,1-\\alpha /2}{\\frac {s}{\\sqrt {n}}}\\right]}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Confidence interval for μ is not in the provided decls."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\sigma ^{2}\\in \\left[{\\frac {n-1}{\\chi _{n-1,1-\\alpha /2}^{2}}}s^{2},\\,{\\frac {n-1}{\\chi _{n-1,\\alpha /2}^{2}}}s^{2}\\right]}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Confidence interval for σ² is not in the provided decls."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\mu \\in \\left[{\\hat {\\mu }}-{\\frac {|z_{\\alpha /2}|}{\\sqrt {n}}}s,\\,{\\hat {\\mu }}+{\\frac {|z_{\\alpha /2}|}{\\sqrt {n}}}s\\right]}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Large-sample CI for μ is not in the provided decls."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\sigma ^{2}\\in \\left[s^{2}-{\\sqrt {2}}{\\frac {|z_{\\alpha /2}|}{\\sqrt {n}}}s^{2},\\,s^{2}+{\\sqrt {2}}{\\frac {|z_{\\alpha /2}|}{\\sqrt {n}}}s^{2}\\right]}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Large-sample CI for σ² is not in the provided decls."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle a(x-y)^{2}+b(x-z)^{2}=(a+b)\\left(x-{\\frac {ay+bz}{a+b}}\\right)^{2}+{\\frac {ab}{a+b}}(y-z)^{2}}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Sum-of-quadratics algebraic identity is not in the provided decls."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle {\\begin{aligned}&(\\mathbf {y} -\\mathbf {x} )'\\mathbf {A} (\\mathbf {y} -\\mathbf {x} )+(\\mathbf {x} -\\mathbf {z} )'\\mathbf {B} (\\mathbf {x} -\\mathbf {z} )\\\\={}&(\\mathbf {x} -\\mathbf {c} )'(\\mathbf {A} +\\mathbf {B} )(\\mathbf {x} -\\mathbf {c} )+(\\mathbf {y} -\\mathbf {z} )'(\\mathbf {A} ^{-1}+\\mathbf {B} ^{-1})^{-1}(\\mathbf {y} -\\mathbf {z} )\\end{aligned}}}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Vector sum-of-quadratics identity is not in the provided decls."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\mathbf {c} =(\\mathbf {A} +\\mathbf {B} )^{-1}(\\mathbf {A} \\mathbf {y} +\\mathbf {B} \\mathbf {z} )}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Definition of the centre vector c is a proof intermediate, not a decl."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\mathbf {x} '\\mathbf {A} \\mathbf {x} =\\sum _{i,j}a_{ij}x_{i}x_{j}}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Quadratic-form definition is not in the provided decls."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\sum _{i=1}^{n}(x_{i}-\\mu )^{2}=\\sum _{i=1}^{n}(x_{i}-{\\bar {x}})^{2}+n({\\bar {x}}-\\mu )^{2}}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Variance decomposition identity is not in the provided decls."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle {\\begin{aligned}p(\\mathbf {X} \\mid \\mu ,\\tau )&=\\prod _{i=1}^{n}{\\sqrt {\\frac {\\tau }{2\\pi }}}\\exp \\left(-{\\frac {1}{2}}\\tau (x_{i}-\\mu )^{2}\\right)\\\\&=\\left({\\frac {\\tau }{2\\pi }}\\right)^{n/2}\\exp \\left(-{\\frac {1}{2}}\\tau \\sum _{i=1}^{n}(x_{i}-\\mu )^{2}\\right)\\\\&=\\left({\\frac {\\tau }{2\\pi }}\\right)^{n/2}\\exp \\left[-{\\frac {1}{2}}\\tau \\left(\\sum _{i=1}^{n}(x_{i}-{\\bar {x}})^{2}+n({\\bar {x}}-\\mu )^{2}\\right)\\right].\\end{aligned}}}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Bayesian likelihood derivation is a proof intermediate, not a decl."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle {\\begin{aligned}p(\\mu \\mid \\mathbf {X} )&\\propto p(\\mathbf {X} \\mid \\mu )p(\\mu )\\\\&=\\left({\\frac {\\tau }{2\\pi }}\\right)^{n/2}\\exp \\left[-{\\frac {1}{2}}\\tau \\left(\\sum _{i=1}^{n}(x_{i}-{\\bar {x}})^{2}+n({\\bar {x}}-\\mu )^{2}\\right)\\right]{\\sqrt {\\frac {\\tau _{0}}{2\\pi }}}\\exp \\left(-{\\frac {1}{2}}\\tau _{0}(\\mu -\\mu _{0})^{2}\\right)\\\\&\\propto \\exp \\left(-{\\frac {1}{2}}\\left(\\tau \\left(\\sum _{i=1}^{n}(x_{i}-{\\bar {x}})^{2}+n({\\bar {x}}-\\mu )^{2}\\right)+\\tau _{0}(\\mu -\\mu _{0})^{2}\\right)\\right)\\\\&\\propto \\exp \\left(-{\\frac {1}{2}}\\left(n\\tau ({\\bar {x}}-\\mu )^{2}+\\tau _{0}(\\mu -\\mu _{0})^{2}\\right)\\right)\\\\&=\\exp \\left(-{\\frac {1}{2}}(n\\tau +\\tau _{0})\\left(\\mu -{\\dfrac {n\\tau {\\bar {x}}+\\tau _{0}\\mu _{0}}{n\\tau +\\tau _{0}}}\\right)^{2}+{\\frac {n\\tau \\tau _{0}}{n\\tau +\\tau _{0}}}({\\bar {x}}-\\mu _{0})^{2}\\right)\\\\&\\propto \\exp \\left(-{\\frac {1}{2}}(n\\tau +\\tau _{0})\\left(\\mu -{\\dfrac {n\\tau {\\bar {x}}+\\tau _{0}\\mu _{0}}{n\\tau +\\tau _{0}}}\\right)^{2}\\right)\\end{aligned}}}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Bayesian posterior derivation is a proof intermediate, not a decl."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle p(\\mu \\mid \\mathbf {X} )\\sim {\\mathcal {N}}\\left({\\frac {n\\tau {\\bar {x}}+\\tau _{0}\\mu _{0}}{n\\tau +\\tau _{0}}},{\\frac {1}{n\\tau +\\tau _{0}}}\\right)}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Posterior normal distribution for μ is not in the provided decls."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle {\\begin{aligned}\\tau _{0}'&=\\tau _{0}+n\\tau \\\\[5pt]\\mu _{0}'&={\\frac {n\\tau {\\bar {x}}+\\tau _{0}\\mu _{0}}{n\\tau +\\tau _{0}}}\\\\[5pt]{\\bar {x}}&={\\frac {1}{n}}\\sum _{i=1}^{n}x_{i}\\end{aligned}}}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Precision-form Bayesian update equations are not in the provided decls."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle {\\begin{aligned}{\\sigma _{0}^{2}}'&={\\frac {1}{{\\frac {n}{\\sigma ^{2}}}+{\\frac {1}{\\sigma _{0}^{2}}}}}\\\\[5pt]\\mu _{0}'&={\\frac {{\\frac {n{\\bar {x}}}{\\sigma ^{2}}}+{\\frac {\\mu _{0}}{\\sigma _{0}^{2}}}}{{\\frac {n}{\\sigma ^{2}}}+{\\frac {1}{\\sigma _{0}^{2}}}}}\\\\[5pt]{\\bar {x}}&={\\frac {1}{n}}\\sum _{i=1}^{n}x_{i}\\end{aligned}}}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Variance-form Bayesian update equations are not in the provided decls."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle p(\\sigma ^{2}\\mid \\nu _{0},\\sigma _{0}^{2})={\\frac {(\\sigma _{0}^{2}{\\frac {\\nu _{0}}{2}})^{\\nu _{0}/2}}{\\Gamma \\left({\\frac {\\nu _{0}}{2}}\\right)}}~{\\frac {\\exp \\left[{\\frac {-\\nu _{0}\\sigma _{0}^{2}}{2\\sigma ^{2}}}\\right]}{(\\sigma ^{2})^{1+{\\frac {\\nu _{0}}{2}}}}}\\propto {\\frac {\\exp \\left[{\\frac {-\\nu _{0}\\sigma _{0}^{2}}{2\\sigma ^{2}}}\\right]}{(\\sigma ^{2})^{1+{\\frac {\\nu _{0}}{2}}}}}}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Scaled inverse-chi-squared prior is not in the provided decls."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle {\\begin{aligned}p(\\mathbf {X} \\mid \\mu ,\\sigma ^{2})&=\\left({\\frac {1}{2\\pi \\sigma ^{2}}}\\right)^{n/2}\\exp \\left[-{\\frac {1}{2\\sigma ^{2}}}\\sum _{i=1}^{n}(x_{i}-\\mu )^{2}\\right]\\\\&=\\left({\\frac {1}{2\\pi \\sigma ^{2}}}\\right)^{n/2}\\exp \\left[-{\\frac {S}{2\\sigma ^{2}}}\\right]\\end{aligned}}}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Likelihood in variance form is a proof intermediate, not a decl."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle S=\\sum _{i=1}^{n}(x_{i}-\\mu )^{2}.}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Definition of S is a local abbreviation, not a Mathlib decl."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle {\\begin{aligned}p(\\sigma ^{2}\\mid \\mathbf {X} )&\\propto p(\\mathbf {X} \\mid \\sigma ^{2})p(\\sigma ^{2})\\\\&=\\left({\\frac {1}{2\\pi \\sigma ^{2}}}\\right)^{n/2}\\exp \\left[-{\\frac {S}{2\\sigma ^{2}}}\\right]{\\frac {(\\sigma _{0}^{2}{\\frac {\\nu _{0}}{2}})^{\\frac {\\nu _{0}}{2}}}{\\Gamma \\left({\\frac {\\nu _{0}}{2}}\\right)}}~{\\frac {\\exp \\left[{\\frac {-\\nu _{0}\\sigma _{0}^{2}}{2\\sigma ^{2}}}\\right]}{(\\sigma ^{2})^{1+{\\frac {\\nu _{0}}{2}}}}}\\\\&\\propto \\left({\\frac {1}{\\sigma ^{2}}}\\right)^{n/2}{\\frac {1}{(\\sigma ^{2})^{1+{\\frac {\\nu _{0}}{2}}}}}\\exp \\left[-{\\frac {S}{2\\sigma ^{2}}}+{\\frac {-\\nu _{0}\\sigma _{0}^{2}}{2\\sigma ^{2}}}\\right]\\\\&={\\frac {1}{(\\sigma ^{2})^{1+{\\frac {\\nu _{0}+n}{2}}}}}\\exp \\left[-{\\frac {\\nu _{0}\\sigma _{0}^{2}+S}{2\\sigma ^{2}}}\\right]\\end{aligned}}}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Bayesian variance posterior derivation is a proof intermediate, not a decl."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle {\\begin{aligned}\\nu _{0}'&=\\nu _{0}+n\\\\\\nu _{0}'{\\sigma _{0}^{2}}'&=\\nu _{0}\\sigma _{0}^{2}+\\sum _{i=1}^{n}(x_{i}-\\mu )^{2}\\end{aligned}}}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Scaled inverse-chi-squared update equations are not in the provided decls."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle {\\begin{aligned}\\nu _{0}'&=\\nu _{0}+n\\\\{\\sigma _{0}^{2}}'&={\\frac {\\nu _{0}\\sigma _{0}^{2}+\\sum _{i=1}^{n}(x_{i}-\\mu )^{2}}{\\nu _{0}+n}}\\end{aligned}}}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Equivalent variance update equations are not in the provided decls."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle {\\begin{aligned}\\alpha '&=\\alpha +{\\frac {n}{2}}\\\\\\beta '&=\\beta +{\\frac {\\sum _{i=1}^{n}(x_{i}-\\mu )^{2}}{2}}\\end{aligned}}}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Inverse-gamma update equations are not in the provided decls."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle {\\begin{aligned}p(\\mu \\mid \\sigma ^{2};\\mu _{0},n_{0})&\\sim {\\mathcal {N}}(\\mu _{0},\\sigma ^{2}/n_{0})\\\\p(\\sigma ^{2};\\nu _{0},\\sigma _{0}^{2})&\\sim I\\chi ^{2}(\\nu _{0},\\sigma _{0}^{2})=IG(\\nu _{0}/2,\\nu _{0}\\sigma _{0}^{2}/2)\\end{aligned}}}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Normal-inverse-chi-squared conjugate prior is not in the provided decls."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle {\\begin{aligned}{\\bar {x}}&={\\frac {1}{n}}\\sum _{i=1}^{n}x_{i}\\\\\\mu _{0}'&={\\frac {n_{0}\\mu _{0}+n{\\bar {x}}}{n_{0}+n}}\\\\n_{0}'&=n_{0}+n\\\\\\nu _{0}'&=\\nu _{0}+n\\\\\\nu _{0}'{\\sigma _{0}^{2}}'&=\\nu _{0}\\sigma _{0}^{2}+\\sum _{i=1}^{n}(x_{i}-{\\bar {x}})^{2}+{\\frac {n_{0}n}{n_{0}+n}}(\\mu _{0}-{\\bar {x}})^{2}\\end{aligned}}}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Joint mean/variance Bayesian update equations are not in the provided decls."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle X={\\sqrt {-2\\ln U}}\\,\\cos(2\\pi V),\\qquad Y={\\sqrt {-2\\ln U}}\\,\\sin(2\\pi V).}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Box-Muller transform is not in the provided decls."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle X=U{\\sqrt {\\frac {-2\\ln S}{S}}},\\qquad Y=V{\\sqrt {\\frac {-2\\ln S}{S}}}}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Marsaglia polar method is not in the provided decls."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\Phi (x)=1-\\varphi (x)\\left(b_{1}t+b_{2}t^{2}+b_{3}t^{3}+b_{4}t^{4}+b_{5}t^{5}\\right)+\\varepsilon (x),\\qquad t={\\frac {1}{1+b_{0}x}},}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Abramowitz-Stegun numerical approximation of Φ is not in the provided decls."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\Phi (x)={\\frac {1}{2}}+\\varphi (x)\\left(x+{\\frac {x^{3}}{3}}+{\\frac {x^{5}}{3\\cdot 5}}+{\\frac {x^{7}}{3\\cdot 5\\cdot 7}}+{\\frac {x^{9}}{3\\cdot 5\\cdot 7\\cdot 9}}+\\cdots \\right)}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Marsaglia's Taylor-series algorithm for Φ is not in the provided decls."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle 1-\\Phi \\left(x\\right)=1-\\left(1-\\Phi \\left(-x\\right)\\right)}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Symmetry identity for Φ is not in the provided decls."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle z=\\Phi ^{-1}(p)=5.5556\\left[1-\\left({\\frac {1-p}{p}}\\right)^{0.1186}\\right],\\qquad p\\geq 1/2}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Numerical approximation of the probit is not in the provided decls."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle z=-0.4115\\left\\{{\\frac {1-p}{p}}+\\log \\left[{\\frac {1-p}{p}}\\right]-1\\right\\},\\qquad p\\geq 1/2}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Alternate quantile-function approximation is not in the provided decls."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle {\\begin{aligned}L(z)&=\\int _{z}^{\\infty }(u-z)\\varphi (u)\\,du=\\int _{z}^{\\infty }[1-\\Phi (u)]\\,du\\\\[5pt]L(z)&\\approx {\\begin{cases}0.4115\\left({\\dfrac {p}{1-p}}\\right)-z,&p<1/2,\\\\\\\\0.4115\\left({\\dfrac {1-p}{p}}\\right),&p\\geq 1/2.\\end{cases}}\\\\[5pt]{\\text{or, equivalently,}}\\\\L(z)&\\approx {\\begin{cases}0.4115\\left\\{1-\\log \\left[{\\frac {p}{1-p}}\\right]\\right\\},&p<1/2,\\\\\\\\0.4115{\\dfrac {1-p}{p}},&p\\geq 1/2.\\end{cases}}\\end{aligned}}}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Loss-integral definition and approximation are not in the provided decls."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\varphi {\\mathit {\\Delta }}={\\frac {h}{\\surd \\pi }}\\,e^{-\\mathrm {hh} \\Delta \\Delta },}"
+      },
+      "status": "partial",
+      "decl": "gaussianPDFReal",
+      "module": "Mathlib.Probability.Distributions.Gaussian.Real",
+      "note": "Gauss's historical form is the same density as gaussianPDFReal, with h playing the precision role."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\operatorname {N} {\\frac {1}{\\alpha \\;{\\sqrt {\\pi }}}}\\;e^{-{\\frac {x^{2}}{\\alpha ^{2}}}}\\,dx}"
+      },
+      "status": "partial",
+      "decl": "gaussianPDFReal",
+      "module": "Mathlib.Probability.Distributions.Gaussian.Real",
+      "note": "Maxwell's velocity density is a rescaled centred Gaussian, captured by gaussianPDFReal at μ=0."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle df={\\frac {1}{\\sqrt {2\\sigma ^{2}\\pi }}}e^{-(x-m)^{2}/(2\\sigma ^{2})}\\,dx.}"
+      },
+      "status": "formalized",
+      "decl": "gaussianPDFReal",
+      "module": "Mathlib.Probability.Distributions.Gaussian.Real",
+      "note": "Fisher's modern formulation matches gaussianPDFReal exactly."
+    }
+  ]
+}

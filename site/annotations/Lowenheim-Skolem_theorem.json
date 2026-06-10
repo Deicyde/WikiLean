@@ -1,0 +1,281 @@
+{
+  "slug": "Lowenheim-Skolem_theorem",
+  "wikipedia_title": "Löwenheim–Skolem theorem",
+  "display_title": "Löwenheim–Skolem theorem",
+  "schema_version": 3,
+  "annotation_style": "theorem_article",
+  "annotations": [
+    {
+      "kind": "theorem",
+      "label": "Löwenheim–Skolem theorem (general form)",
+      "anchor": {
+        "section": "Theorem",
+        "snippet": "In its general form, the Löwenheim–Skolem Theorem states that for every signature"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "FirstOrder.Language.exists_elementaryEmbedding_card_eq",
+        "module": "Mathlib.ModelTheory.Satisfiability",
+        "match_kind": "exact"
+      },
+      "note": "The combined Löwenheim–Skolem theorem is stated as `exists_elementaryEmbedding_card_eq`, producing an elementary embedding in the appropriate direction between `M` and a structure of cardinality `κ`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Downward Löwenheim–Skolem theorem",
+      "anchor": {
+        "section": "Theorem",
+        "snippet": "The part of the theorem asserting that a structure has elementary substructures of all smaller infinite cardinalities is known as the downward Löwenheim–Skolem Theorem"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "FirstOrder.Language.exists_elementarySubstructure_card_eq",
+        "module": "Mathlib.ModelTheory.Skolem",
+        "match_kind": "exact"
+      },
+      "note": "`exists_elementarySubstructure_card_eq` in Skolem.lean gives an elementary substructure containing a given set of cardinality `κ` whenever `max(#s, L.card) ≤ κ ≤ #M`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Upward Löwenheim–Skolem theorem",
+      "anchor": {
+        "section": "Theorem",
+        "snippet": "The part of the theorem asserting that a structure has elementary extensions of all larger cardinalities is known as the upward Löwenheim–Skolem Theorem"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "FirstOrder.Language.exists_elementaryEmbedding_card_eq_of_ge",
+        "module": "Mathlib.ModelTheory.Satisfiability",
+        "match_kind": "exact"
+      },
+      "note": "`exists_elementaryEmbedding_card_eq_of_ge` produces an elementary extension of any infinite structure `M` of any cardinality `κ ≥ max(#M, L.card)`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Signature",
+      "anchor": {
+        "section": "Signatures",
+        "snippet": "A signature consists of a set of function symbols"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "FirstOrder.Language",
+        "module": "Mathlib.ModelTheory.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`Language` in Mathlib.ModelTheory.Basic packages an arity-indexed family of function symbols and relation symbols, matching the article's notion of signature.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "First-order theory",
+      "anchor": {
+        "section": "Signatures",
+        "snippet": "A first-order theory consists of a fixed signature and a fixed set of sentences"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "FirstOrder.Language.Theory",
+        "module": "Mathlib.ModelTheory.Syntax",
+        "match_kind": "exact"
+      },
+      "note": "`Language.Theory` is defined as `Set L.Sentence`, i.e. a set of sentences over a fixed language.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Structure (σ-structure)",
+      "anchor": {
+        "section": "Structures / Models",
+        "snippet": "is a concrete interpretation of the symbols in"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "FirstOrder.Language.Structure",
+        "module": "Mathlib.ModelTheory.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`Language.Structure` is a type class providing interpretations `funMap` and `RelMap` for each function and relation symbol on a carrier type.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Substructure and elementary substructure",
+      "anchor": {
+        "section": "Structures / Models",
+        "snippet": "A substructure of a"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "FirstOrder.Language.ElementarySubstructure",
+        "module": "Mathlib.ModelTheory.ElementarySubstructures",
+        "match_kind": "exact"
+      },
+      "note": "`Language.Substructure` (Mathlib.ModelTheory.Substructures) and `Language.ElementarySubstructure` (Mathlib.ModelTheory.ElementarySubstructures) formalize both notions.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Theory with arbitrarily large finite models has an infinite model",
+      "anchor": {
+        "section": "Consequences",
+        "snippet": "the proof of the upward part of the theorem also shows that a theory with arbitrarily large finite models must have an infinite model"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Only the converse (`exists_large_model_of_infinite_model`: an infinite model gives arbitrarily large models) is in Mathlib; the compactness-based argument that arbitrarily large finite models yield an infinite model does not appear as a stated lemma.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Categorical theory",
+      "anchor": {
+        "section": "Consequences",
+        "snippet": "A theory is called categorical if it has only one model, up to isomorphism."
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Cardinal.Categorical",
+        "module": "Mathlib.ModelTheory.Satisfiability",
+        "match_kind": "generalization"
+      },
+      "note": "Mathlib defines `κ`-categoricity (`Categorical : Cardinal → L.Theory → Prop`) rather than absolute categoricity; the article's notion is the special case treated implicitly.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "First-order theory with infinite model is not categorical",
+      "anchor": {
+        "section": "Consequences",
+        "snippet": "it implies that a first-order theory which has an infinite model cannot be categorical"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No Mathlib lemma directly states that having an infinite model precludes (absolute) categoricity, although it would follow easily from `exists_elementaryEmbedding_card_eq_of_ge`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Uncountable models of true arithmetic",
+      "anchor": {
+        "section": "Consequences",
+        "snippet": "One such consequence is the existence of uncountable models of true arithmetic"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "True first-order arithmetic is not set up as a `Language.Theory` in Mathlib, so this specific consequence is not present.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Countable model of real closed fields and uncountable model of arithmetic",
+      "anchor": {
+        "section": "Consequences",
+        "snippet": "the theory of true first-order arithmetic) has uncountable models, and that the theory of"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has no formalized theory of real closed fields as a first-order theory nor a statement about it having countable models.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Skolem's paradox",
+      "anchor": {
+        "section": "Consequences",
+        "snippet": "Another consequence that was considered particularly troubling is the existence of a countable model of set theory"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "ZFC is not formalized as a first-order `Language.Theory` in Mathlib, so Skolem's paradox is not stated.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Downward part proof via Skolem functions and Tarski–Vaught test",
+      "anchor": {
+        "section": "Downward part",
+        "snippet": "is an elementary substructure of"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "FirstOrder.Language.skolem₁",
+        "module": "Mathlib.ModelTheory.Skolem",
+        "match_kind": "exact"
+      },
+      "note": "The Tarski–Vaught criterion is `Substructure.isElementary_of_exists` (ElementarySubstructures.lean) and the Skolem-function expansion `skolem₁` is used in the proof of `exists_elementarySubstructure_card_eq`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Upward part proof via elementary diagram and compactness",
+      "anchor": {
+        "section": "Upward part",
+        "snippet": "First, one extends the signature by adding a new constant symbol for every element of"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "FirstOrder.Language.exists_elementaryEmbedding_card_eq_of_ge",
+        "module": "Mathlib.ModelTheory.Satisfiability",
+        "match_kind": "exact"
+      },
+      "note": "The Mathlib proof uses `elementaryDiagram`, `exists_large_model_of_infinite_model`, and the compactness theorem `isSatisfiable_iff_isFinitelySatisfiable`, exactly mirroring the article's argument.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Löwenheim–Skolem in second-order logic via supercompact cardinal",
+      "anchor": {
+        "section": "In other logics",
+        "snippet": "every consistent theory in second-order logic has a model smaller than the first supercompact cardinal"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib does not formalize second-order logic semantics or supercompact cardinals in this context, so this Magidor–Väänänen-style result is absent.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Löwenheim number",
+      "anchor": {
+        "section": "In other logics",
+        "snippet": "The minimum size at which a (downward) Löwenheim–Skolem–type theorem applies in a logic is known as the Löwenheim number"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No definition of an abstract logic's Löwenheim number appears in Mathlib.",
+      "provenance": "ai"
+    }
+  ]
+}

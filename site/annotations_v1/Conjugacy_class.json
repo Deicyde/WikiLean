@@ -1,0 +1,89 @@
+{
+  "slug": "Conjugacy_class",
+  "wikipedia_title": "Conjugacy class",
+  "display_title": "Conjugacy class",
+  "schema_version": 1,
+  "source": "claude-agent-sdk/annotate_articles.py",
+  "annotations": [
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\operatorname {Cl} (a)=\\left\\{gag^{-1}:g\\in G\\right\\}}"
+      },
+      "status": "formalized",
+      "decl": "conjugatesOf",
+      "module": "Mathlib.Algebra.Group.Conj",
+      "note": "conjugatesOf a is the set {b | IsConj a b}, exactly the conjugacy class of a."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle {\\frac {n!}{\\left(k_{1}!\\,m_{1}^{k_{1}}\\right)\\left(k_{2}!\\,m_{2}^{k_{2}}\\right)\\cdots \\left(k_{s}!\\,m_{s}^{k_{s}}\\right)}}.}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Specific counting formula for symmetric group conjugacy classes by cycle type, not in the provided list."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle g\\cdot x:=gxg^{-1}.}"
+      },
+      "status": "partial",
+      "decl": "IsConj",
+      "module": "Mathlib.Algebra.Group.Conj",
+      "note": "IsConj captures the conjugation relation; the explicit group action g·x = gxg⁻¹ is not a single decl in the list."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle bab^{-1}=cac^{-1}\\Longleftrightarrow \\left(c^{-1}b\\right)a=a\\left(c^{-1}b\\right)\\Longleftrightarrow z=c^{-1}b\\in \\operatorname {C} _{G}(a).}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Proof intermediate establishing bijection between conjugates and centralizer cosets; not a standalone decl."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle |G|=\\sum _{i}\\left[G:\\operatorname {C} _{G}(x_{i})\\right].}"
+      },
+      "status": "partial",
+      "decl": "Group.nat_card_center_add_sum_card_noncenter_eq_card",
+      "module": "Mathlib.GroupTheory.ClassEquation",
+      "note": "Mathlib's class equation separates center from noncentral classes rather than summing over all classes uniformly."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle |G|=|{\\operatorname {Z} (G)}|+\\sum _{i}\\left[G:\\operatorname {C} _{G}(x_{i})\\right],}"
+      },
+      "status": "formalized",
+      "decl": "Group.nat_card_center_add_sum_card_noncenter_eq_card",
+      "module": "Mathlib.GroupTheory.ClassEquation",
+      "note": "This is precisely the class equation as stated in Mathlib."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle g\\cdot S:=gSg^{-1}.}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Conjugation action on subsets/subgroups is not represented by any decl in the provided list."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle |{\\operatorname {Cl} (S)}|=[G:N(S)].}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Orbit-stabilizer formula for conjugacy class of a subset via its normalizer is not in the provided list."
+    }
+  ]
+}

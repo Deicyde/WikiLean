@@ -1,0 +1,139 @@
+{
+  "slug": "Area",
+  "wikipedia_title": "Area",
+  "display_title": "Area",
+  "schema_version": 1,
+  "source": "claude-agent-sdk/annotate_articles.py",
+  "annotations": [
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle A={\\frac {1}{2}}{\\Biggl \\vert }\\sum _{i=0}^{n-1}(x_{i}y_{i+1}-x_{i+1}y_{i}){\\Biggr \\vert }}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Shoelace/surveyor's formula for polygon area not present in Mathlib (no Polygon.area decl)."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle A={\\frac {1}{2}}bh{\\text{ (triangle).}}}"
+      },
+      "status": "partial",
+      "decl": "Orientation.areaForm",
+      "module": "Mathlib.Analysis.InnerProductSpace.TwoDim",
+      "note": "areaForm gives signed parallelogram area; the explicit (1/2)·b·h triangle formula is not stated."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle A\\;=\\;2\\int _{-r}^{r}{\\sqrt {r^{2}-x^{2}}}\\,dx\\;=\\;\\pi r^{2}.}"
+      },
+      "status": "partial",
+      "decl": "integral_sqrt_one_sub_sq",
+      "module": "Mathlib.Analysis.SpecialFunctions.Integrals.Basic",
+      "note": "Mathlib proves ∫_{-1}^1 √(1-x²) = π/2 (unit case); general r and disc-area identification not packaged."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle A=\\pi xy.}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "No ellipse area formula in Mathlib (search for 'ellipse' returns no decls)."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle A=\\int _{a}^{b}f(x)\\,dx.}"
+      },
+      "status": "formalized",
+      "decl": "intervalIntegral",
+      "module": "Mathlib.MeasureTheory.Integral.IntervalIntegral.Basic",
+      "note": "intervalIntegral is Mathlib's definition of ∫_a^b f(x) dx, the area under a curve."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle A=\\int _{a}^{b}(f(x)-g(x))\\,dx,}"
+      },
+      "status": "partial",
+      "decl": "intervalIntegral.integral_sub",
+      "module": "Mathlib.MeasureTheory.Integral.IntervalIntegral.Basic",
+      "note": "integral_sub gives ∫(f - g) = ∫f - ∫g; not stated as an 'area between curves' result."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle A={1 \\over 2}\\int r^{2}\\,d\\theta .}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Polar area formula (1/2)∫r² dθ is not present in Mathlib as a standalone result."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\oint _{t_{0}}^{t_{1}}x{\\dot {y}}\\,dt=-\\oint _{t_{0}}^{t_{1}}y{\\dot {x}}\\,dt={1 \\over 2}\\oint _{t_{0}}^{t_{1}}(x{\\dot {y}}-y{\\dot {x}})\\,dt}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Green's-theorem line-integral expression for planar area is not formalized in Mathlib."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle {1 \\over 2}\\oint _{t_{0}}^{t_{1}}{\\vec {u}}\\times {\\dot {\\vec {u}}}\\,dt.}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Vector-form line integral for enclosed area is not present in Mathlib."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle f(x)-g(x)=ax^{2}+bx+c=a(x-\\alpha )(x-\\beta )}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Proof intermediate algebraic factorization step, not a standalone Mathlib statement."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle A={\\frac {(b^{2}-4ac)^{3/2}}{6a^{2}}}={\\frac {a}{6}}(\\beta -\\alpha )^{3},\\qquad a\\neq 0.}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Specific closed-form area between two parabolas is not a Mathlib lemma."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle A=\\iint _{D}{\\sqrt {\\left({\\frac {\\partial f}{\\partial x}}\\right)^{2}+\\left({\\frac {\\partial f}{\\partial y}}\\right)^{2}+1}}\\,dx\\,dy.}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Surface-area-of-a-graph formula is not formalized in Mathlib."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle A=\\iint _{D}\\left|{\\frac {\\partial \\mathbf {r} }{\\partial u}}\\times {\\frac {\\partial \\mathbf {r} }{\\partial v}}\\right|\\,du\\,dv.}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Parametric surface-area formula via |r_u × r_v| is not present in Mathlib."
+    }
+  ]
+}

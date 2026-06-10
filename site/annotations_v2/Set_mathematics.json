@@ -1,0 +1,309 @@
+{
+  "slug": "Set_mathematics",
+  "wikipedia_title": "Set (mathematics)",
+  "display_title": "Set (mathematics)",
+  "schema_version": 1,
+  "source": "claude-agent-sdk/annotate_articles.py",
+  "annotations": [
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\{1,2,3,4\\}=\\{4,2,1,3\\}=\\{4,2,4,3,1,3\\}.}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Pedagogical example of unordered roster equality; not a Mathlib statement."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\{\\ldots ,-3,-2,-1,0,1,2,3,\\ldots \\}}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Informal roster for the integers; not a Mathlib statement."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\{0,1,-1,2,-2,3,-3,\\ldots \\}.}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Alternative informal listing of integers; no Mathlib equivalent."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\{x\\mid P(x)\\}}"
+      },
+      "status": "formalized",
+      "decl": "setOf",
+      "module": "Mathlib.Data.Set.Defs",
+      "note": "Set-builder notation `{x | P x}` is exactly `setOf p`."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\{x:P(x)\\}}"
+      },
+      "status": "formalized",
+      "decl": "setOf",
+      "module": "Mathlib.Data.Set.Defs",
+      "note": "Alternate set-builder notation, same as `setOf`."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle F=\\{n\\mid n{\\text{ is an integer, and }}0\\leq n\\leq 19\\}.}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Concrete example set; not a Mathlib declaration."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\{x\\mid x\\in U{\\text{ and ...}}\\}}"
+      },
+      "status": "formalized",
+      "decl": "setOf",
+      "module": "Mathlib.Data.Set.Defs",
+      "note": "Bounded set-builder built via `setOf` together with membership in `U`."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\{x\\in U\\mid {\\text{ ...}}\\}.}"
+      },
+      "status": "formalized",
+      "decl": "setOf",
+      "module": "Mathlib.Data.Set.Defs",
+      "note": "Bounded set-builder syntax; same `setOf` mechanism."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\{x\\mid x\\not \\in \\mathbb {Q} \\}}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Concrete example (irrationals) illustrating context-dependent notation."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\{x\\in \\mathbb {R} \\mid x\\not \\in \\mathbb {Q} \\},}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Concrete example set (irrationals); not a standalone Mathlib decl."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle A\\cap B=\\{x\\mid x\\in A\\land x\\in B\\},}"
+      },
+      "status": "formalized",
+      "decl": "Set.inter_def",
+      "module": "Mathlib.Data.Set.Basic",
+      "note": "Exactly `Set.inter_def : s ∩ t = {a | a ∈ s ∧ a ∈ t}`."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\bigcap _{A\\in {\\mathcal {S}}}A=\\{x\\mid (\\forall A\\in {\\mathcal {S}})\\;x\\in A\\}.}"
+      },
+      "status": "formalized",
+      "decl": "Set.sInter",
+      "module": "Mathlib.Data.Set.Lattice",
+      "note": "`⋂₀ S` with `mem_sInter` characterising membership by `∀ A ∈ S, x ∈ A`."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle A\\cup B=\\{x\\mid x\\in A\\lor x\\in B\\},}"
+      },
+      "status": "formalized",
+      "decl": "Set.union_def",
+      "module": "Mathlib.Data.Set.Basic",
+      "note": "Exactly `Set.union_def : s ∪ t = {a | a ∈ s ∨ a ∈ t}`."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\bigcup _{A\\in {\\mathcal {S}}}A=\\{x\\mid (\\exists A\\in {\\mathcal {S}})\\;x\\in A\\}.}"
+      },
+      "status": "formalized",
+      "decl": "Set.sUnion",
+      "module": "Mathlib.Data.Set.Lattice",
+      "note": "`⋃₀ S` with membership iff `∃ A ∈ S, x ∈ A`."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle A\\setminus B=\\{x\\mid x\\in A\\land x\\not \\in B\\},}"
+      },
+      "status": "formalized",
+      "decl": "Set.diff_eq",
+      "module": "Mathlib.Data.Set.Basic",
+      "note": "Set difference defined so `s \\ t = {x | x ∈ s ∧ x ∉ t}`."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle A\\,\\Delta \\,B=(A\\setminus B)\\cup (B\\setminus A).}"
+      },
+      "status": "formalized",
+      "decl": "symmDiff_def",
+      "module": "Mathlib.Order.SymmDiff",
+      "note": "`symmDiff_def : a ∆ b = a \\ b ⊔ b \\ a` instantiates to sets."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\bigcup _{i\\in {\\mathcal {I}}}A_{i}=\\{x\\mid (\\exists i\\in {\\mathcal {I}})\\;x\\in A_{i}\\}}"
+      },
+      "status": "formalized",
+      "decl": "Set.iUnion",
+      "module": "Mathlib.Data.Set.Lattice",
+      "note": "`⋃ i, A i` with `mem_iUnion` giving the existential characterisation."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\bigcap _{i\\in {\\mathcal {I}}}A_{i}=\\{x\\mid (\\forall i\\in {\\mathcal {I}})\\;x\\in A_{i}\\}.}"
+      },
+      "status": "formalized",
+      "decl": "Set.iInter",
+      "module": "Mathlib.Data.Set.Lattice",
+      "note": "`⋂ i, A i` with `mem_iInter` giving the universal characterisation."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle A\\times B=\\{(a,b)\\mid a\\in A{\\text{ and }}b\\in B\\}.}"
+      },
+      "status": "formalized",
+      "decl": "Set.prod",
+      "module": "Mathlib.Data.Set.Operations",
+      "note": "`Set.prod s t = {p | p.1 ∈ s ∧ p.2 ∈ t}`, notation `s ×ˢ t`."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle {\\mathcal {P}}(\\{1,2,3\\})=\\{\\emptyset ,\\{1\\},\\{2\\},\\{3\\},\\{1,2\\},\\{1,3\\},\\{2,3\\},\\{1,2,3\\}\\}.}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Concrete enumeration of `𝒫 {1,2,3}`; not stated as a named lemma."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle {\\mathcal {P}}(E)=\\{0,1\\}^{E}.}"
+      },
+      "status": "partial",
+      "decl": "Set.powerset",
+      "module": "Mathlib.Data.Set.Defs",
+      "note": "Powerset is defined; bijection with `E → Bool` exists in pieces but not as one canonical identity."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle {\\mathcal {P}}(E)=2^{E}.}"
+      },
+      "status": "formalized",
+      "decl": "Cardinal.mk_set",
+      "module": "Mathlib.SetTheory.Cardinal.Order",
+      "note": "Cardinality version `#(Set α) = 2 ^ #α` matches the `2^E` reading."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle A\\sqcup B=\\{(a,i)\\mid (i=1\\land a\\in A)\\lor (i=2\\land a\\in B\\}.}"
+      },
+      "status": "partial",
+      "decl": "Sum",
+      "module": "Init.Prelude",
+      "note": "Mathlib uses `α ⊕ β` rather than the index-pair construction; same notion, different encoding."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\bigsqcup _{i\\in {\\mathcal {I}}}=\\{(a,i)\\mid i\\in {\\mathcal {I}}\\land a\\in A_{i}\\}.}"
+      },
+      "status": "formalized",
+      "decl": "Sigma",
+      "module": "Init.Prelude",
+      "note": "Indexed disjoint union is the `Sigma` (dependent pair) type."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\coprod _{i\\in {\\mathcal {I}}}=\\{(a,i)\\mid i\\in {\\mathcal {I}}\\land a\\in A_{i}\\}}"
+      },
+      "status": "formalized",
+      "decl": "Sigma",
+      "module": "Init.Prelude",
+      "note": "Coproduct notation is again the `Sigma` type / sigma coproduct in `Type`."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle {\\begin{aligned}\\bigsqcup _{i\\in {\\mathcal {I}}}A_{i}&\\to \\bigcup _{i\\in {\\mathcal {I}}}A_{i}\\\\(a,i)&\\mapsto a,\\end{aligned}}}"
+      },
+      "status": "formalized",
+      "decl": "Set.sigmaToiUnion",
+      "module": "Mathlib.Data.Set.Lattice",
+      "note": "`sigmaToiUnion : (Σ i, t i) → ⋃ i, t i` is precisely this natural map."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle |S|<\\left|2^{S}\\right|.}"
+      },
+      "status": "formalized",
+      "decl": "Cardinal.cantor",
+      "module": "Mathlib.SetTheory.Cardinal.Order",
+      "note": "Cantor's theorem `cantor (a : Cardinal) : a < 2 ^ a`."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle {\\mathfrak {c}}=2^{\\aleph _{0}},}"
+      },
+      "status": "formalized",
+      "decl": "Cardinal.continuum",
+      "module": "Mathlib.SetTheory.Cardinal.Continuum",
+      "note": "`continuum` is defined as `2 ^ ℵ₀` (with `two_power_aleph0 : 2 ^ ℵ₀ = 𝔠`)."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle {\\mathfrak {c}}>\\aleph _{0}.}"
+      },
+      "status": "formalized",
+      "decl": "Cardinal.aleph0_lt_continuum",
+      "module": "Mathlib.SetTheory.Cardinal.Continuum",
+      "note": "`aleph0_lt_continuum : ℵ₀ < 𝔠`."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle (m<n\\implies P(m))\\implies P(n).}"
+      },
+      "status": "formalized",
+      "decl": "Ordinal.induction",
+      "module": "Mathlib.SetTheory.Ordinal.Basic",
+      "note": "Transfinite induction principle on ordinals: `(∀ k < j, p k) → p j` implies `p i`."
+    }
+  ]
+}

@@ -1,0 +1,593 @@
+{
+  "slug": "Maximum_likelihood_estimation",
+  "wikipedia_title": "Maximum likelihood estimation",
+  "display_title": "Maximum likelihood estimation",
+  "schema_version": 3,
+  "annotations": [
+    {
+      "kind": "definition",
+      "label": "Maximum likelihood estimation",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "is a method of estimating the parameters of an assumed probability distribution"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "definition",
+      "label": "Likelihood function",
+      "anchor": {
+        "section": "Principles",
+        "snippet": "which is called the likelihood function"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "proposition",
+      "label": "Likelihood factorizes for independent variables",
+      "anchor": {
+        "section": "Principles",
+        "snippet": "will be the product of univariate density functions"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "definition",
+      "label": "MLE as maximizer of likelihood",
+      "anchor": {
+        "section": "Principles",
+        "snippet": "to find the values of the model parameters that maximize the likelihood function over the parameter space"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "definition",
+      "label": "Maximum likelihood estimate",
+      "anchor": {
+        "section": "Principles",
+        "snippet": "is called the maximum likelihood estimate"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "definition",
+      "label": "Maximum likelihood estimator",
+      "anchor": {
+        "section": "Principles",
+        "snippet": "then it is called the maximum likelihood estimator"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "proposition",
+      "label": "Sufficient condition for existence of MLE",
+      "anchor": {
+        "section": "Principles",
+        "snippet": "A sufficient but not necessary condition for its existence is for the likelihood function to be continuous over a parameter space"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "definition",
+      "label": "Log-likelihood",
+      "anchor": {
+        "section": "Principles",
+        "snippet": "called the log-likelihood"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "definition",
+      "label": "Likelihood equations",
+      "anchor": {
+        "section": "Principles",
+        "snippet": "known as the likelihood equations"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "proposition",
+      "label": "Negative semi-definite Hessian indicates local maximum",
+      "anchor": {
+        "section": "Principles",
+        "snippet": "as this indicates local concavity"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "definition",
+      "label": "Constrained MLE optimization",
+      "anchor": {
+        "section": "Restricted parameter space",
+        "snippet": "means to find the maximum of the likelihood function subject to the constraint"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "proposition",
+      "label": "Restricted likelihood equations via Lagrange",
+      "anchor": {
+        "section": "Restricted parameter space",
+        "snippet": "leads to the restricted likelihood equations"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "definition",
+      "label": "Lagrange multiplier test",
+      "anchor": {
+        "section": "Restricted parameter space",
+        "snippet": "known as the Lagrange multiplier test"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "definition",
+      "label": "Nonparametric MLE via empirical likelihood",
+      "anchor": {
+        "section": "Nonparametric maximum likelihood estimation",
+        "snippet": "can be performed using the empirical likelihood"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "definition",
+      "label": "MLE as extremum estimator",
+      "anchor": {
+        "section": "Properties",
+        "snippet": "is an extremum estimator obtained by maximizing"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "proposition",
+      "label": "Limiting properties of MLE",
+      "anchor": {
+        "section": "Properties",
+        "snippet": "maximum likelihood estimation possesses a number of attractive limiting properties"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "theorem",
+      "label": "Consistency of the MLE",
+      "anchor": {
+        "section": "Consistency",
+        "snippet": "the maximum likelihood estimator is consistent"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "proposition",
+      "label": "MLE converges in probability",
+      "anchor": {
+        "section": "Consistency",
+        "snippet": "converges in probability to its true value"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "proposition",
+      "label": "MLE converges almost surely",
+      "anchor": {
+        "section": "Consistency",
+        "snippet": "the estimator converges almost surely"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "proposition",
+      "label": "Identification condition",
+      "anchor": {
+        "section": "Consistency",
+        "snippet": "different parameter values θ correspond to different distributions within the model"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "proposition",
+      "label": "Compactness condition",
+      "anchor": {
+        "section": "Consistency",
+        "snippet": "the parameter space Θ of the model is compact"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "proposition",
+      "label": "Continuity condition",
+      "anchor": {
+        "section": "Consistency",
+        "snippet": "is continuous in θ for almost all values of x"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "proposition",
+      "label": "Dominance condition",
+      "anchor": {
+        "section": "Consistency",
+        "snippet": "there exists D ( x ) integrable with respect to the distribution"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "theorem",
+      "label": "Asymptotic normality of the MLE",
+      "anchor": {
+        "section": "Consistency",
+        "snippet": "the maximum likelihood estimator converges in distribution to a normal distribution"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "proposition",
+      "label": "Functional invariance of the MLE",
+      "anchor": {
+        "section": "Functional invariance",
+        "snippet": "is any transformation of"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "definition",
+      "label": "Profile likelihood",
+      "anchor": {
+        "section": "Functional invariance",
+        "snippet": "It maximizes the so-called profile likelihood"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "proposition",
+      "label": "Equivariance under data transformations",
+      "anchor": {
+        "section": "Functional invariance",
+        "snippet": "The MLE is also equivariant with respect to certain transformations of the data"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "example",
+      "label": "Log-normal MLE equals normal MLE of logs",
+      "anchor": {
+        "section": "Functional invariance",
+        "snippet": "the MLE parameters of the log-normal distribution are the same as those of the normal distribution fitted to the logarithm of the data"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "theorem",
+      "label": "Asymptotic efficiency reaches Cramér–Rao bound",
+      "anchor": {
+        "section": "Efficiency",
+        "snippet": "asymptotically efficient, meaning that it reaches the Cramér–Rao bound"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "proposition",
+      "label": "Bias zero up to order 1/√n",
+      "anchor": {
+        "section": "Efficiency",
+        "snippet": "the bias of the maximum likelihood estimator is equal to zero up to the order"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "proposition",
+      "label": "MLE has bias of order 1/n",
+      "anchor": {
+        "section": "Second-order efficiency after correction for bias",
+        "snippet": "θ mle has bias of order"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "definition",
+      "label": "Bias-corrected maximum likelihood estimator",
+      "anchor": {
+        "section": "Second-order efficiency after correction for bias",
+        "snippet": "is called the bias-corrected maximum likelihood estimator"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "proposition",
+      "label": "Second-order efficiency of bias-corrected estimator",
+      "anchor": {
+        "section": "Second-order efficiency after correction for bias",
+        "snippet": "This bias-corrected estimator is second-order efficient"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "proposition",
+      "label": "MLE coincides with MAP under uniform prior",
+      "anchor": {
+        "section": "Relation to Bayesian inference",
+        "snippet": "coincides with the most probable Bayesian estimator given a uniform prior distribution on the parameters"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "definition",
+      "label": "Bayes Decision Rule",
+      "anchor": {
+        "section": "Application of maximum-likelihood estimation in Bayes decision theory",
+        "snippet": "the Bayes Decision Rule is stated as"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "proposition",
+      "label": "Bayes rule under zero-one loss",
+      "anchor": {
+        "section": "Application of maximum-likelihood estimation in Bayes decision theory",
+        "snippet": "the Bayes Decision rule can be reformulated as"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "proposition",
+      "label": "MLE minimizes Kullback–Leibler divergence",
+      "anchor": {
+        "section": "Relation to minimizing Kullback–Leibler divergence and cross entropy",
+        "snippet": "that maximizes the likelihood is asymptotically equivalent to finding the"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "proposition",
+      "label": "MLE minimizes cross entropy",
+      "anchor": {
+        "section": "Relation to minimizing Kullback–Leibler divergence and cross entropy",
+        "snippet": "the MLE is also asymptotically minimizing cross entropy"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "proposition",
+      "label": "Prediction bias of MLE",
+      "anchor": {
+        "section": "Prediction bias",
+        "snippet": "maximum likelihood prediction fails to propagate the uncertainty around the maximum likelihood parameter estimates into the prediction"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "example",
+      "label": "Discrete uniform distribution MLE",
+      "anchor": {
+        "section": "Discrete uniform distribution",
+        "snippet": "of n is the number m on the drawn ticket"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "example",
+      "label": "Unfair coin, finite parameter space",
+      "anchor": {
+        "section": "Discrete distribution, finite parameter space",
+        "snippet": "and so this is the maximum likelihood estimate for p"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "example",
+      "label": "Bernoulli MLE, continuous parameter space",
+      "anchor": {
+        "section": "Discrete distribution, continuous parameter space",
+        "snippet": "Thus the maximum likelihood estimator for p is"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "example",
+      "label": "Generalized Bernoulli MLE s/n",
+      "anchor": {
+        "section": "Discrete distribution, continuous parameter space",
+        "snippet": "which is the maximum likelihood estimator for any sequence of n Bernoulli trials resulting in s 'successes'"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "example",
+      "label": "MLE for the normal distribution",
+      "anchor": {
+        "section": "Continuous distribution, continuous parameter space",
+        "snippet": "Formally we say that the maximum likelihood estimator for"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "proposition",
+      "label": "Sample-mean MLE is unbiased",
+      "anchor": {
+        "section": "Continuous distribution, continuous parameter space",
+        "snippet": "which means that the maximum likelihood estimator"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "proposition",
+      "label": "Variance MLE is biased",
+      "anchor": {
+        "section": "Continuous distribution, continuous parameter space",
+        "snippet": "This means that the estimator"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "proposition",
+      "label": "Normal log-likelihood at maximum",
+      "anchor": {
+        "section": "Continuous distribution, continuous parameter space",
+        "snippet": "The normal log-likelihood at its maximum takes a particularly simple form"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "definition",
+      "label": "Independence via factorized density",
+      "anchor": {
+        "section": "Non-independent variables",
+        "snippet": "are independent only if their joint probability density function is the product of the individual probability density functions"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "definition",
+      "label": "Multivariate normal joint density",
+      "anchor": {
+        "section": "Non-independent variables",
+        "snippet": "then follows a multivariate normal distribution given by"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "definition",
+      "label": "Bivariate normal joint density",
+      "anchor": {
+        "section": "Non-independent variables",
+        "snippet": "In the bivariate case, the joint probability density function is given by"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "example",
+      "label": "Multinomial joint probability",
+      "anchor": {
+        "section": "Example",
+        "snippet": "is called the multinomial and has the form"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "example",
+      "label": "Constrained multinomial MLE via Lagrange",
+      "anchor": {
+        "section": "Example",
+        "snippet": "the most natural estimate is derived"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "proposition",
+      "label": "Likelihood equations not solvable explicitly",
+      "anchor": {
+        "section": "Iterative procedures",
+        "snippet": "cannot be solved explicitly for an estimator"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "definition",
+      "label": "Iterative updating formula",
+      "anchor": {
+        "section": "Iterative procedures",
+        "snippet": "algorithms based on an updating formula of the form"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "definition",
+      "label": "Gradient descent method",
+      "anchor": {
+        "section": "Gradient descent method",
+        "snippet": "Gradient descent method requires to calculate the gradient at the r -th iteration"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "definition",
+      "label": "Newton–Raphson step",
+      "anchor": {
+        "section": "Newton–Raphson method",
+        "snippet": "is the inverse of the Hessian matrix of the log-likelihood function"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "definition",
+      "label": "Berndt–Hall–Hall–Hausman algorithm",
+      "anchor": {
+        "section": "Newton–Raphson method",
+        "snippet": "approximates the Hessian with the outer product of the expected gradient"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "definition",
+      "label": "Quasi-Newton secant updates",
+      "anchor": {
+        "section": "Quasi-Newton methods",
+        "snippet": "use more elaborate secant updates to give approximation of Hessian matrix"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "definition",
+      "label": "Davidon–Fletcher–Powell formula",
+      "anchor": {
+        "section": "Davidon–Fletcher–Powell formula",
+        "snippet": "DFP formula finds a solution that is symmetric, positive-definite and closest to the current approximate value of second-order derivative"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "definition",
+      "label": "BFGS algorithm",
+      "anchor": {
+        "section": "Broyden–Fletcher–Goldfarb–Shanno algorithm",
+        "snippet": "BFGS also gives a solution that is symmetric and positive-definite"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "proposition",
+      "label": "BFGS convergence condition",
+      "anchor": {
+        "section": "Broyden–Fletcher–Goldfarb–Shanno algorithm",
+        "snippet": "BFGS method is not guaranteed to converge unless the function has a quadratic Taylor expansion near an optimum"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "definition",
+      "label": "Fisher scoring algorithm",
+      "anchor": {
+        "section": "Fisher's scoring",
+        "snippet": "to replace the Hessian with the Fisher information matrix"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "proposition",
+      "label": "Quasi-Newton convergence to stationary point",
+      "anchor": {
+        "section": "Fisher's scoring",
+        "snippet": "may converge to a stationary point that is not necessarily a local or global maximum"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "theorem",
+      "label": "Wilks' theorem",
+      "anchor": {
+        "section": "History",
+        "snippet": "now called Wilks' theorem"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "theorem",
+      "label": "Asymptotic chi-squared distribution of log-likelihood error",
+      "anchor": {
+        "section": "History",
+        "snippet": "is asymptotically χ 2 -distributed"
+      },
+      "provenance": "ai-agent1"
+    }
+  ]
+}

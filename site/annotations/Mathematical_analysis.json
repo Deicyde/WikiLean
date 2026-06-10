@@ -1,0 +1,537 @@
+{
+  "slug": "Mathematical_analysis",
+  "wikipedia_title": "Mathematical analysis",
+  "display_title": "Mathematical analysis",
+  "schema_version": 3,
+  "annotation_style": "theorem_article",
+  "annotations": [
+    {
+      "kind": "definition",
+      "label": "Metric space",
+      "anchor": {
+        "section": "Metric spaces",
+        "snippet": "a metric space is a set where a notion of distance"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "MetricSpace",
+        "module": "Mathlib.Topology.MetricSpace.Defs",
+        "match_kind": "exact"
+      },
+      "note": "Mathlib defines `class MetricSpace` capturing a set with a distance function satisfying the metric axioms.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Formal definition of metric space",
+      "anchor": {
+        "section": "Metric spaces",
+        "snippet": "Formally, a metric space is an ordered pair"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "MetricSpace",
+        "module": "Mathlib.Topology.MetricSpace.Defs",
+        "match_kind": "exact"
+      },
+      "note": "Mathlib's `MetricSpace` class encodes the same ordered-pair (M, d) data together with the three metric axioms.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Non-negativity of a metric",
+      "anchor": {
+        "section": "Metric spaces",
+        "snippet": "By taking the third property"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "dist_nonneg",
+        "module": "Mathlib.Topology.MetricSpace.Pseudo.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`dist_nonneg : 0 ≤ dist x y` is proved at line 251 of `Mathlib/Topology/MetricSpace/Pseudo/Defs.lean`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Sequence",
+      "anchor": {
+        "section": "Sequences and limits",
+        "snippet": "A sequence is an ordered list"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Stream'.Seq",
+        "module": "Mathlib.Data.Seq.Defs",
+        "match_kind": "generalization"
+      },
+      "note": "Mathlib formalizes sequences both as functions `ℕ → α` (used throughout analysis) and as `Stream'.Seq` for possibly-finite ordered lists.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Convergence of a sequence",
+      "anchor": {
+        "section": "Sequences and limits",
+        "snippet": "One of the most important properties of a sequence is convergence"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Filter.Tendsto",
+        "module": "Mathlib.Order.Filter.Basic",
+        "match_kind": "generalization"
+      },
+      "note": "Sequence convergence is expressed via `Filter.Tendsto u Filter.atTop (𝓝 x)` using Mathlib's filter-based limits.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Continuous function at a point",
+      "anchor": {
+        "section": "Continuous functions",
+        "snippet": "is continuous at a point"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "ContinuousAt",
+        "module": "Mathlib.Topology.Defs.Filter",
+        "match_kind": "exact"
+      },
+      "note": "`ContinuousAt f x` is defined in Mathlib as `Filter.Tendsto f (𝓝 x) (𝓝 (f x))`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Real analysis",
+      "anchor": {
+        "section": "Real analysis",
+        "snippet": "Real analysis (traditionally, the \"theory of functions of a real variable\")"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Real analysis is a subject-area label, not a single formal definition; Mathlib develops it in `Mathlib/Analysis/` but does not formalize the meta-notion itself.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Complex analysis",
+      "anchor": {
+        "section": "Complex analysis",
+        "snippet": "Complex analysis (traditionally known as the \"theory of functions of a complex variable\")"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Complex analysis is a discipline name rather than a formal statement; while Mathlib has extensive complex-analysis content, the term itself is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Functional analysis",
+      "anchor": {
+        "section": "Functional analysis",
+        "snippet": "Functional analysis is a branch of mathematical analysis"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Functional analysis is a subject-area label; Mathlib formalizes its objects (e.g., `NormedSpace`) but not the discipline itself.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Free (noncommutative) analysis",
+      "anchor": {
+        "section": "Free analysis",
+        "snippet": "Free or noncommutative analysis is a sub-branch of functional analysis"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No formalization of free/noncommutative analysis as a topic was found in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Harmonic analysis",
+      "anchor": {
+        "section": "Harmonic analysis",
+        "snippet": "Harmonic analysis is a branch of mathematical analysis concerned with the representation of functions and signals"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Harmonic analysis is a discipline label, not a formal definition; Mathlib has Fourier-analysis content but does not formalize the umbrella term.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Differential equation",
+      "anchor": {
+        "section": "Differential equations",
+        "snippet": "A differential equation is a mathematical equation for an unknown function"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "ODE_solution_unique",
+        "module": "Mathlib.Analysis.ODE.Gronwall",
+        "match_kind": "special_case"
+      },
+      "note": "Mathlib's `Mathlib/Analysis/ODE/` formalizes ODE solutions (e.g., Picard–Lindelöf, Gronwall), but there is no general `DifferentialEquation` definition.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Measure on a set",
+      "anchor": {
+        "section": "Measure theory",
+        "snippet": "A measure on a set is a systematic way to assign a number"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "MeasureTheory.Measure",
+        "module": "Mathlib.MeasureTheory.Measure.MeasureSpaceDef",
+        "match_kind": "exact"
+      },
+      "note": "`MeasureTheory.Measure` is Mathlib's formalization of a measure on a measurable space.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Technical definition of a measure",
+      "anchor": {
+        "section": "Measure theory",
+        "snippet": "Technically, a measure is a function that assigns a non-negative real number"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "MeasureTheory.Measure",
+        "module": "Mathlib.MeasureTheory.Measure.MeasureSpaceDef",
+        "match_kind": "exact"
+      },
+      "note": "Mathlib's `MeasureTheory.Measure` encodes the countably-additive non-negative set function with the standard axioms.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Lebesgue measure of an interval",
+      "anchor": {
+        "section": "Measure theory",
+        "snippet": "For instance, the Lebesgue measure of the interval"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Real.volume_Ioo",
+        "module": "Mathlib.MeasureTheory.Measure.Lebesgue.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`Real.volume_Ioo`/`volume_Icc` give the Lebesgue measure of an interval as `ENNReal.ofReal (b - a)`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Numerical analysis",
+      "anchor": {
+        "section": "Numerical analysis",
+        "snippet": "Numerical analysis is the study of algorithms that use numerical approximation"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Numerical analysis is a subject-area description, not a formal mathematical definition, and is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Vector analysis",
+      "anchor": {
+        "section": "Vector analysis",
+        "snippet": "Vector analysis , also called vector calculus , is a branch of mathematical analysis"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Vector analysis is a discipline name; Mathlib has the relevant objects (grad, div, curl-type operators) but not the term itself.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Scalar analysis",
+      "anchor": {
+        "section": "Scalar analysis",
+        "snippet": "Scalar analysis is a branch of mathematical analysis dealing with values related to scale"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Not a formal mathematical definition; no Mathlib formalization found.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Calculus of variations",
+      "anchor": {
+        "section": "Other topics",
+        "snippet": "Calculus of variations deals with extremizing functionals"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Calculus of variations is a subject-area label and is not formalized as a definition in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Harmonic analysis (other topics)",
+      "anchor": {
+        "section": "Other topics",
+        "snippet": "Harmonic analysis deals with the representation of functions or signals"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "A duplicate subject-area description; not formalized as a definition in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Geometric analysis",
+      "anchor": {
+        "section": "Other topics",
+        "snippet": "Geometric analysis involves the use of geometrical methods"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Geometric analysis is a discipline name and is not formalized as such.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Clifford analysis",
+      "anchor": {
+        "section": "Other topics",
+        "snippet": "Clifford analysis , the study of Clifford valued functions"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "CliffordAlgebra",
+        "module": "Mathlib.LinearAlgebra.CliffordAlgebra.Basic",
+        "match_kind": "special_case"
+      },
+      "note": "Mathlib formalizes `CliffordAlgebra` but not Clifford analysis (analytic study of Clifford-valued functions) as a discipline.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "p-adic analysis",
+      "anchor": {
+        "section": "Other topics",
+        "snippet": "-adic analysis , the study of analysis within the context of"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Padic",
+        "module": "Mathlib.NumberTheory.Padics.PadicNumbers",
+        "match_kind": "special_case"
+      },
+      "note": "Mathlib defines `Padic` (ℚ_p) and `PadicInt`, providing the setting for p-adic analysis, but p-adic analysis itself is not a formal definition.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Non-standard analysis",
+      "anchor": {
+        "section": "Other topics",
+        "snippet": "Non-standard analysis , which investigates the hyperreal numbers"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has some hyperreals/ultrafilters infrastructure but does not formalize non-standard analysis as a subject.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Computable analysis",
+      "anchor": {
+        "section": "Other topics",
+        "snippet": "Computable analysis , the study of which parts of analysis can be carried out"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Computable analysis is a subject-area and is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Stochastic calculus",
+      "anchor": {
+        "section": "Other topics",
+        "snippet": "Stochastic calculus – analytical notions developed for stochastic processes"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has probability-theory content but not stochastic calculus as a formalized topic.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Set-valued analysis",
+      "anchor": {
+        "section": "Other topics",
+        "snippet": "Set-valued analysis – applies ideas from analysis and topology"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Set-valued analysis is a discipline label and is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Convex analysis",
+      "anchor": {
+        "section": "Other topics",
+        "snippet": "Convex analysis , the study of convex sets and functions"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Convex",
+        "module": "Mathlib.Analysis.Convex.Basic",
+        "match_kind": "special_case"
+      },
+      "note": "Mathlib formalizes `Convex` sets and `ConvexOn` functions in `Mathlib/Analysis/Convex/`, but not 'convex analysis' as a discipline.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Idempotent analysis",
+      "anchor": {
+        "section": "Other topics",
+        "snippet": "Idempotent analysis – analysis in the context of an idempotent semiring"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Idempotent analysis is not formalized as a topic in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Constructive analysis",
+      "anchor": {
+        "section": "Other topics",
+        "snippet": "Constructive analysis , which is built upon a foundation of constructive"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Constructive analysis as a discipline is not formalized in Mathlib (Mathlib uses classical logic).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Intuitionistic analysis",
+      "anchor": {
+        "section": "Other topics",
+        "snippet": "Intuitionistic analysis , which is developed from constructive logic"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Intuitionistic analysis is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Paraconsistent analysis",
+      "anchor": {
+        "section": "Other topics",
+        "snippet": "Paraconsistent analysis , which is built upon a foundation of paraconsistent"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Paraconsistent analysis is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Smooth infinitesimal analysis",
+      "anchor": {
+        "section": "Other topics",
+        "snippet": "Smooth infinitesimal analysis , which is developed in a smooth topos"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Smooth infinitesimal analysis is not formalized in Mathlib.",
+      "provenance": "ai"
+    }
+  ]
+}

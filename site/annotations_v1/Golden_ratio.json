@@ -1,0 +1,409 @@
+{
+  "slug": "Golden_ratio",
+  "wikipedia_title": "Golden ratio",
+  "display_title": "Golden ratio",
+  "schema_version": 1,
+  "source": "claude-agent-sdk/annotate_articles.py",
+  "annotations": [
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle {\\frac {a+b}{a}}={\\frac {a}{b}}=\\varphi ,}"
+      },
+      "status": "partial",
+      "decl": "goldenRatio",
+      "module": "Mathlib.NumberTheory.Real.GoldenRatio",
+      "note": "Mathlib defines goldenRatio numerically but does not state this defining proportion as a theorem."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle x^{2}-x-1.}"
+      },
+      "status": "partial",
+      "decl": "goldenRatio_sq",
+      "module": "Mathlib.NumberTheory.Real.GoldenRatio",
+      "note": "goldenRatio_sq shows φ²=φ+1, equivalent to being a root of x²−x−1, but the minimal polynomial is not stated."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle -{\\frac {1}{\\varphi }}=1-\\varphi ={\\frac {1-{\\sqrt {5}}}{2}}=-0.618033\\dots .}"
+      },
+      "status": "formalized",
+      "decl": "goldenConj",
+      "module": "Mathlib.NumberTheory.Real.GoldenRatio",
+      "note": "Mathlib defines goldenConj := (1−√5)/2, exactly this value."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle {\\frac {1}{\\varphi }}=\\varphi -1,}"
+      },
+      "status": "partial",
+      "decl": "goldenRatio_sq",
+      "module": "Mathlib.NumberTheory.Real.GoldenRatio",
+      "note": "Follows from φ²=φ+1 (goldenRatio_sq) but is not stated as a standalone lemma in the list."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle {\\frac {1}{1/\\varphi }}={\\frac {1}{\\varphi }}+1.}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Algebraic restatement; no standalone Mathlib decl provided."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle {\\begin{aligned}\\varphi ^{2}&=\\varphi +1=2.618033\\dots ,\\\\[5mu]{\\frac {1}{\\varphi }}&=\\varphi -1=0.618033\\dots .\\end{aligned}}}"
+      },
+      "status": "partial",
+      "decl": "goldenRatio_sq",
+      "module": "Mathlib.NumberTheory.Real.GoldenRatio",
+      "note": "goldenRatio_sq captures φ²=φ+1; the reciprocal identity and numerical values are not separate decls."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\varphi ^{n}=\\varphi ^{n-1}+\\varphi ^{n-2}=\\varphi \\cdot \\operatorname {F} _{n}+\\operatorname {F} _{n-1}.}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Power recurrence and Fibonacci closed form for φ^n not in the provided list."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle {\\begin{aligned}\\varphi ^{n}&=\\varphi ^{n-1}+\\varphi ^{n-3}+\\cdots +\\varphi ^{n-1-2m}+\\varphi ^{n-2-2m}\\\\[5mu]\\varphi ^{n}-\\varphi ^{n-1}&=\\varphi ^{n-2}.\\end{aligned}}}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Telescoping power identities for φ not in the provided decl list."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\varphi =[1;1,1,1,\\dots ]=1+{\\cfrac {1}{1+{\\cfrac {1}{1+{\\cfrac {1}{1+{{\\vphantom {1}} \\atop \\ddots }}}}}}}}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Continued fraction expansion of φ not represented in the provided list."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\varphi ^{-1}=[0;1,1,1,\\dots ]=0+{\\cfrac {1}{1+{\\cfrac {1}{1+{\\cfrac {1}{1+{{\\vphantom {1}} \\atop \\ddots }}}}}}}}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Reciprocal continued fraction not represented in the provided list."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\left|\\xi -{\\frac {p}{q}}\\right|<{\\frac {1}{{\\sqrt {5}}q^{2}}}.}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Hurwitz's theorem on Diophantine approximation not in the provided decl list."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\varphi ={\\sqrt {1+{\\sqrt {\\textstyle 1+{\\sqrt {1+\\cdots {\\vphantom {)}}}}}}}}.}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Nested radical expression for φ not in the provided list."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\lim _{n\\to \\infty }{\\frac {F_{n+1}}{F_{n}}}=\\lim _{n\\to \\infty }{\\frac {L_{n+1}}{L_{n}}}=\\varphi .}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Limit of Fibonacci/Lucas ratios is not among the provided decls."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle F\\left(n\\right)={\\frac {\\varphi ^{n}-(-\\varphi )^{-n}}{\\sqrt {5}}}={\\frac {\\varphi ^{n}-(1-\\varphi )^{n}}{\\sqrt {5}}}={\\frac {1}{\\sqrt {5}}}\\left[\\left({1+{\\sqrt {5}} \\over 2}\\right)^{n}-\\left({1-{\\sqrt {5}} \\over 2}\\right)^{n}\\right],}"
+      },
+      "status": "formalized",
+      "decl": "coe_fib_eq",
+      "module": "Mathlib.NumberTheory.Real.GoldenRatio",
+      "note": "coe_fib_eq is Binet's formula F_n = (φ^n − ψ^n)/√5."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle L\\left(n\\right)=\\varphi ^{n}+(-\\varphi )^{-n}=\\varphi ^{n}+(1-\\varphi )^{n}=\\left({1+{\\sqrt {5}} \\over 2}\\right)^{n}+\\left({1-{\\sqrt {5}} \\over 2}\\right)^{n}.}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Closed-form (Binet-like) for Lucas numbers not in the provided list."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\varphi ^{n}={\\tfrac {1}{2}}{\\bigl (}L_{n}+F_{n}{\\sqrt {5}}~\\!{\\bigr )}.}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Expression of φ^n in terms of Lucas and Fibonacci numbers not in the provided list."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\lim _{n\\to \\infty }{\\frac {L_{n}}{F_{n}}}={\\sqrt {5}}.}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Limit of L_n/F_n = √5 not in the provided decl list."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle {\\begin{aligned}&{\\bigl \\vert }L_{n}-{\\sqrt {5}}F_{n}{\\bigr \\vert }={\\frac {2}{\\varphi ^{n}}}\\to 0,\\\\[5mu]&{\\bigl (}{\\tfrac {1}{2}}L_{3n}{\\bigr )}^{2}=5{\\bigl (}{\\tfrac {1}{2}}F_{3n}{\\bigr )}^{2}+(-1)^{n}.\\end{aligned}}}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Stronger Lucas–Fibonacci identities not in the provided list."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\varphi ^{n}=F_{n}\\varphi +F_{n-1}.}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Linear reduction formula φ^n = F_n φ + F_(n−1) not in the provided list."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle {\\begin{aligned}3\\varphi ^{3}-5\\varphi ^{2}+4&=3(\\varphi ^{2}+\\varphi )-5\\varphi ^{2}+4\\\\[5mu]&=3{\\bigl (}(\\varphi +1)+\\varphi {\\bigr )}-5(\\varphi +1)+4\\\\[5mu]&=\\varphi +2\\approx 3.618033.\\end{aligned}}}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Worked numerical example, not a standalone Mathlib statement."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\sum _{n=1}^{\\infty }{\\bigl |}F_{n}\\varphi -F_{n+1}{\\bigr |}=\\varphi .}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Series identity Σ|F_n φ − F_(n+1)| = φ not in the provided list."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle {\\begin{aligned}\\varphi ^{0}&=1,\\\\[5mu]\\varphi ^{1}&=1.618033989\\ldots \\approx 2,\\\\[5mu]\\varphi ^{2}&=2.618033989\\ldots \\approx 3,\\\\[5mu]\\varphi ^{3}&=4.236067978\\ldots \\approx 4,\\\\[5mu]\\varphi ^{4}&=6.854101967\\ldots \\approx 7,\\end{aligned}}}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Numerical table of φ powers, not a Mathlib decl."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\varphi ^{n}=L_{n}-(-\\varphi )^{-n}.}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Relation φ^n = L_n − (−φ)^(−n) not in the provided list."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle {\\begin{aligned}{\\frac {2\\pi -g}{g}}&={\\frac {2\\pi }{2\\pi -g}}=\\varphi ,\\\\[8mu]2\\pi -g&={\\frac {2\\pi }{\\varphi }}\\approx 222.5^{\\circ }\\!,\\\\[8mu]g&={\\frac {2\\pi }{\\varphi ^{2}}}\\approx 137.5^{\\circ }\\!.\\end{aligned}}}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Golden angle definition and value not in the provided list."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle {\\frac {a}{b}}={\\frac {a+b}{a}}=\\varphi .}"
+      },
+      "status": "partial",
+      "decl": "goldenRatio",
+      "module": "Mathlib.NumberTheory.Real.GoldenRatio",
+      "note": "Defining proportion of golden section; Mathlib defines φ but not this proportion as a theorem."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle {\\begin{aligned}\\varphi &=1+2\\sin(\\pi /10)=1+2\\sin 18^{\\circ }\\!,\\\\[5mu]\\varphi &={\\tfrac {1}{2}}\\csc(\\pi /10)={\\tfrac {1}{2}}\\csc 18^{\\circ }\\!,\\\\[5mu]\\varphi &=2\\cos(\\pi /5)=2\\cos 36^{\\circ }\\!,\\\\[5mu]\\varphi &=2\\sin(3\\pi /10)=2\\sin 54^{\\circ }\\!.\\end{aligned}}}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Trigonometric expressions for φ at pentagonal angles not in the provided list."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle 1\\mathbin {:} {\\sqrt {\\varphi {\\vphantom {+}}}}\\mathbin {:} \\varphi .}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Kepler triangle side ratios not in the provided list."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle {\\begin{aligned}A&={\\tfrac {1}{2}}s^{2}{\\sqrt {\\varphi {\\vphantom {+}}}},\\\\[5mu]\\theta &=\\sin ^{-1}{\\frac {1}{\\varphi }}\\approx 38.1727^{\\circ }\\!,\\\\[5mu]\\theta &=\\cos ^{-1}{\\frac {1}{\\varphi }}\\approx 51.8273^{\\circ }\\!.\\end{aligned}}}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Kepler triangle area and angle formulas not in the provided list."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle {\\begin{aligned}\\alpha &=2\\arctan {1 \\over \\varphi }\\approx 63.43495^{\\circ }\\!,\\\\[5mu]\\beta &=2\\arctan \\varphi =\\pi -\\arctan 2=\\arctan 1+\\arctan 3\\approx 116.56505^{\\circ }\\!.\\end{aligned}}}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Golden rhombus angle formulas not in the provided list."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle {\\begin{aligned}d&={\\frac {2a}{\\sqrt {2+\\varphi }}}=2{\\sqrt {\\frac {3-\\varphi }{5}}}a\\approx 1.05146a,\\\\[5mu]D&=2{\\sqrt {\\frac {2+\\varphi }{5}}}a\\approx 1.70130a.\\end{aligned}}}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Golden rhombus diagonal formulas not in the provided list."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle {\\begin{aligned}A&=\\sin(\\arctan 2)\\cdot a^{2}={2 \\over {\\sqrt {5}}}~a^{2}\\approx 0.89443a^{2},\\\\[5mu]A&={{\\varphi } \\over 2}d^{2}\\approx 0.80902d^{2}.\\end{aligned}}}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Golden rhombus area formulas not in the provided list."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle r={\\frac {a}{\\sqrt {5}}}.}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Inradius formula for a regular pentagon not in the provided list."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle r=\\varphi ^{2\\theta /\\pi }.}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Polar equation of the golden spiral not in the provided list."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle (0,\\pm 1,\\pm \\varphi ),\\ (\\pm 1,\\pm \\varphi ,0),\\ (\\pm \\varphi ,0,\\pm 1).}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Icosahedron vertex coordinates involving φ not in the provided list."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle {\\begin{aligned}e^{0}+e^{-0}&=2,\\\\[5mu]e^{2\\pi i/5}+e^{-2\\pi i/5}&=\\varphi ^{-1}=-1+\\varphi ,\\\\[5mu]e^{4\\pi i/5}+e^{-4\\pi i/5}&=-\\varphi .\\end{aligned}}}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Fifth-root-of-unity identities involving φ not in the provided list."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle {\\begin{aligned}e^{\\pi i}+e^{-\\pi i}&=-2,\\\\[5mu]e^{\\pi i/5}+e^{-\\pi i/5}&=\\varphi ,\\\\[5mu]e^{3\\pi i/5}+e^{-3\\pi i/5}&=-\\varphi ^{-1}=1-\\varphi .\\end{aligned}}}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Tenth-root-of-unity identities involving φ not in the provided list."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle R(q)={\\cfrac {q^{1/5}}{1+{\\cfrac {q}{1+{\\cfrac {q^{2}}{1+{\\cfrac {q^{3}}{1+{{\\vphantom {1}} \\atop \\ddots }}}}}}}}}.}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Rogers–Ramanujan continued fraction R(q) not in the provided list."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle R(e^{-2\\pi })={\\sqrt {\\varphi {\\sqrt {5}}}}-\\varphi ,\\quad R(-e^{-\\pi })=\\varphi ^{-1}-{\\sqrt {2-\\varphi ^{-1}}}}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Special values of Rogers–Ramanujan R not in the provided list."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle R(e^{-2\\pi i/\\tau })={\\frac {1-\\varphi R(e^{2\\pi i\\tau })}{\\varphi +R(e^{2\\pi i\\tau })}}}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Modular-style functional equation for R not in the provided list."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle {\\begin{aligned}{\\Bigl (}\\varphi +R{{\\bigl (}e^{-2a}{\\bigr )}}{\\Bigr )}{\\Bigl (}\\varphi +R{{\\bigl (}e^{-2b}{\\bigr )}}{\\Bigr )}&=\\varphi {\\sqrt {5}},\\\\[5mu]{\\Bigl (}\\varphi ^{-1}-R{{\\bigl (}{-e^{-a}}{\\bigr )}}{\\Bigr )}{\\Bigl (}\\varphi ^{-1}-R{{\\bigl (}{-e^{-b}}{\\bigr )}}{\\Bigr )}&=\\varphi ^{-1}{\\sqrt {5}}.\\end{aligned}}}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Product identities for Rogers–Ramanujan R under ab=π² not in the provided list."
+    }
+  ]
+}

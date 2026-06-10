@@ -1,0 +1,889 @@
+{
+  "slug": "Quadratic_reciprocity",
+  "wikipedia_title": "Quadratic reciprocity",
+  "display_title": "Quadratic reciprocity",
+  "schema_version": 3,
+  "annotation_style": "theorem_article",
+  "annotations": [
+    {
+      "kind": "example",
+      "label": "Square roots via Euler's criterion",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "using Euler's criterion one can give an explicit formula for the"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "ZMod.euler_criterion",
+        "module": "Mathlib.NumberTheory.LegendreSymbol.Basic",
+        "match_kind": null
+      },
+      "note": "Euler's criterion (IsSquare ↔ a^(p/2)=1) is formalized as ZMod.euler_criterion, but the explicit square-root formula a^((p+1)/4) for p≡3 mod 4 is not.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Law of quadratic reciprocity",
+      "anchor": {
+        "type": "theorem_box",
+        "value": "Law of quadratic reciprocity — Let p and"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "legendreSym.quadratic_reciprocity",
+        "module": "Mathlib.NumberTheory.LegendreSymbol.QuadraticReciprocity",
+        "match_kind": "exact"
+      },
+      "note": "legendreSym.quadratic_reciprocity states (q/p)·(p/q)=(-1)^((p-1)(q-1)/4) for distinct odd primes.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Prime divisors of n²−5",
+      "anchor": {
+        "section": "Factoring n 2 − 5",
+        "snippet": "Therefore, except for"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This is an illustrative motivating example about which primes divide n²−5; no such statement exists in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Quadratic residue",
+      "anchor": {
+        "section": "Patterns among quadratic residues",
+        "snippet": "is a quadratic residue whenever it is congruent to a square"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "legendreSym.eq_one_iff",
+        "module": "Mathlib.NumberTheory.LegendreSymbol.Basic",
+        "match_kind": null
+      },
+      "note": "The notion is expressed via IsSquare (a : ZMod p) (e.g. legendreSym.eq_one_iff), but there is no standalone `quadraticResidue` definition.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Multiplicative properties of residues",
+      "anchor": {
+        "section": "Patterns among quadratic residues",
+        "snippet": "There are an equal number of quadratic residues and non-residues"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "quadraticChar_sum_zero",
+        "module": "Mathlib.NumberTheory.LegendreSymbol.QuadraticChar.Basic",
+        "match_kind": null
+      },
+      "note": "quadraticChar_sum_zero (sum of the quadratic character is 0) encodes the equal count of residues and non-residues, and quadraticChar's multiplicativity gives the product rules, but no single card-equality decl states it.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Failure for composite modulus 15",
+      "anchor": {
+        "section": "Patterns among quadratic residues",
+        "snippet": "there are only 3 quadratic residues (1, 4 and 9) in the multiplicative group modulo 15"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "A specific numeric illustration mod 15; not present as a statement in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Symmetric entries (Legendre)",
+      "anchor": {
+        "section": "Legendre's version",
+        "snippet": "are symmetric around the diagonal"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "legendreSym.quadratic_reciprocity_one_mod_four",
+        "module": "Mathlib.NumberTheory.LegendreSymbol.QuadraticReciprocity",
+        "match_kind": "special_case"
+      },
+      "note": "Symmetry of the table when one prime is ≡1 mod 4 is exactly legendreSym.quadratic_reciprocity_one_mod_four ((q/p)=(p/q)).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Antisymmetric entries (Legendre)",
+      "anchor": {
+        "section": "Legendre's version",
+        "snippet": "on the other hand, are antisymmetric"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "legendreSym.quadratic_reciprocity_three_mod_four",
+        "module": "Mathlib.NumberTheory.LegendreSymbol.QuadraticReciprocity",
+        "match_kind": "special_case"
+      },
+      "note": "Antisymmetry when both primes are ≡3 mod 4 is legendreSym.quadratic_reciprocity_three_mod_four ((q/p)=-(p/q)).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "First Supplement",
+      "anchor": {
+        "section": "q = ±1 and the first supplement",
+        "snippet": "is congruent to 1 modulo 4"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "ZMod.exists_sq_eq_neg_one_iff",
+        "module": "Mathlib.NumberTheory.LegendreSymbol.Basic",
+        "match_kind": "exact"
+      },
+      "note": "ZMod.exists_sq_eq_neg_one_iff says -1 is a square mod p iff p%4≠3, with legendreSym.at_neg_one giving (-1/p)=χ₄ p.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Second Supplement",
+      "anchor": {
+        "section": "q = ±2 and the second supplement",
+        "snippet": "is congruent to ±1 modulo 8"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "ZMod.exists_sq_eq_two_iff",
+        "module": "Mathlib.NumberTheory.LegendreSymbol.QuadraticReciprocity",
+        "match_kind": "exact"
+      },
+      "note": "ZMod.exists_sq_eq_two_iff says 2 is a square mod p iff p%8∈{1,7}, with legendreSym.at_two giving (2/p)=χ₈ p.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Character of −3",
+      "anchor": {
+        "section": "q = ±3",
+        "snippet": "−3 is a quadratic residue modulo every prime which is a residue modulo 3"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No exists_sq_eq lemma for ±3 (only ±1 and ±2) exists in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Character of 5",
+      "anchor": {
+        "section": "q = ±5",
+        "snippet": "5 is a quadratic residue modulo every prime which is a residue modulo 5"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No exists_sq_eq lemma characterizing when 5 is a residue exists in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Higher q observations",
+      "anchor": {
+        "section": "Higher q",
+        "snippet": "The observations about −3 and 5 continue to hold"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "These per-value observations are derivable from QR but not stated as Mathlib lemmas.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Character of −5 via CRT",
+      "anchor": {
+        "section": "Higher q",
+        "snippet": "either both 5 and −1 have to be residues"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "A worked CRT example for -5; not present as a statement in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Quadratic Reciprocity (Gauss's statement)",
+      "anchor": {
+        "section": "Statement of the theorem",
+        "snippet": "Gauss's statement"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "legendreSym.quadratic_reciprocity",
+        "module": "Mathlib.NumberTheory.LegendreSymbol.QuadraticReciprocity",
+        "match_kind": "exact"
+      },
+      "note": "Gauss's residue/non-residue statement is the same content as legendreSym.quadratic_reciprocity.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Quadratic Reciprocity (combined statement)",
+      "anchor": {
+        "section": "Statement of the theorem",
+        "snippet": "combined statement"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "legendreSym.quadratic_reciprocity",
+        "module": "Mathlib.NumberTheory.LegendreSymbol.QuadraticReciprocity",
+        "match_kind": "exact"
+      },
+      "note": "The combined sign statement is exactly legendreSym.quadratic_reciprocity.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Quadratic Reciprocity (Legendre's statement)",
+      "anchor": {
+        "section": "Statement of the theorem",
+        "snippet": "Legendre's statement"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "legendreSym.quadratic_reciprocity",
+        "module": "Mathlib.NumberTheory.LegendreSymbol.QuadraticReciprocity",
+        "match_kind": "exact"
+      },
+      "note": "Legendre's (p/q)(q/p)=(-1)^((p-1)/2·(q-1)/2) is the verbatim form of legendreSym.quadratic_reciprocity.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Legendre symbol of −1 via Euler's criterion",
+      "anchor": {
+        "section": "Proofs of the supplements",
+        "snippet": "follows directly from Euler's criterion"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "legendreSym.at_neg_one",
+        "module": "Mathlib.NumberTheory.LegendreSymbol.Basic",
+        "match_kind": "exact"
+      },
+      "note": "legendreSym.at_neg_one gives (-1/p)=χ₄ p, the first-supplement value derived (via legendreSym.eq_pow) from Euler's criterion.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Fermat's theorems on quadratic forms",
+      "anchor": {
+        "section": "Fermat",
+        "snippet": "a number of theorems about expressing a prime by a quadratic form"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Nat.Prime.sq_add_sq",
+        "module": "Mathlib.NumberTheory.SumTwoSquares",
+        "match_kind": "special_case"
+      },
+      "note": "The sum-of-two-squares case (p=x²+y² for p%4≠3) is Nat.Prime.sq_add_sq, but the x²+2y² and x²+3y² representation theorems are not in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Fermat's claim for primes ending 7 and 3",
+      "anchor": {
+        "section": "Fermat",
+        "snippet": "if the prime number p ends with 7"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Fermat's claims about p=x²+5y² (primes ≡3,7 mod 20 etc.) are not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Euler–Lagrange result",
+      "anchor": {
+        "section": "Fermat",
+        "snippet": "Euler conjectured, and Lagrange proved"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Euler/Lagrange results on representation by x²+5y² are not present in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Euler's statement of reciprocity",
+      "anchor": {
+        "section": "Euler",
+        "snippet": "for distinct odd primes p and q"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "jacobiSym.mod_right",
+        "module": "Mathlib.NumberTheory.LegendreSymbol.JacobiSymbol",
+        "match_kind": "generalization"
+      },
+      "note": "Euler's periodicity formulation (the symbol depends only on p mod 4a) is captured by jacobiSym.mod_right, but his exact ±-prime statement is not a single named theorem.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Fermat's little theorem",
+      "anchor": {
+        "section": "Legendre and his symbol",
+        "snippet": "if p is a prime number and a is an integer"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "ZMod.pow_card_sub_one_eq_one",
+        "module": "Mathlib.FieldTheory.Finite.Basic",
+        "match_kind": "exact"
+      },
+      "note": "ZMod.pow_card_sub_one_eq_one states a^(p-1)=1 in ZMod p for a≠0, the form used here.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Legendre symbol",
+      "anchor": {
+        "section": "Legendre and his symbol",
+        "snippet": "This is now known as the Legendre symbol"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "legendreSym",
+        "module": "Mathlib.NumberTheory.LegendreSymbol.Basic",
+        "match_kind": "exact"
+      },
+      "note": "legendreSym p a is defined as quadraticChar (ZMod p) a, giving 0/1/-1 exactly as the Legendre symbol.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Legendre's version of quadratic reciprocity",
+      "anchor": {
+        "section": "Legendre's version of quadratic reciprocity",
+        "snippet": "He notes that these can be combined"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "legendreSym.quadratic_reciprocity",
+        "module": "Mathlib.NumberTheory.LegendreSymbol.QuadraticReciprocity",
+        "match_kind": "exact"
+      },
+      "note": "Legendre's combined version is the content of legendreSym.quadratic_reciprocity.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Third law for character −2",
+      "anchor": {
+        "section": "The supplementary laws using Legendre symbols",
+        "snippet": "either -1 or 2 are both quadratic residues, or both non-residues"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "ZMod.exists_sq_eq_neg_two_iff",
+        "module": "Mathlib.NumberTheory.LegendreSymbol.QuadraticReciprocity",
+        "match_kind": "exact"
+      },
+      "note": "ZMod.exists_sq_eq_neg_two_iff says -2 is a square mod p iff p%8∈{1,3}, with legendreSym.at_neg_two giving (-2/p)=χ₈' p.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Legendre's Theorem",
+      "anchor": {
+        "section": "The supplementary laws using Legendre symbols",
+        "snippet": "Let a , b and c be integers where any pair of the three are relatively prime"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Legendre's theorem on nontrivial solubility of ax²+by²+cz²=0 (Legendre/Hasse–Minkowski for ternary forms) is not in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Proof of Theorem I",
+      "anchor": {
+        "section": "The supplementary laws using Legendre symbols",
+        "snippet": "Theorem I is handled by letting"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Legendre's attempted derivation of a QR case from his ternary-form theorem is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Legendre's Lemma",
+      "anchor": {
+        "section": "The supplementary laws using Legendre symbols",
+        "snippet": "If p is a prime that is congruent to 1 modulo 4 then there exists an odd prime q"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This auxiliary existence-of-auxiliary-prime lemma (a Dirichlet-type input to Legendre's proof) is not in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Gauss's general statement",
+      "anchor": {
+        "section": "Gauss",
+        "snippet": "If p is a prime of the form 4 n + 1 then p"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "legendreSym.quadratic_reciprocity",
+        "module": "Mathlib.NumberTheory.LegendreSymbol.QuadraticReciprocity",
+        "match_kind": "exact"
+      },
+      "note": "Gauss's general residue/non-residue statement (with the 4n+1 case = quadratic_reciprocity_one_mod_four) is the content of legendreSym.quadratic_reciprocity.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Gauss's Lemma",
+      "anchor": {
+        "section": "Gauss",
+        "snippet": "If p is a prime congruent to 1 modulo 8 then there exists an odd prime q"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This is the auxiliary existence lemma from Gauss's first (inductive) proof, not the classical counting Gauss's lemma (ZMod.gauss_lemma); the existence lemma is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Gauss's Version in Legendre Symbols",
+      "anchor": {
+        "section": "Gauss",
+        "snippet": "Gauss's Version in Legendre Symbols"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "legendreSym.quadratic_reciprocity",
+        "module": "Mathlib.NumberTheory.LegendreSymbol.QuadraticReciprocity",
+        "match_kind": "exact"
+      },
+      "note": "Gauss's Legendre-symbol version restates legendreSym.quadratic_reciprocity.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Gauss's Combined Version in Legendre Symbols",
+      "anchor": {
+        "section": "Gauss",
+        "snippet": "Gauss's Combined Version in Legendre Symbols"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "legendreSym.quadratic_reciprocity",
+        "module": "Mathlib.NumberTheory.LegendreSymbol.QuadraticReciprocity",
+        "match_kind": "exact"
+      },
+      "note": "The combined Legendre-symbol version is exactly legendreSym.quadratic_reciprocity.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Euler's Formulation of Quadratic Reciprocity",
+      "anchor": {
+        "section": "Other statements",
+        "snippet": "Euler's Formulation of Quadratic Reciprocity"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "jacobiSym.mod_right",
+        "module": "Mathlib.NumberTheory.LegendreSymbol.JacobiSymbol",
+        "match_kind": "generalization"
+      },
+      "note": "Euler's formulation (value of the symbol depends only on the residue mod 4a) is captured by jacobiSym.mod_right, but his precise ±-condition statement is not a dedicated theorem.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Quadratic Reciprocity (Gauss; Fourth Proof)",
+      "anchor": {
+        "section": "Other statements",
+        "snippet": "Let a , b , c , ... be unequal positive odd primes, whose product is n"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "jacobiSym.quadratic_reciprocity",
+        "module": "Mathlib.NumberTheory.LegendreSymbol.JacobiSymbol",
+        "match_kind": "generalization"
+      },
+      "note": "The product-over-primes formulation is the Jacobi-symbol reciprocity law jacobiSym.quadratic_reciprocity.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Gauss's fourth proof example",
+      "anchor": {
+        "section": "Other statements",
+        "snippet": "Let a = 3, b = 5, c = 7, and d = 11"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "A specific numeric illustration of the fourth-proof formulation; not present in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Eisenstein's Formulation of Quadratic Reciprocity",
+      "anchor": {
+        "section": "Other statements",
+        "snippet": "Eisenstein's Formulation of Quadratic Reciprocity"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "legendreSym.quadratic_reciprocity",
+        "module": "Mathlib.NumberTheory.LegendreSymbol.QuadraticReciprocity",
+        "match_kind": "invocation"
+      },
+      "note": "Eisenstein's restatement is logically equivalent to and follows from legendreSym.quadratic_reciprocity.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Mordell's Formulation of Quadratic Reciprocity",
+      "anchor": {
+        "section": "Other statements",
+        "snippet": "Mordell's Formulation of Quadratic Reciprocity"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "legendreSym.quadratic_reciprocity",
+        "module": "Mathlib.NumberTheory.LegendreSymbol.QuadraticReciprocity",
+        "match_kind": "invocation"
+      },
+      "note": "Mordell's restatement is equivalent to and follows from legendreSym.quadratic_reciprocity.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Zeta function formulation",
+      "anchor": {
+        "section": "Other statements",
+        "snippet": "the zeta function of a quadratic field being the product of the Riemann zeta function"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "NumberField.dedekindZeta",
+        "module": "Mathlib.NumberTheory.NumberField.DedekindZeta",
+        "match_kind": null
+      },
+      "note": "The Dedekind zeta function is defined (NumberField.dedekindZeta), but its factorization ζ_K = ζ(s)·L(s,χ) for quadratic fields is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Jacobi symbol",
+      "anchor": {
+        "section": "Jacobi symbol",
+        "snippet": "The Jacobi symbol is a generalization of the Legendre symbol"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "jacobiSym",
+        "module": "Mathlib.NumberTheory.LegendreSymbol.JacobiSymbol",
+        "match_kind": "exact"
+      },
+      "note": "jacobiSym a b is defined as the product of legendreSym over the prime factors of b, the standard Jacobi symbol.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Jacobi's reciprocity law",
+      "anchor": {
+        "section": "Jacobi symbol",
+        "snippet": "if both numbers are positive and odd"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "jacobiSym.quadratic_reciprocity",
+        "module": "Mathlib.NumberTheory.LegendreSymbol.JacobiSymbol",
+        "match_kind": "exact"
+      },
+      "note": "jacobiSym.quadratic_reciprocity gives J(a|b)=(-1)^(a/2·b/2)·J(b|a) for odd a,b.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Jacobi symbol caveat",
+      "anchor": {
+        "section": "Jacobi symbol",
+        "snippet": "it does not necessarily follow that the numerator is a quadratic residue of the denominator"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "ZMod.isSquare_of_jacobiSym_eq_one",
+        "module": "Mathlib.NumberTheory.LegendreSymbol.JacobiSymbol",
+        "match_kind": null
+      },
+      "note": "The caveat is reflected by ZMod.isSquare_of_jacobiSym_eq_one requiring a prime modulus (the converse fails for composite b), but the counterexample itself is not stated.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Jacobi symbol example",
+      "anchor": {
+        "section": "Jacobi symbol",
+        "snippet": "2 is a residue modulo the primes 7, 23 and 31"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "A specific numeric Jacobi-symbol illustration; not present as a statement in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Eisenstein's formula for Jacobi symbols",
+      "anchor": {
+        "section": "Jacobi symbol",
+        "snippet": "Eisenstein's formula requires relative primality conditions"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "jacobiSym.quadratic_reciprocity",
+        "module": "Mathlib.NumberTheory.LegendreSymbol.JacobiSymbol",
+        "match_kind": "exact"
+      },
+      "note": "Eisenstein's reciprocity formula for Jacobi symbols (odd coprime arguments) is jacobiSym.quadratic_reciprocity.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Hilbert symbol",
+      "anchor": {
+        "section": "Hilbert symbol",
+        "snippet": "where a and b are any two nonzero rational numbers"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No Hilbert symbol is defined in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Hilbert reciprocity law",
+      "anchor": {
+        "section": "Hilbert symbol",
+        "snippet": "for fixed a and b and varying v , is 1 for all but finitely many v"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Hilbert's reciprocity (product of local Hilbert symbols is 1) is not in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Quadratic character for Gaussian integers",
+      "anchor": {
+        "section": "Gaussian integers",
+        "snippet": "For an odd Gaussian prime"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has GaussianInt arithmetic but no quadratic-residue character over ℤ[i].",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Quadratic reciprocity in Gaussian integers",
+      "anchor": {
+        "section": "Gaussian integers",
+        "snippet": "be distinct Gaussian primes where a and c are odd and b and d are even"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Quadratic reciprocity for Gaussian primes is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Quadratic character for Eisenstein integers",
+      "anchor": {
+        "section": "Eisenstein integers",
+        "snippet": "For an Eisenstein prime"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No quadratic character over the Eisenstein integers is defined in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Quadratic reciprocity in Eisenstein integers",
+      "anchor": {
+        "section": "Eisenstein integers",
+        "snippet": "be distinct Eisenstein primes where a and c are not divisible by 3"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Quadratic reciprocity for Eisenstein primes is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Quadratic character in imaginary quadratic fields",
+      "anchor": {
+        "section": "Imaginary quadratic fields",
+        "snippet": "Let k be an imaginary quadratic number field with ring of integers"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No quadratic-residue character in rings of integers of imaginary quadratic fields is defined in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Herglotz's reciprocity law",
+      "anchor": {
+        "section": "Imaginary quadratic fields",
+        "snippet": "Herglotz proved"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Herglotz's reciprocity law for imaginary quadratic fields is not in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Quadratic character for polynomials over a finite field",
+      "anchor": {
+        "section": "Polynomials over a finite field",
+        "snippet": "Let F be a finite field with q = p n elements"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No quadratic residue character for polynomials over a finite field is defined in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Dedekind's reciprocity for polynomials",
+      "anchor": {
+        "section": "Polynomials over a finite field",
+        "snippet": "Dedekind proved that if"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Dedekind's quadratic reciprocity law for polynomials over 𝔽_q is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Artin reciprocity",
+      "anchor": {
+        "section": "Higher powers",
+        "snippet": "a general theorem for which all known reciprocity laws are special cases"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Artin reciprocity (the main theorem of class field theory) is not formalized in Mathlib.",
+      "provenance": "ai"
+    }
+  ]
+}

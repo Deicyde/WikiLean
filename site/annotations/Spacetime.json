@@ -1,0 +1,1161 @@
+{
+  "slug": "Spacetime",
+  "wikipedia_title": "Spacetime",
+  "display_title": "Spacetime",
+  "schema_version": 3,
+  "annotation_style": "theorem_article",
+  "annotations": [
+    {
+      "kind": "definition",
+      "label": "Event",
+      "anchor": {
+        "section": "Definitions",
+        "snippet": "A point in spacetime is called an event"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has no notion of spacetime or its points (events).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "World line",
+      "anchor": {
+        "section": "Definitions",
+        "snippet": "That path is called the particle's world line"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Although Mathlib has `Path`, a particle's world line in spacetime is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Spacetime as a manifold",
+      "anchor": {
+        "section": "Definitions",
+        "snippet": "Mathematically, spacetime is a manifold"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "IsManifold",
+        "module": "Mathlib.Geometry.Manifold.IsManifold.Basic",
+        "match_kind": "generalization"
+      },
+      "note": "Mathlib formalizes the general manifold concept via `IsManifold`, but not spacetime specifically.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Observer in special relativity",
+      "anchor": {
+        "section": "Definitions",
+        "snippet": "an observer will, in most cases, mean a frame of reference"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Frames of reference / observers in relativity are not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Euclidean distance via Pythagorean theorem",
+      "anchor": {
+        "section": "Spacetime interval",
+        "snippet": "between two points can be defined using the Pythagorean theorem"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "EuclideanSpace.dist_eq",
+        "module": "Mathlib.Analysis.InnerProductSpace.PiL2",
+        "match_kind": "exact"
+      },
+      "note": "`EuclideanSpace.dist_eq` gives the distance as the square root of the sum of squared coordinate differences (Pythagorean form).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Invariance of spatial distance",
+      "anchor": {
+        "section": "Spacetime interval",
+        "snippet": "the distance between the points will be the same for both"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Isometry.dist_eq",
+        "module": "Mathlib.Topology.MetricSpace.Isometry",
+        "match_kind": "generalization"
+      },
+      "note": "`Isometry.dist_eq` states isometries (e.g. rotations/translations) preserve distance, generalizing spatial-distance invariance.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Spacetime interval",
+      "anchor": {
+        "section": "Spacetime interval",
+        "snippet": "Special relativity provides a new invariant, called the spacetime interval"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Minkowski spacetime interval quadratic form is not defined in Mathlib (its Minkowski refs are the gauge functional, not spacetime).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Invariance of the spacetime interval",
+      "anchor": {
+        "section": "Spacetime interval",
+        "snippet": "The invariance of the spacetime interval between the same events for all inertial frames of reference is one of the fundamental results"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Invariance of the Minkowski interval under Lorentz transformations is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Timelike, spacelike, lightlike intervals",
+      "anchor": {
+        "section": "Spacetime interval",
+        "snippet": "the spacetime interval is referred to as timelike"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The timelike/spacelike/lightlike classification of intervals is not present in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Tilt angle of the ct′ axis",
+      "anchor": {
+        "section": "Reference frames",
+        "snippet": "the ct′ axis is tilted with respect to the ct axis by an angle θ given by"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Minkowski-diagram axis tilt formulas are not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Light cone",
+      "anchor": {
+        "section": "Light cone",
+        "snippet": "These two lines form what is called the light cone of the event O"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has convex cones but not the null/light cone of a spacetime metric.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Light cone divides spacetime",
+      "anchor": {
+        "section": "Light cone",
+        "snippet": "A light (double) cone divides spacetime into separate regions with respect to its apex"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The partition of spacetime by the light cone is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Light cone and causality",
+      "anchor": {
+        "section": "Light cone",
+        "snippet": "The light cone has an essential role within the concept of causality"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Causal structure of spacetime is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Invariant before–after ordering of timelike events",
+      "anchor": {
+        "section": "Relativity of simultaneity",
+        "snippet": "All observers will agree that for any given event, an event within the given event's future light cone occurs after the given event"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Invariant causal ordering of timelike-separated events is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Relativity of simultaneity",
+      "anchor": {
+        "section": "Relativity of simultaneity",
+        "snippet": "is termed the relativity of simultaneity"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Relativity of simultaneity is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Proper distance and proper time",
+      "anchor": {
+        "section": "Relativity of simultaneity",
+        "snippet": "A spacelike spacetime interval hence provides a measure of proper distance"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Proper distance and proper time are not defined in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Invariant hyperbolae",
+      "anchor": {
+        "section": "Invariant hyperbola",
+        "snippet": "which are termed invariant hyperbolae"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Minkowski invariant hyperbolae are not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Timelike vs spacelike hyperbolae",
+      "anchor": {
+        "section": "Invariant hyperbola",
+        "snippet": "The magenta hyperbolae, which cross the x axis, are timelike curves"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Classification of invariant hyperbolae as timelike/spacelike is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Time dilation",
+      "anchor": {
+        "section": "Time dilation and length contraction",
+        "snippet": "This illustrates the phenomenon known as time dilation"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Time dilation is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Length contraction",
+      "anchor": {
+        "section": "Time dilation and length contraction",
+        "snippet": "Length contraction , like time dilation, is a manifestation of the relativity of simultaneity"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Length contraction is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Mutual time dilation",
+      "anchor": {
+        "section": "Mutual time dilation",
+        "snippet": "Mutual time dilation and length contraction tend to strike beginners as inherently self-contradictory concepts"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mutual time dilation is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Twin paradox",
+      "anchor": {
+        "section": "Twin paradox",
+        "snippet": "The twin paradox is a thought experiment involving identical twins"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The twin paradox is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Galilean transformation",
+      "anchor": {
+        "section": "Galilean transformations",
+        "snippet": "the coordinate transformation is as follows"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Galilean coordinate transformations are not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Galilean addition of velocities",
+      "anchor": {
+        "section": "Galilean transformations",
+        "snippet": "which is the common-sense Galilean law for the addition of velocities"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Galilean velocity-addition law is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Train and bullet thought experiment",
+      "anchor": {
+        "section": "Galilean transformations",
+        "snippet": "Consider the following thought experiment: The red arrow illustrates a train"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This physics thought experiment is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Einstein's velocity addition formula",
+      "anchor": {
+        "section": "Relativistic composition of velocities",
+        "snippet": "to yield Einstein's formula for the addition of velocities"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The relativistic velocity-addition formula is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Invariance of light speed under velocity addition",
+      "anchor": {
+        "section": "Relativistic composition of velocities",
+        "snippet": "If u ′ is set equal to c , then the formula yields"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Invariance of c under relativistic velocity addition is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Lorentz factor",
+      "anchor": {
+        "section": "Time dilation and length contraction revisited",
+        "snippet": "is called the Lorentz factor, denoted by the Greek letter gamma"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Lorentz factor γ is not defined in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "c is the maximum possible speed",
+      "anchor": {
+        "section": "Time dilation and length contraction revisited",
+        "snippet": "implying that c is the maximum possible speed in nature"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The speed-limit principle is a physics result not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Lorentz transformations",
+      "anchor": {
+        "section": "Lorentz transformations",
+        "snippet": "Lorentz transformations are used to transform the coordinates of an event from one frame to another in special relativity"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Lorentz transformations are not defined in Mathlib (its `Lorentz` refs concern Minkowski's gauge/geometry-of-numbers, unrelated).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Inverse Lorentz transformations",
+      "anchor": {
+        "section": "Lorentz transformations",
+        "snippet": "The inverse Lorentz transformations are:"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Inverse Lorentz transformations are not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Lorentz reduces to Galilean at low speed",
+      "anchor": {
+        "section": "Lorentz transformations",
+        "snippet": "the Lorentz transformations approximate to the Galilean transformations"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The low-speed limit of the Lorentz transformation is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Earth-to-Mars race",
+      "anchor": {
+        "section": "Lorentz transformations",
+        "snippet": "Example: Terence and Stella are at an Earth-to-Mars space race"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This worked relativity example is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Principle of locality",
+      "anchor": {
+        "section": "Deriving the Lorentz transformations",
+        "snippet": "the underlying principle of locality , which states that the influence that one particle exerts on another can not be transmitted instantaneously"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The physical principle of locality is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "No transverse length contraction",
+      "anchor": {
+        "section": "Deriving the Lorentz transformations",
+        "snippet": "There can be no such thing as length expansion/contraction in the transverse directions"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The absence of transverse length contraction is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Linearity of Lorentz transformations",
+      "anchor": {
+        "section": "Linearity of the Lorentz transformations",
+        "snippet": "The Lorentz transformations have a mathematical property called linearity"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has general `LinearMap`, but the linearity of Lorentz transformations specifically is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Composition of Lorentz transformations",
+      "anchor": {
+        "section": "Linearity of the Lorentz transformations",
+        "snippet": "if two Lorentz transformations are applied sequentially, the result is also a Lorentz transformation"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Closure of Lorentz transformations under composition is not formalized (no Lorentz group in Mathlib).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Terence, Stella, Ursula composition",
+      "anchor": {
+        "section": "Linearity of the Lorentz transformations",
+        "snippet": "Example: Terence observes Stella speeding away from him at 0.500 c"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This worked velocity-composition example is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Doppler effect",
+      "anchor": {
+        "section": "Doppler effect",
+        "snippet": "The Doppler effect is the change in frequency or wavelength of a wave for a receiver and source in relative motion"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Doppler effect is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Relativistic longitudinal Doppler effect",
+      "anchor": {
+        "section": "Longitudinal Doppler effect",
+        "snippet": "the relativistic Doppler effect is given by"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The relativistic longitudinal Doppler formula is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Transverse Doppler effect",
+      "anchor": {
+        "section": "Transverse Doppler effect",
+        "snippet": "transverse Doppler shift is a relativistic effect that has no classical analog"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The transverse Doppler effect is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Linear momentum",
+      "anchor": {
+        "section": "Extending momentum to four dimensions",
+        "snippet": "Linear momentum , the product of a particle's mass and velocity, is a vector quantity"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Physical linear momentum is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Four-momentum extension",
+      "anchor": {
+        "section": "Extending momentum to four dimensions",
+        "snippet": "the momentum vector is extended to four dimensions"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The four-dimensional extension of momentum is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Energy–momentum ratio of light",
+      "anchor": {
+        "section": "Momentum of light",
+        "snippet": "light carries energy and momentum, and that their ratio is a constant"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The energy–momentum relation for light is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Photons are massless",
+      "anchor": {
+        "section": "Momentum of light",
+        "snippet": "meaning that photons are massless particles"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The masslessness of photons is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Relativistic mass",
+      "anchor": {
+        "section": "Mass–energy relationship",
+        "snippet": "the relativistic mass of an object increases with velocity according to the formula"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Relativistic mass is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Invariant (rest) mass",
+      "anchor": {
+        "section": "Mass–energy relationship",
+        "snippet": "is equal to the invariant length of the relativistic momentum vector"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Invariant rest mass as the norm of four-momentum is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Four-momentum",
+      "anchor": {
+        "section": "Four-momentum",
+        "snippet": "the four-momentum (also called 4-momentum) is also called the energy–momentum 4-vector"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The energy–momentum four-vector is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Conservation laws",
+      "anchor": {
+        "section": "Conservation laws",
+        "snippet": "conservation laws state that certain particular measurable properties of an isolated physical system do not change"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Physical conservation laws are not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Noether's theorem",
+      "anchor": {
+        "section": "Conservation laws",
+        "snippet": "Emmy Noether discovered that underlying each conservation law is a fundamental symmetry of nature"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The symmetry–conservation Noether theorem is absent; Mathlib's `Noether` refs concern Noetherian rings/spaces.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Elastic and inelastic collisions",
+      "anchor": {
+        "section": "Total momentum",
+        "snippet": "The two bodies rebound from each other in a completely elastic collision"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Elastic/inelastic collisions are not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Fused mass exceeds sum of masses",
+      "anchor": {
+        "section": "Total momentum",
+        "snippet": "is not equal to the sum of the invariant masses of the individual particles that collided"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Non-additivity of invariant mass in collisions is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Center-of-momentum frame",
+      "anchor": {
+        "section": "Choice of reference frames",
+        "snippet": "This is the frame in which the space component of the system's total momentum is zero"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The center-of-momentum frame is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Relativistic energy–momentum conservation",
+      "anchor": {
+        "section": "Energy and momentum conservation",
+        "snippet": "The relativistic conservation law for energy and momentum replaces the three classical conservation laws"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Relativistic energy–momentum conservation is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Geodesic motion",
+      "anchor": {
+        "section": "Introduction to curved spacetime",
+        "snippet": "We say that the satellite always follows along the path of a geodesic"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No geodesic definition was found in Mathlib's Riemannian geometry files.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Coordinate independence",
+      "anchor": {
+        "section": "Introduction to curved spacetime",
+        "snippet": "The first crucial concept is coordinate independence"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Coordinate independence as a physics principle is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Equivalence principle",
+      "anchor": {
+        "section": "Introduction to curved spacetime",
+        "snippet": "The equivalence principle states that in any sufficiently small region of space, the effects of gravitation are the same as those from acceleration"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The equivalence principle is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Flat spacetime paradigm",
+      "anchor": {
+        "section": "Is spacetime really curved?",
+        "snippet": "The flat spacetime paradigm posits that matter creates a gravitational field that causes rulers to shrink"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The flat-spacetime interpretation of gravity is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Poincaré group",
+      "anchor": {
+        "section": "Asymptotic symmetries",
+        "snippet": "The spacetime symmetry group for Special Relativity is the Poincaré group"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Poincaré group (isometry group of Minkowski space) is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "BMS asymptotic symmetry group",
+      "anchor": {
+        "section": "Asymptotic symmetries",
+        "snippet": "their discovery of a rich infinite-dimensional group (the so-called BMS group) as the asymptotic symmetry group"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The BMS asymptotic symmetry group is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Supertranslations",
+      "anchor": {
+        "section": "Asymptotic symmetries",
+        "snippet": "an additional infinity of transformation generators known as supertranslations"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Supertranslation generators are not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Riemannian geometry",
+      "anchor": {
+        "section": "Riemannian geometry",
+        "snippet": "Riemannian geometry is the branch of differential geometry that studies Riemannian manifolds"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "IsRiemannianManifold",
+        "module": "Mathlib.Geometry.Manifold.Riemannian.Basic",
+        "match_kind": null
+      },
+      "note": "Mathlib formalizes Riemannian manifolds/metrics, but 'Riemannian geometry' as a field is not a single statement.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Riemannian manifold (formal)",
+      "anchor": {
+        "section": "Riemannian geometry",
+        "snippet": "Riemannian geometry is the study of smooth manifolds with a Riemannian metric"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "IsRiemannianManifold",
+        "module": "Mathlib.Geometry.Manifold.Riemannian.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`IsRiemannianManifold` captures a smooth manifold equipped with a Riemannian metric.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Spacetime continuum as Lorentzian manifold",
+      "anchor": {
+        "section": "Curved manifolds",
+        "snippet": "a spacetime continuum is mathematically defined as a four-dimensional, smooth, connected Lorentzian manifold"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has Riemannian but not Lorentzian (indefinite-signature) manifolds.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Timelike, null, spacelike geodesics",
+      "anchor": {
+        "section": "Curved manifolds",
+        "snippet": "Geodesics are said to be timelike, null, or spacelike if the tangent vector to one point of the geodesic is of this nature"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Causal classification of geodesics is not formalized (no Lorentzian metric in Mathlib).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Spatial and temporal dimensions",
+      "anchor": {
+        "section": "Privileged character of 3+1 spacetime",
+        "snippet": "There are two kinds of dimensions: spatial (bidirectional) and temporal (unidirectional)"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The distinction between spatial and temporal dimensions is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Ehrenfest orbital stability result",
+      "anchor": {
+        "section": "Privileged character of 3+1 spacetime",
+        "snippet": "Paul Ehrenfest showed that if there is only a single time dimension and more than three spatial dimensions, the orbit of a planet about its Sun cannot remain stable"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Ehrenfest's orbital-stability dimensionality result is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Weyl four-dimensional electromagnetism",
+      "anchor": {
+        "section": "Privileged character of 3+1 spacetime",
+        "snippet": "Hermann Weyl claimed that Maxwell 's theory of electromagnetism can be expressed in terms of an action only for a four-dimensional manifold"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Weyl's claim about four-dimensional electromagnetism is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Tangherlini electron orbital instability",
+      "anchor": {
+        "section": "Privileged character of 3+1 spacetime",
+        "snippet": "Tangherlini showed in 1963 that when there are more than three spatial dimensions, electron orbitals around nuclei cannot be stable"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Tangherlini's orbital-instability result is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Tegmark anthropic argument on T=1",
+      "anchor": {
+        "section": "Privileged character of 3+1 spacetime",
+        "snippet": "If T differs from 1, the behavior of physical systems could not be predicted reliably from knowledge of the relevant partial differential equations"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Tegmark's anthropic dimensionality argument is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Feng marginal dimensionality result",
+      "anchor": {
+        "section": "Privileged character of 3+1 spacetime",
+        "snippet": "Wei-Xiang Feng showed that (3 + 1) -dimensional spacetime is the marginal dimensionality"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Feng's marginal-dimensionality result is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Scargill 2D complex life",
+      "anchor": {
+        "section": "Privileged character of 3+1 spacetime",
+        "snippet": "James Scargill argued that complex life may be possible with two spatial dimensions"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Scargill's argument about 2+1 dimensions is not formalized in Mathlib.",
+      "provenance": "ai"
+    }
+  ]
+}

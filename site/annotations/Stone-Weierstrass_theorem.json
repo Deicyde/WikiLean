@@ -1,0 +1,393 @@
+{
+  "slug": "Stone-Weierstrass_theorem",
+  "wikipedia_title": "Stone–Weierstrass theorem",
+  "display_title": "Stone–Weierstrass theorem",
+  "schema_version": 3,
+  "annotation_style": "theorem_article",
+  "annotations": [
+    {
+      "kind": "theorem",
+      "label": "Weierstrass approximation theorem",
+      "anchor": {
+        "type": "theorem_box",
+        "value": "Weierstrass approximation theorem — Supp"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "polynomialFunctions_closure_eq_top",
+        "module": "Mathlib.Topology.ContinuousMap.Weierstrass",
+        "match_kind": "exact"
+      },
+      "note": "States that the polynomial functions on `[a,b]` are dense in `C(Icc a b, ℝ)`, exactly the Weierstrass approximation theorem.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Jackson's inequality",
+      "anchor": {
+        "section": "Degree of approximation",
+        "snippet": "Jackson's inequality bounds the error of approximations by polynomials of a given degree"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No declaration mentioning Jackson's inequality was found in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Arbitrarily slow convergence for continuous functions",
+      "anchor": {
+        "section": "Degree of approximation",
+        "snippet": "the convergence of the approximations can be arbitrarily slow in the following sense"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No matching arbitrarily-slow-convergence result located in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Separability of C[a,b]",
+      "anchor": {
+        "section": "Applications",
+        "snippet": "one can show that the space C[ a , b ] is separable"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "ContinuousMap.instSeparableSpace",
+        "module": "Mathlib.Topology.ContinuousMap.SecondCountableSpace",
+        "match_kind": "generalization"
+      },
+      "note": "The `SeparableSpace C(X, Y)` instance for second-countable locally compact X and second-countable Y specializes to `C([a,b], ℝ)`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Banach algebra C[a,b] with supremum norm",
+      "anchor": {
+        "section": "Stone–Weierstrass theorem, real version",
+        "snippet": "The set C[ a , b ] of continuous real-valued functions on [ a , b ] , together with the supremum norm"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "ContinuousMap.instNormedAlgebra",
+        "module": "Mathlib.Topology.ContinuousMap.Compact",
+        "match_kind": "generalization"
+      },
+      "note": "The supremum-norm `NormedRing`/`NormedAlgebra` structure on `C(α, γ)` for compact α is provided via instances in `Compact.lean`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Separates points",
+      "anchor": {
+        "section": "Stone–Weierstrass theorem, real version",
+        "snippet": "a set A of functions defined on X is said to separate points if"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Subalgebra.SeparatesPoints",
+        "module": "Mathlib.Topology.ContinuousMap.Algebra",
+        "match_kind": "exact"
+      },
+      "note": "`Set.SeparatesPoints` (Logic.Function.Basic) and `Subalgebra.SeparatesPoints` directly capture this definition.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Stone–Weierstrass theorem (real numbers)",
+      "anchor": {
+        "type": "theorem_box",
+        "value": "Stone–Weierstrass theorem (real numbers)"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "subalgebra_topologicalClosure_eq_top_of_separatesPoints",
+        "module": "Mathlib.Topology.ContinuousMap.StoneWeierstrass",
+        "match_kind": "exact"
+      },
+      "note": "States that a point-separating subalgebra of `C(X, ℝ)` for compact X is dense, the real Stone-Weierstrass theorem.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Functions vanishing at infinity",
+      "anchor": {
+        "section": "Locally compact version",
+        "snippet": "be the space of real-valued continuous functions on X that vanish at infinity"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "ZeroAtInftyContinuousMap",
+        "module": "Mathlib.Topology.ContinuousMap.ZeroAtInfty",
+        "match_kind": "exact"
+      },
+      "note": "The `C₀(α, β)` type bundles continuous maps that tend to 0 along the cocompact filter.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Subalgebra vanishes nowhere",
+      "anchor": {
+        "section": "Locally compact version",
+        "snippet": "is said to vanish nowhere if not all of the elements"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No `VanishesNowhere`/`vanishesNowhere` predicate was found in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Stone–Weierstrass theorem (locally compact spaces)",
+      "anchor": {
+        "type": "theorem_box",
+        "value": "Stone–Weierstrass theorem (locally compa"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "exists_mem_subalgebra_near_continuous_of_isCompact_of_separatesPoints",
+        "module": "Mathlib.Topology.ContinuousMap.StoneWeierstrass",
+        "match_kind": "special_case"
+      },
+      "note": "Mathlib has an `ε`-approximation variant for non-compact X on a compact subset, but the C₀ formulation for locally compact spaces is explicitly listed as future work in the file.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Polynomial approximation in two variables",
+      "anchor": {
+        "section": "Applications (2)",
+        "snippet": "If f is a continuous real-valued function defined on the set"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "subalgebra_topologicalClosure_eq_top_of_separatesPoints",
+        "module": "Mathlib.Topology.ContinuousMap.StoneWeierstrass",
+        "match_kind": "generalization"
+      },
+      "note": "No dedicated bivariate polynomial-approximation lemma, but the result follows from the general real Stone-Weierstrass theorem in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Approximation by sums of products on X×Y",
+      "anchor": {
+        "section": "Applications (2)",
+        "snippet": "If X and Y are two compact Hausdorff spaces and f"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "subalgebra_topologicalClosure_eq_top_of_separatesPoints",
+        "module": "Mathlib.Topology.ContinuousMap.StoneWeierstrass",
+        "match_kind": "generalization"
+      },
+      "note": "Mathlib has no explicit statement about density of sums of products `g(x)h(y)` in `C(X×Y, ℝ)`, but it is an immediate corollary of the general real Stone-Weierstrass theorem.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Complex unital *-algebra generated",
+      "anchor": {
+        "section": "Stone–Weierstrass theorem, complex version",
+        "snippet": "consists of all those functions that can be obtained from the elements of"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "StarSubalgebra.adjoin",
+        "module": "Mathlib.Algebra.Star.Subalgebra",
+        "match_kind": "exact"
+      },
+      "note": "`StarSubalgebra.adjoin` (and `StarAlgebra.adjoin`) defines the unital *-algebra generated by a set.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Fourier series basis on the circle",
+      "anchor": {
+        "section": "Stone–Weierstrass theorem, complex version",
+        "snippet": "Fourier series : The set of linear combinations of functions"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "fourierSubalgebra_closure_eq_top",
+        "module": "Mathlib.Analysis.Fourier.AddCircle",
+        "match_kind": "exact"
+      },
+      "note": "Proves the star subalgebra of `C(AddCircle T, ℂ)` generated by `fourier n` is dense, which is the Stone-Weierstrass corollary for the circle.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Stone–Weierstrass theorem (complex numbers)",
+      "anchor": {
+        "type": "theorem_box",
+        "value": "Stone–Weierstrass theorem (complex numbe"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "ContinuousMap.starSubalgebra_topologicalClosure_eq_top_of_separatesPoints",
+        "module": "Mathlib.Topology.ContinuousMap.StoneWeierstrass",
+        "match_kind": "generalization"
+      },
+      "note": "Stated for any `RCLike 𝕜` (including ℂ): a point-separating star subalgebra of `C(X, 𝕜)` for compact X is dense.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Stone–Weierstrass theorem (quaternion numbers)",
+      "anchor": {
+        "type": "theorem_box",
+        "value": "Stone–Weierstrass theorem (quaternion nu"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib's Stone-Weierstrass is stated only for `RCLike` (ℝ/ℂ), not for quaternion-valued continuous functions.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Non-commutative Stone–Weierstrass conjecture",
+      "anchor": {
+        "type": "theorem_box",
+        "value": "Conjecture — If a unital C*-algebra [MAT"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "An open conjecture for non-commutative C*-algebras; no formalization in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Stone–Weierstrass theorem (C*-algebras)",
+      "anchor": {
+        "type": "theorem_box",
+        "value": "Stone–Weierstrass theorem (C*-algebras) "
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "ContinuousMap.starSubalgebra_topologicalClosure_eq_top_of_separatesPoints",
+        "module": "Mathlib.Topology.ContinuousMap.StoneWeierstrass",
+        "match_kind": "exact"
+      },
+      "note": "The commutative C*-algebra Stone-Weierstrass is exactly the star-subalgebra version for `C(X, 𝕜)` with `RCLike 𝕜`, used e.g. in `GelfandDuality`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Lattice in C(X,R)",
+      "anchor": {
+        "section": "Lattice versions",
+        "snippet": "A subset L of C( X , R ) is called a lattice if for any two elements"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "ContinuousMap.instLattice",
+        "module": "Mathlib.Topology.ContinuousMap.Lattice",
+        "match_kind": "generalization"
+      },
+      "note": "The lattice structure on `C(α, β)` (with sup/inf inherited pointwise) is provided; sub-lattice membership is then standard `Set` notion.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Characterization of closure in a lattice",
+      "anchor": {
+        "section": "Lattice versions",
+        "snippet": "The function φ ∈ C( X , R ) belongs to the closure of L if and only if"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No explicit pointwise-ε characterization of the closure of a sublattice was located in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Stone–Weierstrass theorem (lattices)",
+      "anchor": {
+        "type": "theorem_box",
+        "value": "Stone–Weierstrass theorem (lattices) — S"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "ContinuousMap.sublattice_closure_eq_top",
+        "module": "Mathlib.Topology.ContinuousMap.StoneWeierstrass",
+        "match_kind": "exact"
+      },
+      "note": "Proves a nonempty sublattice of `C(X, ℝ)` which separates points strongly has closure equal to ⊤, the lattice Stone-Weierstrass theorem.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Stone–Weierstrass theorem (max-closed)",
+      "anchor": {
+        "type": "theorem_box",
+        "value": "Stone–Weierstrass theorem (max-closed) —"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No max-closed (only-sup) variant of Stone-Weierstrass was found in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Bishop's theorem",
+      "anchor": {
+        "type": "theorem_box",
+        "value": "Bishop's theorem — Let A be a closed sub"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No declaration named or labeled `Bishop` was found in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Nachbin's theorem",
+      "anchor": {
+        "type": "theorem_box",
+        "value": "Nachbin's theorem — Let A be a subalgebr"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No declaration mentioning Nachbin was found in Mathlib.",
+      "provenance": "ai"
+    }
+  ]
+}

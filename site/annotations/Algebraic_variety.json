@@ -1,0 +1,873 @@
+{
+  "slug": "Algebraic_variety",
+  "wikipedia_title": "Algebraic variety",
+  "display_title": "Algebraic variety",
+  "schema_version": 3,
+  "annotation_style": "theorem_article",
+  "annotations": [
+    {
+      "kind": "definition",
+      "label": "Algebraic variety (classical)",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "an algebraic variety is defined as the set of solutions of a system of polynomial equations"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "MvPolynomial.zeroLocus",
+        "module": "Mathlib.RingTheory.Nullstellensatz",
+        "match_kind": "generalization"
+      },
+      "note": "The solution set of polynomials is formalized as `MvPolynomial.zeroLocus`, but no bundled `Variety` type collects this with irreducibility.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Irreducible variety / algebraic set",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "some definitions require an algebraic variety to be irreducible"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "PrimeSpectrum.isIrreducible_zeroLocus_iff",
+        "module": "Mathlib.RingTheory.Spectrum.Prime.Topology",
+        "match_kind": "generalization"
+      },
+      "note": "Irreducibility of zero loci is characterized for the prime spectrum but not for a dedicated classical-variety type.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Hilbert's Nullstellensatz correspondence",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "Hilbert's Nullstellensatz provides a fundamental correspondence between ideals of polynomial rings and algebraic sets"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "MvPolynomial.vanishingIdeal_zeroLocus_eq_radical",
+        "module": "Mathlib.RingTheory.Nullstellensatz",
+        "match_kind": "exact"
+      },
+      "note": "The strong Nullstellensatz `I(Z(I)) = radical I` giving the ideal-algebraic set correspondence is proved directly.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Variety as integral scheme",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "an algebraic variety over a field is an integral (irreducible and reduced) scheme over that field"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "AlgebraicGeometry.IsIntegral",
+        "module": "Mathlib.AlgebraicGeometry.Properties",
+        "match_kind": "generalization"
+      },
+      "note": "Integral (= irreducible + reduced) schemes are formalized, but there is no bundled notion of a variety as an integral scheme over a fixed field.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Zero-locus Z(S)",
+      "anchor": {
+        "section": "Affine varieties",
+        "snippet": "define the zero-locus Z ( S ) to be the set of points in A n on which the functions in S simultaneously vanish"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "MvPolynomial.zeroLocus",
+        "module": "Mathlib.RingTheory.Nullstellensatz",
+        "match_kind": "exact"
+      },
+      "note": "`MvPolynomial.zeroLocus` is exactly the set of points where all polynomials of an ideal vanish, with `zeroLocus_span` covering an arbitrary set `S`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Affine algebraic set",
+      "anchor": {
+        "section": "Affine varieties",
+        "snippet": "A subset V of A n is called an affine algebraic set if V = Z ( S ) for some S"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "MvPolynomial.zeroLocus",
+        "module": "Mathlib.RingTheory.Nullstellensatz",
+        "match_kind": "generalization"
+      },
+      "note": "Zero loci are defined, but there is no named predicate `IsAffineAlgebraicSet` for subsets of the form `Z(S)`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Irreducible affine algebraic set",
+      "anchor": {
+        "section": "Affine varieties",
+        "snippet": "A nonempty affine algebraic set V is called irreducible if it cannot be written as the union of two proper algebraic subsets"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "PrimeSpectrum.isIrreducible_zeroLocus_iff",
+        "module": "Mathlib.RingTheory.Spectrum.Prime.Topology",
+        "match_kind": "generalization"
+      },
+      "note": "Irreducibility of a zero locus is characterized on the prime spectrum via `IsIrreducible`, not on classical affine algebraic sets.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Affine variety",
+      "anchor": {
+        "section": "Affine varieties",
+        "snippet": "An irreducible affine algebraic set is also called an affine variety"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "AlgebraicGeometry.IsAffine",
+        "module": "Mathlib.AlgebraicGeometry.AffineScheme",
+        "match_kind": "generalization"
+      },
+      "note": "Affine schemes (`IsAffine`, schemes isomorphic to `Spec`) exist, but an affine variety as an irreducible affine algebraic set is not bundled.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Zariski topology (affine)",
+      "anchor": {
+        "section": "Affine varieties",
+        "snippet": "Affine varieties can be given a natural topology by declaring the closed sets to be precisely the affine algebraic sets"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "PrimeSpectrum.zariskiTopology",
+        "module": "Mathlib.RingTheory.Spectrum.Prime.Topology",
+        "match_kind": "generalization"
+      },
+      "note": "The Zariski topology with closed sets the zero loci is formalized on the prime spectrum rather than on classical affine n-space.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Ideal I(V)",
+      "anchor": {
+        "section": "Affine varieties",
+        "snippet": "we define I ( V ) to be the ideal of all polynomial functions vanishing on V"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "MvPolynomial.vanishingIdeal",
+        "module": "Mathlib.RingTheory.Nullstellensatz",
+        "match_kind": "exact"
+      },
+      "note": "`MvPolynomial.vanishingIdeal` is exactly the ideal of polynomials vanishing on a given set of points.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Coordinate ring",
+      "anchor": {
+        "section": "Affine varieties",
+        "snippet": "the coordinate ring or structure ring of V is the quotient of the polynomial ring by this ideal"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "WeierstrassCurve.Affine.CoordinateRing",
+        "module": "Mathlib.AlgebraicGeometry.EllipticCurve.Affine.Point",
+        "match_kind": "special_case"
+      },
+      "note": "A coordinate ring is defined only for the special case of an affine Weierstrass curve; the general `k[x]/I(V)` construction is not a named definition.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Zero-locus of homogeneous polynomials",
+      "anchor": {
+        "section": "Projective varieties and quasi-projective varieties",
+        "snippet": "define the zero-locus of S to be the set of points in P n on which the functions in S vanish"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "ProjectiveSpectrum.zeroLocus",
+        "module": "Mathlib.AlgebraicGeometry.ProjectiveSpectrum.Topology",
+        "match_kind": "exact"
+      },
+      "note": "`ProjectiveSpectrum.zeroLocus` is the set of homogeneous primes containing `S`, the scheme-theoretic projective zero locus.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Projective algebraic set",
+      "anchor": {
+        "section": "Projective varieties and quasi-projective varieties",
+        "snippet": "A subset V of P n is called a projective algebraic set if V = Z ( S ) for some S"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "ProjectiveSpectrum.zeroLocus",
+        "module": "Mathlib.AlgebraicGeometry.ProjectiveSpectrum.Topology",
+        "match_kind": "generalization"
+      },
+      "note": "Projective zero loci exist but there is no named predicate for subsets of the form `Z(S)`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Projective variety",
+      "anchor": {
+        "section": "Projective varieties and quasi-projective varieties",
+        "snippet": "An irreducible projective algebraic set is called a projective variety"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "ProjectiveSpectrum.zariskiTopology",
+        "module": "Mathlib.AlgebraicGeometry.ProjectiveSpectrum.Topology",
+        "match_kind": "generalization"
+      },
+      "note": "The Proj construction and its topology exist, but an irreducible projective algebraic set as a bundled projective variety is not defined.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Zariski topology (projective)",
+      "anchor": {
+        "section": "Projective varieties and quasi-projective varieties",
+        "snippet": "Projective varieties are also equipped with the Zariski topology by declaring all algebraic sets to be closed"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "ProjectiveSpectrum.zariskiTopology",
+        "module": "Mathlib.AlgebraicGeometry.ProjectiveSpectrum.Topology",
+        "match_kind": "generalization"
+      },
+      "note": "The Zariski topology on the projective spectrum with closed sets the zero loci is formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Projective coordinate ring",
+      "anchor": {
+        "section": "Projective varieties and quasi-projective varieties",
+        "snippet": "let I ( V ) be the ideal generated by all homogeneous polynomials vanishing on V"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "ProjectiveSpectrum.vanishingIdeal",
+        "module": "Mathlib.AlgebraicGeometry.ProjectiveSpectrum.Topology",
+        "match_kind": "generalization"
+      },
+      "note": "The homogeneous vanishing ideal is formalized, but the homogeneous coordinate ring quotient is not a named definition.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Quasi-projective variety",
+      "anchor": {
+        "section": "Projective varieties and quasi-projective varieties",
+        "snippet": "A quasi-projective variety is a Zariski open subset of a projective variety"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "There is no notion of quasi-projective variety in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Classical variety (quasi-projective)",
+      "anchor": {
+        "section": "Abstract varieties",
+        "snippet": "all varieties were by definition quasi-projective varieties"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The historical classical (quasi-projective) variety notion is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Abstract algebraic variety (Grothendieck)",
+      "anchor": {
+        "section": "Abstract varieties",
+        "snippet": "an abstract algebraic variety is usually defined to be an integral , separated scheme of finite type over an algebraically closed field"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "AlgebraicGeometry.IsIntegral",
+        "module": "Mathlib.AlgebraicGeometry.Properties",
+        "match_kind": "generalization"
+      },
+      "note": "All ingredients (integral via `IsIntegral`, separated, locally of finite type) exist as scheme/morphism properties, but no bundled `Variety` type combines them over an algebraically closed field.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Nagata's non-quasiprojective variety",
+      "anchor": {
+        "section": "Existence of non-quasiprojective abstract algebraic varieties",
+        "snippet": "One of the earliest examples of a non-quasiprojective algebraic variety were given by Nagata"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Nagata's example of a non-quasiprojective variety is not in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Subvariety",
+      "anchor": {
+        "section": "Subvariety",
+        "snippet": "A subvariety is a subset of a variety that is itself a variety"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "AlgebraicGeometry.IsClosedImmersion",
+        "module": "Mathlib.AlgebraicGeometry.Morphisms.ClosedImmersion",
+        "match_kind": "generalization"
+      },
+      "note": "Closed subschemes via closed immersions and ideal sheaves formalize subvarieties at the scheme level, but not the classical 'subset that is itself a variety'.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Nullstellensatz for closed subvarieties",
+      "anchor": {
+        "section": "Subvariety",
+        "snippet": "Hilbert's Nullstellensatz says that closed subvarieties of an affine or projective variety are in one-to-one correspondence"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "PrimeSpectrum.isIrreducible_iff_vanishingIdeal_isPrime",
+        "module": "Mathlib.RingTheory.Spectrum.Prime.Topology",
+        "match_kind": "generalization"
+      },
+      "note": "The correspondence between irreducible closed subsets and prime ideals is formalized for the prime spectrum.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Line in the affine plane",
+      "anchor": {
+        "section": "Example 1",
+        "snippet": "This is called a line in the affine plane"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The specific 'line in the affine plane' example is not formalized as a variety.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Unit circle",
+      "anchor": {
+        "section": "Example 2",
+        "snippet": "As g ( x , y ) is an absolutely irreducible polynomial, this is an algebraic variety"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The unit circle as the variety of an irreducible polynomial is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Twisted cubic",
+      "anchor": {
+        "section": "Example 3",
+        "snippet": "an algebraic curve that is not contained in any plane"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The twisted cubic example is not in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "General linear group as affine variety",
+      "anchor": {
+        "section": "General linear group",
+        "snippet": "It is an affine variety, since, in general, the complement of a hypersurface in an affine variety is affine"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Matrix.GeneralLinearGroup",
+        "module": "Mathlib.LinearAlgebra.Matrix.GeneralLinearGroup.Defs",
+        "match_kind": "generalization"
+      },
+      "note": "`GL_n` exists as a matrix group but is not endowed with an affine variety/scheme structure.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Algebraic torus",
+      "anchor": {
+        "section": "General linear group",
+        "snippet": "A finite product of it ( k × ) r is an algebraic torus , which is again an affine variety"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No algebraic torus (as a variety/group scheme) is formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Linear algebraic group",
+      "anchor": {
+        "section": "General linear group",
+        "snippet": "A general linear group is an example of a linear algebraic group , an affine variety that has a structure of a group"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": null,
+        "module": "Mathlib.AlgebraicGeometry.Group.Smooth",
+        "match_kind": null
+      },
+      "note": "Group-scheme infrastructure over `Spec` exists, but a dedicated 'linear (affine) algebraic group' notion is not bundled.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Characteristic variety",
+      "anchor": {
+        "section": "Characteristic variety",
+        "snippet": "the locus where gr M does not vanish is called the characteristic variety of M"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The characteristic variety of a D-module/filtered module is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Projective variety (closed subvariety)",
+      "anchor": {
+        "section": "Projective variety",
+        "snippet": "A projective variety is a closed subvariety of a projective space"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "AlgebraicGeometry.IsClosedImmersion",
+        "module": "Mathlib.AlgebraicGeometry.Morphisms.ClosedImmersion",
+        "match_kind": "generalization"
+      },
+      "note": "Closed immersions into projective space (Proj) can express this, but a bundled projective variety as a closed subvariety of `P^n` is not defined.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Plane projective curve",
+      "anchor": {
+        "section": "Example 1 (2)",
+        "snippet": "A plane projective curve is the zero locus of an irreducible homogeneous polynomial in three indeterminates"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "There is no general definition of a plane projective curve as the zero locus of an irreducible homogeneous polynomial.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Elliptic curve",
+      "anchor": {
+        "section": "Example 1 (2)",
+        "snippet": "which defines a curve in P 2 called an elliptic curve"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "WeierstrassCurve.IsElliptic",
+        "module": "Mathlib.AlgebraicGeometry.EllipticCurve.Weierstrass",
+        "match_kind": "special_case"
+      },
+      "note": "Elliptic curves are formalized as Weierstrass curves with unit discriminant via the `IsElliptic` typeclass.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Grassmannian variety",
+      "anchor": {
+        "section": "Example 2: Grassmannian",
+        "snippet": "The Grassmannian variety G n ( V ) is the set of all n -dimensional subspaces of V"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Module.Grassmannian",
+        "module": "Mathlib.RingTheory.Grassmannian",
+        "match_kind": "generalization"
+      },
+      "note": "`Module.Grassmannian` formalizes the Grassmannian as a set (quotient convention) with a functor, but its representability as a variety/scheme is still a TODO.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Jacobian variety",
+      "anchor": {
+        "section": "Jacobian variety and abelian variety",
+        "snippet": "The Jacobian variety Jac( C ) of C is the kernel of this degree map"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Jacobian variety of a curve is not formalized (Mathlib's `Jacobian` files are about Jacobian coordinates of elliptic curves).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Abelian variety",
+      "anchor": {
+        "section": "Jacobian variety and abelian variety",
+        "snippet": "an abelian variety , a complete variety with a compatible abelian group structure on it"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "AlgebraicGeometry.isCommMonObj_of_isProper_of_isIntegral_tensorObj_of_isAlgClosed",
+        "module": "Mathlib.AlgebraicGeometry.Group.Abelian",
+        "match_kind": "generalization"
+      },
+      "note": "The key theorem that proper geometrically integral group schemes are commutative is proved, but there is no bundled `AbelianVariety` definition.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Elliptic curve is an abelian variety",
+      "anchor": {
+        "section": "Jacobian variety and abelian variety",
+        "snippet": "in particular, an elliptic curve is an abelian variety"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "WeierstrassCurve.Affine.Point",
+        "module": "Mathlib.AlgebraicGeometry.EllipticCurve.Affine.Point",
+        "match_kind": "special_case"
+      },
+      "note": "The abelian group structure on the points of an elliptic curve is formalized (`AddCommGroup W.Point`), but not phrased as 'is an abelian variety'.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Moduli of curves of genus g",
+      "anchor": {
+        "section": "Moduli varieties",
+        "snippet": "the set of isomorphism classes of smooth complete curves of genus g is called the moduli of curves of genus"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The moduli space of curves of genus g is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Stable curve",
+      "anchor": {
+        "section": "Moduli varieties",
+        "snippet": "a stable curve of genus g ≥ 2 , a not-necessarily-smooth complete curve"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The notion of a stable curve is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Moduli of stable curves",
+      "anchor": {
+        "section": "Moduli varieties",
+        "snippet": "the set of isomorphism classes of stable curves of genus g ≥ 2 , is then a projective variety"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The moduli of stable curves is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Moduli of semistable vector bundles",
+      "anchor": {
+        "section": "Moduli varieties",
+        "snippet": "The moduli of semistable vector bundles of a given rank n and a given degree d"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Moduli of semistable vector bundles is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "P1 × A1 (non-affine, non-projective)",
+      "anchor": {
+        "section": "Non-affine and non-projective example",
+        "snippet": "Here X is an algebraic variety since it is a product of varieties"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This specific product variety example is not formalized, though products of schemes exist.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Affine plane minus origin",
+      "anchor": {
+        "section": "Non-affine and non-projective example",
+        "snippet": "Another example of a non-affine non-projective variety is X = A 2 − (0, 0)"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The punctured affine plane example is not formalized as a variety.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Complement of a circle (non-example)",
+      "anchor": {
+        "section": "Non-examples",
+        "snippet": "is not an algebraic variety (nor even an algebraic set)"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This non-example (complement of a circle) is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Unitary group vs special linear group",
+      "anchor": {
+        "section": "Non-examples",
+        "snippet": "a unitary group (over the complex numbers) is not an algebraic variety, while the special linear group SL n ( C ) is a closed subvariety"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Matrix.SpecialLinearGroup",
+        "module": "Mathlib.LinearAlgebra.Matrix.SpecialLinearGroup",
+        "match_kind": "generalization"
+      },
+      "note": "`SpecialLinearGroup` and `unitaryGroup` exist as matrix groups, but their (non-)variety structures are not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Variety iff coordinate ring is integral domain",
+      "anchor": {
+        "section": "Basic results",
+        "snippet": "An affine algebraic set V is a variety if and only if I ( V ) is a prime ideal"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "PrimeSpectrum.isIrreducible_iff_vanishingIdeal_isPrime",
+        "module": "Mathlib.RingTheory.Spectrum.Prime.Topology",
+        "match_kind": "generalization"
+      },
+      "note": "Irreducibility iff prime vanishing ideal is proved for the prime spectrum, the scheme-theoretic analogue of this statement.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Unique decomposition into varieties",
+      "anchor": {
+        "section": "Basic results",
+        "snippet": "Every nonempty affine algebraic set may be written uniquely as a finite union of algebraic varieties"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "TopologicalSpace.NoetherianSpace.exists_finite_set_isClosed_irreducible",
+        "module": "Mathlib.Topology.NoetherianSpace",
+        "match_kind": "generalization"
+      },
+      "note": "Decomposition of closed sets into finitely many irreducible components in a Noetherian space generalizes this; uniqueness is via finiteness of `irreducibleComponents`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Product of varieties is a variety",
+      "anchor": {
+        "section": "Basic results",
+        "snippet": "A product of finitely many algebraic varieties (over an algebraically closed field) is an algebraic variety"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": null,
+        "module": "Mathlib.AlgebraicGeometry.Geometrically.Integral",
+        "match_kind": null
+      },
+      "note": "Fiber products of schemes exist and integrality of products over a field is studied via geometric integrality, but no single 'product of varieties is a variety' statement is bundled.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Isomorphism of varieties",
+      "anchor": {
+        "section": "Isomorphism of algebraic varieties",
+        "snippet": "We say V 1 and V 2 are isomorphic , and write V 1 ≅ V 2 , if there are regular maps"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "AlgebraicGeometry.Scheme.Hom",
+        "module": "Mathlib.AlgebraicGeometry.Scheme",
+        "match_kind": "generalization"
+      },
+      "note": "Isomorphisms of schemes (categorical `≅` of `Scheme.Hom`) generalize isomorphisms of varieties via regular maps.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Scheme",
+      "anchor": {
+        "section": "Discussion and generalizations",
+        "snippet": "A scheme is a locally ringed space such that every point has a neighbourhood that, as a locally ringed space, is isomorphic to a spectrum of a ring"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "AlgebraicGeometry.Scheme",
+        "module": "Mathlib.AlgebraicGeometry.Scheme",
+        "match_kind": "exact"
+      },
+      "note": "`AlgebraicGeometry.Scheme` is exactly a locally ringed space locally isomorphic to `Spec R`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Complete variety",
+      "anchor": {
+        "section": "Discussion and generalizations",
+        "snippet": "A complete variety is a variety such that any map from an open subset of a nonsingular curve into it can be extended uniquely to the whole curve"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "AlgebraicGeometry.IsProper",
+        "module": "Mathlib.AlgebraicGeometry.Morphisms.Proper",
+        "match_kind": "generalization"
+      },
+      "note": "Completeness is captured by properness of a morphism (`IsProper`), with the curve-extension characterization corresponding to the valuative criterion.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Projective implies complete",
+      "anchor": {
+        "section": "Discussion and generalizations",
+        "snippet": "Every projective variety is complete, but not vice versa"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "AlgebraicGeometry.Proj.toSpecZero",
+        "module": "Mathlib.AlgebraicGeometry.ProjectiveSpectrum.Proper",
+        "match_kind": "generalization"
+      },
+      "note": "`Proj 𝒜` is shown to be proper over `Spec 𝒜₀` (an `IsProper` instance), the scheme-theoretic form of 'projective implies complete'.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Algebraic manifold",
+      "anchor": {
+        "section": "Algebraic manifolds",
+        "snippet": "An algebraic manifold is an algebraic variety that is also an m -dimensional manifold"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The notion of algebraic manifold is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Nash manifold",
+      "anchor": {
+        "section": "Algebraic manifolds",
+        "snippet": "algebraic manifolds are called Nash manifolds"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Nash manifolds are not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Riemann sphere",
+      "anchor": {
+        "section": "Algebraic manifolds",
+        "snippet": "The Riemann sphere is one example"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Riemann sphere as an algebraic manifold is not formalized (only the one-point compactification / projective line exist separately).",
+      "provenance": "ai"
+    }
+  ]
+}

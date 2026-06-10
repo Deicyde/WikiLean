@@ -1,0 +1,313 @@
+{
+  "slug": "Trigonometry",
+  "wikipedia_title": "Trigonometry",
+  "display_title": "Trigonometry",
+  "schema_version": 3,
+  "annotation_style": "theorem_article",
+  "annotations": [
+    {
+      "kind": "definition",
+      "label": "Trigonometric ratios",
+      "anchor": {
+        "section": "Trigonometric ratios",
+        "snippet": "Trigonometric ratios are the ratios between edges of a right triangle"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "EuclideanGeometry.sin_angle_mul_dist_of_angle_eq_pi_div_two",
+        "module": "Mathlib.Geometry.Euclidean.Angle.Unoriented.RightAngle",
+        "match_kind": null
+      },
+      "note": "Mathlib defines sin/cos/tan analytically and separately proves their right-triangle edge-ratio characterizations (e.g. sin·hypotenuse = opposite), rather than defining the ratios directly.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Hypotenuse, adjacent, and opposite sides",
+      "anchor": {
+        "section": "Trigonometric ratios",
+        "snippet": "the hypotenuse is the side opposite to the 90-degree angle in a right triangle"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has no named definitions for hypotenuse/adjacent/opposite; right-triangle results just use dist between points with a π/2 angle.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Sine",
+      "anchor": {
+        "section": "Trigonometric ratios",
+        "snippet": "Sine (denoted sin), defined as the ratio of the side opposite the angle to the hypotenuse."
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Real.sin",
+        "module": "Mathlib.Analysis.Complex.Trigonometric",
+        "match_kind": "generalization"
+      },
+      "note": "Real.sin is the sine function (defined analytically for all reals, generalizing the right-triangle ratio confirmed by sin_angle_mul_dist_of_angle_eq_pi_div_two).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Cosine",
+      "anchor": {
+        "section": "Trigonometric ratios",
+        "snippet": "Cosine (denoted cos), defined as the ratio of the adjacent leg"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Real.cos",
+        "module": "Mathlib.Analysis.Complex.Trigonometric",
+        "match_kind": "generalization"
+      },
+      "note": "Real.cos is the cosine function defined analytically for all reals, with the adjacent/hypotenuse ratio proven via cos_angle_mul_dist_of_angle_eq_pi_div_two.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Tangent",
+      "anchor": {
+        "section": "Trigonometric ratios",
+        "snippet": "Tangent (denoted tan), defined as the ratio of the opposite leg to the adjacent leg."
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Real.tan",
+        "module": "Mathlib.Analysis.Complex.Trigonometric",
+        "match_kind": "generalization"
+      },
+      "note": "Real.tan is defined as sin/cos, generalizing the opposite/adjacent ratio proven via tan_angle_mul_dist_of_angle_eq_pi_div_two.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Cosecant, secant, cotangent",
+      "anchor": {
+        "section": "Trigonometric ratios",
+        "snippet": "The reciprocals of these ratios are named the cosecant (csc), secant (sec), and cotangent (cot)"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Real.cot",
+        "module": "Mathlib.Analysis.Complex.Trigonometric",
+        "match_kind": null
+      },
+      "note": "Cotangent (Real.cot/Complex.cot) is defined, but cosecant and secant have no dedicated definitions in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Cofunction relationship with complementary angle",
+      "anchor": {
+        "section": "Trigonometric ratios",
+        "snippet": "The cosine, cotangent, and cosecant are so named because they are respectively the sine, tangent, and secant of the complementary angle"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Real.cos_pi_div_two_sub",
+        "module": "Mathlib.Analysis.SpecialFunctions.Trigonometric.Basic",
+        "match_kind": "exact"
+      },
+      "note": "cos(π/2−x)=sin x is Real.cos_pi_div_two_sub, with companions Real.sin_pi_div_two_sub and Real.tan_pi_div_two_sub.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Unit circle",
+      "anchor": {
+        "section": "The unit circle and common trigonometric values",
+        "snippet": "the unit circle , which is the circle of radius 1 centered at the origin in the plane"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Circle",
+        "module": "Mathlib.Analysis.Complex.Circle",
+        "match_kind": "exact"
+      },
+      "note": "Circle is defined as the metric sphere of radius 1 centered at 0 in ℂ (identified with the plane).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Inverse trigonometric functions",
+      "anchor": {
+        "section": "Inverse trigonometric functions",
+        "snippet": "By restricting the domain of a trigonometric function, however, they can be made invertible"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Real.arctan",
+        "module": "Mathlib.Analysis.SpecialFunctions.Trigonometric.Arctan",
+        "match_kind": "exact"
+      },
+      "note": "Real.arcsin, Real.arccos (in Trigonometric.Inverse) and Real.arctan are defined as domain-restricted inverses of the trig functions.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Maclaurin series for sine and cosine",
+      "anchor": {
+        "section": "Power series representations",
+        "snippet": "the trigonometric ratios can be represented by Maclaurin series"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Complex.hasSum_sin",
+        "module": "Mathlib.Analysis.SpecialFunctions.Trigonometric.Series",
+        "match_kind": "exact"
+      },
+      "note": "Complex.hasSum_sin/Complex.hasSum_cos (and Real.hasSum_sin/Real.hasSum_cos) give the standard power-series expansions of sine and cosine.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Complex exponential formula",
+      "anchor": {
+        "section": "Power series representations",
+        "snippet": "the following formula holds for the complex exponential"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Complex.exp_mul_I",
+        "module": "Mathlib.Analysis.Complex.Trigonometric",
+        "match_kind": "exact"
+      },
+      "note": "Complex.exp_mul_I states exp(x·I) = cos x + sin x·I, exactly the e^{ix}=cos x + i sin x identity.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Other historical trigonometric functions",
+      "anchor": {
+        "section": "Other trigonometric functions",
+        "snippet": "there are additional trigonometric functions that were historically important"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Historical functions such as versine, haversine, exsecant, and chord are absent from Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Fourier series of periodic functions",
+      "anchor": {
+        "section": "Periodic functions",
+        "snippet": "Fourier discovered that every continuous , periodic function could be described as an infinite sum of trigonometric functions"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "hasSum_fourier_series_L2",
+        "module": "Mathlib.Analysis.Fourier.AddCircle",
+        "match_kind": "special_case"
+      },
+      "note": "Mathlib formalizes L²-convergence of Fourier series on AddCircle (hasSum_fourier_series_L2, fourierBasis), not the general continuous-function pointwise statement.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Law of sines",
+      "anchor": {
+        "section": "Law of sines",
+        "snippet": "The law of sines (also known as the \"sine rule\") for an arbitrary triangle states"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "EuclideanGeometry.sin_angle_mul_dist_eq_sin_angle_mul_dist",
+        "module": "Mathlib.Geometry.Euclidean.Triangle",
+        "match_kind": "exact"
+      },
+      "note": "The law of sines is proven as sin_angle_mul_dist_eq_sin_angle_mul_dist (aliased law_sin).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Law of cosines",
+      "anchor": {
+        "section": "Law of cosines",
+        "snippet": "The law of cosines (known as the cosine formula, or the \"cos rule\") is an extension of the Pythagorean theorem to arbitrary triangles"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "EuclideanGeometry.dist_sq_eq_dist_sq_add_dist_sq_sub_two_mul_dist_mul_dist_mul_cos_angle",
+        "module": "Mathlib.Geometry.Euclidean.Triangle",
+        "match_kind": "exact"
+      },
+      "note": "The law of cosines is proven as dist_sq_eq_…_cos_angle (aliased law_cos).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Law of tangents",
+      "anchor": {
+        "section": "Law of tangents",
+        "snippet": "The law of tangents , developed by François Viète , is an alternative to the law of cosines"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No law-of-tangents statement was found in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Area of a triangle",
+      "anchor": {
+        "section": "Area",
+        "snippet": "the area of the triangle is given by half the product of the lengths of two sides and the sine of the angle between the two sides"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Orientation.abs_areaForm_le",
+        "module": "Mathlib.Analysis.InnerProductSpace.TwoDim",
+        "match_kind": null
+      },
+      "note": "Mathlib has signed-area-form infrastructure (areaForm, abs_areaForm_le/_of_orthogonal) but no explicit theorem giving triangle area as ½·a·b·sin C.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Pythagorean identities",
+      "anchor": {
+        "section": "Pythagorean identities",
+        "snippet": "The following trigonometric identities are related to the Pythagorean theorem and hold for any value"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Real.sin_sq_add_cos_sq",
+        "module": "Mathlib.Analysis.Complex.Trigonometric",
+        "match_kind": "exact"
+      },
+      "note": "Real.sin_sq_add_cos_sq gives sin²+cos²=1, with the tangent/secant forms via Real.one_add_tan_sq_mul_cos_sq_eq_one.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Euler's formula",
+      "anchor": {
+        "section": "Euler's formula",
+        "snippet": "produces the following analytical identities for sine, cosine, and tangent in terms of e and the imaginary unit i"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Complex.sin",
+        "module": "Mathlib.Analysis.Complex.Trigonometric",
+        "match_kind": "exact"
+      },
+      "note": "Complex.sin and Complex.cos are defined exactly by these exp-based identities ((exp(-zI)−exp(zI))·I/2 and (exp(zI)+exp(-zI))/2), with Complex.tan their quotient.",
+      "provenance": "ai"
+    }
+  ]
+}
