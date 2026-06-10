@@ -20,6 +20,11 @@ export interface AuthUser {
 }
 
 const DEV_COOKIE = "wl_dev_user";
+// The users row a matching PIPELINE_TOKEN bearer resolves to. The row is the
+// kill switch and role source of truth: delete it (→ unauthenticated) or set
+// role='blocked' (→ anonymous) to cut pipeline access without rotating the
+// secret.
+const PIPELINE_USER_ID = "pipeline";
 type Ctx = Context<{ Bindings: Env }>;
 
 // Per-request better-auth instance (Workers bindings are only available per request).
@@ -66,6 +71,20 @@ function availableProviders(env: Env): string[] {
 }
 
 export async function getUser(c: Ctx): Promise<AuthUser | null> {
+  // Pipeline bearer branch — checked before the session paths so the runner
+  // never touches cookie/better-auth machinery. Requires BOTH the header and
+  // the PIPELINE_TOKEN secret (skip if either is missing); an exact match
+  // resolves to the 'pipeline' users row (role 'bot'). Missing row → treated
+  // as unauthenticated. A non-matching bearer falls through to session auth.
+  const authz = c.req.header("Authorization");
+  if (authz?.startsWith("Bearer ") && c.env.PIPELINE_TOKEN && authz.slice(7) === c.env.PIPELINE_TOKEN) {
+    const db = drizzle(c.env.DB);
+    const row = (await db.select().from(users).where(eq(users.id, PIPELINE_USER_ID)).limit(1))[0];
+    if (!row) return null;
+    // Blocked users are treated as anonymous everywhere — bearer included.
+    if (row.role === "blocked") return null;
+    return { id: row.id, name: row.name ?? row.id, role: row.role };
+  }
   if (c.env.AUTH_MODE === "oauth") {
     try {
       const session = await makeAuth(c.env).api.getSession({ headers: c.req.raw.headers });

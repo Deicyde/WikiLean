@@ -1,11 +1,12 @@
 import { Hono, type Context } from "hono";
 import { drizzle, type DrizzleD1Database } from "drizzle-orm/d1";
-import { eq, and, desc } from "drizzle-orm";
-import { articles, revisions, users, type ArticleRow } from "./db/schema.js";
+import { eq, and, desc, sql } from "drizzle-orm";
+import { articles, revisions, users, moderationState, type ArticleRow } from "./db/schema.js";
 import { absolutizeWikipediaUrls, wrapAnnotations } from "./engine/wrap.js";
 import { renderArticlePage } from "./engine/page.js";
 import { getWikipediaHtml } from "./wikipedia.js";
 import { getUser, requireRole, registerAuthRoutes } from "./auth.js";
+import { scheduled } from "./drift.js";
 import { injectAuthAndEditor, historyPage, recentChangesPage } from "./pages.js";
 import type { Annotation } from "./engine/types.js";
 import type { Env } from "./env.js";
@@ -14,7 +15,11 @@ import {
   MAX_ANNOTATIONS,
   MAX_ANNOTATIONS_BYTES,
   MAX_FIELD_LEN,
+  MAX_META_BYTES,
   MAX_TEXT_LEN,
+  findLostHuman,
+  stampProvenance,
+  type AnnRecord,
 } from "./validation.js";
 
 const RESERVED = new Set([
@@ -48,7 +53,9 @@ async function renderArticleBase(db: DB, env: Env, row: ArticleRow): Promise<str
   // serve pre-change HTML. v6: wraps now carry data-provenance="ai|human" so
   // human-curated annotations can be visually distinguished. v7: post-XSS-
   // hardening + status-validation — evicts any XSS-poisoned/stale cached pages.
-  const cacheKey = `render:v7:${slug}:${row.version}`;
+  // v8: tombstone skip — status='rejected' annotations are no longer wrapped
+  // and drop out of header badge counts / anonymous client data.
+  const cacheKey = `render:v8:${slug}:${row.version}`;
   const cached = await env.RENDER_CACHE.get(cacheKey);
   if (cached) return cached;
 
@@ -212,12 +219,35 @@ app.get("/:slug/history", async (c) => {
   return c.html(html);
 });
 
-// ---- save an edit (login required) ----
+// ---- machine-readable article JSON (the pipeline read path; public) ----
+// Same data anonymous readers already get in-page. The {.+\.json} suffix
+// pattern wins over the catch-all /:slug routes by registration order, so a
+// slug literally named "x.json" can't shadow this route (it'd be served at
+// /api/article/x.json.json).
+app.get("/api/article/:slug{.+\\.json}", async (c) => {
+  const slug = c.req.param("slug").replace(/\.json$/, "");
+  const db = drizzle(c.env.DB);
+  const row = (await db.select().from(articles).where(eq(articles.slug, slug)).limit(1))[0];
+  if (!row) return c.json({ ok: false, error: "unknown slug" }, 404);
+  return c.json({
+    slug: row.slug,
+    wikipedia_title: row.wikipediaTitle,
+    display_title: row.displayTitle,
+    version: row.version,
+    revid: row.revid,
+    latest_revid: row.latestRevid,
+    schema_version: row.schemaVersion,
+    annotations: JSON.parse(row.annotations),
+  });
+});
+
+// ---- save an edit (session login, or pipeline bearer with role 'bot') ----
 app.post("/api/article/:slug", async (c) => {
   const originErr = checkOrigin(c);
   if (originErr) return originErr;
   const user = await getUser(c);
   if (!user) return c.json({ ok: false, error: "login required" }, 401);
+  const isBot = user.role === "bot";
   const { success: allowed } = await c.env.EDIT_LIMITER.limit({ key: `edit:${user.id}` });
   if (!allowed) return c.json({ ok: false, error: "rate limited — slow down" }, 429);
   const slug = c.req.param("slug");
@@ -225,7 +255,13 @@ app.post("/api/article/:slug", async (c) => {
   const row = (await db.select().from(articles).where(eq(articles.slug, slug)).limit(1))[0];
   if (!row) return c.json({ ok: false, error: "unknown slug" }, 404);
 
-  let posted: { annotations?: unknown; comment?: unknown; base_version?: unknown };
+  let posted: {
+    annotations?: unknown;
+    comment?: unknown;
+    base_version?: unknown;
+    revid?: unknown;
+    meta?: unknown;
+  };
   try {
     posted = await c.req.json();
   } catch {
@@ -233,14 +269,39 @@ app.post("/api/article/:slug", async (c) => {
   }
   if (!Array.isArray(posted.annotations)) return c.json({ ok: false, error: "missing annotations" }, 400);
 
-  const annJson = JSON.stringify(posted.annotations);
-  const validationErr = validateAnnotations(c, posted.annotations, annJson);
+  const postedJson = JSON.stringify(posted.annotations);
+  const validationErr = validateAnnotations(c, posted.annotations, postedJson);
   if (validationErr) return validationErr;
-  const annotations = posted.annotations as Annotation[];
+  const postedAnnotations = posted.annotations as AnnRecord[];
+
+  // Pipeline-only request fields. Bearer saves must rebase explicitly (no
+  // back-compat carve-out) and may re-pin the article's Wikipedia revid and
+  // attach run metadata for the revision log.
+  let postedRevid: number | null = null;
+  let metaJson: string | null = null;
+  if (isBot) {
+    if (typeof posted.base_version !== "number") {
+      return c.json({ ok: false, error: "base_version required for pipeline writes" }, 400);
+    }
+    if (posted.revid !== undefined) {
+      if (typeof posted.revid !== "number" || !Number.isInteger(posted.revid) || posted.revid <= 0) {
+        return c.json({ ok: false, error: "bad revid" }, 400);
+      }
+      postedRevid = posted.revid;
+    }
+    if (posted.meta !== undefined) {
+      if (typeof posted.meta !== "object" || posted.meta === null || Array.isArray(posted.meta)) {
+        return c.json({ ok: false, error: "meta must be an object" }, 400);
+      }
+      metaJson = JSON.stringify(posted.meta);
+      if (metaJson.length > MAX_META_BYTES) return c.json({ ok: false, error: "meta too large" }, 413);
+    }
+  }
 
   // Optimistic concurrency: if the client sent the version it edited against and
   // it no longer matches the current row, reject without writing so the client
-  // can rebase. Absent base_version → write unconditionally (back-compat).
+  // can rebase. Absent base_version → write unconditionally (back-compat,
+  // session saves only — bearer writes were required to send it above).
   if (typeof posted.base_version === "number" && posted.base_version !== row.version) {
     return c.json(
       { error: "stale", version: row.version, annotations: JSON.parse(row.annotations) },
@@ -248,20 +309,46 @@ app.post("/api/article/:slug", async (c) => {
     );
   }
 
-  // Re-render to report how many annotations actually anchored (same UX as serve_review).
-  const wp = await getWikipediaHtml(c.env.WP_HTML, slug, row.wikipediaTitle, row.revid);
+  const stored = JSON.parse(row.annotations) as AnnRecord[];
+  let finalAnnotations: AnnRecord[];
+  if (isBot) {
+    // Human-preservation assertion (server-side _preserve_human twin): a bot
+    // write may never lose or alter a stored provenance='human' annotation —
+    // tombstones (status='rejected') included; they are human vetoes.
+    const missing = findLostHuman(stored, postedAnnotations);
+    if (missing.length > 0) {
+      return c.json({ ok: false, error: "human annotation lost", missing }, 422);
+    }
+    // Bot provenance passes through verbatim — attribution lives at revision
+    // level (kind/meta), never laundered into the annotation provenance enum.
+    finalAnnotations = postedAnnotations;
+  } else {
+    // Session saves: provenance is stamped server-side from the actor — new or
+    // changed annotations become 'human'; unchanged ones keep their stored
+    // provenance. Clients can't launder provenance in either direction.
+    finalAnnotations = stampProvenance(stored, postedAnnotations);
+  }
+  const annJson = JSON.stringify(finalAnnotations);
+  const annotations = finalAnnotations as unknown as Annotation[];
+
+  // Re-render to report how many annotations actually anchored (same UX as
+  // serve_review). A bot re-pin anchors against the NEW revision's HTML.
+  const wp = await getWikipediaHtml(c.env.WP_HTML, slug, row.wikipediaTitle, postedRevid ?? row.revid);
   const { matched } = wrapAnnotations(absolutizeWikipediaUrls(wp.html), annotations);
   const matchedCount = matched.filter(Boolean).length;
 
   const now = Date.now();
   const newVersion = row.version + 1;
   const comment = typeof posted.comment === "string" ? posted.comment.slice(0, 500) : "";
+  // Revid policy: articles.revid advances only atomically with the annotations
+  // payload — a bot-posted revid re-pins in this same UPDATE, never separately.
+  const newRevid = postedRevid ?? wp.revid ?? row.revid;
   // Guard the UPDATE on the version we read (CAS) to close the TOCTOU between
   // the read above and this write. If a concurrent save bumped the version,
   // 0 rows change → treat as stale (same 409 contract).
   const updated = await db
     .update(articles)
-    .set({ annotations: annJson, version: newVersion, updatedAt: now, revid: wp.revid ?? row.revid })
+    .set({ annotations: annJson, version: newVersion, updatedAt: now, revid: newRevid })
     .where(and(eq(articles.slug, slug), eq(articles.version, row.version)));
   if (updated.meta.changes === 0) {
     const fresh = (await db.select().from(articles).where(eq(articles.slug, slug)).limit(1))[0];
@@ -274,18 +361,49 @@ app.post("/api/article/:slug", async (c) => {
       409,
     );
   }
+  const prior = (
+    await db.select({ id: revisions.id }).from(revisions).where(eq(revisions.slug, slug)).orderBy(desc(revisions.id)).limit(1)
+  )[0];
   await db.insert(revisions).values({
     slug,
     userId: user.id,
     annotations: annJson,
     comment: comment || null,
+    kind: isBot ? "pipeline" : "edit",
+    meta: metaJson,
+    parentId: prior?.id ?? null,
     createdAt: now,
   });
+  if (isBot) {
+    // Bookkeep the review in moderation_state (feeds /api/work priority).
+    // wp_drifted resets only when this write re-pinned revid to latest_revid
+    // (or no upstream revid is known); otherwise an existing drift flag stands.
+    const stillDrifted = row.latestRevid !== null && (newRevid === null || newRevid < row.latestRevid);
+    await db
+      .insert(moderationState)
+      .values({
+        slug,
+        lastReviewedAt: now,
+        lastReviewedVersion: newVersion,
+        wpDrifted: stillDrifted,
+        updatedAt: now,
+      })
+      .onConflictDoUpdate({
+        target: moderationState.slug,
+        set: {
+          lastReviewedAt: now,
+          lastReviewedVersion: newVersion,
+          updatedAt: now,
+          ...(stillDrifted ? {} : { wpDrifted: false }),
+        },
+      });
+  }
   console.log(
     JSON.stringify({
       event: "save",
       slug,
       user_id: user.id,
+      kind: isBot ? "pipeline" : "edit",
       version: newVersion,
       matched: matchedCount,
       total: annotations.length,
@@ -334,11 +452,16 @@ app.post("/api/article/:slug/revert/:revid", async (c) => {
     .update(articles)
     .set({ annotations: rev.annotations, version: newVersion, updatedAt: now })
     .where(eq(articles.slug, slug));
+  const prior = (
+    await db.select({ id: revisions.id }).from(revisions).where(eq(revisions.slug, slug)).orderBy(desc(revisions.id)).limit(1)
+  )[0];
   await db.insert(revisions).values({
     slug,
     userId: user.id,
     annotations: rev.annotations,
     comment: `revert to #${revid}`,
+    kind: "revert",
+    parentId: prior?.id ?? null,
     createdAt: now,
   });
   console.log(
@@ -354,6 +477,76 @@ app.post("/api/article/:slug/revert/:revid", async (c) => {
   return c.json({ ok: true, version: newVersion });
 });
 
+// ---- work queue for the moderation pipeline (bot role only) ----
+// One ORDER BY implements the binding priority policy: flagged > drifted >
+// human-edited-since-review > oldest-reviewed (NULL last_reviewed_at = never
+// reviewed sorts first within that tier). mode=wp-update narrows to articles
+// whose pinned revid trails upstream.
+app.get("/api/work", async (c) => {
+  const user = await requireRole(c, ["bot"]);
+  if (!user) return c.json({ ok: false, error: "forbidden" }, 403);
+  const mode = c.req.query("mode") ?? "review";
+  if (mode !== "review" && mode !== "wp-update") {
+    return c.json({ ok: false, error: "unknown mode" }, 400);
+  }
+  const limitRaw = parseInt(c.req.query("limit") ?? "50", 10);
+  const limit = Math.min(Math.max(Number.isNaN(limitRaw) ? 50 : limitRaw, 1), 100);
+
+  const db = drizzle(c.env.DB);
+  const humanEdited = sql<number>`CASE WHEN ${moderationState.lastReviewedVersion} IS NOT NULL AND ${articles.version} > ${moderationState.lastReviewedVersion} THEN 1 ELSE 0 END`;
+  const where =
+    mode === "wp-update"
+      ? sql`(COALESCE(${moderationState.wpDrifted}, 0) = 1 OR (${articles.latestRevid} IS NOT NULL AND ${articles.latestRevid} > ${articles.revid}))`
+      : undefined;
+  const rows = await db
+    .select({
+      slug: articles.slug,
+      version: articles.version,
+      revid: articles.revid,
+      latestRevid: articles.latestRevid,
+      lastReviewedAt: moderationState.lastReviewedAt,
+      lastReviewedVersion: moderationState.lastReviewedVersion,
+      flagCount: moderationState.flagCount,
+      wpDrifted: moderationState.wpDrifted,
+    })
+    .from(articles)
+    .leftJoin(moderationState, eq(moderationState.slug, articles.slug))
+    .where(where)
+    .orderBy(
+      sql`COALESCE(${moderationState.flagCount}, 0) DESC`,
+      sql`COALESCE(${moderationState.wpDrifted}, 0) DESC`,
+      sql`${humanEdited} DESC`,
+      sql`${moderationState.lastReviewedAt} ASC NULLS FIRST`,
+    )
+    .limit(limit);
+
+  // `reason` names the rule that selected the row, aligned with the ORDER BY
+  // tiers (and, in wp-update mode, with the filter — where latest_revid >
+  // revid counts as drift even without the wp_drifted flag).
+  const jobs = rows.map((r) => {
+    let reason: string;
+    if ((r.flagCount ?? 0) > 0) reason = "flagged";
+    else if (
+      r.wpDrifted ||
+      (mode === "wp-update" && r.latestRevid !== null && r.revid !== null && r.latestRevid > r.revid)
+    )
+      reason = "drifted";
+    else if (r.lastReviewedVersion !== null && r.version > r.lastReviewedVersion) reason = "human-edited";
+    else if (r.lastReviewedAt === null) reason = "never-reviewed";
+    else reason = "stale-review";
+    return {
+      slug: r.slug,
+      version: r.version,
+      revid: r.revid,
+      latest_revid: r.latestRevid,
+      last_reviewed_at: r.lastReviewedAt,
+      last_reviewed_version: r.lastReviewedVersion,
+      reason,
+    };
+  });
+  return c.json({ jobs });
+});
+
 // ---- article pages (clean + legacy .html) ----
 async function serveArticle(c: Context<{ Bindings: Env }>, slug: string) {
   if (RESERVED.has(slug)) return c.notFound();
@@ -363,7 +556,16 @@ async function serveArticle(c: Context<{ Bindings: Env }>, slug: string) {
   const base = await renderArticleBase(db, c.env, row);
   const user = await getUser(c);
   const annotations = JSON.parse(row.annotations) as Annotation[];
-  const page = injectAuthAndEditor(base, { slug, user, annotations, version: row.version });
+  // latestRevid/revid feed the per-request staleness banner (rendered by
+  // injectAuthAndEditor — never baked into the cached base page).
+  const page = injectAuthAndEditor(base, {
+    slug,
+    user,
+    annotations,
+    version: row.version,
+    latestRevid: row.latestRevid,
+    revid: row.revid,
+  });
   return c.html(page);
 }
 
@@ -389,4 +591,8 @@ app.onError((err, c) => {
   return c.json({ ok: false, error: "internal" }, 500);
 });
 
-export default app;
+// Module-format Worker export: HTTP via the Hono app, plus the Wikipedia
+// drift-detection cron (src/drift.ts `scheduled`, wired to wrangler.jsonc's
+// `triggers.crons`).
+export { app }; // direct Hono handle for tests (app.request)
+export default { fetch: app.fetch, scheduled };

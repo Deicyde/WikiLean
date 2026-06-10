@@ -9,6 +9,12 @@ export interface Env {
 
   AUTH_MODE: string; // "dev" (cookie stub) | "oauth" (better-auth)
 
+  // Shared bearer secret for the moderation pipeline (site/moderate.py).
+  // Optional: when unset, the bearer branch in getUser is disabled entirely.
+  // Single-token scheme by decision — graduate to an api_tokens table when a
+  // second token-holder exists.
+  PIPELINE_TOKEN?: string;
+
   // better-auth (used when AUTH_MODE === "oauth")
   BETTER_AUTH_SECRET?: string;
   BETTER_AUTH_URL?: string;
