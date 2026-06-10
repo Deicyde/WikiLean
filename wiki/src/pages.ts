@@ -15,10 +15,22 @@ function fmtDate(ms: number): string {
 
 // Injected into every article page (post-cache, varies by viewer): a sign-in
 // prompt for anonymous viewers, or the editor + full annotation model for
-// logged-in users.
+// logged-in users. Also the upstream-staleness banner — per-request injection
+// only, NEVER in the cached base (the cache invariant: latest_revid /
+// last_upstream_check writes don't bump `version`, so the base page can't
+// know about drift).
 export function injectAuthAndEditor(
   page: string,
-  opts: { slug: string; user: AuthUser | null; annotations: Annotation[]; version?: number },
+  opts: {
+    slug: string;
+    user: AuthUser | null;
+    annotations: Annotation[];
+    version?: number;
+    // Staleness banner inputs: the pinned revid + the newest upstream revid
+    // seen by the drift cron (articles.revid / articles.latest_revid).
+    revid?: number | null;
+    latestRevid?: number | null;
+  },
 ): string {
   const ret = encodeURIComponent("/" + opts.slug);
   let inject: string;
@@ -33,7 +45,7 @@ export function injectAuthAndEditor(
       `<link rel="stylesheet" href="/assets/review.css?v=3">\n` +
       // Bump ?v= when these assets change so browsers refetch (the URL is the
       // cache key; without this, returning users see the stale editor / CSS).
-      `<script src="/assets/editor.js?v=5"></script>\n`;
+      `<script src="/assets/editor.js?v=6"></script>\n`;
   } else {
     inject =
       `<a id="wl-signin" href="/login?returnTo=${ret}" ` +
@@ -41,6 +53,25 @@ export function injectAuthAndEditor(
       `text-decoration:none;padding:8px 14px;border-radius:8px;font:13px -apple-system,sans-serif;` +
       `box-shadow:0 2px 10px rgba(0,0,0,.2)">✎ Sign in to edit</a>\n`;
   }
+
+  // Slim drift banner above the article chrome. `revid` is guaranteed numeric
+  // by the guard, so the interpolated href can't break out of the attribute.
+  if (typeof opts.latestRevid === "number" && typeof opts.revid === "number" && opts.latestRevid > opts.revid) {
+    const banner =
+      `<div id="wl-stale-banner" style="background:#fff8c5;border-bottom:1px solid #d4a72c;color:#4d2d00;` +
+      `padding:8px 16px;text-align:center;font:13px/1.5 -apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif">` +
+      `Annotations are pinned to an earlier Wikipedia revision — the article has changed upstream. ` +
+      `<a href="https://en.wikipedia.org/w/index.php?diff=cur&amp;oldid=${opts.revid}" target="_blank" rel="noopener" ` +
+      `style="color:#0969da">See what changed ↗</a></div>\n`;
+    const m = page.match(/<body[^>]*>/);
+    if (m && m.index !== undefined) {
+      const end = m.index + m[0].length;
+      page = page.slice(0, end) + "\n" + banner + page.slice(end);
+    } else {
+      inject = banner + inject;
+    }
+  }
+
   const idx = page.lastIndexOf("</body>");
   return idx === -1 ? page + inject : page.slice(0, idx) + inject + page.slice(idx);
 }

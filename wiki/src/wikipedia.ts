@@ -4,7 +4,8 @@
 // 25 MB limit and immutable per revid.)
 
 const API = "https://en.wikipedia.org/w/api.php";
-const UA = "WikiLean/1.0 (https://wikilean.jackmccarthy.org; jack.mccarthy.1@stonybrook.edu)";
+// Shared with drift.ts (the drift cron hits the same MediaWiki API).
+export const UA = "WikiLean/1.0 (https://wikilean.jackmccarthy.org; jack.mccarthy.1@stonybrook.edu)";
 
 export interface WpResult {
   html: string;
