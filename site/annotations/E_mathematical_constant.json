@@ -6,30 +6,20 @@
   "annotation_style": "theorem_article",
   "annotations": [
     {
+      "status": "partial",
       "kind": "definition",
       "label": "e as limit",
-      "anchor": {
-        "section": "Definitions",
-        "snippet": "The number e is the limit"
-      },
-      "status": "partial",
+      "note": "Mathlib has `(1 + t/n)^n → exp t` for any real t, which specializes to t=1 to give e, but no dedicated lemma states the e-specific limit.",
       "mathlib": {
         "decl": "Real.tendsto_one_add_div_pow_exp",
         "module": "Mathlib.Analysis.SpecialFunctions.Complex.LogBounds",
         "match_kind": "generalization"
       },
-      "note": "Mathlib has `(1 + t/n)^n → exp t` for any real t, which specializes to t=1 to give e, but no dedicated lemma states the e-specific limit.",
-      "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Definitions",
-          "snippet": "The number e is the limit"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle \\lim _{n\\to \\infty }\\left(1+{\\frac {1}{n}}\\right)^{n},}"
-        }
-      ]
+      "provenance": "human",
+      "anchor": {
+        "section": "Definitions",
+        "snippet": "The number e is the limit"
+      }
     },
     {
       "kind": "definition",
@@ -45,33 +35,18 @@
         "match_kind": "generalization"
       },
       "note": "The series expansion `exp x = ∑ x^n / n!` is proved generally; specializing to x=1 yields the series for e but no dedicated lemma.",
-      "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Definitions",
-          "snippet": "It is the sum of the infinite series"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle e=\\sum \\limits _{n=0}^{\\infty }{\\frac {1}{n!}}=1+{\\frac {1}{1}}+{\\frac {1}{1\\cdot 2}}+{\\frac {1}{1\\cdot 2\\cdot 3}}+\\cdots .}"
-        }
-      ]
+      "provenance": "ai"
     },
     {
+      "status": "not_formalized",
       "kind": "definition",
       "label": "e via slope characterization",
+      "note": "No declaration characterizes e as the unique base whose exponential has slope 1 at 0.",
+      "provenance": "human",
       "anchor": {
         "section": "Definitions",
         "snippet": "the unique positive number a such that the graph of the function"
-      },
-      "status": "not_formalized",
-      "mathlib": {
-        "decl": null,
-        "module": null,
-        "match_kind": null
-      },
-      "note": "No declaration characterizes e as the unique base whose exponential has slope 1 at 0.",
-      "provenance": "ai"
+      }
     },
     {
       "kind": "definition",
@@ -87,17 +62,7 @@
         "match_kind": "invocation"
       },
       "note": "`Real.exp` is defined and shown to satisfy `HasDerivAt exp (exp x) x`, though uniqueness in the analytic sense is only in `PowerSeries.exp_unique_of_derivative_eq_self`.",
-      "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Definitions",
-          "snippet": "the unique function that equals its own derivative"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle e=\\exp(1),}"
-        }
-      ]
+      "provenance": "ai"
     },
     {
       "kind": "definition",
@@ -113,17 +78,7 @@
         "match_kind": null
       },
       "note": "No declaration characterizes e as the unique upper bound such that ∫₁^e 1/x dx = 1.",
-      "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Definitions",
-          "snippet": "The number e can also be characterized in terms of an integral"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle \\int _{1}^{e}{\\frac {dx}{x}}=1.}"
-        }
-      ]
+      "provenance": "ai"
     },
     {
       "kind": "proposition",
@@ -139,17 +94,7 @@
         "match_kind": "generalization"
       },
       "note": "Specializing the limit `(1 + t/n)^n → exp t` at t=1 gives Bernoulli's limit but no dedicated e-version is stated.",
-      "provenance": "ai",
-      "anchors": [
-        {
-          "section": "History",
-          "snippet": "the constant e occurs as the limit"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle \\lim _{n\\to \\infty }\\left(1+{\\frac {1}{n}}\\right)^{n},}"
-        }
-      ]
+      "provenance": "ai"
     },
     {
       "kind": "theorem",
@@ -165,17 +110,7 @@
         "match_kind": "generalization"
       },
       "note": "Specializing `exp x = ∑ x^n / n!` to x=1 yields Euler's series.",
-      "provenance": "ai",
-      "anchors": [
-        {
-          "section": "History",
-          "snippet": "Euler proved that e is the sum of the infinite series"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle e=\\sum _{n=0}^{\\infty }{\\frac {1}{n!}}={\\frac {1}{0!}}+{\\frac {1}{1!}}+{\\frac {1}{2!}}+{\\frac {1}{3!}}+{\\frac {1}{4!}}+\\cdots ,}"
-        }
-      ]
+      "provenance": "ai"
     },
     {
       "kind": "example",
@@ -287,17 +222,7 @@
         "match_kind": "generalization"
       },
       "note": "`gaussianReal 0 1` is the standard normal distribution; the general Gaussian measure is defined with mean and variance.",
-      "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Standard normal distribution",
-          "snippet": "The normal distribution with zero mean and unit standard deviation is known as the standard normal distribution"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle \\phi (x)={\\frac {1}{\\sqrt {2\\pi }}}e^{-{\\frac {1}{2}}x^{2}}.}"
-        }
-      ]
+      "provenance": "ai"
     },
     {
       "kind": "example",
@@ -377,17 +302,7 @@
         "match_kind": "exact"
       },
       "note": "Stirling's formula is proved as `tendsto_stirlingSeq_sqrt_pi` with an `Asymptotics.IsEquivalent` form `factorial_isEquivalent_stirling`.",
-      "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Asymptotics",
-          "snippet": "Stirling's formula for the asymptotics of the factorial function"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle n!\\sim {\\sqrt {2\\pi n}}\\left({\\frac {n}{e}}\\right)^{n}.}"
-        }
-      ]
+      "provenance": "ai"
     },
     {
       "kind": "proposition",
@@ -435,17 +350,7 @@
         "match_kind": "exact"
       },
       "note": "`exp x = ∑ x^n / n!` is proved in `exp_eq_tsum_div`.",
-      "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Calculus",
-          "snippet": "The Taylor series for the exponential function can be deduced from the facts"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle e^{x}=\\sum _{n=0}^{\\infty }{\\frac {x^{n}}{n!}}.}"
-        }
-      ]
+      "provenance": "ai"
     },
     {
       "kind": "definition",
@@ -461,17 +366,7 @@
         "match_kind": "generalization"
       },
       "note": "`∫_a^b 1/x dx = log(b/a)` is proved, but log is defined via exp in Mathlib rather than as this integral.",
-      "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Calculus",
-          "snippet": "The natural logarithm function can be defined as the integral"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle \\int _{1}^{e}{\\frac {1}{t}}\\,dt=1.}"
-        }
-      ]
+      "provenance": "ai"
     },
     {
       "kind": "proposition",
@@ -519,17 +414,7 @@
         "match_kind": null
       },
       "note": "Mathlib has bounds on `exp 1` but no characterization of e as the unique base for which the inequality holds.",
-      "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Inequalities",
-          "snippet": "The number e is the unique real number such that"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle \\left(1+{\\frac {1}{x}}\\right)^{x}&lt;e&lt;\\left(1+{\\frac {1}{x}}\\right)^{x+1}}"
-        }
-      ]
+      "provenance": "ai"
     },
     {
       "kind": "proposition",
@@ -545,17 +430,7 @@
         "match_kind": "exact"
       },
       "note": "`Real.add_one_le_exp` proves `x + 1 ≤ exp x`; uniqueness of e as the base is not separately stated.",
-      "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Inequalities",
-          "snippet": "e is the unique base of the exponential for which the inequality"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle e^{x}\\geq x+1}"
-        }
-      ]
+      "provenance": "ai"
     },
     {
       "kind": "proposition",
@@ -699,17 +574,7 @@
         "match_kind": "generalization"
       },
       "note": "Mathlib has `negMulLog` (the entropy summand) and binary entropy, but no general Shannon entropy of a partition.",
-      "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Entropy",
-          "snippet": "the entropy of which is the expected information gained"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle H(\\xi )=-\\sum _{i=1}^{k}p(A_{i})\\ln p(A_{i}).}"
-        }
-      ]
+      "provenance": "ai"
     },
     {
       "kind": "definition",
@@ -773,17 +638,7 @@
         "match_kind": "special_case"
       },
       "note": "The standard series at x=1 is what's typically used; effective digit bounds appear in `Real.exp_one_near_20`.",
-      "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Computing the digits",
-          "snippet": "One way to compute the digits of e is with the series"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle e=\\sum _{k=0}^{\\infty }{\\frac {1}{k!}}.}"
-        }
-      ]
+      "provenance": "ai"
     },
     {
       "kind": "proposition",
@@ -799,17 +654,7 @@
         "match_kind": null
       },
       "note": "Mathlib does not formalize binary-splitting algorithms for computing e.",
-      "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Computing the digits",
-          "snippet": "A faster method involves two recursive functions"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle {\\binom {p(a,b)}{q(a,b)}}={\\begin{cases}{\\binom {1}{b}},&amp;{\\text{if }}b=a+1{\\text{,}}\\\\{\\binom {p(a,m)q(m,b)+p(m,b)}{q(a,m)q(m,b)}},&amp;{\\text{otherwise, where }}m=\\lfloor (a+b)/2\\rfloor .\\end{cases}}}"
-        }
-      ]
+      "provenance": "ai"
     }
   ]
 }
