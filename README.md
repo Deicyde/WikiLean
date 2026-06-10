@@ -1,27 +1,63 @@
 # WikiLean
 
-Categorize WikiProject Mathematics pages by whether (and where) they have been formalized in Lean, then host a Wikipedia mirror annotated with links into Mathlib, Physlib, and other formal libraries.
+**Live at [wikilean.jackmccarthy.org](https://wikilean.jackmccarthy.org)** — an annotated mirror of Wikipedia's mathematics articles, with each definition, proposition, theorem, and example mapped (where possible) to its formalization in **[Mathlib4](https://leanprover-community.github.io/mathlib4_docs/)**, the Lean 4 mathematics library.
 
-## Goals
+A reader can scan an article and see at a glance which statements are formalized (green), partially formalized (yellow), or not yet formalized (red), with a one-click link out to the Mathlib declaration. A formalizer can use the same view as a coverage map: "what's a notable concept Mathlib hasn't reached yet?"
 
-1. **Catalog** — enumerate the set of Wikipedia articles under WikiProject Mathematics and, for each, identify the corresponding formalization(s) in Mathlib / Physlib / other Lean libraries (if any).
-2. **Annotate** — produce a mirror of those Wikipedia pages with inline references to the formal definitions, theorems, and proofs that correspond to their content.
-3. **Host** — serve the annotated mirror as a public, browsable site.
+## Current status (June 2026)
 
-## Repo layout
+- **709 articles** annotated across 12 Mathlib areas (Analysis, Algebra, Topology, …), with **~29,500 individual annotations**: 28% formalized, 14% partial, 58% not formalized.
+- **Live editable wiki** — sign in with GitHub at the site to add/correct/discuss annotations directly in-context on any article.
+- **Two complementary data layers** keyed to the same Wikidata entities:
+  - *Annotation layer* — per-article, span-level (W3C Web Annotation Data Model export at [`site/out_w3c/`](site/out_w3c/)).
+  - *Concept layer* — per-QID, concept → primary Mathlib declaration ([RDF/Turtle](catalog/data/wikilean_mathlib.ttl), 815 entries).
+- **Upstream contributions in flight:**
+  - A [Wikidata property proposal](docs/wikidata_property_proposal.md) for **"Mathlib declaration"** (modeled on the accepted Metamath statement ID P12888).
+  - PRs adding `@[wikidata]` tags to Mathlib4 declarations themselves (the inverse direction of the proposed property).
 
-- [catalog/](catalog/) — Python pipeline that enumerates WikiProject Mathematics articles from the MediaWiki API and writes a per-article JSONL catalog (class, importance, Wikidata QID, raw banner snippet). See [catalog/README.md](catalog/README.md).
+## Architecture (briefly)
 
-## Status
+```
+        Wikipedia (live)                        Mathlib4 (source)
+              │                                       │
+              ▼                                       ▼
+  ┌───────────────────────────────────────────────────────────────┐
+  │  Local pipeline (Python)                                       │
+  │   catalog/        WikiProject Math enumeration + AI tagging   │
+  │   site/           render.py · 2-agent annotation pipeline ·   │
+  │                   moderation mode · W3C/RDF exports           │
+  └───────────────────────────────────────────────────────────────┘
+              │
+              │   seed:delta / seed:refresh (incremental, edit-safe)
+              ▼
+  ┌───────────────────────────────────────────────────────────────┐
+  │  wiki/   Cloudflare Worker (Hono · Drizzle · better-auth)      │
+  │          D1 articles + revisions   KV cache   GitHub OAuth     │
+  │          serves wikilean.jackmccarthy.org dynamically          │
+  └───────────────────────────────────────────────────────────────┘
+```
 
-- **2026-05-17:** Catalog pipeline scaffolded; verified 29,134 talk pages transclude `Template:WikiProject Mathematics`.
-- **2026-05-18:** First full catalog snapshot ([catalog/data/articles.jsonl](catalog/data/articles.jsonl)) — 29,135 articles, 99.9% with a Wikidata QID, 94.8% with a class rating, 71.9% with importance.
-  - Class breakdown: 31 FA · 226 GA · 1,412 B · 4,358 C · 13,655 Start · 7,521 Stub · 408 List · …
-  - Importance breakdown: 212 Top · 952 High · 4,361 Mid · 15,367 Low · 8,199 unrated
-- **2026-05-19:** Added Wikidata P31 (`instance of`) lookup — 26.4% of catalog articles are biographies (`Q5`). High-value pilot subset materialized: [catalog/data/pilot.jsonl](catalog/data/pilot.jsonl) (FA/GA/B × Top/High), **429 articles = 354 concepts + 75 biographies**.
-- **2026-05-19 (later):** Mathlib tagging pipeline online. [catalog/tag_with_mathlib.py](catalog/tag_with_mathlib.py) spawns parallel Claude agents (via `claude-agent-sdk`, Max-plan auth — no API key) that grep and read your local mathlib4 clone to identify formalizing declarations. First pilot run: **70.9% (251/354) of concept articles have ≥1 verified Mathlib match**, 0 errors, ~15 min wall-clock, ~$48 equivalent.
-- **2026-05-20:** Tier-2 tagging — B × Mid + C × Top/High concepts. **1,023 articles, 57.6% with verified Mathlib match** (589 matched, 434 not). Two-run process: the first run filled the Max-plan Opus 5-hour rolling window after ~300 articles; a retry once the window reset cleaned up the remaining 694. Resume logic now retries only errored rows and dedupes the output on finish. Combined cost ~$133 equivalent.
+The Worker reads each article's current annotations from D1, injects the in-page review editor when you're signed in, and persists edits as new rows in `revisions`. The seeding pipeline is **edit-safe**: it never overwrites an article that has a real user revision.
 
-**Coverage so far:** of 1,377 concept articles tagged across pilot+tier-2, **840 (61%) have at least one verified Mathlib declaration**.
+## Repository layout
 
-Next: continue tagging downward (B×Low, C×Mid, plus all Top/High not yet covered) and/or start the annotation pillar — rendering Wikipedia pages with inline Mathlib links.
+| Path | What's there |
+|---|---|
+| [`catalog/`](catalog/) — see [catalog/README.md](catalog/README.md) | Catalog of WikiProject Math articles, AI Mathlib-tagging, concept layer, RDF export, Wikidata enrichment. |
+| [`site/`](site/) | Annotation pipeline (`render.py`, `batch_annotate.py`, `update_old_annotations.py`), local review editor (`serve_review.py`), W3C export, sources for the static fallback. |
+| [`wiki/`](wiki/) — see [wiki/README.md](wiki/README.md) | Cloudflare Worker + D1 backend that serves the live editable site. |
+| [`docs/`](docs/) | Long-form docs (Wikidata property proposal, …). |
+
+## How to contribute
+
+Three independent paths, you can pick any:
+
+1. **Annotate articles directly on the live site.** Sign in with GitHub at [wikilean.jackmccarthy.org](https://wikilean.jackmccarthy.org), open any article, hover a highlight to edit it, or select text to add a new one. Edits are saved to D1 and visible to the next reader. See [CONTRIBUTING.md](CONTRIBUTING.md#annotating-on-the-live-site).
+2. **Improve the pipeline / engine.** Patches to `site/`, `wiki/`, or `catalog/` welcome. See [CONTRIBUTING.md](CONTRIBUTING.md#code-contributions).
+3. **Help upstream.** Vote on the Wikidata property proposal once it's posted, or review the in-flight Mathlib `@[wikidata]` PRs (see the docs).
+
+## License
+
+Code: MIT. Annotation data is published under CC0 (it's a description of Wikipedia + Mathlib, both public). Article text shown on the site remains under the original CC BY-SA terms of the upstream Wikipedia source.
+
+If you contribute, please also read the **data & research notice** and the **token-donation policy** in [CONTRIBUTING.md](CONTRIBUTING.md) — they cover how edit metadata may be studied and how donating compute will work.
