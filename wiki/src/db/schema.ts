@@ -9,7 +9,13 @@ export const articles = sqliteTable("articles", {
   displayTitle: text("display_title").notNull(),
   wikidataQid: text("wikidata_qid"),
   revid: integer("revid"), // pinned Wikipedia revision the annotations target
+  // latest_revid / last_upstream_check are drift-detection bookkeeping; writes
+  // to them must NEVER bump `version` (cache invariant — staleness UI is
+  // injected per-request, never baked into the cached base page).
+  latestRevid: integer("latest_revid"), // newest upstream revid seen (null = unknown)
+  lastUpstreamCheck: integer("last_upstream_check"), // ms; null = never checked
   annotations: text("annotations").notNull(), // JSON array (same shape as the sidecar files)
+  schemaVersion: integer("schema_version").notNull().default(3), // annotation-blob schema generation (v4 = formalizations[], deferred)
   version: integer("version").notNull().default(1), // bumped each save → busts the render cache
   createdAt: integer("created_at").notNull(),
   updatedAt: integer("updated_at").notNull(),
@@ -23,9 +29,33 @@ export const revisions = sqliteTable(
     userId: text("user_id"), // null = system/seed
     annotations: text("annotations").notNull(), // full snapshot AFTER this edit
     comment: text("comment"),
+    kind: text("kind").notNull().default("edit"), // edit | revert | seed | pipeline | contribution
+    meta: text("meta"), // JSON: run_id, model, tokens, cost, mathlib_sha, auth_mode, approved_by, ...
+    parentId: integer("parent_id"), // revision this edit was based on (no FK — SQLite ALTER can't add one)
     createdAt: integer("created_at").notNull(),
   },
   (t) => [index("idx_revisions_slug").on(t.slug, t.createdAt)],
+);
+
+// THE single work table (binding decision — absorbs the would-be
+// article_updates). Feeds GET /api/work with one ORDER BY: flagged > drifted
+// > human-edited-since-review > oldest-reviewed > new. Latest-revid data
+// lives on `articles`, never duplicated here.
+export const moderationState = sqliteTable(
+  "moderation_state",
+  {
+    slug: text("slug")
+      .primaryKey()
+      .references(() => articles.slug),
+    lastReviewedAt: integer("last_reviewed_at"), // ms; null = never reviewed
+    lastReviewedVersion: integer("last_reviewed_version"), // articles.version at last review
+    wpDrifted: integer("wp_drifted", { mode: "boolean" }).notNull().default(false), // upstream moved past pinned revid
+    flagCount: integer("flag_count").notNull().default(0),
+    state: text("state"), // null = normal; update-flow: 'needs_human' | 'moved' | 'deleted'
+    proposal: text("proposal"), // JSON: pending re-anchor payload awaiting review
+    updatedAt: integer("updated_at"), // ms
+  },
+  (t) => [index("idx_moderation_state_reviewed").on(t.lastReviewedAt)],
 );
 
 // better-auth core tables. Property names must match better-auth's field names;
@@ -84,4 +114,5 @@ export const verifications = sqliteTable("verifications", {
 
 export type ArticleRow = typeof articles.$inferSelect;
 export type RevisionRow = typeof revisions.$inferSelect;
+export type ModerationStateRow = typeof moderationState.$inferSelect;
 export type UserRow = typeof users.$inferSelect;
