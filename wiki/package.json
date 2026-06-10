@@ -1,0 +1,28 @@
+{
+  "name": "wikilean-wiki",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "seed:sql": "node --experimental-strip-types scripts/seed.ts",
+    "seed:delta": "node --experimental-strip-types scripts/seed-delta.ts",
+    "seed:refresh": "node --experimental-strip-types scripts/seed-refresh.ts",
+    "dev": "wrangler dev",
+    "deploy": "wrangler deploy",
+    "backup:d1": "bash scripts/backup-d1.sh",
+    "tail": "wrangler tail --format=pretty"
+  },
+  "dependencies": {
+    "better-auth": "^1.6.11",
+    "drizzle-orm": "^0.38.0",
+    "hono": "^4.6.0"
+  },
+  "devDependencies": {
+    "@cloudflare/workers-types": "^4.20241218.0",
+    "@types/node": "^22.10.0",
+    "typescript": "^5.7.0",
+    "vitest": "^3.0.0",
+    "wrangler": "^4.0.0"
+  }
+}
