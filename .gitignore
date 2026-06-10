@@ -31,3 +31,10 @@ build/
 
 # WikiLean
 catalog/data/.cache/
+.wrangler/
+# Cached Wikipedia HTML (351 MB) and derived section extracts are re-fetchable
+# by pinned revid — but the *.meta.json revid sidecars are NOT reproducible
+# (they record which revision each article was annotated against), so keep them.
+site/cache/*
+!site/cache/*.meta.json
+site/out/
