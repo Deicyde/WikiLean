@@ -1,0 +1,386 @@
+{
+  "slug": "Tree_graph_theory",
+  "wikipedia_title": "Tree (graph theory)",
+  "display_title": "Tree (graph theory)",
+  "schema_version": 3,
+  "annotations": [
+    {
+      "kind": "definition",
+      "label": "Tree (lead)",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "a tree is an undirected graph in which every pair of distinct vertices is connected by exactly one path"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "definition",
+      "label": "Forest (lead)",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "A forest is an undirected graph in which any two vertices are connected by at most one path"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "definition",
+      "label": "Polytree / directed tree",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "A directed tree,"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "definition",
+      "label": "Polyforest",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "A polyforest (or directed forest or oriented forest) is a directed acyclic graph whose underlying undirected graph is a forest."
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "definition",
+      "label": "Rooted tree, arborescence, anti-arborescence",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "such data structures are generally rooted trees"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "definition",
+      "label": "Rooted forest, branching, anti-branching",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "A rooted forest is a disjoint union of rooted trees."
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "definition",
+      "label": "Tree (equivalent conditions)",
+      "anchor": {
+        "section": "Tree",
+        "snippet": "A tree is an undirected graph G that satisfies any of the following equivalent conditions"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "definition",
+      "label": "Finite tree equivalent conditions",
+      "anchor": {
+        "section": "Tree",
+        "snippet": "If G has finitely many vertices, say n of them, then the above statements are also equivalent to any of the following conditions"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "definition",
+      "label": "Order-zero graph as forest",
+      "anchor": {
+        "section": "Tree",
+        "snippet": "the order-zero graph (graph with no vertices) is generally not considered to be a tree"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "definition",
+      "label": "Internal, external, branch vertex",
+      "anchor": {
+        "section": "Tree",
+        "snippet": "An internal vertex (or inner vertex) is a vertex of degree at least 2."
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "definition",
+      "label": "Irreducible tree",
+      "anchor": {
+        "section": "Tree",
+        "snippet": "An irreducible tree (or series-reduced tree) is a tree in which there is no vertex of degree 2"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "definition",
+      "label": "Forest",
+      "anchor": {
+        "section": "Forest",
+        "snippet": "A forest is an undirected acyclic graph or equivalently a disjoint union of trees."
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "proposition",
+      "label": "Counting trees in a forest",
+      "anchor": {
+        "section": "Forest",
+        "snippet": "we can easily count the number of trees that are within a forest by subtracting the difference between total vertices and total edges"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "definition",
+      "label": "Polytree",
+      "anchor": {
+        "section": "Polytree",
+        "snippet": "is a directed acyclic graph (DAG) whose underlying undirected graph is a tree"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "definition",
+      "label": "Polyforest",
+      "anchor": {
+        "section": "Polyforest",
+        "snippet": "A polyforest (or directed forest or oriented forest) is a directed acyclic graph whose underlying undirected graph is a forest."
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "definition",
+      "label": "Rooted tree, arborescence, in-tree",
+      "anchor": {
+        "section": "Rooted tree",
+        "snippet": "A rooted tree is a tree in which one vertex has been designated the root."
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "definition",
+      "label": "Tree-order",
+      "anchor": {
+        "section": "Rooted tree",
+        "snippet": "The tree-order is the partial ordering on the vertices of a tree"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "definition",
+      "label": "Normal tree",
+      "anchor": {
+        "section": "Rooted tree",
+        "snippet": "is a normal tree if the ends of every"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "definition",
+      "label": "Free tree",
+      "anchor": {
+        "section": "Rooted tree",
+        "snippet": "a tree without any designated root is called a free tree"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "definition",
+      "label": "Labeled tree",
+      "anchor": {
+        "section": "Rooted tree",
+        "snippet": "A labeled tree is a tree in which each vertex is given a unique label."
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "definition",
+      "label": "Recursive tree",
+      "anchor": {
+        "section": "Rooted tree",
+        "snippet": "A recursive tree is a labeled rooted tree where the vertex labels respect the tree order"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "definition",
+      "label": "Parent, child, ascendant, descendant, sibling, leaf",
+      "anchor": {
+        "section": "Rooted tree",
+        "snippet": "In a rooted tree, the parent of a vertex"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "definition",
+      "label": "Height and depth",
+      "anchor": {
+        "section": "Rooted tree",
+        "snippet": "The height of a vertex in a rooted tree is the length of the longest downward path to a leaf from that vertex."
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "definition",
+      "label": "k-ary tree, binary tree, ternary tree",
+      "anchor": {
+        "section": "Rooted tree",
+        "snippet": "is a rooted tree in which each vertex has at most"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "definition",
+      "label": "Ordered (plane) tree",
+      "anchor": {
+        "section": "Ordered tree",
+        "snippet": "An ordered tree (alternatively, plane tree or positional tree"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "proposition",
+      "label": "Every tree is bipartite",
+      "anchor": {
+        "section": "Properties",
+        "snippet": "Every tree is a bipartite graph"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "proposition",
+      "label": "Countable trees are planar",
+      "anchor": {
+        "section": "Properties",
+        "snippet": "Every tree with only countably many vertices is a planar graph"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "proposition",
+      "label": "Spanning tree existence",
+      "anchor": {
+        "section": "Properties",
+        "snippet": "Every connected graph G admits a spanning tree"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "proposition",
+      "label": "Leaves in finite trees",
+      "anchor": {
+        "section": "Properties",
+        "snippet": "Every finite tree with n vertices, with n > 1 , has at least two terminal vertices (leaves)."
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "proposition",
+      "label": "Tree as median graph",
+      "anchor": {
+        "section": "Properties",
+        "snippet": "For any three vertices in a tree, the three paths between them have exactly one vertex in common."
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "proposition",
+      "label": "Center and centroid of a tree",
+      "anchor": {
+        "section": "Properties",
+        "snippet": "Every tree has a center consisting of one vertex or two adjacent vertices."
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "proposition",
+      "label": "Maximal cliques of a tree",
+      "anchor": {
+        "section": "Properties",
+        "snippet": "The maximal cliques of a tree are precisely its edges"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "theorem",
+      "label": "Cayley's formula",
+      "anchor": {
+        "section": "Labeled trees",
+        "snippet": "Cayley's formula states that there are"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "theorem",
+      "label": "Matrix tree theorem",
+      "anchor": {
+        "section": "Labeled trees",
+        "snippet": "A more general problem is to count spanning trees in an undirected graph , which is addressed by the matrix tree theorem ."
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "theorem",
+      "label": "Otter's asymptotic estimate (unlabeled trees)",
+      "anchor": {
+        "section": "Unlabeled trees",
+        "snippet": "Otter (1948) proved the asymptotic estimate"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "theorem",
+      "label": "Otter's asymptotic estimate (rooted trees)",
+      "anchor": {
+        "section": "Unlabeled trees",
+        "snippet": "This is a consequence of his asymptotic estimate for the number"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "definition",
+      "label": "Path graph",
+      "anchor": {
+        "section": "Types of trees",
+        "snippet": "A path graph (or linear graph ) consists of"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "definition",
+      "label": "Starlike tree",
+      "anchor": {
+        "section": "Types of trees",
+        "snippet": "A starlike tree consists of a central vertex called root and several path graphs attached to it."
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "definition",
+      "label": "Star tree",
+      "anchor": {
+        "section": "Types of trees",
+        "snippet": "A star tree is a tree which consists of a single internal vertex"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "definition",
+      "label": "Caterpillar tree",
+      "anchor": {
+        "section": "Types of trees",
+        "snippet": "A caterpillar tree is a tree in which all vertices are within distance 1 of a central path subgraph."
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "definition",
+      "label": "Lobster tree",
+      "anchor": {
+        "section": "Types of trees",
+        "snippet": "A lobster tree is a tree in which all vertices are within distance 2 of a central path subgraph."
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "definition",
+      "label": "Regular tree / Bethe lattice",
+      "anchor": {
+        "section": "Types of trees",
+        "snippet": "A regular tree of degree"
+      },
+      "provenance": "ai-agent1"
+    }
+  ]
+}

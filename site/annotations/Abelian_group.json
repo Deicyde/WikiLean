@@ -486,20 +486,15 @@
       "provenance": "ai"
     },
     {
+      "status": "not_formalized",
       "kind": "proposition",
       "label": "Automorphism group splits over coprime summands",
+      "note": "Mathlib does not have Aut(G×H) ≅ Aut(G)×Aut(H) for coprime-order summands.",
+      "provenance": "human",
       "anchor": {
         "section": "Automorphisms",
         "snippet": "of subgroups of coprime order"
-      },
-      "status": "not_formalized",
-      "mathlib": {
-        "decl": null,
-        "module": null,
-        "match_kind": null
-      },
-      "note": "Mathlib does not have Aut(G×H) ≅ Aut(G)×Aut(H) for coprime-order summands.",
-      "provenance": "ai"
+      }
     },
     {
       "kind": "proposition",
@@ -678,20 +673,20 @@
       "provenance": "ai"
     },
     {
+      "status": "partial",
       "kind": "proposition",
       "label": "Divisible subgroup is a direct summand",
-      "anchor": {
-        "section": "Infinite abelian groups",
-        "snippet": "admits a direct complement"
-      },
-      "status": "partial",
+      "note": "Mathlib proves divisible groups are injective objects (`injective_of_divisible`), but the resulting direct-summand statement is not stated.",
       "mathlib": {
         "decl": "AddCommGrpCat.injective_of_divisible",
         "module": "Mathlib.Algebra.Category.Grp.Injective",
         "match_kind": null
       },
-      "note": "Mathlib proves divisible groups are injective objects (`injective_of_divisible`), but the resulting direct-summand statement is not stated.",
-      "provenance": "ai"
+      "provenance": "human",
+      "anchor": {
+        "section": "Infinite abelian groups",
+        "snippet": "admits a direct complement"
+      }
     },
     {
       "kind": "theorem",
@@ -948,6 +943,22 @@
       },
       "note": "The Whitehead problem and its ZFC-independence are not formalized in Mathlib.",
       "provenance": "ai"
+    },
+    {
+      "status": "formalized",
+      "kind": "Definition",
+      "label": "Additive Group",
+      "note": "Mathlib supports both `AddGroup` and `Group` (multiplicative groups)",
+      "mathlib": {
+        "decl": "AddGroup",
+        "module": "Mathlib.Algebra.Group.Defs",
+        "match_kind": "exact"
+      },
+      "provenance": "human",
+      "anchor": {
+        "section": "Notation",
+        "snippet": "Additive group"
+      }
     }
   ]
 }
